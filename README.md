@@ -2,7 +2,7 @@
 
 | Full Name          | ID        |
 |--------------------|-----------|
-|                    |           |
+| Alon Itzhaki       | 206014839 |
 |                    |           |
 | Michael Haim Tzahi | 208612812 |
 |                    |           |
