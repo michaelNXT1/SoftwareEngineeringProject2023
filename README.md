@@ -6,10 +6,4 @@
 |                    |           |
 | Michael Haim Tzahi | 208612812 |
 | Shani Harel Dvash  | 208231019 |
-|                    |           |
 | Shoham cohen       | 207546078 |
-|                    |           |
-|                    |           |
-
-
-This is an edit in a different branch.
