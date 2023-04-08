@@ -11,3 +11,5 @@
 [Use case document](https://docs.google.com/document/d/1UAQDgz2bkhyf0IcH88h-_cnW8x7Ipf8hd0CZFhu2GPI/edit?usp=sharing)
 
 [Class diagrams document](https://app.diagrams.net/#G1rCyzcCywpeftu5bWJQhvMHmn-BljG2qw)
+
+[Acceptance tests spreadsheet](https://docs.google.com/spreadsheets/d/1QivuhcZaOXG1rgl5f_WqCOW7OVZj7NmEyaRW_v77Jik/edit?usp=sharing)
