@@ -8,13 +8,27 @@ public class Product {
         private double rating;
         private int amount;
 
+        private  Discount discount;
+
+        private PurchaseType purchaseType;
+
     public Product(int productid, String productName, double price, String category, double rating, int amount) {
+        this.discount = new VisibleDiscount(this);
+        this.purchaseType = new BuyItNow(this);
         this.productid = productid;
         this.productName = productName;
         this.price = price;
         this.category = category;
         this.rating = rating;
         this.amount = amount;
+    }
+
+    public void setDiscount(Discount discount) {
+        this.discount = discount;
+    }
+
+    public void setPurchaseType(PurchaseType purchaseType) {
+        this.purchaseType = purchaseType;
     }
 
     public int getProductid() {

@@ -1,5 +1,9 @@
 package org.example.BusinessLayer;
 
-public class Discount {
+abstract public class Discount  {
+    protected Product product;
 
+    public Discount(Product product) {
+        this.product = product;
+    }
 }
