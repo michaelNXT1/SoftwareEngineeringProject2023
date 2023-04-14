@@ -1,6 +1,5 @@
 package org.example.BusinessLayer;
 
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -89,5 +88,5 @@ public class Member extends Guest implements Position{
     }
     /*public List<Position> getPositions() {
         return this.positions;
-    }*/
+    }*
 }
