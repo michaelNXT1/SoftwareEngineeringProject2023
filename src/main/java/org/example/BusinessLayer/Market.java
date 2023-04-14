@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
+import java.util.HashMap;
 
 public class Market {
     private Map<Integer, Store> stores;
