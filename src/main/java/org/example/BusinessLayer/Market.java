@@ -3,6 +3,7 @@ package org.example.BusinessLayer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.HashMap;
 
@@ -17,7 +18,8 @@ public class Market {
             throw new Exception("Username already exists");
         if (emailExists(email))
             throw new Exception("email already exists");
-        users.put(username, new Member(username, email, password));
+        //TODO: member constructor
+//        users.put(username, new Member(username, email, password));
     }
 
     public void login(String username, String email, String password){
@@ -27,7 +29,7 @@ public class Market {
     public List<Store> getStores(String storeSubString) {
         if (storeSubString == null || storeSubString.equals(""))
             return new ArrayList<>();
-        return stores.values().stream().filter(s -> s.getStoreName().contains(storeSubString)).toList();
+        return stores.values().stream().filter(s -> s.getStoreName().contains(storeSubString)).collect(Collectors.toList());
     }
 
     //use case 2.4 - store id
@@ -50,7 +52,7 @@ public class Market {
             return new ArrayList<>();
         List<Product> list = new ArrayList<>();
         for (Store s : stores.values()) {
-            list.addAll(s.getProducts().keySet().stream().filter(p -> p.getProductName().equals(productName)).toList());
+            list.addAll(s.getProducts().keySet().stream().filter(p -> p.getProductName().equals(productName)).collect(Collectors.toList()));
         }
         return list;
     }
@@ -61,7 +63,7 @@ public class Market {
             return new ArrayList<>();
         List<Product> list = new ArrayList<>();
         for (Store s : stores.values()) {
-            list.addAll(s.getProducts().keySet().stream().filter(p -> p.getProductCategory().equals(productCategory)).toList());
+            list.addAll(s.getProducts().keySet().stream().filter(p -> p.getCategory().equals(productCategory)).collect(Collectors.toList()));
         }
         return list;
     }
@@ -72,7 +74,7 @@ public class Market {
             return new ArrayList<>();
         List<Product> list = new ArrayList<>();
         for (Store s : stores.values()) {
-            list.addAll(s.getProducts().keySet().stream().filter(p -> p.getProductName().contains(productSubstring)).toList());
+            list.addAll(s.getProducts().keySet().stream().filter(p -> p.getProductName().contains(productSubstring)).collect(Collectors.toList()));
         }
         return list;
     }

@@ -9,7 +9,7 @@
         <module name="SoftwareEngineeringProject2023" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
+    <bytecodeTargetLevel target="15">
       <module name="SoftwareEngineeringProject2023" target="15" />
     </bytecodeTargetLevel>
   </component>

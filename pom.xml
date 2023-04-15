@@ -19,7 +19,6 @@
             <version>2.5</version>
             <scope>provided</scope>
         </dependency>
-
         <!-- https://mvnrepository.com/artifact/jakarta.platform/jakarta.jakartaee-api -->
         <dependency>
             <groupId>jakarta.platform</groupId>

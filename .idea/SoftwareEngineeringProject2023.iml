@@ -25,8 +25,8 @@
         <CLASSES />
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/Downloads/my-todo.zip!/my-todo/.mvn/wrapper" />
-          <root url="jar://$USER_HOME$/Downloads/my-todo.zip!/my-todo/src/main/java" />
+          <root url="jar://$MODULE_DIR$/../../my-todo.zip!/my-todo/.mvn/wrapper" />
+          <root url="jar://$MODULE_DIR$/../../my-todo.zip!/my-todo/src/main/java" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -35,7 +35,6 @@
     <orderEntry type="library" name="Maven: com.vaadin:vaadin-core-internal:24.0.4" level="project" />
     <orderEntry type="library" name="Maven: com.vaadin:flow-server:24.0.4" level="project" />
     <orderEntry type="library" name="Maven: com.vaadin.servletdetector:throw-if-servlet3:1.0.2" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:2.0.7" level="project" />
     <orderEntry type="library" name="Maven: com.vaadin.external.gwt:gwt-elemental:2.8.2.vaadin2" level="project" />
     <orderEntry type="library" name="Maven: com.vaadin:flow-commons-upload:24.0.4" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.11.0" level="project" />
@@ -149,5 +148,23 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: jakarta.resource:jakarta.resource-api:2.1.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: jakarta.authorization:jakarta.authorization-api:2.1.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: jakarta.batch:jakarta.batch-api:2.1.1" level="project" />
+    <orderEntry type="library" name="Maven: com.sparkjava:spark-core:2.9.4" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.25" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-server:9.4.48.v20220622" level="project" />
+    <orderEntry type="library" name="Maven: javax.servlet:javax.servlet-api:3.1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-http:9.4.48.v20220622" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-util:9.4.48.v20220622" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-io:9.4.48.v20220622" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-webapp:9.4.48.v20220622" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-xml:9.4.48.v20220622" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-servlet:9.4.48.v20220622" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-security:9.4.48.v20220622" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-util-ajax:9.4.48.v20220622" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:websocket-server:9.4.48.v20220622" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:websocket-common:9.4.48.v20220622" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:websocket-client:9.4.48.v20220622" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-client:9.4.48.v20220622" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:websocket-servlet:9.4.48.v20220622" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:websocket-api:9.4.48.v20220622" level="project" />
   </component>
 </module>

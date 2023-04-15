@@ -5,6 +5,8 @@ import java.util.List;
 
 public class Member extends Guest implements Position{
 
+    private String username;
+    private String email;
     private Member assigner;
     private List<Position> positions = new LinkedList<>(); //all the positions of this member, note that position act as a state
 
@@ -88,5 +90,13 @@ public class Member extends Guest implements Position{
     }
     /*public List<Position> getPositions() {
         return this.positions;
-    }*
+    }*/
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getEmail() {
+        return username;
+    }
 }

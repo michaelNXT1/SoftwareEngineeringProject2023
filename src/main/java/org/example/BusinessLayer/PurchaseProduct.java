@@ -8,7 +8,7 @@ public class PurchaseProduct {
 
     public PurchaseProduct(Product p, int quantity) {
         this.productName = p.getProductName();
-        this.productCategory = p.getProductCategory();
+        this.productCategory = p.getCategory();
         this.price = p.getPrice();
         this.quantity = quantity;
     }
