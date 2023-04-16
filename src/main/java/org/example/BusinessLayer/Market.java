@@ -118,7 +118,7 @@ public class Market {
 
     //use case 5.10
     public void addStoreManagerPermissions(Member m, String storeManager, int storeID, StoreManager.permissionType newPermission) throws Exception {
-        Position p = users.get(m).getStorePosition(stores.get(storeID));
+        Position p = users.get(m.getUsername()).getStorePosition(stores.get(storeID));
         if (p == null)
             throw new Exception("Member not has a position in this store");
         else {
@@ -132,7 +132,7 @@ public class Market {
 
     //use case 5.9
     public void setPositionOfMemberToStoreManager(Member m, int storeID, String MemberToBecomeManager) throws Exception {
-        Position p = users.get(m).getStorePosition(stores.get(storeID));
+        Position p = users.get(m.getUsername()).getStorePosition(stores.get(storeID));
         if (p == null)
             throw new Exception("Member not has a position in this store");
         else
