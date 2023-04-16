@@ -7,7 +7,7 @@ public class StoreManager  implements Position{
     public StoreManager(Store store) {
         this.store = store;
     }
-    enum permissionType{setPermissions, setNewPosition}
+    enum permissionType{setPermissions, setNewPosition, Inventory}
     private Store store;
     private List<permissionType> permissions;
 
@@ -58,8 +58,13 @@ public class StoreManager  implements Position{
     }
 
     @Override
-    public void removeProductFromStore(int storeID, int productID) {
-
+    public void removeProductFromStore(Store store, int productID) {
+        //TODO: Check if he has appropriate access permission
+        if (permissions.contains(permissionType.Inventory))
+            store.removeProduct(productID);
+        else {
+            //TODO: return response
+        }
     }
 
     @Override

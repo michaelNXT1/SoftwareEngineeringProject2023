@@ -32,8 +32,8 @@ public class StoreFounder implements Position{
     }
 
     @Override
-    public void removeProductFromStore(int storeID, int productID) {
-
+    public void removeProductFromStore(Store store, int productID) {
+        store.removeProduct(productID);
     }
 
     @Override
