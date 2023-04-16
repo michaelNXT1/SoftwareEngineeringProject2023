@@ -22,8 +22,8 @@ public class StoreFounder implements Position{
     }
 
     @Override
-    public void setPositionOfMemberToStoreManager(int storeID, String MemberToBecomeManager) {
-
+    public void setPositionOfMemberToStoreManager(Store store, Member member){
+        member.setToStoreManager(store);
     }
 
     @Override

@@ -4,7 +4,9 @@ import java.util.List;
 
 public class StoreManager  implements Position{
 
-    enum permissionType{setPermissions}
+    public StoreManager(Store store) {
+    }
+    enum permissionType{setPermissions, setNewStoreManager}
     private Store store;
     private List<permissionType> permissions;
 
@@ -33,11 +35,16 @@ public class StoreManager  implements Position{
         }
     }
 
-
     @Override
-    public void setPositionOfMemberToStoreManager(int storeID, String MemberToBecomeManager) {
-
+    public void setPositionOfMemberToStoreManager(Store store, Member member) {
+        //TODO: Check if he has appropriate access permission
+        if (permissions.contains(permissionType.setNewStoreManager))
+            member.setToStoreManager(store);
+        else {
+            //TODO: return response
+        }
     }
+
 
     @Override
     public void setPositionOfMemberToStoreOwner(int storeID, String MemberToBecomeOwner) {

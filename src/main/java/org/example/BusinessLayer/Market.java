@@ -130,6 +130,15 @@ public class Market {
         }
     }
 
+    //use case 5.9
+    public void setPositionOfMemberToStoreManager(Member m, int storeID, String MemberToBecomeManager) throws Exception {
+        Position p = users.get(m).getStorePosition(stores.get(storeID));
+        if (p == null)
+            throw new Exception("Member not has a position in this store");
+        else
+            p.setPositionOfMemberToStoreManager(stores.get(storeID),users.get(MemberToBecomeManager));
+    }
+
 
         //use case 6.1
     public void closeStore(Member m, int storeId) {

@@ -8,9 +8,9 @@ public interface Position {
 
     Store getStore();
 
-    public void addStoreManagerPermissions(Position storeManagerPosition, StoreManager.permissionType newPermission);
-    public void removeStoreManagerPermissions(Position storeManagerPosition, StoreManager.permissionType Permission);
-    void setPositionOfMemberToStoreManager(int storeID, String MemberToBecomeManager);
+    public void addStoreManagerPermissions(Position storeManagerPosition, StoreManager.permissionType newPermission);   //5.10
+    public void removeStoreManagerPermissions(Position storeManagerPosition, StoreManager.permissionType Permission);   //5.10
+    void setPositionOfMemberToStoreManager(Store store, Member member); //5.9
     void setPositionOfMemberToStoreOwner(int storeID, String MemberToBecomeOwner);
     void removeProductFromStore(int storeID, int productID);
     void editProductName(int storeID, int productID, String newName);
@@ -26,4 +26,5 @@ public interface Position {
     default void addPermission(StoreManager.permissionType newPermission){}
 
     default void removePermission(StoreManager.permissionType permission){}
+
 }
