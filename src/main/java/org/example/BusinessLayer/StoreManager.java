@@ -13,9 +13,15 @@ public class StoreManager  implements Position{
     }
 
     @Override
-    public void changeStoreManagerPermissions(String storeManager, int storeID, permissionType newPermission) {
+    public void addStoreManagerPermissions(String storeManager, int storeID, permissionType newPermission) {
 
     }
+
+    @Override
+    public void removeStoreManagerPermissions(String storeManager, int storeID, permissionType newPermission) {
+
+    }
+
 
     @Override
     public void setPositionOfMemberToStoreManager(int storeID, String MemberToBecomeManager) {

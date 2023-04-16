@@ -30,7 +30,11 @@ public class Member extends Guest implements Position{
     }
 
     @Override
-    public void changeStoreManagerPermissions(String storeManager, int storeID, StoreManager.permissionType newPermission) {
+    public void addStoreManagerPermissions(String storeManager, int storeID, StoreManager.permissionType newPermission) {
+
+    }
+    @Override
+    public void removeStoreManagerPermissions(String storeManager, int storeID, StoreManager.permissionType newPermission) {
 
     }
 

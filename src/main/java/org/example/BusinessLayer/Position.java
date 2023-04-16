@@ -8,7 +8,10 @@ public interface Position {
 
     Store getStore();
 
-    void changeStoreManagerPermissions(String storeManager, int storeID, StoreManager.permissionType newPermission);
+    void addStoreManagerPermissions(String storeManager, int storeID, StoreManager.permissionType newPermission);
+
+    void removeStoreManagerPermissions(String storeManager, int storeID, StoreManager.permissionType newPermission);
+
     void setPositionOfMemberToStoreManager(int storeID, String MemberToBecomeManager);
     void setPositionOfMemberToStoreOwner(int storeID, String MemberToBecomeOwner);
     void removeProductFromStore(int storeID, int productID);
