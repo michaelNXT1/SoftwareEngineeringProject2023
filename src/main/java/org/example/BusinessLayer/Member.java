@@ -7,8 +7,15 @@ public class Member extends Guest implements Position{
 
     private String username;
     private String email;
+    private String hashedPassword;
     private Member assigner;
     private List<Position> positions = new LinkedList<>(); //all the positions of this member, note that position act as a state
+
+    public Member(String username, String email, String hashedPassword) {
+        this.username = username;
+        this.email = email;
+        this.hashedPassword = hashedPassword;
+    }
 
     // getter, setter
     public void setPosition(Member newPosition) {
@@ -22,6 +29,9 @@ public class Member extends Guest implements Position{
         if (!found){
             positions.add(newPosition);
         }
+    }
+    public String getPassword() {
+        return hashedPassword;
     }
 
     @Override
@@ -99,4 +109,6 @@ public class Member extends Guest implements Position{
     public String getEmail() {
         return username;
     }
+
+
 }
