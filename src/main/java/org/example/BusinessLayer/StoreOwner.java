@@ -6,6 +6,10 @@ public class StoreOwner  implements Position {
 
     private Store store;
 
+    public StoreOwner(Store store) {
+        this.store = store;
+    }
+
     @Override
     public Store getStore() {
         return store;
@@ -29,8 +33,8 @@ public class StoreOwner  implements Position {
 
 
     @Override
-    public void setPositionOfMemberToStoreOwner(int storeID, String MemberToBecomeOwner) {
-
+    public void setPositionOfMemberToStoreOwner(Store store, Member member) {
+        member.setToStoreOwner(store);
     }
 
     @Override

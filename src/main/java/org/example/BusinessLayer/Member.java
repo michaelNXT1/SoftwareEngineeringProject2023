@@ -78,7 +78,14 @@ public class Member extends Guest {
         else{
             positions.add(new StoreManager(store));
         }
-
     }
 
+    public void setToStoreOwner(Store store) {
+        if (getStorePosition(store) != null) {
+            //TODO send response the member is already have a different position in this store
+        }
+        else{
+            positions.add(new StoreOwner(store));
+        }
+    }
 }
