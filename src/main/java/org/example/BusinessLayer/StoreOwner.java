@@ -12,15 +12,15 @@ public class StoreOwner  implements Position {
     }
 
     @Override
-    public void addStoreManagerPermissions(String storeManager, int storeID, StoreManager.permissionType newPermission) {
-
+    public void addStoreManagerPermissions(Position storeManagerPosition, StoreManager.permissionType newPermission) {
+        storeManagerPosition.addPermission(newPermission);
     }
 
     @Override
-    public void removeStoreManagerPermissions(String storeManager, int storeID, StoreManager.permissionType newPermission) {
+    public void removeStoreManagerPermissions(Position storeManagerPosition, StoreManager.permissionType permission) {
+        storeManagerPosition.removePermission(permission);
 
     }
-
 
     @Override
     public void setPositionOfMemberToStoreManager(int storeID, String MemberToBecomeManager) {
@@ -76,4 +76,5 @@ public class StoreOwner  implements Position {
     public void logout() {
 
     }
+
 }

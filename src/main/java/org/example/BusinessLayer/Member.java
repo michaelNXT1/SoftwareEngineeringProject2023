@@ -1,9 +1,10 @@
 package org.example.BusinessLayer;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Member extends Guest implements Position{
+public class Member extends Guest {
 
     private String username;
     private String email;
@@ -18,7 +19,7 @@ public class Member extends Guest implements Position{
     }
 
     // getter, setter
-    public void setPosition(Member newPosition) {
+    public void setPosition(Position newPosition) {
         boolean found = false;
         for (int i = 0; i < positions.size() && !found; i++) {
             if (positions.get(i).getStore().equals(newPosition.getStore())) {
@@ -34,74 +35,6 @@ public class Member extends Guest implements Position{
         return hashedPassword;
     }
 
-    @Override
-    public Store getStore() {
-        return store;
-    }
-
-    @Override
-    public void addStoreManagerPermissions(String storeManager, int storeID, StoreManager.permissionType newPermission) {
-
-    }
-    @Override
-    public void removeStoreManagerPermissions(String storeManager, int storeID, StoreManager.permissionType newPermission) {
-
-    }
-
-    @Override
-    public void setPositionOfMemberToStoreManager(int storeID, String MemberToBecomeManager) {
-
-    }
-
-    @Override
-    public void setPositionOfMemberToStoreOwner(int storeID, String MemberToBecomeOwner) {
-
-    }
-
-    @Override
-    public void removeProductFromStore(int storeID, int productID) {
-
-    }
-
-    @Override
-    public void editProductName(int storeID, int productID, String newName) {
-
-    }
-
-    @Override
-    public void editProductPrice(int storeID, int productID, int newPrice) {
-
-    }
-
-    @Override
-    public void editProductCategory(int storeID, int productID, String newCategory) {
-
-    }
-
-    @Override
-    public void editProductDescription(int storeID, int productID, String newDescription) {
-
-    }
-
-    @Override
-    public void addProduct(int storeID, int productID, String productName, int itemsAmount, int price) {
-
-    }
-
-    @Override
-    public List<Purchase> getPurchaseHistory(int storeID) {
-        return null;
-    }
-
-    @Override
-    public int openStore(String name) {
-        return 0;
-    }
-
-    @Override
-    public void logout() {
-
-    }
     /*public List<Position> getPositions() {
         return this.positions;
     }*/
@@ -113,6 +46,30 @@ public class Member extends Guest implements Position{
     public String getEmail() {
         return username;
     }
+
+    public List<StoreFounder> getStoreFounderPositions() {
+        List<StoreFounder> positions = new ArrayList<>();
+        synchronized(this.positions) {
+            for(Position p : this.positions) {
+                if(p instanceof StoreFounder) {
+                    positions.add((StoreFounder)p);
+                }
+            }
+        }
+        return positions;
+    }
+    
+    public Position getStorePosition(Store store) {
+        synchronized (positions) {
+            for (Position position : positions) {
+                if (position.getStore().equals(store)) {
+                    return position;
+                }
+            }
+            return null;
+        }
+    }
+
 
 
 }

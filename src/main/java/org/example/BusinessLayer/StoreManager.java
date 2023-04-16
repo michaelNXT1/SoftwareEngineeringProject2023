@@ -4,8 +4,9 @@ import java.util.List;
 
 public class StoreManager  implements Position{
 
-    enum permissionType{}
+    enum permissionType{setPermissions}
     private Store store;
+    private List<permissionType> permissions;
 
     @Override
     public Store getStore() {
@@ -13,13 +14,23 @@ public class StoreManager  implements Position{
     }
 
     @Override
-    public void addStoreManagerPermissions(String storeManager, int storeID, permissionType newPermission) {
-
+    public void addStoreManagerPermissions(Position storeManagerPosition, permissionType newPermission) {
+        //TODO: Check if he has appropriate access permission
+        if (permissions.contains(permissionType.setPermissions))
+            storeManagerPosition.addPermission(newPermission);
+        else {
+            //TODO: return response
+        }
     }
 
     @Override
-    public void removeStoreManagerPermissions(String storeManager, int storeID, permissionType newPermission) {
-
+    public void removeStoreManagerPermissions(Position storeManagerPosition, StoreManager.permissionType Permission) {
+        //TODO: Check if he has appropriate access permission
+        if (permissions.contains(permissionType.setPermissions))
+            storeManagerPosition.removePermission(Permission);
+        else {
+            //TODO: return response
+        }
     }
 
 
@@ -76,5 +87,14 @@ public class StoreManager  implements Position{
     @Override
     public void logout() {
 
+    }
+
+    public void addPermission(StoreManager.permissionType newPermission) { //permission for store manager only
+        permissions.add(newPermission);
+    }
+
+    @Override
+    public void removePermission(permissionType permission) {
+        permissions.remove(permission);
     }
 }

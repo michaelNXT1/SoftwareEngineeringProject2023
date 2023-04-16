@@ -116,7 +116,22 @@ public class Market {
         //TODO: release stores variable
     }
 
-    //use case 6.1
+    //use case 5.10
+    public void addStoreManagerPermissions(Member m, String storeManager, int storeID, StoreManager.permissionType newPermission) throws Exception {
+        Position p = users.get(m).getStorePosition(stores.get(storeID));
+        if (p == null)
+            throw new Exception("Member not has a position in this store");
+        else {
+            Position storeManagerPosition = users.get(storeManager).getStorePosition(stores.get(storeID));
+            if (storeManagerPosition == null)
+                throw new Exception("the name of the store manager has not have that position in this store");
+            else
+                p.addStoreManagerPermissions(storeManagerPosition, newPermission);
+        }
+    }
+
+
+        //use case 6.1
     public void closeStore(Member m, int storeId) {
         //TODO: check permissions
         stores.get(storeId).setOpen(false);
@@ -130,6 +145,8 @@ public class Market {
     private boolean emailExists(String email) {
         return users.values().stream().anyMatch(m -> m.getEmail().equals(email));
     }
+
+
 
 
 }
