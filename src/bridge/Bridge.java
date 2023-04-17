@@ -1,2 +1,4 @@
-package bridge;public interface Bridge {
+package bridge;
+
+public interface Bridge {
 }
