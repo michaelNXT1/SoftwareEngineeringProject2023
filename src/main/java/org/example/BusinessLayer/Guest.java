@@ -14,8 +14,10 @@ public class Guest {
     public void changeProductAmount(int productID, int productAmount){
 
     }
-    public void removeProductFromShoppingCart(int productID){}
-    public void emptyShoppingCart(){}
+    public void removeProductFromShoppingCart(Product p, Store s){  //2.13
+        shoppingCart.removeProduct(p, s);
+    }
+    public void emptyShoppingCart(){}   //2.14
 
 
 }
