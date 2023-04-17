@@ -1,6 +1,4 @@
-package bridge;
-
-import main.java.org.example.Real;
+package AccaptanceTests.bridge;
 
 public abstract class Driver {
     public static Bridge getBridge() {
