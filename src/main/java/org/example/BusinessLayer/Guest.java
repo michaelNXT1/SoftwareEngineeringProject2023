@@ -15,7 +15,8 @@ public class Guest {
 
     }
     public void removeProductFromShoppingCart(int productID){}
-    public void emptyShoppingCart(){}
-
+    public void emptyShoppingCart() {
+        shoppingCart = new ShoppingCart();
+    }
 
 }
