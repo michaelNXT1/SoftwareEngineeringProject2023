@@ -37,23 +37,23 @@ public class StoreFounder implements Position{
     }
 
     @Override
-    public void editProductName(int storeID, int productID, String newName) {
-
+    public void editProductName(Store store, int productID, String newName) {
+        store.editProductName(productID, newName);
     }
 
     @Override
-    public void editProductPrice(int storeID, int productID, int newPrice) {
-
+    public void editProductPrice(Store store, int productID, int newPrice) {
+        store.editProductPrice(productID, newPrice);
     }
 
     @Override
-    public void editProductCategory(int storeID, int productID, String newCategory) {
-
+    public void editProductCategory(Store store, int productID, String newCategory) {
+        store.editProductCategory(productID, newCategory);
     }
 
     @Override
-    public void editProductDescription(int storeID, int productID, String newDescription) {
-
+    public void editProductDescription(Store store, int productID, String newDescription) {
+        store.editProductDescription(productID, newDescription);
     }
 
     @Override

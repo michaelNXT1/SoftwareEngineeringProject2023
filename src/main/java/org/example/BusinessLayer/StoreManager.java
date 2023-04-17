@@ -68,23 +68,43 @@ public class StoreManager  implements Position{
     }
 
     @Override
-    public void editProductName(int storeID, int productID, String newName) {
-
+    public void editProductName(Store store, int productID, String newName) {
+        //TODO: Check if he has appropriate access permission
+        if (permissions.contains(permissionType.Inventory))
+            store.editProductName(productID, newName);
+        else {
+            //TODO: return response
+        }
     }
 
     @Override
-    public void editProductPrice(int storeID, int productID, int newPrice) {
-
+    public void editProductPrice(Store store, int productID, int newPrice) {
+        //TODO: Check if he has appropriate access permission
+        if (permissions.contains(permissionType.Inventory))
+            store.editProductPrice(productID, newPrice);
+        else {
+            //TODO: return response
+        }
     }
 
     @Override
-    public void editProductCategory(int storeID, int productID, String newCategory) {
-
+    public void editProductCategory(Store store, int productID, String newCategory) {
+        //TODO: Check if he has appropriate access permission
+        if (permissions.contains(permissionType.Inventory))
+            store.editProductCategory(productID, newCategory);
+        else {
+            //TODO: return response
+        }
     }
 
     @Override
-    public void editProductDescription(int storeID, int productID, String newDescription) {
-
+    public void editProductDescription(Store store, int productID, String newDescription) {
+        //TODO: Check if he has appropriate access permission
+        if (permissions.contains(permissionType.Inventory))
+            store.editProductDescription(productID, newDescription);
+        else {
+            //TODO: return response
+        }
     }
 
     @Override
