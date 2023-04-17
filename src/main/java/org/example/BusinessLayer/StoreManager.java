@@ -46,7 +46,6 @@ public class StoreManager  implements Position{
         }
     }
 
-
     @Override
     public void setPositionOfMemberToStoreOwner(Store store, Member member) throws IllegalAccessException {
         //TODO: Check if he has appropriate access permission
@@ -119,11 +118,6 @@ public class StoreManager  implements Position{
         if (permissions.contains(permissionType.Purchases))
             return store.getPurchseList();
         throw new IllegalAccessException("This member hasn't permission to get the purchase's History");
-    }
-
-    @Override
-    public int openStore(String name) {
-        return 0;
     }
 
     @Override

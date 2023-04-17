@@ -17,9 +17,8 @@ public interface Position {
     void editProductPrice(Store store, int productID, int newPrice) throws IllegalAccessException;    //5.2
     void editProductCategory(Store store, int productID, String newCategory) throws IllegalAccessException;    //5.2
     void editProductDescription(Store store, int productID, String newDescription) throws IllegalAccessException;    //5.2
-    void addProduct(Store store, int productID, int itemsAmount) throws IllegalAccessException;
-    List<Purchase> getPurchaseHistory(Store store) throws IllegalAccessException;
-    int openStore(String name);
+    void addProduct(Store store, int productID, int itemsAmount) throws IllegalAccessException; //5.1
+    List<Purchase> getPurchaseHistory(Store store) throws IllegalAccessException;   //4.1
     void logout();
 
 

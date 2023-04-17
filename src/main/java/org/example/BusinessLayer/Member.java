@@ -88,4 +88,18 @@ public class Member extends Guest {
             positions.add(new StoreOwner(store));
         }
     }
+    public Store openStore(String name, int storeID) {
+        Store newStore = new Store(storeID, name, this);
+        StoreFounder newStoreFounder = new StoreFounder(newStore);
+
+        try {
+            positions.add(newStoreFounder);
+        } catch (Exception e) {
+            // Rollback if either operation fails
+            positions.remove(newStoreFounder);
+            throw e;
+        }
+        return newStore;
+    }
+
 }

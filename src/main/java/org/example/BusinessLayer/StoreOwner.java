@@ -72,11 +72,6 @@ public class StoreOwner  implements Position {
     }
 
     @Override
-    public int openStore(String name) {
-        return 0;
-    }
-
-    @Override
     public void logout() {
 
     }

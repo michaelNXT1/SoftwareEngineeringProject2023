@@ -6,6 +6,10 @@ public class StoreFounder implements Position{
 
     private Store store;
 
+    public StoreFounder(Store store) {
+        this.store = store;
+    }
+
     @Override
     public Store getStore() {
         return store;
@@ -64,10 +68,6 @@ public class StoreFounder implements Position{
     @Override
     public List<Purchase> getPurchaseHistory(Store store) {
         return store.getPurchseList();
-    }
-    @Override
-    public int openStore(String name) {
-        return 0;
     }
 
     @Override
