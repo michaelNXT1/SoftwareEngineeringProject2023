@@ -71,9 +71,4 @@ public class StoreOwner  implements Position {
         return store.getPurchseList();
     }
 
-    @Override
-    public void logout() {
-
-    }
-
 }

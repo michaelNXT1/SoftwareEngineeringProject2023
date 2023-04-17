@@ -120,11 +120,6 @@ public class StoreManager  implements Position{
         throw new IllegalAccessException("This member hasn't permission to get the purchase's History");
     }
 
-    @Override
-    public void logout() {
-
-    }
-
     public void addPermission(StoreManager.permissionType newPermission) { //permission for store manager only
         permissions.add(newPermission);
     }

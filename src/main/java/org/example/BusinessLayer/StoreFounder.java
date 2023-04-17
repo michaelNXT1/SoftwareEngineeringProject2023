@@ -70,9 +70,4 @@ public class StoreFounder implements Position{
         return store.getPurchseList();
     }
 
-    @Override
-    public void logout() {
-
-    }
-
 }

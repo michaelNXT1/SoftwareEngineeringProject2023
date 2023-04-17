@@ -1,5 +1,7 @@
 package org.example.BusinessLayer;
 
+import org.example.Security.SecurityUtils;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -45,6 +47,10 @@ public class Member extends Guest {
 
     public String getEmail() {
         return username;
+    }
+
+    public void logout() {
+        SecurityUtils.logout();
     }
 
     public List<StoreFounder> getStoreFounderPositions() {
