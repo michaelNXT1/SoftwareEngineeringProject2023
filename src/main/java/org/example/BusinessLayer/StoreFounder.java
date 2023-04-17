@@ -62,10 +62,9 @@ public class StoreFounder implements Position{
     }
 
     @Override
-    public List<Purchase> getPurchaseHistory(int storeID) {
-        return null;
+    public List<Purchase> getPurchaseHistory(Store store) {
+        return store.getPurchseList();
     }
-
     @Override
     public int openStore(String name) {
         return 0;

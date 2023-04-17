@@ -67,8 +67,8 @@ public class StoreOwner  implements Position {
     }
 
     @Override
-    public List<Purchase> getPurchaseHistory(int storeID) {
-        return null;
+    public List<Purchase> getPurchaseHistory(Store store) {
+        return store.getPurchseList();
     }
 
     @Override
