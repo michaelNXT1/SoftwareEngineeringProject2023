@@ -62,9 +62,8 @@ public class StoreOwner  implements Position {
         store.editProductDescription(productID, newDescription);
     }
 
-    @Override
-    public void addProduct(int storeID, int productID, String productName, int itemsAmount, int price) {
-
+    public void addProduct(Store store, int productID, int itemsAmount) {
+        store.addProduct(productID, itemsAmount);
     }
 
     @Override

@@ -107,11 +107,14 @@ public class StoreManager  implements Position{
         }
     }
 
-    @Override
-    public void addProduct(int storeID, int productID, String productName, int itemsAmount, int price) {
-
+    public void addProduct(Store store, int productID, int itemsAmount) {
+        //TODO: Check if he has appropriate access permission
+        if (permissions.contains(permissionType.Inventory))
+            store.addProduct(productID, itemsAmount);
+        else {
+            //TODO: return response
+        }
     }
-
     @Override
     public List<Purchase> getPurchaseHistory(int storeID) {
         return null;

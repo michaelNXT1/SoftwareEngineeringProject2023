@@ -17,7 +17,7 @@ public interface Position {
     void editProductPrice(Store store, int productID, int newPrice);    //5.2
     void editProductCategory(Store store, int productID, String newCategory);    //5.2
     void editProductDescription(Store store, int productID, String newDescription);    //5.2
-    void addProduct(int storeID, int productID, String productName, int itemsAmount, int price);
+    void addProduct(Store store, int productID, int itemsAmount);
     List<Purchase> getPurchaseHistory(int storeID);
     int openStore(String name);
     void logout();
