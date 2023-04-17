@@ -60,4 +60,6 @@ public interface Bridge {
     boolean removeManager(int sessionId, int storeId, int userId);
 
     boolean removeStore(int sessionId, int storeId);
+
+    void clearDatabase();
 }

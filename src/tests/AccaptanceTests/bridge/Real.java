@@ -145,4 +145,9 @@ public class Real implements Bridge {
     public boolean removeStore(int sessionId, int storeId){
         return manager.removeStore(storeId).getError_occurred();
     }
+
+
+    public void clearDatabase() {
+
+    }
 }
