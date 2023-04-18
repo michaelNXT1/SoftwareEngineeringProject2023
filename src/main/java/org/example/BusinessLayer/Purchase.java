@@ -5,6 +5,7 @@ import java.util.Map;
 
 public class Purchase {
     private List<PurchaseProduct> productList;
+    private PaymentDetails paymentDetails;
 
     public Purchase(List<PurchaseProduct> productList) {
         this.productList = productList;
