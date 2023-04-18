@@ -8,13 +8,9 @@ public class Guest {
     void addProductToShoppingCart(int storeID, int productID, int itemsAmount){
 
     }
-    public List<Product> getShoppingCart() {
-        return null;
+    public void changeProductQuantity(Product p, int newQuantity, Store s) {
+        shoppingCart.changeProductQuantity(p, newQuantity, s);
     }
-    public void changeProductAmount(int productID, int productAmount){
-
-    }
-    public void removeProductFromShoppingCart(int productID){}
     public void emptyShoppingCart() {   //2.14
         shoppingCart = new ShoppingCart();
     }
