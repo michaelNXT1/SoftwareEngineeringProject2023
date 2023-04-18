@@ -6,19 +6,22 @@ public class Guest {
 
     private ShoppingCart shoppingCart;
     private List<Product> searchResults;
-    void addProductToShoppingCart(Store s, Product p, int itemsAmount){
+    void addProductToShoppingCart(Store s, Product p, int itemsAmount){ //2.10
         shoppingCart.setProductQuantity(s, p, itemsAmount);
     }
-    public ShoppingCart getShoppingCart() {
-        return null;
+    public ShoppingCart DisplayShoppingCart(){  //2.11
+        return shoppingCart;
     }
-    public void changeProductAmount(int productID, int productAmount){
+    public void changeProductQuantity(Product p, int newQuantity, Store s) {    //2.12
+        shoppingCart.changeProductQuantity(p, newQuantity, s);
+    }
 
+    public Purchase purchaseShoppingCart() {    //2.14
+        return shoppingCart.purchaseShoppingCart();
     }
     public void removeProductFromShoppingCart(Store s, Product p){
         shoppingCart.removeProduct(s, p);
     }
-    public void emptyShoppingCart(){}
 
     public List<Product> getSearchResults() {
         return searchResults;
@@ -26,8 +29,5 @@ public class Guest {
 
     public void setSearchResults(List<Product> searchResults) {
         this.searchResults = searchResults;
-    }
-
-    public void purchaseShoppingCart() {
     }
 }

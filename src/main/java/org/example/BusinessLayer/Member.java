@@ -1,10 +1,13 @@
 package org.example.BusinessLayer;
 
+import org.example.Security.SecurityUtils;
+
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Member extends Guest {
+public class Member extends Guest  {
 
     private String username;
     private String email;
@@ -39,12 +42,17 @@ public class Member extends Guest {
         return this.positions;
     }*/
 
+
     public String getUsername() {
         return username;
     }
 
     public String getEmail() {
         return username;
+    }
+
+    public void logout() {
+        SecurityUtils.logout();
     }
 
     public List<StoreFounder> getStoreFounderPositions() {
@@ -88,4 +96,18 @@ public class Member extends Guest {
             positions.add(new StoreOwner(store));
         }
     }
+    public Store openStore(String name, int storeID) {
+        Store newStore = new Store(storeID, name, this);
+        StoreFounder newStoreFounder = new StoreFounder(newStore);
+
+        try {
+            positions.add(newStoreFounder);
+        } catch (Exception e) {
+            // Rollback if either operation fails
+            positions.remove(newStoreFounder);
+            throw e;
+        }
+        return newStore;
+    }
+
 }

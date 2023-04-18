@@ -43,43 +43,32 @@ public class StoreOwner  implements Position {
     }
 
     @Override
-    public void editProductName(int storeID, int productID, String newName) {
-
+    public void editProductName(Store store, int productID, String newName) {
+        store.editProductName(productID, newName);
     }
 
     @Override
-    public void editProductPrice(int storeID, int productID, int newPrice) {
-
+    public void editProductPrice(Store store, int productID, int newPrice) {
+        store.editProductPrice(productID, newPrice);
     }
 
     @Override
-    public void editProductCategory(int storeID, int productID, String newCategory) {
-
+    public void editProductCategory(Store store, int productID, String newCategory) {
+        store.editProductCategory(productID, newCategory);
     }
 
     @Override
-    public void editProductDescription(int storeID, int productID, String newDescription) {
+    public void editProductDescription(Store store, int productID, String newDescription) {
+        store.editProductDescription(productID, newDescription);
+    }
 
+    public void addProduct(Store store, int productID, int itemsAmount) {
+        store.addProduct(productID, itemsAmount);
     }
 
     @Override
-    public void addProduct(int storeID, int productID, String productName, int itemsAmount, int price) {
-
-    }
-
-    @Override
-    public List<Purchase> getPurchaseHistory(int storeID) {
-        return null;
-    }
-
-    @Override
-    public int openStore(String name) {
-        return 0;
-    }
-
-    @Override
-    public void logout() {
-
+    public List<Purchase> getPurchaseHistory(Store store) {
+        return store.getPurchseList();
     }
 
 }

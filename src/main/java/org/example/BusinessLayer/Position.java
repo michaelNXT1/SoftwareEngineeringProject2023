@@ -8,19 +8,17 @@ public interface Position {
 
     Store getStore();
 
-    public void addStoreManagerPermissions(Position storeManagerPosition, StoreManager.permissionType newPermission);   //5.10
-    public void removeStoreManagerPermissions(Position storeManagerPosition, StoreManager.permissionType Permission);   //5.10
-    void setPositionOfMemberToStoreManager(Store store, Member member); //5.9
-    void setPositionOfMemberToStoreOwner(Store store, Member member);   //5.8
-    void removeProductFromStore(Store store, int productID);    //5.3
-    void editProductName(int storeID, int productID, String newName);
-    void editProductPrice(int storeID, int productID, int newPrice);
-    void editProductCategory(int storeID, int productID, String newCategory);
-    void editProductDescription(int storeID, int productID, String newDescription);
-    void addProduct(int storeID, int productID, String productName, int itemsAmount, int price);
-    List<Purchase> getPurchaseHistory(int storeID);
-    int openStore(String name);
-    void logout();
+    public void addStoreManagerPermissions(Position storeManagerPosition, StoreManager.permissionType newPermission) throws IllegalAccessException;   //5.10
+    public void removeStoreManagerPermissions(Position storeManagerPosition, StoreManager.permissionType Permission) throws IllegalAccessException;   //5.10
+    void setPositionOfMemberToStoreManager(Store store, Member member) throws IllegalAccessException; //5.9
+    void setPositionOfMemberToStoreOwner(Store store, Member member) throws IllegalAccessException;   //5.8
+    void removeProductFromStore(Store store, int productID) throws IllegalAccessException;    //5.3
+    void editProductName(Store store, int productID, String newName) throws IllegalAccessException;   //5.2
+    void editProductPrice(Store store, int productID, int newPrice) throws IllegalAccessException;    //5.2
+    void editProductCategory(Store store, int productID, String newCategory) throws IllegalAccessException;    //5.2
+    void editProductDescription(Store store, int productID, String newDescription) throws IllegalAccessException;    //5.2
+    void addProduct(Store store, int productID, int itemsAmount) throws IllegalAccessException; //5.1
+    List<Purchase> getPurchaseHistory(Store store) throws IllegalAccessException;   //4.1
 
 
     default void addPermission(StoreManager.permissionType newPermission){}
