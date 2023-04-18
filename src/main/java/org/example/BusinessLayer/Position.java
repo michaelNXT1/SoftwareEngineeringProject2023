@@ -14,15 +14,15 @@ public interface Position {
 
     void setPositionOfMemberToStoreOwner(Store store, Member member) throws Exception;   //5.8
 
-    void removeProductFromStore(Store store, int productID) throws IllegalAccessException;    //5.3
+    void removeProductFromStore(int productID) throws IllegalAccessException;    //5.3
 
-    void editProductName(Product p, String newName) throws IllegalAccessException;   //5.2
+    void editProductName(int productId, String newName) throws Exception;   //5.2
 
-    void editProductPrice(Product p, int newPrice) throws IllegalAccessException;    //5.2
+    void editProductPrice(int productId, int newPrice) throws Exception;    //5.2
 
-    void editProductCategory(Product p, String newCategory) throws IllegalAccessException;    //5.2
+    void editProductCategory(int productId, String newCategory) throws Exception;    //5.2
 
-    void editProductDescription(Product p, String newDescription) throws IllegalAccessException;    //5.2
+    void editProductDescription(int productId, String newDescription) throws Exception;    //5.2
 
     Product addProduct(Store store, String productName, double price, String category, double rating, int quantity) throws Exception; //5.1
 
@@ -36,4 +36,6 @@ public interface Position {
     }
 
     public void closeStore() throws IllegalAccessException;
+
+    public List<Member> getStoreEmployees() throws IllegalAccessException;
 }
