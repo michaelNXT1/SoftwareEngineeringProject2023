@@ -296,4 +296,14 @@ public class ProxyBridge implements Bridge{
         }
     }
 
+
+    public void clearDatabase() {
+        if(real != null){
+            real.clearDatabase();
+        }
+        else{
+
+        }
+    }
+
 }
