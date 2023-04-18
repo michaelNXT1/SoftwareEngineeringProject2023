@@ -8,8 +8,8 @@ public class Guest {
     void addProductToShoppingCart(int storeID, int productID, int itemsAmount){
 
     }
-    public void changeProductAmount(int productID, int productAmount){
-
+    public void changeProductQuantity(Product p, int newQuantity, Store s) {    //2.12
+        shoppingCart.changeProductQuantity(p, newQuantity, s);
     }
 
     public Purchase purchaseShoppingCart() {    //2.14
