@@ -46,8 +46,12 @@ public abstract class ServiceTests extends TestCase {
         return this.bridge.searchProductsBySubString(productSubString);
     }
 
-    public String filter(String filterParams){
-        return this.bridge.filter(filterParams);
+    public String filterSearchResultsByCategory(String category){
+        return this.bridge.filterSearchResultsByCategory(category);
+    }
+
+    public String filterSearchResultsByPrice(double minPrice, double maxPrice){
+        return this.bridge.filterSearchResultsByPrice(minPrice, maxPrice);
     }
 
     public void clearDB(){
@@ -84,32 +88,31 @@ public abstract class ServiceTests extends TestCase {
         return bridge.buyCart(sessionId, cardNumber, cardMonth, cardYear, cardHolder, cardCcv, cardId, buyerName, address, city, country, zip);
     }
 
-    public boolean logout(int sessionId){ return bridge.logout(sessionId); }
+    public boolean logout(int sessionId){ return bridge.logout(); }
 
-    public boolean openStore(Member m, String storeName){ return bridge.openStore(m, storeName); }
+    public boolean openStore(String storeName){ return bridge.openStore(storeName); }
 
     public boolean addProductToStore(int sessionId, int productId, int storeId, int amount) { return bridge.addProductToStore(sessionId, productId, storeId, amount); }
 
-    public boolean editProduct(int sessionId, int storeId, int productId, String productInfo) { return bridge.editProduct(sessionId, storeId, productId, productInfo); }
 
     public boolean deleteProduct(int sessionId, int storeId, int productId) { return bridge.deleteProduct(sessionId, storeId, productId); }
 
-    public boolean appointManager(int sessionId, int storeId, int userId) { return bridge.appointManager(sessionId, storeId, userId); }
+    public boolean appointManager(int sessionId, int storeId, String userName) { return bridge.appointManager(sessionId, storeId, userName); }
 
-    public boolean appointOwner(int sessionId, int storeId, int userId) { return bridge.appointOwner(sessionId, storeId, userId); }
+//    public boolean appointOwner(int sessionId, int storeId, String userName) { return bridge.appointOwner(sessionId, storeId, userName); }
 
     public boolean removeManager(int sessionId, int storeId, int userId) { return bridge.removeManager(sessionId, storeId, userId); }
 
 //    public boolean removeOwner(int sessionId, int storeId, int userId) { return bridge.removeOwner(sessionId, storeId, userId); }
 
-    public boolean editManagerOptions(int sessionId, int storeId, int userId, String option){ return bridge.editManagerOptions(sessionId, storeId, userId, option); }
+    public boolean editManagerOptions(int sessionId, int storeId, String userName, int option){ return bridge.editManagerOptions(sessionId, userName, storeId, option); }
 
 //    public String searchProducts(int sessionId, String productName, String category, String[] keywords, int productRating, int storeRating, int priceFrom, int priceTo){
 //        return this.bridge.searchProducts(sessionId, productName, category, keywords, productRating, storeRating, priceFrom, priceTo); }
 
 
-    public String viewCart(int sessionId){
-        return this.bridge.showCart(sessionId);
+    public String viewCart(){
+        return this.bridge.showCart();
     }
 
     public String getAllInfo(String storeSub){
@@ -117,7 +120,7 @@ public abstract class ServiceTests extends TestCase {
     }
 
     public String viewPurchaseHistory(int sessionId, int storeID){
-        return bridge.viewPurchaseHistory(sessionId, storeID);
+        return bridge.viewPurchaseHistory(storeID);
     }
 
 //    public String searchUserHistory(int sessionId, int userId) { return this.bridge.searchUserHistory(sessionId, userId);}

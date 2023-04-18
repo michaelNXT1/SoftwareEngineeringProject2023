@@ -5,7 +5,7 @@ import org.example.BusinessLayer.Member;
 import org.example.ServiceLayer.MarketManager;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.testng.annotations.Test;
+
 import org.junit.jupiter.api.Assertions;
 
 public class Real implements Bridge {
@@ -40,8 +40,13 @@ public class Real implements Bridge {
     }
 
 
-    public String filter(String filterParams){
-        return manager.filter(filterParams).toString();
+    public String filterSearchResultsByCategory(String filterParams){
+        return manager.filterSearchResultsByCategory(filterParams).value.toString();
+    }
+
+    @Override
+    public String filterSearchResultsByPrice(double minPrice, double maxPrice) {
+        return manager.filterSearchResultsByPrice(minPrice, maxPrice).value.toString();
     }
 
 
@@ -50,17 +55,17 @@ public class Real implements Bridge {
     }
 
 
-    public String showCart(int sessionID){
-        return manager.showCart(sessionID).value.toString();
+    public String showCart(){
+        return manager.getShoppingCart().value.toString();
     }
 
 
     public boolean updateAmount(int storeId,int productId, int amount) {
-        return manager.editProductInCart(storeId, productId, amount).getError_occurred();
+        return manager.changeProductQuantity(storeId, productId, amount).getError_occurred();
     }
 
     public boolean deleteItemInCart(int storeId, int productId) {
-        return manager.removeProductInCart(storeId, productId).getError_occurred();
+        return manager.removeProductFromCart(storeId, productId).getError_occurred();
     }
 
     public boolean clearCart(int sessionId) {
@@ -69,69 +74,85 @@ public class Real implements Bridge {
 
     public boolean buyCart(int sessionId, String cardNumber, String cardMonth, String cardYear, String cardHolder,
                            String cardCcv, String cardId, String buyerName, String address, String city, String country, String zip) {
-        if (!manager.requestPurchase(sessionId).ggetError_occurred()) {
-            return manager.confirmPurchase(sessionId, cardNumber, cardMonth, cardYear, cardHolder, cardCcv,
-                    cardId, buyerName, address, city, country, zip).getError_occurred();
-        }
-
-        return false;
+        return manager.purchaseShoppingCart().getError_occurred();
     }
 
 
-    public boolean logout(int sessionId){
-        return manager.logout(sessionId).getError_occurred();
+    public boolean logout(){
+        return manager.logout().getError_occurred();
 
     }
 
-    public boolean openStore(Member m, String storeName) {
-        return manager.openStore(m, storeName).getError_occurred();
+
+
+    public boolean openStore(String storeName) {
+        return manager.openStore(storeName).getError_occurred();
     }
 
-    public String viewPurchaseHistory(int sessionId, int storeID){
-        return manager.getHistory(sessionId, storeID).value.toString();
+    public String viewPurchaseHistory(int storeID){
+        return manager.getPurchaseHistory(storeID).value.toString();
     }
 
 
     public boolean addProductToStore(int sessionId, int productId, int storeId, int amount) {
-        return manager.addProductToStore(productId,storeId,amount).getError_occurred();
+        return manager.addProductToCart(productId,storeId,amount).getError_occurred();
     }
 
-    public boolean editProduct(int sessionId, int storeId, int productId, String productInfo) {
-        return manager.editProductToStore(storeId, productId, productInfo).getError_occurred();
-    }
 
     public boolean deleteProduct(int sessionId, int storeId, int productId) {
-        return manager.deleteProductFromStore(storeId, productId).getError_occurred();
+        return manager.removeProductFromStore(storeId, productId).getError_occurred();
     }
 
 
-    public boolean editStorePurchaseType(int sessionId, int storeId, String newType){
-        return manager.editStorePurchaseType(sessionId, storeId, newType).getError_occurred();
+
+
+    public boolean appointManager(int sessionId, int storeId, String userName) {
+        return manager.setPositionOfMemberToStoreManager(storeId, userName).getError_occurred();
     }
 
 
-    public boolean appointManager(int sessionId, int storeId, int userId) {
-        return manager.addStoreManager(storeId, userId).getError_occurred();
+    public boolean addProduct(int storeId, String productName, double price, String category, double rating, int quantity) {
+        return manager.addProduct(storeId, productName, price, category, rating, quantity).getError_occurred();
+    }
+
+
+    public boolean setProductName(int storeId, int productId, String newName) {
+        return manager.editProductName(storeId, productId, newName).getError_occurred();
+    }
+
+
+    public boolean setProductPrice(int storeId, int productId, int newPrice) {
+        return manager.editProductPrice(storeId, productId, newPrice).getError_occurred();
+    }
+
+
+    public boolean setProductCategory(int storeId, int productId, String newCategory) {
+        return manager.editProductCategory(storeId, productId, newCategory).getError_occurred();
+    }
+
+
+    public boolean setProductName(String newName) {
+        return false;
     }
 
     public boolean removeManager(int sessionId, int storeId, int userId) {
         return manager.deleteManager(storeId, userId).getError_occurred();
     }
 
-    public boolean editManagerOptions(int sessionId, int storeId, int userId, String option){
-        return manager.editManageOptions(storeId, userId, option).getError_occurred();
+    public boolean editManagerOptions(int sessionId, String userName, int storeId, int option){
+        return manager.addStoreManagerPermissions(userName, storeId, option).getError_occurred();
     }
 
     public String showStorePositions(int sessionId, int storeId) {
-        return manager.showStorePositions(sessionId,storeId).value.toString();
+        return manager.getStoreEmployees(storeId).value.toString();
     }
 
-    public boolean appointOwner(int sessionId, int storeId, int userId) {
-        return manager.addStoreOwner(storeId, userId).getError_occurred();
-    }
+//    public boolean appointOwner(int sessionId, int storeId, int userId) {
+//        return manager.addStoreOwner(storeId, userId).getError_occurred();
+//    }
 
-    public boolean removeStore(Member m ,int storeID){
-        return manager.closeStore(m, storeID).getError_occurred();
+    public boolean removeStore(int storeID){
+        return manager.closeStore(storeID).getError_occurred();
     }
 
 
