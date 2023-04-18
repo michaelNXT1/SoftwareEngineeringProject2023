@@ -5,17 +5,22 @@ import java.util.List;
 public class Guest {
 
     private ShoppingCart shoppingCart;
-    void addProductToShoppingCart(int storeID, int productID, int itemsAmount){
+    void addProductToShoppingBag(Store s, Product p, int itemsAmount){  //2.10
+        shoppingCart.addProduct(p, itemsAmount, s);
+    }
+    public ShoppingCart DisplayShoppingCart(){  //2.11
+        return shoppingCart;
+    }
+    public void changeProductQuantity(Product p, int newQuantity, Store s) {    //2.12
+        shoppingCart.changeProductQuantity(p, newQuantity, s);
+    }
 
+    public Purchase purchaseShoppingCart() {    //2.14
+        return shoppingCart.purchaseShoppingCart();
     }
-    public List<Product> getShoppingCart() {
-        return null;
+    public void removeProductFromShoppingCart(Product p, Store s){  //2.13
+        shoppingCart.removeProduct(p, s);
     }
-    public void changeProductAmount(int productID, int productAmount){
-
-    }
-    public void removeProductFromShoppingCart(int productID){}
-    public void emptyShoppingCart(){}
 
 
 }

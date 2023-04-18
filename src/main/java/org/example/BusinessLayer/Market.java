@@ -1,5 +1,7 @@
 package org.example.BusinessLayer;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -7,23 +9,47 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.HashMap;
 
+import static org.example.Security.SecurityUtils.authenticate;
+
 public class Market {
     private Map<Integer, Store> stores;
     private Map<Integer, SystemManager> systemManagers;
     private Map<String, Member> users;
 
+    private PasswordEncoder passwordEncoder;
     //Use case 2.2
     public void signUp(String username, String email, String password) throws Exception {
         if (usernameExists(username))
             throw new Exception("Username already exists");
         if (emailExists(email))
-            throw new Exception("email already exists");
-        //TODO: member constructor
-//        users.put(username, new Member(username, email, password));
+            throw new Exception("Email already exists");
+
+        // hash password using password encoder
+        String hashedPassword = passwordEncoder.encode(password);
+
+        // create new Member object with hashed password
+        Member newMember = new Member(username, email, hashedPassword);
+
+        // discard plain-text password
+        password = null;
+
+        // store new Member object in users map
+        users.put(username, newMember);
     }
 
-    public void login(String username, String email, String password){
+    public boolean login(String username, String email, String password) {
+        // Retrieve the stored Member object for the given username
+        Member member = users.get(username);
+
+        // If the Member doesn't exist or the password is incorrect, return false
+        if (member == null || !passwordEncoder.matches(password, member.getPassword())) {
+            return false;
+        }
+
+        // If the credentials are correct, authenticate the user and return true
+        return authenticate(username, password);
     }
+
 
     //use case 2.4 - store name
     public List<Store> getStores(String storeSubString) {
@@ -90,7 +116,31 @@ public class Market {
         //TODO: release stores variable
     }
 
-    //use case 6.1
+    //use case 5.10
+    public void addStoreManagerPermissions(Member m, String storeManager, int storeID, StoreManager.permissionType newPermission) throws Exception {
+        Position p = users.get(m.getUsername()).getStorePosition(stores.get(storeID));
+        if (p == null)
+            throw new Exception("Member not has a position in this store");
+        else {
+            Position storeManagerPosition = users.get(storeManager).getStorePosition(stores.get(storeID));
+            if (storeManagerPosition == null)
+                throw new Exception("the name of the store manager has not have that position in this store");
+            else
+                p.addStoreManagerPermissions(storeManagerPosition, newPermission);
+        }
+    }
+
+    //use case 5.9
+    public void setPositionOfMemberToStoreManager(Member m, int storeID, String MemberToBecomeManager) throws Exception {
+        Position p = users.get(m.getUsername()).getStorePosition(stores.get(storeID));
+        if (p == null)
+            throw new Exception("Member not has a position in this store");
+        else
+            p.setPositionOfMemberToStoreManager(stores.get(storeID),users.get(MemberToBecomeManager));
+    }
+
+
+        //use case 6.1
     public void closeStore(Member m, int storeId) {
         //TODO: check permissions
         stores.get(storeId).setOpen(false);
@@ -104,6 +154,8 @@ public class Market {
     private boolean emailExists(String email) {
         return users.values().stream().anyMatch(m -> m.getEmail().equals(email));
     }
+
+
 
 
 }
