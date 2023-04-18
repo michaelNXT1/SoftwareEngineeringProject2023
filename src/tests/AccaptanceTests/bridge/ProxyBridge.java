@@ -203,19 +203,6 @@ public class ProxyBridge implements Bridge{
     }
 
 
-    public boolean changeBuyingPolicy(int sessionId,  int storeId, String newPolicy) {
-        if(real != null){
-            return real.changeBuyingPolicy(sessionId, storeId, newPolicy);
-        }
-        else return false;
-    }
-
-    public boolean changeSalesPolicy(int sessionId,  int storeId, String newPolicy) {
-        if(real != null){
-            return real.changeSalesPolicy(sessionId, storeId, newPolicy);
-        }
-        else return false;
-    }
 
     public boolean editStorePurchaseType(int sessionId, int storeId, String newType) {
         if(real != null){
@@ -224,12 +211,7 @@ public class ProxyBridge implements Bridge{
         else return false;
     }
 
-    public boolean editStoreSalesType(int sessionId, int storeId, String newType) {
-        if(real != null){
-            return real.editStoreSalesType(sessionId, storeId, newType);
-        }
-        else return false;
-    }
+
 
 
 //    public String searchUserHistory(int sessionId, int userId){

@@ -1,12 +1,13 @@
 package AccaptanceTests.GuestTest;
 
-import AccaptanceTests.ServiceTest;
 
+
+import AccaptanceTests.ServiceTests;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class RegistrationTest extends ServiceTest {
+public class RegistrationTest extends ServiceTests {
     /*
      * USE CASES 2.2
      *

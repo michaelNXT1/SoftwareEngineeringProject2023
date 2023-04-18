@@ -12,8 +12,7 @@ public class Real implements Bridge {
 
     MarketManager manager = new MarketManager();
 //    public boolean setupSystem(String supplyConfig, String paymentConfig,String path) {
-//        SessionHandler dc = new SessionHandler();
-//        return dc.setup(supplyConfig, paymentConfig,path).getResultCode() == ResultCode.SUCCESS;
+//
 //    }
 
     public boolean login(String username,String email,String password) {
@@ -84,8 +83,8 @@ public class Real implements Bridge {
 
     }
 
-    public boolean openStore(Member m, String storeName, String newProducts) {
-        return manager.openStore(m, storeName, newProducts).getError_occurred();
+    public boolean openStore(Member m, String storeName) {
+        return manager.openStore(m, storeName).getError_occurred();
     }
 
     public String viewPurchaseHistory(int sessionId, int storeID){
@@ -105,21 +104,9 @@ public class Real implements Bridge {
         return manager.deleteProductFromStore(storeId, productId).getError_occurred();
     }
 
-    public boolean changeBuyingPolicy(int sessionId, int storeId, String newPolicy){
-            return manager.changeBuyingPolicy(storeId, newPolicy).getError_occurred();
-    }
-
-
-    public boolean changeSalesPolicy(int sessionId, int storeId, String newPolicy){
-        return manager.changeSalesPolicy(storeId, newPolicy).getError_occurred();
-    }
 
     public boolean editStorePurchaseType(int sessionId, int storeId, String newType){
         return manager.editStorePurchaseType(sessionId, storeId, newType).getError_occurred();
-    }
-
-    public boolean editStoreSalesType(int sessionId, int storeId, String newType){
-        return manager.editStoreSalesType(sessionId, storeId, newType).getError_occurred();
     }
 
 

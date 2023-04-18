@@ -5,10 +5,11 @@ import AccaptanceTests.bridge.Bridge;
 
 import AccaptanceTests.bridge.Driver;
 import junit.framework.TestCase;
+import org.example.BusinessLayer.Member;
 import org.junit.After;
 
 
-public abstract class ServiceTest extends TestCase {
+public abstract class ServiceTests extends TestCase {
 
     Bridge bridge;
 
@@ -20,10 +21,9 @@ public abstract class ServiceTest extends TestCase {
         int sessionId = 0;
 
 
-        this.setupSystem("Mock Config", "Mock Config","");
         login("admin", "admin@gmail.com","admin");
-        addProductInfo(sessionId, 1, "UO", "KB", 10);
-        addProductInfo(sessionId, 2, "Famichiki", "Food", 10);
+        this.bridge.addProductToStore(sessionId, 1, 1,  10);
+        this.bridge.addProductToStore(sessionId, 2, 1,  10);
         logout(sessionId);
 
     }
@@ -33,6 +33,22 @@ public abstract class ServiceTest extends TestCase {
 
     }
 
+    public String searchProductsByName(String productName) {
+        return this.bridge.searchProductsByName(productName);
+    }
+
+
+    public String searchProductsByCategory(String productCategory) {
+        return this.bridge.searchProductsByCategory(productCategory);
+    }
+
+    public String searchProductsBySubString(String productSubString) {
+        return this.bridge.searchProductsBySubString(productSubString);
+    }
+
+    public String filter(String filterParams){
+        return this.bridge.filter(filterParams);
+    }
 
     public void clearDB(){
         this.bridge.clearDatabase(); // start tests with a clean database
@@ -70,7 +86,7 @@ public abstract class ServiceTest extends TestCase {
 
     public boolean logout(int sessionId){ return bridge.logout(sessionId); }
 
-    public boolean openStore(int sessionId, String storeName, String prouctName){ return bridge.openStore(sessionId, storeName, prouctName); }
+    public boolean openStore(Member m, String storeName){ return bridge.openStore(m, storeName); }
 
     public boolean addProductToStore(int sessionId, int productId, int storeId, int amount) { return bridge.addProductToStore(sessionId, productId, storeId, amount); }
 
@@ -110,11 +126,10 @@ public abstract class ServiceTest extends TestCase {
 //
 //    public String viewShopHistory(int sessionId, int storeId){ return bridge.viewShopHistory(sessionId, storeId); }
 
-    public boolean setupSystem(String suppyConfig, String paymentConfig,String path) { return bridge.setupSystem(suppyConfig, paymentConfig,path); }
+//    public boolean setupSystem(String suppyConfig, String paymentConfig,String path) { return bridge.setupSystem(suppyConfig, paymentConfig,path); }
 
 //    public int startSession() { return this.bridge.startSession(); }
 
-    public void addProductInfo(int sessionId, int id, String name, String category, double basePrice) { this.bridge.addProductInfo(sessionId, id, name, category, basePrice);}
+//    public void addProductInfo(int sessionId, int id, String name, String category, double basePrice) { this.bridge.addProductInfo(sessionId, id, name, category, basePrice);}
 
-    public boolean changeBuyingPolicy(int sessionId,  int storeId, String newPolicy) { return this.bridge.changeBuyingPolicy(sessionId, storeId, newPolicy); }
 }

@@ -1,13 +1,13 @@
 package AccaptanceTests.GuestTest;
 
-import AccaptanceTests.ServiceTest;
+import AccaptanceTests.ServiceTests;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 
-public class LoginTests extends ServiceTest {
+public class LoginTests extends ServiceTests {
     /*
      * USE CASES 2.3
      *
@@ -27,7 +27,7 @@ public class LoginTests extends ServiceTest {
     @Test
     public void testLoginSuccessful(){
         assertTrue(login("hanamaru", "abc@gmail.com","12345"));
-        logout(Database.sessionId);
+        //logout(Database.sessionId);
     }
 
     @Test

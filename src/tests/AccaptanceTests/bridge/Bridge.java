@@ -43,13 +43,12 @@ public interface Bridge {
 
     boolean deleteProduct(int sessionId, int storeId, int productId);
 
-    boolean changeBuyingPolicy(int sessionId, int storeId, String newPolicy);
-
-    boolean changeSalesPolicy(int sessionId, int storeId, String newPolicy);
 
     boolean editStorePurchaseType(int sessionId, int storeId, String newType);
 
     boolean appointManager(int sessionId, int storeId, int userId);
+
+    boolean setProductName(String newName);
 
     boolean editManagerOptions(int sessionId, int storeId, int userId, String option);
 
@@ -57,7 +56,6 @@ public interface Bridge {
 
     boolean appointOwner(int sessionId, int storeId, int userId);
 
-    boolean editStoreSalesType(int sessionId, int storeId, String newType);
 
     boolean removeManager(int sessionId, int storeId, int userId);
 
