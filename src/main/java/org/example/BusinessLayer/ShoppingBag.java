@@ -18,26 +18,22 @@ public class ShoppingBag {
     }
 
     //Use case 2.10
-    public void addProduct(Product p, int quantity) {
-        if (store.getProducts().get(p) >= quantity)
-            productList.put(p, quantity);
-    }
-
-    //Use case 2.10
     //Use case 2.12
-    public void setProductQuantity(Product p, int quantity) {
+    public void setProductQuantity(int productId, int quantity) throws Exception {
+        Product p = store.getProduct(productId);
         if (store.getProducts().get(p) >= quantity)
             productList.put(p, quantity);
     }
 
     //Use case 2.13
-    public void removeProduct(Product p) {
+    public void removeProduct(int productId) throws Exception {
+        Product p = store.getProduct(productId);
         productList.remove(p);
     }
 
     //Use case 2.14
     public PurchaseProduct purchaseProduct(Product p) {
-        PurchaseProduct pp = null;
+        PurchaseProduct pp;
         //TODO: lock store
         if (!store.updateProductQuantity(p, -1 * productList.get(p)))
             return null;

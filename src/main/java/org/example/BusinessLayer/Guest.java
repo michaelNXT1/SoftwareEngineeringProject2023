@@ -16,16 +16,16 @@ public class Guest {
         purchaseHistory = new ArrayList<>();
     }
 
-    void addProductToShoppingCart(Store s, Product p, int itemsAmount) { //2.10
-        shoppingCart.setProductQuantity(s, p, itemsAmount);
+    void addProductToShoppingCart(Store s, int productId, int itemsAmount) throws Exception { //2.10
+        shoppingCart.setProductQuantity(s, productId, itemsAmount);
     }
 
     public ShoppingCart displayShoppingCart() {  //2.11
         return shoppingCart;
     }
 
-    public void changeProductQuantity(Product p, int newQuantity, Store s) {    //2.12
-        shoppingCart.setProductQuantity(s, p, newQuantity);
+    public void changeProductQuantity(int productId, int newQuantity, Store s) throws Exception {    //2.12
+        shoppingCart.setProductQuantity(s, productId, newQuantity);
     }
 
     public Purchase purchaseShoppingCart() {    //2.14
@@ -34,8 +34,8 @@ public class Guest {
         return p;
     }
 
-    public void removeProductFromShoppingCart(Store s, Product p) {
-        shoppingCart.removeProduct(s, p);
+    public void removeProductFromShoppingCart(Store s, int productId) throws Exception {
+        shoppingCart.removeProduct(s, productId);
     }
 
     public List<Product> getSearchResults() {
