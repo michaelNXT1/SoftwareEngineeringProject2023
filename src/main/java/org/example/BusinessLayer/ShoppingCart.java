@@ -13,28 +13,15 @@ public class ShoppingCart {
     }
 
     //Use case 2.10
-    public void addProduct(Product p, int quantity, Store s) {
-        //TODO: add purchase type check
-        shoppingBagExists(s);
-        for (ShoppingBag sb : shoppingBags)
-            if (sb.getStore().equals(this))
-                sb.addProduct(p, quantity);
-    }
-
     //Use case 2.12
-    public void changeProductQuantity(Product p, int newQuantity, Store s) {
-        if (shoppingBags.stream().anyMatch(sb -> sb.getStore().equals(s)))
-            for (ShoppingBag sb : shoppingBags)
-                if (sb.getStore().equals(this))
-                    sb.changeProductQuantity(p, newQuantity);
+    public void setProductQuantity(Store s, Product p, int quantity) {
+        //TODO: add purchase type check
+        getShoppingBag(s).setProductQuantity(p, quantity);
     }
 
     //Use case 2.13
-    public void removeProduct(Product p, Store s) {
-        if (shoppingBags.stream().anyMatch(sb -> sb.getStore().equals(s)))
-            for (ShoppingBag sb : shoppingBags)
-                if (sb.getStore().equals(this))
-                    sb.removeProduct(p);
+    public void removeProduct(Store s, Product p) {
+        shoppingBags.stream().filter(sb -> sb.getStore().equals(s)).forEach(sb -> sb.removeProduct(p));
     }
 
     //Use case 2.14
@@ -50,8 +37,14 @@ public class ShoppingCart {
         return new Purchase(totalProducts);
     }
 
-    private void shoppingBagExists(Store s) {
-        if (!shoppingBags.stream().anyMatch(sb -> sb.getStore().equals(s)))
-            shoppingBags.add(new ShoppingBag(this, s));
+    private ShoppingBag getShoppingBag(Store s) {
+        return shoppingBags.stream()
+                .filter(sb -> sb.getStore().equals(s))
+                .findFirst()
+                .orElseGet(() -> {
+                    ShoppingBag newBag = new ShoppingBag(this, s);
+                    shoppingBags.add(newBag);
+                    return newBag;
+                });
     }
 }

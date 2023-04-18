@@ -23,16 +23,16 @@ public class ShoppingBag {
             productList.put(p, quantity);
     }
 
+    //Use case 2.10
     //Use case 2.12
-    public void changeProductQuantity(Product p, int newQuantity) {
-        if (productList.containsKey(p))
-            addProduct(p, newQuantity);
+    public void setProductQuantity(Product p, int quantity) {
+        if (store.getProducts().get(p) >= quantity)
+            productList.put(p, quantity);
     }
 
     //Use case 2.13
     public void removeProduct(Product p) {
-        if (productList.containsKey(p))
-            productList.remove(p);
+        productList.remove(p);
     }
 
     //Use case 2.14
