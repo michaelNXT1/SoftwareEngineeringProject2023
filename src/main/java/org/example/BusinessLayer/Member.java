@@ -1,17 +1,28 @@
 package org.example.BusinessLayer;
 
+import org.example.Security.SecurityUtils;
+
+import java.security.Principal;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Member extends Guest implements Position{
+public class Member extends Guest  {
 
     private String username;
     private String email;
+    private String hashedPassword;
     private Member assigner;
     private List<Position> positions = new LinkedList<>(); //all the positions of this member, note that position act as a state
 
+    public Member(String username, String email, String hashedPassword) {
+        this.username = username;
+        this.email = email;
+        this.hashedPassword = hashedPassword;
+    }
+
     // getter, setter
-    public void setPosition(Member newPosition) {
+    public void setPosition(Position newPosition) {
         boolean found = false;
         for (int i = 0; i < positions.size() && !found; i++) {
             if (positions.get(i).getStore().equals(newPosition.getStore())) {
@@ -23,74 +34,14 @@ public class Member extends Guest implements Position{
             positions.add(newPosition);
         }
     }
-
-    @Override
-    public Store getStore() {
-        return store;
+    public String getPassword() {
+        return hashedPassword;
     }
 
-    @Override
-    public void changeStoreManagerPermissions(String storeManager, int storeID, StoreManager.permissionType newPermission) {
-
-    }
-
-    @Override
-    public void setPositionOfMemberToStoreManager(int storeID, String MemberToBecomeManager) {
-
-    }
-
-    @Override
-    public void setPositionOfMemberToStoreOwner(int storeID, String MemberToBecomeOwner) {
-
-    }
-
-    @Override
-    public void removeProductFromStore(int storeID, int productID) {
-
-    }
-
-    @Override
-    public void editProductName(int storeID, int productID, String newName) {
-
-    }
-
-    @Override
-    public void editProductPrice(int storeID, int productID, int newPrice) {
-
-    }
-
-    @Override
-    public void editProductCategory(int storeID, int productID, String newCategory) {
-
-    }
-
-    @Override
-    public void editProductDescription(int storeID, int productID, String newDescription) {
-
-    }
-
-    @Override
-    public void addProduct(int storeID, int productID, String productName, int itemsAmount, int price) {
-
-    }
-
-    @Override
-    public List<Purchase> getPurchaseHistory(int storeID) {
-        return null;
-    }
-
-    @Override
-    public int openStore(String name) {
-        return 0;
-    }
-
-    @Override
-    public void logout() {
-
-    }
     /*public List<Position> getPositions() {
         return this.positions;
     }*/
+
 
     public String getUsername() {
         return username;
@@ -99,4 +50,64 @@ public class Member extends Guest implements Position{
     public String getEmail() {
         return username;
     }
+
+    public void logout() {
+        SecurityUtils.logout();
+    }
+
+    public List<StoreFounder> getStoreFounderPositions() {
+        List<StoreFounder> positions = new ArrayList<>();
+        synchronized(this.positions) {
+            for(Position p : this.positions) {
+                if(p instanceof StoreFounder) {
+                    positions.add((StoreFounder)p);
+                }
+            }
+        }
+        return positions;
+    }
+    
+    public Position getStorePosition(Store store) {
+        synchronized (positions) {
+            for (Position position : positions) {
+                if (position.getStore().equals(store)) {
+                    return position;
+                }
+            }
+            return null;
+        }
+    }
+
+
+    public void setToStoreManager(Store store) {
+        if (getStorePosition(store) != null) {
+            //TODO send response the member is already have a different position in this store
+        }
+        else{
+            positions.add(new StoreManager(store));
+        }
+    }
+
+    public void setToStoreOwner(Store store) {
+        if (getStorePosition(store) != null) {
+            //TODO send response the member is already have a different position in this store
+        }
+        else{
+            positions.add(new StoreOwner(store));
+        }
+    }
+    public Store openStore(String name, int storeID) {
+        Store newStore = new Store(storeID, name, this);
+        StoreFounder newStoreFounder = new StoreFounder(newStore);
+
+        try {
+            positions.add(newStoreFounder);
+        } catch (Exception e) {
+            // Rollback if either operation fails
+            positions.remove(newStoreFounder);
+            throw e;
+        }
+        return newStore;
+    }
+
 }

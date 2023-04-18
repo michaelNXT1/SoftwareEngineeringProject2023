@@ -2,10 +2,16 @@ package org.example.BusinessLayer;
 
 import java.util.List;
 
-public class StoreManager  implements Position{
+public class StoreManager implements Position {
 
-    enum permissionType{}
+    public StoreManager(Store store) {
+        this.store = store;
+    }
+
+    enum permissionType {setPermissions, setNewPosition, Inventory, Purchases}
+
     private Store store;
+    private List<permissionType> permissions;
 
     @Override
     public Store getStore() {
@@ -13,62 +19,118 @@ public class StoreManager  implements Position{
     }
 
     @Override
-    public void changeStoreManagerPermissions(String storeManager, int storeID, permissionType newPermission) {
-
+    public void addStoreManagerPermissions(Position storeManagerPosition, permissionType newPermission) throws IllegalAccessException {
+        //TODO: Check if he has appropriate access permission
+        if (permissions.contains(permissionType.setPermissions))
+            storeManagerPosition.addPermission(newPermission);
+        else {
+            throw new IllegalAccessException("This member hasn't permission to set storeManager's permissions");
+        }
     }
 
     @Override
-    public void setPositionOfMemberToStoreManager(int storeID, String MemberToBecomeManager) {
-
+    public void removeStoreManagerPermissions(Position storeManagerPosition, StoreManager.permissionType Permission) throws IllegalAccessException {
+        //TODO: Check if he has appropriate access permission
+        if (permissions.contains(permissionType.setPermissions))
+            storeManagerPosition.removePermission(Permission);
+        else {
+            throw new IllegalAccessException("This member hasn't permission to set storeManager's permissions");
+        }
     }
 
     @Override
-    public void setPositionOfMemberToStoreOwner(int storeID, String MemberToBecomeOwner) {
-
+    public void setPositionOfMemberToStoreManager(Store store, Member member) throws IllegalAccessException {
+        //TODO: Check if he has appropriate access permission
+        if (permissions.contains(permissionType.setNewPosition))
+            member.setToStoreManager(store);
+        else {
+            throw new IllegalAccessException("This member hasn't permission to set new position");
+        }
     }
 
     @Override
-    public void removeProductFromStore(int storeID, int productID) {
-
+    public void setPositionOfMemberToStoreOwner(Store store, Member member) throws IllegalAccessException {
+        //TODO: Check if he has appropriate access permission
+        if (permissions.contains(permissionType.setNewPosition))
+            member.setToStoreManager(store);
+        else {
+            throw new IllegalAccessException("This member hasn't permission to set new position");
+        }
     }
 
     @Override
-    public void editProductName(int storeID, int productID, String newName) {
-
+    public void removeProductFromStore(Store store, int productID) throws IllegalAccessException {
+        //TODO: Check if he has appropriate access permission
+        if (permissions.contains(permissionType.Inventory))
+            store.removeProduct(productID);
+        else {
+            throw new IllegalAccessException("This member hasn't permission to remove product from the store");
+        }
     }
 
     @Override
-    public void editProductPrice(int storeID, int productID, int newPrice) {
-
+    public void editProductName(Store store, Product p, String newName) throws IllegalAccessException {
+        //TODO: Check if he has appropriate access permission
+        if (permissions.contains(permissionType.Inventory))
+            store.editProductName(p, newName);
+        else {
+            throw new IllegalAccessException("This member hasn't permission to edit product in the store");
+        }
     }
 
     @Override
-    public void editProductCategory(int storeID, int productID, String newCategory) {
-
+    public void editProductPrice(Store store, Product p, int newPrice) throws IllegalAccessException {
+        //TODO: Check if he has appropriate access permission
+        if (permissions.contains(permissionType.Inventory))
+            store.editProductPrice(p, newPrice);
+        else {
+            throw new IllegalAccessException("This member hasn't permission to edit product in the store");
+        }
     }
 
     @Override
-    public void editProductDescription(int storeID, int productID, String newDescription) {
-
+    public void editProductCategory(Store store, Product p, String newCategory) throws IllegalAccessException {
+        //TODO: Check if he has appropriate access permission
+        if (permissions.contains(permissionType.Inventory))
+            store.editProductCategory(p, newCategory);
+        else {
+            throw new IllegalAccessException("This member hasn't permission to edit product in the store");
+        }
     }
 
     @Override
-    public void addProduct(int storeID, int productID, String productName, int itemsAmount, int price) {
+    public void editProductDescription(Store store, Product p, String newDescription) throws IllegalAccessException {
+        //TODO: Check if he has appropriate access permission
+        if (permissions.contains(permissionType.Inventory))
+            store.editProductDescription(p, newDescription);
+        else {
+            throw new IllegalAccessException("This member hasn't permission to edit product in the store");
+        }
+    }
 
+    public Product addProduct(Store store, String productName, double price, String category, double rating, int quantity) throws Exception {
+        //TODO: Check if he has appropriate access permission
+        if (permissions.contains(permissionType.Inventory))
+            return store.addProduct(productName, price, category, rating, quantity);
+        else {
+            throw new IllegalAccessException("This member hasn't permission to add product to the store");
+        }
     }
 
     @Override
-    public List<Purchase> getPurchaseHistory(int storeID) {
-        return null;
+    public List<Purchase> getPurchaseHistory(Store store) throws IllegalAccessException {
+        //TODO: Check if he has appropriate access permission
+        if (permissions.contains(permissionType.Purchases))
+            return store.getPurchaseList();
+        throw new IllegalAccessException("This member hasn't permission to get the purchase's History");
+    }
+
+    public void addPermission(StoreManager.permissionType newPermission) { //permission for store manager only
+        permissions.add(newPermission);
     }
 
     @Override
-    public int openStore(String name) {
-        return 0;
-    }
-
-    @Override
-    public void logout() {
-
+    public void removePermission(permissionType permission) {
+        permissions.remove(permission);
     }
 }
