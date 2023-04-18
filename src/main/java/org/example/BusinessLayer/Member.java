@@ -85,6 +85,7 @@ public class Member extends Guest {
             throw new Exception("the member is already have a different position in this store");
         } else {
             positions.add(new StoreManager(store, this));
+            store.addEmployee(this);
         }
     }
 

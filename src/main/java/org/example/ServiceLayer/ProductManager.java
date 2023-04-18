@@ -8,7 +8,7 @@ import java.util.List;
 public class ProductManager {
     private Product product;
 
-    public Response setProductid(int productId) {
+    public Response setProductId(int productId) {
         try {
             product.setProductId(productId);
             return new Response();

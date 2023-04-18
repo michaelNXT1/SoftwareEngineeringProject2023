@@ -38,28 +38,28 @@ public class StoreFounder implements Position {
     }
 
     @Override
-    public void removeProductFromStore(Store store, int productID) {
+    public void removeProductFromStore(int productID) {
         store.removeProduct(productID);
     }
 
     @Override
-    public void editProductName(Product p, String newName) {
-        store.editProductName(p, newName);
+    public void editProductName(int productId, String newName) throws Exception {
+        store.editProductName(productId, newName);
     }
 
     @Override
-    public void editProductPrice(Product p, int newPrice) {
-        store.editProductPrice(p, newPrice);
+    public void editProductPrice(int productId, int newPrice) throws Exception {
+        store.editProductPrice(productId, newPrice);
     }
 
     @Override
-    public void editProductCategory(Product p, String newCategory) {
-        store.editProductCategory(p, newCategory);
+    public void editProductCategory(int productId, String newCategory) throws Exception {
+        store.editProductCategory(productId, newCategory);
     }
 
     @Override
-    public void editProductDescription(Product p, String newDescription) {
-        store.editProductDescription(p, newDescription);
+    public void editProductDescription(int productId, String newDescription) throws Exception {
+        store.editProductDescription(productId, newDescription);
     }
 
     @Override
@@ -76,6 +76,11 @@ public class StoreFounder implements Position {
     @Override
     public void closeStore() throws IllegalAccessException {
         store.setOpen(false);
+    }
+
+    @Override
+    public List<Member> getStoreEmployees() {
+        return store.getEmployees();
     }
 
 }
