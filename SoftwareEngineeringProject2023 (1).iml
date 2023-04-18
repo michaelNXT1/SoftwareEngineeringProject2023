@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="jpa" name="JPA">
+      <configuration>
+        <setting name="validation-enabled" value="true" />
+        <datasource-mapping />
+        <naming-strategy-map />
+      </configuration>
+    </facet>
+    <facet type="Spring" name="Spring">
+      <configuration />
+    </facet>
+  </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_15">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
@@ -145,5 +157,18 @@
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-client:9.4.48.v20220622" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:websocket-servlet:9.4.48.v20220622" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:websocket-api:9.4.48.v20220622" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-core:6.0.8" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-jcl:6.0.8" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.security:spring-security-crypto:6.0.2" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.security:spring-security-web:6.0.2" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.security:spring-security-core:6.0.2" level="project" />
+    <orderEntry type="library" name="Maven: io.micrometer:micrometer-observation:1.10.4" level="project" />
+    <orderEntry type="library" name="Maven: io.micrometer:micrometer-commons:1.10.4" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-aop:6.0.5" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-beans:6.0.5" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-context:6.0.5" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-expression:6.0.5" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-web:6.0.5" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.security:spring-security-config:6.0.2" level="project" />
   </component>
 </module>

@@ -119,7 +119,7 @@ public class Market {
 
     //use case 2.11
     public ShoppingCart getShoppingCart() {
-        return activeMember.getShoppingCart();
+        return activeMember.displayShoppingCart();
     }
 
     //use case 2.12
@@ -163,7 +163,7 @@ public class Market {
         Position p = users.get(m.getUsername()).getStorePosition(stores.get(storeId));
         if (p == null)
             throw new Exception("Member not has a position in this store");
-        return p.getPurchaseHistory(storeId);
+        return p.getPurchaseHistory(stores.get(storeId));
     }
 
     public Product addProduct(int storeId, String productName, double price, String category, double rating, int quantity){

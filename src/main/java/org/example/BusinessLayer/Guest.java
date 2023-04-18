@@ -9,11 +9,11 @@ public class Guest {
     void addProductToShoppingCart(Store s, Product p, int itemsAmount){ //2.10
         shoppingCart.setProductQuantity(s, p, itemsAmount);
     }
-    public ShoppingCart DisplayShoppingCart(){  //2.11
+    public ShoppingCart displayShoppingCart(){  //2.11
         return shoppingCart;
     }
     public void changeProductQuantity(Product p, int newQuantity, Store s) {    //2.12
-        shoppingCart.changeProductQuantity(p, newQuantity, s);
+        shoppingCart.setProductQuantity(s, p, newQuantity);
     }
 
     public Purchase purchaseShoppingCart() {    //2.14

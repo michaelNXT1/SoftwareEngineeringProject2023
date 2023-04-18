@@ -13,11 +13,11 @@ public interface Position {
     void setPositionOfMemberToStoreManager(Store store, Member member) throws IllegalAccessException; //5.9
     void setPositionOfMemberToStoreOwner(Store store, Member member) throws IllegalAccessException;   //5.8
     void removeProductFromStore(Store store, int productID) throws IllegalAccessException;    //5.3
-    void editProductName(Store store, int productID, String newName) throws IllegalAccessException;   //5.2
-    void editProductPrice(Store store, int productID, int newPrice) throws IllegalAccessException;    //5.2
-    void editProductCategory(Store store, int productID, String newCategory) throws IllegalAccessException;    //5.2
-    void editProductDescription(Store store, int productID, String newDescription) throws IllegalAccessException;    //5.2
-    void addProduct(Store store, int productID, int itemsAmount) throws IllegalAccessException; //5.1
+    void editProductName(Store store, Product p, String newName) throws IllegalAccessException;   //5.2
+    void editProductPrice(Store store, Product p, int newPrice) throws IllegalAccessException;    //5.2
+    void editProductCategory(Store store, Product p, String newCategory) throws IllegalAccessException;    //5.2
+    void editProductDescription(Store store, Product p, String newDescription) throws IllegalAccessException;    //5.2
+    Product addProduct(Store store, String productName, double price, String category, double rating, int quantity) throws Exception; //5.1
     List<Purchase> getPurchaseHistory(Store store) throws IllegalAccessException;   //4.1
 
 

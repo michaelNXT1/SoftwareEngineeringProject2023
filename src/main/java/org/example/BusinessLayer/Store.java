@@ -55,7 +55,7 @@ public class Store {
     public Product addProduct(String productName, double price, String category, double rating, int quantity) throws Exception {
         if (!products.keySet().stream().filter(p -> p.getProductName().equals(productName)).collect(Collectors.toList()).isEmpty())
             throw new Exception("Product name already exists");
-        Product p = new Product(products.keySet().stream().max((o1, o2) -> Integer.compare(o1.getProductid(), o2.getProductid())).get().getProductid() + 1, productName, price, category, rating, quantity);
+        Product p = new Product(products.keySet().stream().max((o1, o2) -> Integer.compare(o1.getProductId(), o2.getProductId())).get().getProductId() + 1, productName, price, category, rating, quantity);
         products.put(p, quantity);
         return p;
     }
@@ -93,9 +93,21 @@ public class Store {
     }
 
     public Product getProduct(int productId) throws Exception {
-        Product ret = products.keySet().stream().filter(p -> p.getProductid() == productId).findFirst().orElse(null);
+        Product ret = products.keySet().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null);
         if (ret == null)
             throw new Exception("Product doesn't exist");
         return ret;
+    }
+
+    public void editProductName(Product p, String newName) {
+    }
+
+    public void editProductPrice(Product p, int newPrice) {
+    }
+
+    public void editProductCategory(Product p, String newCategory) {
+    }
+
+    public void editProductDescription(Product p, String newDescription) {
     }
 }
