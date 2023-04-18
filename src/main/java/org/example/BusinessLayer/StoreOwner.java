@@ -40,28 +40,28 @@ public class StoreOwner implements Position {
     }
 
     @Override
-    public void removeProductFromStore(Store store, int productID) {
+    public void removeProductFromStore(int productID) {
         store.removeProduct(productID);
     }
 
     @Override
-    public void editProductName(Product p, String newName) {
-        store.editProductName(p, newName);
+    public void editProductName(int productId, String newName) throws Exception {
+        store.editProductName(productId, newName);
     }
 
     @Override
-    public void editProductPrice(Product p, int newPrice) {
-        store.editProductPrice(p, newPrice);
+    public void editProductPrice(int productId, int newPrice) throws Exception {
+        store.editProductPrice(productId, newPrice);
     }
 
     @Override
-    public void editProductCategory(Product p, String newCategory) {
-        store.editProductCategory(p, newCategory);
+    public void editProductCategory(int productId, String newCategory) throws Exception {
+        store.editProductCategory(productId, newCategory);
     }
 
     @Override
-    public void editProductDescription(Product p, String newDescription) {
-        store.editProductDescription(p, newDescription);
+    public void editProductDescription(int productId, String newDescription) throws Exception {
+        store.editProductDescription(productId, newDescription);
     }
 
     public Product addProduct(Store store, String productName, double price, String category, double rating, int quantity) throws Exception {
@@ -76,6 +76,11 @@ public class StoreOwner implements Position {
     @Override
     public void closeStore() throws IllegalAccessException {
         throw new IllegalAccessException("This member hasn't permission to close store");
+    }
+
+    @Override
+    public List<Member> getStoreEmployees() {
+        return store.getEmployees();
     }
 
 }

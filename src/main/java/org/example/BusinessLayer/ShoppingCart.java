@@ -6,22 +6,24 @@ import java.util.Map;
 
 public class ShoppingCart {
     List<ShoppingBag> shoppingBags;
-    private int cartTotal;
 
     public ShoppingCart() {
-
+        shoppingBags = new ArrayList<>();
     }
 
     //Use case 2.10
     //Use case 2.12
-    public void setProductQuantity(Store s, Product p, int quantity) {
+    public void setProductQuantity(Store s, int productId, int quantity) throws Exception {
         //TODO: add purchase type check
-        getShoppingBag(s).setProductQuantity(p, quantity);
+        getShoppingBag(s).setProductQuantity(productId, quantity);
     }
 
     //Use case 2.13
-    public void removeProduct(Store s, Product p) {
-        shoppingBags.stream().filter(sb -> sb.getStore().equals(s)).forEach(sb -> sb.removeProduct(p));
+    public void removeProduct(Store s, int productId) throws Exception {
+        ShoppingBag shoppingBag = shoppingBags.stream().filter(sb -> sb.getStore().equals(s)).findFirst().orElse(null);
+        if (shoppingBag == null)
+            throw new Exception("store doesn't exist in cart");
+        shoppingBag.removeProduct(productId);
     }
 
     //Use case 2.14

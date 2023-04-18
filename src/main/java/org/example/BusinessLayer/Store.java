@@ -1,7 +1,6 @@
 package org.example.BusinessLayer;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Store {
     private final int storeId;
@@ -53,17 +52,14 @@ public class Store {
 
     //use case 5.1
     public Product addProduct(String productName, double price, String category, double rating, int quantity) throws Exception {
-        if (!products.keySet().stream().filter(p -> p.getProductName().equals(productName)).collect(Collectors.toList()).isEmpty())
+        if (products.keySet().stream().anyMatch(p -> p.getProductName().equals(productName)))
             throw new Exception("Product name already exists");
-        Product p = new Product(products.keySet().stream().max((o1, o2) -> Integer.compare(o1.getProductId(), o2.getProductId())).get().getProductId() + 1, productName, price, category, rating, quantity);
+        Product p = new Product(products.keySet().stream().max(Comparator.comparingInt(Product::getProductId)).get().getProductId() + 1, productName, price, category);
         products.put(p, quantity);
         return p;
     }
 
     //use case 5.2
-    public void updateProductData(Product p, Object newData) {
-        //TODO: in future when merging
-    }
 
     //use case 5.3
     public void removeProduct(int productId) {
@@ -99,15 +95,38 @@ public class Store {
         return ret;
     }
 
-    public void editProductName(Product p, String newName) {
+    public void editProductName(int productId, String newName) throws Exception {
+        checkProductExists(productId);
+        if (products.keySet().stream().anyMatch(p -> p.getProductName().equals(newName)))
+            throw new Exception("Product name already exists");
+        getProduct(productId).setProductName(newName);
     }
 
-    public void editProductPrice(Product p, int newPrice) {
+    public void editProductPrice(int productId, int newPrice) throws Exception {
+        checkProductExists(productId);
+        getProduct(productId).setPrice(newPrice);
     }
 
-    public void editProductCategory(Product p, String newCategory) {
+    public void editProductCategory(int productId, String newCategory) throws Exception {
+        checkProductExists(productId);
+        getProduct(productId).setCategory(newCategory);
     }
 
-    public void editProductDescription(Product p, String newDescription) {
+    public void editProductDescription(int productId, String newDescription) throws Exception {
+//        checkProductExists(productId);
+//        getProduct(productId).set(newDescription);
+    }
+
+    private void checkProductExists(int productId) throws Exception {
+        if(products.keySet().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null)==null)
+            throw new Exception("product id doesn't exist");
+    }
+
+    public void addEmployee(Member member) {
+        employees.add(member);
+    }
+
+    public List<Member> getEmployees() {
+        return employees;
     }
 }
