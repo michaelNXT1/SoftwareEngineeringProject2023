@@ -15,7 +15,7 @@ public class Market {
     private Map<String, Member> users;
     private PasswordEncoder passwordEncoder;
     private Member activeMember;
-    private Member activeGuest;
+    private Guest activeGuest;
 
     //Use case 2.2
     public void signUp(String username, String email, String password) throws Exception {
@@ -52,8 +52,10 @@ public class Market {
 
         // If the credentials are correct, authenticate the user and return true
         boolean res = authenticate(username, password);
-        if (res)
+        if (res) {
             activeMember = member;
+            activeGuest = null;
+        }
         return res;
     }
 
@@ -110,6 +112,16 @@ public class Market {
         return activeMember.getSearchResults();
     }
 
+    //use case 2.9 - by category
+    public List<Product> filterSearchResultsByCategory(String category) {
+        return activeMember.filterSearchResultsByCategory(category);
+    }
+
+    //use case 2.9 - by price range
+    public List<Product> filterSearchResultsByPrice(double minPrice, double maxPrice) {
+        return activeMember.filterSearchResultsByPrice(minPrice, maxPrice);
+    }
+
     //use case 2.10
     public void addProductToCart(int storeId, int productId, int quantity) throws Exception {
         Store s = getStore(storeId);
@@ -137,65 +149,112 @@ public class Market {
     }
 
     //use case 2.14
-    public void purchaseShoppingCart() {
-        activeMember.purchaseShoppingCart();
+    public Purchase purchaseShoppingCart() {
+        return activeMember.purchaseShoppingCart();
     }
 
     //use case 3.1
     public void logout() {
         activeMember = null;
+        activeGuest = new Guest();
     }
 
     //use case 3.2
-    public void openStore(Member m, String storeName) {
+    public void openStore(String storeName) {
         //TODO: lock stores variable
         int storeId = stores.keySet().stream().mapToInt(v -> v).max().orElse(0);
-        Store store = new Store(storeId, storeName, m);
-        store.setOpen(true);
-        stores.put(storeId, store);
-        //TODO: turn member into store owner and store founder (in member class?)
+        stores.put(storeId, activeMember.openStore(storeName, storeId));
         //TODO: release stores variable
     }
 
     //use case 4.1
-    public List<Purchase> getPurchaseHistory(Member m, int storeId) throws Exception {
-        storeExists(storeId);
-        Position p = users.get(m.getUsername()).getStorePosition(stores.get(storeId));
+    public List<Purchase> getPurchaseHistory(int storeId) throws Exception {
+        if (!storeExists(storeId))
+            throw new Exception("Store id doesn't exist");
+        Position p = users.get(activeMember.getUsername()).getStorePosition(stores.get(storeId));
         if (p == null)
             throw new Exception("Member not has a position in this store");
         return p.getPurchaseHistory(stores.get(storeId));
     }
 
-    public Product addProduct(int storeId, String productName, double price, String category, double rating, int quantity){
-        return null;
-//        return activeMember.addProduct(productName, price, category, rating);
+    //use case 5.1
+    public Product addProduct(int storeId, String productName, double price, String category, double rating, int quantity) throws Exception {
+        if (!storeExists(storeId))
+            throw new Exception("Store id doesn't exist");
+        Position p = users.get(activeMember.getUsername()).getStorePosition(stores.get(storeId));
+        if (p == null)
+            throw new Exception("Member not has a position in this store");
+        return p.addProduct(stores.get(storeId), productName, price, category, rating, quantity);
+    }
+
+    //use case 5.2
+    public void editProductName(int storeId, int productId, String newName) throws Exception {
+        Product pr = getProduct(storeId, productId);
+        Position p = users.get(activeMember.getUsername()).getStorePosition(stores.get(storeId));
+        if (p == null)
+            throw new Exception("Member not has a position in this store");
+        p.editProductName(pr, newName);
+    }
+
+    //use case 5.2
+    public void editProductPrice(int storeId, int productId, int newPrice) throws Exception {
+        Product pr = getProduct(storeId, productId);
+        Position p = users.get(activeMember.getUsername()).getStorePosition(stores.get(storeId));
+        if (p == null)
+            throw new Exception("Member not has a position in this store");
+        p.editProductPrice(pr, newPrice);
+    }
+
+    //use case 5.2
+    public void editProductCategory(int storeId, int productId, String newCategory) throws Exception {
+        Product pr = getProduct(storeId, productId);
+        Position p = users.get(activeMember.getUsername()).getStorePosition(stores.get(storeId));
+        if (p == null)
+            throw new Exception("Member not has a position in this store");
+        p.editProductCategory(pr, newCategory);
+    }
+
+    //use case 5.2
+    public void editProductDescription(int storeId, int productId, String newDescription) throws Exception {
+        Product pr = getProduct(storeId, productId);
+        Position p = users.get(activeMember.getUsername()).getStorePosition(stores.get(storeId));
+        if (p == null)
+            throw new Exception("Member not has a position in this store");
+        p.editProductDescription(pr, newDescription);
+    }
+
+    //use case 5.9
+    public void setPositionOfMemberToStoreManager(int storeID, String MemberToBecomeManager) throws Exception {
+        Position p = users.get(activeMember.getUsername()).getStorePosition(stores.get(storeID));
+        if (p == null)
+            throw new Exception("Member not has a position in this store");
+        p.setPositionOfMemberToStoreManager(stores.get(storeID), users.get(MemberToBecomeManager));
     }
 
     //use case 5.10
-    public void addStoreManagerPermissions(Member m, String storeManager, int storeID, StoreManager.permissionType newPermission) throws Exception {
-        Position p = users.get(m.getUsername()).getStorePosition(stores.get(storeID));
+    public void addStoreManagerPermissions(String storeManager, int storeID, int newPermission) throws Exception {
+        StoreManager.permissionType perm = StoreManager.permissionType.values()[newPermission];
+        Position p = users.get(activeMember.getUsername()).getStorePosition(stores.get(storeID));
         if (p == null)
             throw new Exception("Member not has a position in this store");
         Position storeManagerPosition = users.get(storeManager).getStorePosition(stores.get(storeID));
         if (storeManagerPosition == null)
             throw new Exception("the name of the store manager has not have that position in this store");
         else
-            p.addStoreManagerPermissions(storeManagerPosition, newPermission);
+            p.addStoreManagerPermissions(storeManagerPosition, perm);
     }
 
-    //use case 5.9
-    public void setPositionOfMemberToStoreManager(Member m, int storeID, String MemberToBecomeManager) throws Exception {
-        Position p = users.get(m.getUsername()).getStorePosition(stores.get(storeID));
-        if (p == null)
-            throw new Exception("Member not has a position in this store");
-        p.setPositionOfMemberToStoreManager(stores.get(storeID), users.get(MemberToBecomeManager));
-    }
+    //use case 5.11
 
 
     //use case 6.1
-    public void closeStore(Member m, int storeId) {
-        //TODO: check permissions
-        stores.get(storeId).setOpen(false);
+    public void closeStore(int storeId) throws Exception {
+        if (!storeExists(storeId))
+            throw new Exception("store doesn't exist");
+        Position p = users.get(activeMember.getUsername()).getStorePosition(stores.get(storeId));
+        if (p == null)
+            throw new Exception("Member not has a position in this store");
+        p.closeStore();
     }
 
 

@@ -2,12 +2,14 @@ package org.example.BusinessLayer;
 
 import java.util.List;
 
-public class StoreOwner  implements Position {
+public class StoreOwner implements Position {
 
     private Store store;
+    private Member assigner;
 
-    public StoreOwner(Store store) {
+    public StoreOwner(Store store, Member assigner) {
         this.store = store;
+        this.assigner = assigner;
     }
 
     @Override
@@ -27,13 +29,13 @@ public class StoreOwner  implements Position {
     }
 
     @Override
-    public void setPositionOfMemberToStoreManager(Store store, Member member) {
+    public void setPositionOfMemberToStoreManager(Store store, Member member) throws Exception {
         member.setToStoreManager(store);
     }
 
 
     @Override
-    public void setPositionOfMemberToStoreOwner(Store store, Member member) {
+    public void setPositionOfMemberToStoreOwner(Store store, Member member) throws Exception {
         member.setToStoreOwner(store);
     }
 
@@ -43,22 +45,22 @@ public class StoreOwner  implements Position {
     }
 
     @Override
-    public void editProductName(Store store, Product p, String newName) {
+    public void editProductName(Product p, String newName) {
         store.editProductName(p, newName);
     }
 
     @Override
-    public void editProductPrice(Store store, Product p, int newPrice) {
+    public void editProductPrice(Product p, int newPrice) {
         store.editProductPrice(p, newPrice);
     }
 
     @Override
-    public void editProductCategory(Store store, Product p, String newCategory) {
+    public void editProductCategory(Product p, String newCategory) {
         store.editProductCategory(p, newCategory);
     }
 
     @Override
-    public void editProductDescription(Store store, Product p, String newDescription) {
+    public void editProductDescription(Product p, String newDescription) {
         store.editProductDescription(p, newDescription);
     }
 
@@ -69,6 +71,11 @@ public class StoreOwner  implements Position {
     @Override
     public List<Purchase> getPurchaseHistory(Store store) {
         return store.getPurchaseList();
+    }
+
+    @Override
+    public void closeStore() throws IllegalAccessException {
+        throw new IllegalAccessException("This member hasn't permission to close store");
     }
 
 }

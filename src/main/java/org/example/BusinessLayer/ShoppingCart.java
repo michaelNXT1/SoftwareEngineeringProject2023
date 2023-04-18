@@ -28,9 +28,11 @@ public class ShoppingCart {
     public Purchase purchaseShoppingCart() {
         List<PurchaseProduct> totalProducts = new ArrayList<>();
         for (ShoppingBag sb : shoppingBags) {
-            for (Map.Entry<Product, Integer> e : sb.getProductList().entrySet())
-                if (sb.purchaseProduct(e.getKey()))
-                    totalProducts.add(new PurchaseProduct(e.getKey(), e.getValue()));
+            for (Map.Entry<Product, Integer> e : sb.getProductList().entrySet()) {
+                PurchaseProduct pp = sb.purchaseProduct(e.getKey());
+                if (pp != null)
+                    totalProducts.add(pp);
+            }
             sb.closePurchase();
         }
         shoppingBags.removeIf(sb -> sb.getProductList().isEmpty());

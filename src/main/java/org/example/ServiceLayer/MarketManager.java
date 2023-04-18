@@ -76,18 +76,18 @@ public class MarketManager implements IMarketManager {
         }
     }
     //use case 3.2
-    public Response openStore(Member m, String storeName) {
+    public Response openStore(String storeName) {
         try {
-            market.openStore(m,storeName);
+            market.openStore(storeName);
             return new Response();
         } catch (Exception e) {
             return new Response(e.getMessage());
         }
     }
     //use case 3.2
-    public Response closeStore(Member m, int storeId) {
+    public Response closeStore(int storeId) {
         try {
-            market.closeStore(m,storeId);
+            market.closeStore(storeId);
             return new Response();
         } catch (Exception e) {
             return new Response(e.getMessage());
