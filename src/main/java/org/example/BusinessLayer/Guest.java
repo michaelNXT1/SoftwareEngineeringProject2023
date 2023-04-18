@@ -8,6 +8,9 @@ public class Guest {
     void addProductToShoppingCart(int storeID, int productID, int itemsAmount){
 
     }
+    public ShoppingCart DisplayShoppingCart(){  //2.11
+        return shoppingCart;
+    }
     public void changeProductQuantity(Product p, int newQuantity, Store s) {    //2.12
         shoppingCart.changeProductQuantity(p, newQuantity, s);
     }
