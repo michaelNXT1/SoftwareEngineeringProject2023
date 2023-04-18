@@ -14,6 +14,7 @@ public class Guest {
 
     public Purchase purchaseShoppingCart() {    //2.14
         return shoppingCart.purchaseShoppingCart();
+    }
     public void removeProductFromShoppingCart(Product p, Store s){  //2.13
         shoppingCart.removeProduct(p, s);
     }
