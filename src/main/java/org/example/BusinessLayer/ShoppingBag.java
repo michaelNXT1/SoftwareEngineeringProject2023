@@ -36,14 +36,16 @@ public class ShoppingBag {
     }
 
     //Use case 2.14
-    public boolean purchaseProduct(Product p) {
+    public PurchaseProduct purchaseProduct(Product p) {
+        PurchaseProduct pp = null;
         //TODO: lock store
         if (!store.updateProductQuantity(p, -1 * productList.get(p)))
-            return false;
-        bagPurchase.addProduct(new PurchaseProduct(p, productList.get(p)));
+            return null;
+        pp = new PurchaseProduct(p, productList.get(p));
+        bagPurchase.addProduct(pp);
         //TODO: release store
         productList.remove(p);
-        return true;
+        return pp;
     }
 
     //Use case 2.14

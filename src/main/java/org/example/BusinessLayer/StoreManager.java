@@ -1,17 +1,22 @@
 package org.example.BusinessLayer;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class StoreManager implements Position {
-
-    public StoreManager(Store store) {
-        this.store = store;
-    }
 
     enum permissionType {setPermissions, setNewPosition, Inventory, Purchases}
 
     private Store store;
-    private List<permissionType> permissions;
+    private Member assigner;
+    private Set<permissionType> permissions;
+
+    public StoreManager(Store store, Member assigner) {
+        this.store = store;
+        this.assigner = assigner;
+        permissions = new HashSet<>();
+    }
 
     @Override
     public Store getStore() {
@@ -39,7 +44,7 @@ public class StoreManager implements Position {
     }
 
     @Override
-    public void setPositionOfMemberToStoreManager(Store store, Member member) throws IllegalAccessException {
+    public void setPositionOfMemberToStoreManager(Store store, Member member) throws Exception {
         //TODO: Check if he has appropriate access permission
         if (permissions.contains(permissionType.setNewPosition))
             member.setToStoreManager(store);
@@ -49,7 +54,7 @@ public class StoreManager implements Position {
     }
 
     @Override
-    public void setPositionOfMemberToStoreOwner(Store store, Member member) throws IllegalAccessException {
+    public void setPositionOfMemberToStoreOwner(Store store, Member member) throws Exception {
         //TODO: Check if he has appropriate access permission
         if (permissions.contains(permissionType.setNewPosition))
             member.setToStoreManager(store);
@@ -69,7 +74,7 @@ public class StoreManager implements Position {
     }
 
     @Override
-    public void editProductName(Store store, Product p, String newName) throws IllegalAccessException {
+    public void editProductName(Product p, String newName) throws IllegalAccessException {
         //TODO: Check if he has appropriate access permission
         if (permissions.contains(permissionType.Inventory))
             store.editProductName(p, newName);
@@ -79,7 +84,7 @@ public class StoreManager implements Position {
     }
 
     @Override
-    public void editProductPrice(Store store, Product p, int newPrice) throws IllegalAccessException {
+    public void editProductPrice(Product p, int newPrice) throws IllegalAccessException {
         //TODO: Check if he has appropriate access permission
         if (permissions.contains(permissionType.Inventory))
             store.editProductPrice(p, newPrice);
@@ -89,7 +94,7 @@ public class StoreManager implements Position {
     }
 
     @Override
-    public void editProductCategory(Store store, Product p, String newCategory) throws IllegalAccessException {
+    public void editProductCategory(Product p, String newCategory) throws IllegalAccessException {
         //TODO: Check if he has appropriate access permission
         if (permissions.contains(permissionType.Inventory))
             store.editProductCategory(p, newCategory);
@@ -99,7 +104,7 @@ public class StoreManager implements Position {
     }
 
     @Override
-    public void editProductDescription(Store store, Product p, String newDescription) throws IllegalAccessException {
+    public void editProductDescription(Product p, String newDescription) throws IllegalAccessException {
         //TODO: Check if he has appropriate access permission
         if (permissions.contains(permissionType.Inventory))
             store.editProductDescription(p, newDescription);
@@ -132,5 +137,10 @@ public class StoreManager implements Position {
     @Override
     public void removePermission(permissionType permission) {
         permissions.remove(permission);
+    }
+
+    @Override
+    public void closeStore() throws IllegalAccessException {
+        throw new IllegalAccessException("This member hasn't permission to close store");
     }
 }
