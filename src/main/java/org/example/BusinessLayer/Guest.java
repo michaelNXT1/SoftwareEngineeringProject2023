@@ -5,8 +5,8 @@ import java.util.List;
 public class Guest {
 
     private ShoppingCart shoppingCart;
-    void addProductToShoppingCart(int storeID, int productID, int itemsAmount){
-
+    void addProductToShoppingBag(Store s, Product p, int itemsAmount){  //2.10
+        shoppingCart.addProduct(p, itemsAmount, s);
     }
     public ShoppingCart DisplayShoppingCart(){  //2.11
         return shoppingCart;
