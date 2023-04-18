@@ -1,9 +1,7 @@
 package org.example.BusinessLayer;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Store {
     private final int storeId;
@@ -49,14 +47,17 @@ public class Store {
     }
 
     //use case 4.1
-    public List<Purchase> getPurchseList() {
+    public List<Purchase> getPurchaseList() {
         return purchaseList;
     }
 
     //use case 5.1
-    public void addProduct(Product p, int quantity, Member m) {
-        //TODO: check permissions to add
+    public Product addProduct(String productName, double price, String category, double rating, int quantity) throws Exception {
+        if (!products.keySet().stream().filter(p -> p.getProductName().equals(productName)).collect(Collectors.toList()).isEmpty())
+            throw new Exception("Product name already exists");
+        Product p = new Product(products.keySet().stream().max((o1, o2) -> Integer.compare(o1.getProductid(), o2.getProductid())).get().getProductid() + 1, productName, price, category, rating, quantity);
         products.put(p, quantity);
+        return p;
     }
 
     //use case 5.2
@@ -65,8 +66,13 @@ public class Store {
     }
 
     //use case 5.3
-    public void removeProduct(Product p, Member m) {
-        //TODO: check permissions to remove
+    public void removeProduct(int productId) {
+        Product p;
+        try {
+            p = getProduct(productId);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         if (products.containsKey(p))
             products.remove(p);
         else {
@@ -84,5 +90,12 @@ public class Store {
 
     public int getStoreId() {
         return storeId;
+    }
+
+    public Product getProduct(int productId) throws Exception {
+        Product ret = products.keySet().stream().filter(p -> p.getProductid() == productId).findFirst().orElse(null);
+        if (ret == null)
+            throw new Exception("Product doesn't exist");
+        return ret;
     }
 }
