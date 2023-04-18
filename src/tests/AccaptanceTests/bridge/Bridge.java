@@ -1,5 +1,7 @@
 package AccaptanceTests.bridge;
 
+import org.example.BusinessLayer.Member;
+
 public interface Bridge {
   //  boolean setupSystem(String supplyConfig, String paymentConfig, String path);
 
@@ -31,7 +33,7 @@ public interface Bridge {
 
     boolean logout(int sessionId);
 
-    boolean openStore(int sessionId, String storeName, String newProducts);
+    boolean openStore(Member m, String storeName);
 
     String viewPurchaseHistory(int sessionId, int storeID);
 
@@ -59,7 +61,7 @@ public interface Bridge {
 
     boolean removeManager(int sessionId, int storeId, int userId);
 
-    boolean removeStore(int sessionId, int storeId);
+    boolean removeStore(Member m, int storeId);
 
     void clearDatabase();
 }

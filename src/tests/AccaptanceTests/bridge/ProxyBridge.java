@@ -1,5 +1,7 @@
 package AccaptanceTests.bridge;
 
+import org.example.BusinessLayer.Member;
+
 public class ProxyBridge implements Bridge{
     private Bridge real = null;
 
@@ -155,9 +157,9 @@ public class ProxyBridge implements Bridge{
         }
     }
 
-    public boolean openStore(int sessionId,String storeName, String newProducts){
+    public boolean openStore(Member m,String storeNames){
         if (real != null){
-            return real.openStore(sessionId, storeName, newProducts);
+            return real.openStore(m, storeNames);
         }
         else{
             return false;
@@ -287,9 +289,9 @@ public class ProxyBridge implements Bridge{
         }
     }
 
-    public boolean removeStore(int sessionId, int storeId){
+    public boolean removeStore(Member m, int storeId){
         if(real != null){
-            return real.removeStore(sessionId, storeId);
+            return real.removeStore(m, storeId);
         }
         else{
             return false;

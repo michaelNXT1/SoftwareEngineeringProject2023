@@ -1,10 +1,11 @@
 package AccaptanceTests.bridge;
 
 
+import org.example.BusinessLayer.Member;
 import org.example.ServiceLayer.MarketManager;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.junit.jupiter.api.Test;
+import org.testng.annotations.Test;
 import org.junit.jupiter.api.Assertions;
 
 public class Real implements Bridge {
@@ -28,15 +29,15 @@ public class Real implements Bridge {
     }
 
     public String searchProductsByName(String productName) {
-        return manager.searchProductsByName(productName).toString();
+        return manager.getProductsByName(productName).value.toString();
     }
 
     public String searchProductsByCategory(String productCategory) {
-        return manager.searchProductsByCategory(productCategory).toString();
+        return manager.getProductsByCategory(productCategory).value.toString();
     }
 
     public String searchProductsBySubString(String productSubString) {
-        return manager.searchProductsBySubString(productSubString).toString();
+        return manager.getProductsBySubstring(productSubString).value.toString();
     }
 
 
@@ -83,8 +84,8 @@ public class Real implements Bridge {
 
     }
 
-    public boolean openStore(int sessionId,String storeName, String newProducts) {
-        return manager.openStore(sessionId, storeName, newProducts).getError_occurred();
+    public boolean openStore(Member m, String storeName, String newProducts) {
+        return manager.openStore(m, storeName, newProducts).getError_occurred();
     }
 
     public String viewPurchaseHistory(int sessionId, int storeID){
@@ -142,8 +143,8 @@ public class Real implements Bridge {
         return manager.addStoreOwner(storeId, userId).getError_occurred();
     }
 
-    public boolean removeStore(int sessionId, int storeId){
-        return manager.removeStore(storeId).getError_occurred();
+    public boolean removeStore(Member m ,int storeID){
+        return manager.closeStore(m, storeID).getError_occurred();
     }
 
 
