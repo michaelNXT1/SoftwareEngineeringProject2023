@@ -4,7 +4,8 @@ import AccaptanceTests.ServiceTests;
 import org.junit.Before;
 import org.junit.Test;
 
-public class GetPositionInfo extends ServiceTests {
+public class CloseStoreTest extends ServiceTests {
+
     @Before
     public void setUp(){
         super.setUp();
@@ -15,23 +16,21 @@ public class GetPositionInfo extends ServiceTests {
     }
 
     @Test
-    public void addProductAsStoreOwnerSuccess(){
+    public void closeStoreSuccess(){
         int storeID = openStore("newStore");
-        assertNotNull(showStorePositions(1,storeID));
+        assertTrue(closeStore(storeID));
     }
 
     @Test
-    public void addProductAsStoreOwnerFail(){
+    public void closeStoreNotOwnerFail(){
         int storeID = openStore("newStore");
         logout(1);
         login("alon12","alon593112@gmail.com", "alon0601");
-        assertNull(showStorePositions(1,storeID));
+        assertFalse(closeStore(storeID));
     }
 
     @Test
-    public void addProductAsStoreOwnerFail2(){
-        assertNull(showStorePositions(1,3));
+    public void closeStoreNotExistFail(){
+        assertFalse(closeStore(3));
     }
-
-
 }

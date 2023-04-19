@@ -33,6 +33,11 @@ public class Real implements Bridge {
         return !manager.getProduct(productID, storeID).getError_occurred();
     }
 
+    @Override
+    public boolean closeStore(int storeID) {
+        return !this.manager.closeStore(storeID).getError_occurred();
+    }
+
     public String getStoresInform(String storeSubString) {
         return manager.getStores(storeSubString).value.toString();
     }
