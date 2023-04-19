@@ -1,27 +1,28 @@
 package org.example.BusinessLayer;
 
 public class Product {
-        private int productId;
+        private int productid;
         private String productName;
         private double price;
         private String category;
         private double rating;
         private int amount;
 
-    public Product(int productId, String productName, double price, String category) {
-        this.productId = productId;
+    public Product(int productid, String productName, double price, String category, double rating, int amount) {
+        this.productid = productid;
         this.productName = productName;
         this.price = price;
         this.category = category;
-        this.rating = 0;
+        this.rating = rating;
+        this.amount = amount;
     }
 
-    public int getProductId() {
-        return productId;
+    public int getProductid() {
+        return productid;
     }
 
-    public void setProductId(int productId) {
-        this.productId = productId;
+    public void setProductid(int productid) {
+        this.productid = productid;
     }
 
     public String getProductName() {
@@ -48,8 +49,8 @@ public class Product {
         this.category = category;
     }
 
-
-    public double getRating() { return rating;
+    public double getRating() {
+        return rating;
     }
 
     public void setRating(double rating) {

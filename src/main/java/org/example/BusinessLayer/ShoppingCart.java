@@ -6,49 +6,52 @@ import java.util.Map;
 
 public class ShoppingCart {
     List<ShoppingBag> shoppingBags;
+    private int cartTotal;
 
     public ShoppingCart() {
-        shoppingBags = new ArrayList<>();
+
     }
 
     //Use case 2.10
-    //Use case 2.12
-    public void setProductQuantity(Store s, int productId, int quantity) throws Exception {
+    public void addProduct(Product p, int quantity, Store s) {
         //TODO: add purchase type check
-        getShoppingBag(s).setProductQuantity(productId, quantity);
+        shoppingBagExists(s);
+        for (ShoppingBag sb : shoppingBags)
+            if (sb.getStore().equals(this))
+                sb.addProduct(p, quantity);
+    }
+
+    //Use case 2.12
+    public void changeProductQuantity(Product p, int newQuantity, Store s) {
+        if (shoppingBags.stream().anyMatch(sb -> sb.getStore().equals(s)))
+            for (ShoppingBag sb : shoppingBags)
+                if (sb.getStore().equals(this))
+                    sb.changeProductQuantity(p, newQuantity);
     }
 
     //Use case 2.13
-    public void removeProduct(Store s, int productId) throws Exception {
-        ShoppingBag shoppingBag = shoppingBags.stream().filter(sb -> sb.getStore().equals(s)).findFirst().orElse(null);
-        if (shoppingBag == null)
-            throw new Exception("store doesn't exist in cart");
-        shoppingBag.removeProduct(productId);
+    public void removeProduct(Product p, Store s) {
+        if (shoppingBags.stream().anyMatch(sb -> sb.getStore().equals(s)))
+            for (ShoppingBag sb : shoppingBags)
+                if (sb.getStore().equals(this))
+                    sb.removeProduct(p);
     }
 
     //Use case 2.14
     public Purchase purchaseShoppingCart() {
         List<PurchaseProduct> totalProducts = new ArrayList<>();
         for (ShoppingBag sb : shoppingBags) {
-            for (Map.Entry<Product, Integer> e : sb.getProductList().entrySet()) {
-                PurchaseProduct pp = sb.purchaseProduct(e.getKey());
-                if (pp != null)
-                    totalProducts.add(pp);
-            }
+            for (Map.Entry<Product, Integer> e : sb.getProductList().entrySet())
+                if (sb.purchaseProduct(e.getKey()))
+                    totalProducts.add(new PurchaseProduct(e.getKey(), e.getValue()));
             sb.closePurchase();
         }
         shoppingBags.removeIf(sb -> sb.getProductList().isEmpty());
         return new Purchase(totalProducts);
     }
 
-    private ShoppingBag getShoppingBag(Store s) {
-        return shoppingBags.stream()
-                .filter(sb -> sb.getStore().equals(s))
-                .findFirst()
-                .orElseGet(() -> {
-                    ShoppingBag newBag = new ShoppingBag(this, s);
-                    shoppingBags.add(newBag);
-                    return newBag;
-                });
+    private void shoppingBagExists(Store s) {
+        if (!shoppingBags.stream().anyMatch(sb -> sb.getStore().equals(s)))
+            shoppingBags.add(new ShoppingBag(this, s));
     }
 }

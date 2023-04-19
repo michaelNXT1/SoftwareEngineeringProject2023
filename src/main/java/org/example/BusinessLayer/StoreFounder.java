@@ -2,14 +2,12 @@ package org.example.BusinessLayer;
 
 import java.util.List;
 
-public class StoreFounder implements Position {
+public class StoreFounder implements Position{
 
     private Store store;
-    private Member assigner;
 
-    public StoreFounder(Store store, Member assigner) {
+    public StoreFounder(Store store) {
         this.store = store;
-        this.assigner = assigner;
     }
 
     @Override
@@ -28,60 +26,48 @@ public class StoreFounder implements Position {
     }
 
     @Override
-    public void setPositionOfMemberToStoreManager(Store store, Member member) throws Exception {
+    public void setPositionOfMemberToStoreManager(Store store, Member member){
         member.setToStoreManager(store);
     }
 
     @Override
-    public void setPositionOfMemberToStoreOwner(Store store, Member member) throws Exception {
+    public void setPositionOfMemberToStoreOwner(Store store, Member member) {
         member.setToStoreOwner(store);
     }
 
     @Override
-    public void removeProductFromStore(int productID) {
+    public void removeProductFromStore(Store store, int productID) {
         store.removeProduct(productID);
     }
 
     @Override
-
-    public void editProductName(int productId, String newName) throws Exception {
-        store.editProductName(productId, newName);
+    public void editProductName(Store store, int productID, String newName) {
+        store.editProductName(productID, newName);
     }
 
     @Override
-    public void editProductPrice(int productId, int newPrice) throws Exception {
-        store.editProductPrice(productId, newPrice);
+    public void editProductPrice(Store store, int productID, int newPrice) {
+        store.editProductPrice(productID, newPrice);
     }
 
     @Override
-    public void editProductCategory(int productId, String newCategory) throws Exception {
-        store.editProductCategory(productId, newCategory);
+    public void editProductCategory(Store store, int productID, String newCategory) {
+        store.editProductCategory(productID, newCategory);
     }
 
     @Override
-    public void editProductDescription(int productId, String newDescription) throws Exception {
-        store.editProductDescription(productId, newDescription);
+    public void editProductDescription(Store store, int productID, String newDescription) {
+        store.editProductDescription(productID, newDescription);
     }
 
     @Override
-    public Product addProduct(Store store, String productName, double price, String category, double rating, int quantity) throws Exception {
-        return store.addProduct(productName, price, category, rating, quantity);
+    public void addProduct(Store store, int productID, int itemsAmount) {
+        store.addProduct(productID, itemsAmount);
     }
 
     @Override
     public List<Purchase> getPurchaseHistory(Store store) {
-        return store.getPurchaseList();
-    }
-
-
-    @Override
-    public void closeStore() throws IllegalAccessException {
-        store.setOpen(false);
-    }
-
-    @Override
-    public List<Member> getStoreEmployees() {
-        return store.getEmployees();
+        return store.getPurchseList();
     }
 
 }

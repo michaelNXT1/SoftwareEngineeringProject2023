@@ -1,6 +1,9 @@
 package org.example.BusinessLayer;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Store {
     private final int storeId;
@@ -46,29 +49,24 @@ public class Store {
     }
 
     //use case 4.1
-    public List<Purchase> getPurchaseList() {
+    public List<Purchase> getPurchseList() {
         return purchaseList;
     }
 
     //use case 5.1
-    public Product addProduct(String productName, double price, String category, double rating, int quantity) throws Exception {
-        if (products.keySet().stream().anyMatch(p -> p.getProductName().equals(productName)))
-            throw new Exception("Product name already exists");
-        Product p = new Product(products.keySet().stream().max(Comparator.comparingInt(Product::getProductId)).get().getProductId() + 1, productName, price, category);
+    public void addProduct(Product p, int quantity, Member m) {
+        //TODO: check permissions to add
         products.put(p, quantity);
-        return p;
     }
 
     //use case 5.2
+    public void updateProductData(Product p, Object newData) {
+        //TODO: in future when merging
+    }
 
     //use case 5.3
-    public void removeProduct(int productId) {
-        Product p;
-        try {
-            p = getProduct(productId);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public void removeProduct(Product p, Member m) {
+        //TODO: check permissions to remove
         if (products.containsKey(p))
             products.remove(p);
         else {
@@ -86,47 +84,5 @@ public class Store {
 
     public int getStoreId() {
         return storeId;
-    }
-
-    public Product getProduct(int productId) throws Exception {
-        Product ret = products.keySet().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null);
-        if (ret == null)
-            throw new Exception("Product doesn't exist");
-        return ret;
-    }
-
-    public void editProductName(int productId, String newName) throws Exception {
-        checkProductExists(productId);
-        if (products.keySet().stream().anyMatch(p -> p.getProductName().equals(newName)))
-            throw new Exception("Product name already exists");
-        getProduct(productId).setProductName(newName);
-    }
-
-    public void editProductPrice(int productId, int newPrice) throws Exception {
-        checkProductExists(productId);
-        getProduct(productId).setPrice(newPrice);
-    }
-
-    public void editProductCategory(int productId, String newCategory) throws Exception {
-        checkProductExists(productId);
-        getProduct(productId).setCategory(newCategory);
-    }
-
-    public void editProductDescription(int productId, String newDescription) throws Exception {
-//        checkProductExists(productId);
-//        getProduct(productId).set(newDescription);
-    }
-
-    private void checkProductExists(int productId) throws Exception {
-        if(products.keySet().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null)==null)
-            throw new Exception("product id doesn't exist");
-    }
-
-    public void addEmployee(Member member) {
-        employees.add(member);
-    }
-
-    public List<Member> getEmployees() {
-        return employees;
     }
 }
