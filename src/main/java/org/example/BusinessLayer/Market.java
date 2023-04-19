@@ -108,27 +108,26 @@ public class Market {
     }
 
     //use case 2.3
-    public String loginSystemManager(String username, String email, String password) throws Exception {
+    public boolean loginSystemManager(String username, String email, String password) throws Exception {
         checkMarketOpen();
+        //can't login when another user is logged in
+        if (activeMember != null || activeSystemManager != null)
+            throw new Exception("Cannot perform action when logged in");
 
         // Retrieve the stored Member object for the given username
         SystemManager sm = systemManagers.get(username);
 
         // If the Member doesn't exist or the password is incorrect, return false
         if (sm == null || !passwordEncoder.matches(password, sm.getPassword()))
-            throw new Error("Invalid username or password");
+            return false;
 
         // If the credentials are correct, authenticate the user and return true
         boolean res = authenticate(username, password);
         if (res) {
-            String sessionId = sessionManager.createSessionForSystemManager(sm);
-            return sessionId;
+            activeSystemManager = sm;
+            activeGuest = null;
         }
-        return null;
-    }
-    public void logoutSystemManager(String sessionId) throws Exception {
-        checkMarketOpen();
-        sessionManager.deleteSessionForSystemManager(sessionId);
+        return res;
     }
 
     //use case 2.4 - store name
