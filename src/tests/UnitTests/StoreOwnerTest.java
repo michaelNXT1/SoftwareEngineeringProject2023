@@ -2,6 +2,7 @@ package UnitTests;
 
 import junit.framework.TestCase;
 import org.example.BusinessLayer.*;
+import org.junit.jupiter.api.BeforeEach;
 
 public class StoreOwnerTest extends TestCase {
     //StoreManager storeManager;
@@ -9,6 +10,7 @@ public class StoreOwnerTest extends TestCase {
     StoreOwner storeOwner;
     Member member;
     Store store;
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         member = new Member("member","member@post.bgu.ac.il","012");

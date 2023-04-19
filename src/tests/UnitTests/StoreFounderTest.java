@@ -2,6 +2,7 @@ package UnitTests;
 
 import junit.framework.TestCase;
 import org.example.BusinessLayer.*;
+import org.junit.jupiter.api.BeforeEach;
 
 public class StoreFounderTest extends TestCase {
     //StoreManager storeManager;
@@ -9,6 +10,7 @@ public class StoreFounderTest extends TestCase {
     Member member;
     Store store;
     //StoreOwner storeOwner;
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         member = new Member("member","member@post.bgu.ac.il","012");
@@ -26,13 +28,17 @@ public class StoreFounderTest extends TestCase {
         storeFounder.removeStoreManagerPermissions(storeManager, StoreManager.permissionType.Inventory);
     }
 
-    public void testSetPositionOfMemberToStoreManager() {
+    /*public void testSetPositionOfMemberToStoreManager() {
+        storeFounder.setPositionOfMemberToStoreManager(store,member);
     }
 
     public void testSetPositionOfMemberToStoreOwner() {
-    }
+        storeFounder.setPositionOfMemberToStoreOwner(store,member);
+
+    }*/
 
     public void testRemoveProductFromStore() {
+
     }
 
     public void testEditProductName() {
