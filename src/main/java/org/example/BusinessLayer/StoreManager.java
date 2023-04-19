@@ -116,7 +116,7 @@ public class StoreManager implements Position {
     public Product addProduct(Store store, String productName, double price, String category, double rating, int quantity) throws Exception {
         //TODO: Check if he has appropriate access permission
         if (permissions.contains(permissionType.Inventory))
-            return store.addProduct(productName, price, category, quantity);
+            return store.addProduct(productName, price, category, rating, quantity);
         else {
             throw new IllegalAccessException("This member hasn't permission to add product to the store");
         }
