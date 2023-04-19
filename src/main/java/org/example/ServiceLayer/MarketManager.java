@@ -187,12 +187,12 @@ public class MarketManager implements IMarketManager {
     }
 
     //use case 3.2
-    public Response openStore(String storeName) {
+    public ResponseT<Integer> openStore(String storeName) {
         try {
-            market.openStore(storeName);
-            return new Response();
+            Integer ret = market.openStore(storeName);
+            return ResponseT.fromValue(ret);
         } catch (Exception e) {
-            return new Response(e.getMessage());
+            return ResponseT.fromError(e.getMessage());
         }
     }
 
