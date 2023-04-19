@@ -1,13 +1,15 @@
 package AccaptanceTests.bridge;
 
-import org.example.BusinessLayer.Member;
+import org.example.BusinessLayer.Store;
+import org.example.ServiceLayer.ResponseT;
 
 public interface Bridge {
-  //  boolean setupSystem(String supplyConfig, String paymentConfig, String path);
+    boolean setupSystem(String managerUName, String managerEmail, String managerPass);
 
     boolean login(String username, String email,String password);
 
     boolean register(String username, String email,String password);
+    boolean getStore(int storeId);
 
     String getStoresInform(String storeSubString);
 
@@ -17,7 +19,9 @@ public interface Bridge {
 
     String searchProductsBySubString(String productSubString);
 
-    String filter(String filterParams);
+    String filterSearchResultsByCategory(String category);
+
+    String filterSearchResultsByPrice(double minPrice, double maxPrice);
 
     boolean addToCart(int storeId, int productId, int amount);
 
@@ -25,41 +29,49 @@ public interface Bridge {
 
     boolean deleteItemInCart(int storeId, int productId);
 
-    boolean clearCart(int sessionId);
+//    boolean clearCart(int sessionId);
 
     boolean buyCart(int sessionId, String cardNumber, String cardMonth, String cardYear, String cardHolder, String cardCcv, String cardId, String buyerName, String address, String city, String country, String zip);
 
-    String showCart(int sessionId);
+    String showCart();
 
-    boolean logout(int sessionId);
+    boolean logout();
 
-    boolean openStore(Member m, String storeName);
+    boolean openMarket();
 
-    String viewPurchaseHistory(int sessionId, int storeID);
+    Integer openStore(String storeName);
+
+    String viewPurchaseHistory(int storeID);
 
     boolean addProductToStore(int sessionId, int productId, int storeId, int amount);
 
-    boolean editProduct(int sessionId, int storeId, int productId, String productInfo);
 
     boolean deleteProduct(int sessionId, int storeId, int productId);
 
 
-    boolean editStorePurchaseType(int sessionId, int storeId, String newType);
+ //   boolean editStorePurchaseType(int sessionId, int storeId, String newType);
 
-    boolean appointManager(int sessionId, int storeId, int userId);
+    boolean appointManager(int sessionId, int storeId, String userName);
 
-    boolean setProductName(String newName);
+    Integer addProduct(int storeId, String productName, double price, String category, double rating, int quantity);
 
-    boolean editManagerOptions(int sessionId, int storeId, int userId, String option);
+    boolean setProductName(int storeId, int productId, String newName);
+
+    boolean setProductPrice(int storeId, int productId, int newPrice);
+
+    boolean setProductCategory(int storeId, int productId, String newCategory);
+
+    boolean editManagerOptions(int sessionId, String userName, int storeId, int option);
 
     String showStorePositions(int sessionId, int storeId);
 
-    boolean appointOwner(int sessionId, int storeId, int userId);
+
+ //   boolean appointOwner(int sessionId, int storeId, String userName);
 
 
-    boolean removeManager(int sessionId, int storeId, int userId);
+//    boolean removeManager(int sessionId, int storeId, int userId);
 
-    boolean removeStore(Member m, int storeId);
+    boolean removeStore(int storeId);
 
     void clearDatabase();
 }

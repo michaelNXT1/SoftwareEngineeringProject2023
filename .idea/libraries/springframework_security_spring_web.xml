@@ -1,0 +1,19 @@
+<component name="libraryTable">
+  <library name="springframework.security.spring.web" type="repository">
+    <properties maven-id="org.springframework.security:spring-security-web:5.5.4" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/security/spring-security-web/5.5.4/spring-security-web-5.5.4.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/security/spring-security-core/5.5.4/spring-security-core-5.5.4.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/security/spring-security-crypto/5.5.4/spring-security-crypto-5.5.4.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-core/5.3.14/spring-core-5.3.14.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-jcl/5.3.14/spring-jcl-5.3.14.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-aop/5.3.14/spring-aop-5.3.14.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-beans/5.3.14/spring-beans-5.3.14.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-context/5.3.14/spring-context-5.3.14.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-expression/5.3.14/spring-expression-5.3.14.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-web/5.3.14/spring-web-5.3.14.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

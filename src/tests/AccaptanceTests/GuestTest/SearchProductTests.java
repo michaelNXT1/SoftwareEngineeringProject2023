@@ -16,20 +16,17 @@ public class SearchProductTests extends ServiceTests {
     @Before
     public void setUp(){
         super.setUp();
-        int sessionId = 1;
-        int storeID = 1;
-
-
-        login("hanamaru", "abc@gmail.com","12345");
-        openStore(new Member("hanamaru", "abc@gmail.com","12345"), "newStore");
-        addProductToStore(sessionId, 1, storeID, 5);
-        addProductToStore(sessionId, 2, storeID, 5);
-        logout(sessionId);
+        register("alon1","alon59311@gmail.com", "alon0601");
+        login("alon1","alon59311@gmail.com", "alon0601");
+        int storeID = openStore("newStore");
+        addProductToStore(1, 1, storeID, 5);
+        addProductToStore(1, 2, storeID, 5);
+        logout(1);
 
         login("jjjj", "abcג@gmail.com","12345");
-        openStore(new Member("hanamaru", "abc@gmail.com","12345"), "jjj'sStore");
-        addProductToStore(sessionId, 1, storeID, 10);
-        logout(sessionId);
+        openStore("jjj'sStore");
+        addProductToStore(1, 1, storeID, 10);
+        logout(1);
     }
 
     @After
@@ -57,7 +54,7 @@ public class SearchProductTests extends ServiceTests {
 
     @Test
     public void testSearchProductsFilterSuccessful(){
-        assertNotNull(filter("Food"));
+        assertNotNull(filterSearchResultsByCategory("Food"));
     }
     @Test
     public void testSearchProductByNameFail(){
@@ -78,12 +75,8 @@ public class SearchProductTests extends ServiceTests {
     }
 
     @Test
-    public void testSearchProductsFilterFail(){
-        assertNull(filter("Foodsss"));
-    }
-    @Test
     public void testSearchProductsNoResults(){
-        String prodcuts = filter("Foodsss");
+        String prodcuts = filterSearchResultsByCategory("Foodsss");
         assertNull(prodcuts);
 
     }
