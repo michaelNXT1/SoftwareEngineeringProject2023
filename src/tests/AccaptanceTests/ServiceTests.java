@@ -140,6 +140,8 @@ public abstract class ServiceTests extends TestCase {
         return this.bridge.getStoresInform(storeSub);
     }
 
+    public String showStorePositions(int sessionId, int storeId){return this.bridge.showStorePositions(sessionId, storeId);}
+
     public String viewPurchaseHistory(int sessionId, int storeID){
         return bridge.viewPurchaseHistory(storeID);
     }
