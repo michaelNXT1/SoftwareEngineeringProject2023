@@ -268,6 +268,15 @@ public class MarketManager implements IMarketManager {
         }
     }
 
+    public Response removeStoreManagerPermissions(String storeManager, int storeID, int newPermission) {
+        try {
+            market.removeStoreManagerPermissions(storeManager, storeID, newPermission);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
     public ResponseT<List<Member>> getStoreEmployees(int storeId) {
         try {
             List<Member> ret = market.getStoreEmployees(storeId);
