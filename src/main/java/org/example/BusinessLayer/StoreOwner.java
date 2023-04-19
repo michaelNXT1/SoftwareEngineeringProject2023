@@ -65,7 +65,7 @@ public class StoreOwner implements Position {
     }
 
     public Product addProduct(Store store, String productName, double price, String category, double rating, int quantity) throws Exception {
-        return store.addProduct(productName, price, category, quantity);
+        return store.addProduct(productName, price, category, rating, quantity);
     }
 
     @Override
