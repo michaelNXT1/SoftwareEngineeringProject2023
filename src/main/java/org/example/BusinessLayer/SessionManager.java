@@ -8,9 +8,11 @@ import java.util.Map;
 public class SessionManager {
 
     private final Map<String, Guest> sessions;
+    private final Map<String, SystemManager> systemManagerSessions;
     private static final int SESSION_ID_LENGTH = 16;
 
     public SessionManager() {
+        this.systemManagerSessions = new HashMap<>();
         this.sessions = new HashMap<>();
     }
 
@@ -33,4 +35,12 @@ public class SessionManager {
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
 
+    public String createSessionForSystemManager(SystemManager sm) {
+        String sessionId = generateSessionId();
+        systemManagerSessions.put(sessionId, sm);
+        return sessionId;
+    }
+    public void deleteSessionForSystemManager(String sessionId) {
+        systemManagerSessions.remove(sessionId);
+    }
 }
