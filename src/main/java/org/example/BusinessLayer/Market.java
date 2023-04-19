@@ -1,5 +1,6 @@
 package org.example.BusinessLayer;
 
+import org.example.Security.SecurityUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
@@ -19,6 +20,8 @@ public class Market {
     private Guest activeGuest;
     private SystemManager activeSystemManager;
     private boolean marketOpen;
+    SessionManager sessionManager = new SessionManager();
+    SecurityUtils securityUtils = new SecurityUtils();
 
     public Market() {
         stores = new HashMap<>();
@@ -31,8 +34,6 @@ public class Market {
     }
 
     public void signUpSystemManager(String username, String email, String password) throws Exception {
-        if (activeMember != null)
-            throw new Exception("Cannot perform action when logged in");
         if (usernameExists(username))
             throw new Exception("Username already exists");
         if (emailExists(email))
@@ -52,11 +53,10 @@ public class Market {
     }
 
     //use case 1.1
-    public void enterMarket() throws Exception {
-        checkMarketOpen();
-        if (activeMember != null)
-            throw new Exception("Cannot perform action when logged in");
-        activeGuest = new Guest();
+    public String enterMarket() throws Exception {
+        Guest guest = new Guest();
+        String sessionId = sessionManager.createSession(guest);
+        return sessionId;
     }
 
     //Use case 2.2
@@ -83,49 +83,52 @@ public class Market {
     }
 
     //use case 2.3
-    public boolean login(String username, String email, String password) throws Exception {
+    public String login(String username, String email, String password) throws Exception {
         checkMarketOpen();
-        //can't login when another user is logged in
-        if (activeMember != null || activeSystemManager != null)
-            throw new Exception("Cannot perform action when logged in");
 
         // Retrieve the stored Member object for the given username
         Member member = users.get(username);
 
-        // If the Member doesn't exist or the password is incorrect, return false
+        // If the Member doesn't exist or the password is incorrect, throw exception
         if (member == null || !passwordEncoder.matches(password, member.getPassword()))
-            return false;
+            throw new Error("Invalid username or password");
 
         // If the credentials are correct, authenticate the user and return true
-        boolean res = authenticate(username, password);
+        boolean res = securityUtils.authenticate(username, password);
         if (res) {
-            activeMember = member;
-            activeGuest = null;
+            String sessionId = sessionManager.createSession(member);
+            return sessionId;
         }
-        return res;
+        return null;
+    }
+    //use case 3.1
+    public void logout(String sessionId) throws Exception {
+        checkMarketOpen();
+        sessionManager.deleteSession(sessionId);
     }
 
     //use case 2.3
-    public boolean loginSystemManager(String username, String email, String password) throws Exception {
+    public String loginSystemManager(String username, String email, String password) throws Exception {
         checkMarketOpen();
-        //can't login when another user is logged in
-        if (activeMember != null || activeSystemManager != null)
-            throw new Exception("Cannot perform action when logged in");
 
         // Retrieve the stored Member object for the given username
         SystemManager sm = systemManagers.get(username);
 
         // If the Member doesn't exist or the password is incorrect, return false
         if (sm == null || !passwordEncoder.matches(password, sm.getPassword()))
-            return false;
+            throw new Error("Invalid username or password");
 
         // If the credentials are correct, authenticate the user and return true
         boolean res = authenticate(username, password);
         if (res) {
-            activeSystemManager = sm;
-            activeGuest = null;
+            String sessionId = sessionManager.createSessionForSystemManager(sm);
+            return sessionId;
         }
-        return res;
+        return null;
+    }
+    public void logoutSystemManager(String sessionId) throws Exception {
+        checkMarketOpen();
+        sessionManager.deleteSessionForSystemManager(sessionId);
     }
 
     //use case 2.4 - store name
@@ -264,24 +267,15 @@ public class Market {
             return activeMember.purchaseShoppingCart();
     }
 
-    //use case 3.1
-    public void logout() throws Exception {
-        checkMarketOpen();
-        if (activeMember == null && activeSystemManager == null)
-            throw new Exception("Cannot perform action when not logged in");
-        activeMember = null;
-        activeSystemManager = null;
-        activeGuest = new Guest();
-    }
-
     //use case 3.2
-    public void openStore(String storeName) throws Exception {
+    public int openStore(String storeName) throws Exception {
         checkMarketOpen();
         if (activeMember == null)
             throw new Exception("Cannot perform action when not logged in");
         //TODO: lock stores variable
         int storeId = stores.keySet().stream().mapToInt(v -> v).max().orElse(0);
         stores.put(storeId, activeMember.openStore(storeName, storeId));
+        return storeId;
         //TODO: release stores variable
     }
 
