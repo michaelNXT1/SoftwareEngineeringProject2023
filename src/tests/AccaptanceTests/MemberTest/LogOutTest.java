@@ -11,6 +11,7 @@ public class LogOutTest extends ServiceTests {
 
     @Before
     public void setUp(){
+        super.setUp();
         register("alon1","alon59311@gmail.com", "alon0601");
         login("alon1","alon59311@gmail.com", "alon0601");
     }
