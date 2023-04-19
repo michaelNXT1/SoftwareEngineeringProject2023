@@ -7,9 +7,9 @@ public class StoreFounder implements Position {
     private Store store;
     private Member assigner;
 
-    public StoreFounder(Store store, Member assigner) {
+    public StoreFounder(Store store) {
         this.store = store;
-        this.assigner = assigner;
+        this.assigner = null;
     }
 
     @Override

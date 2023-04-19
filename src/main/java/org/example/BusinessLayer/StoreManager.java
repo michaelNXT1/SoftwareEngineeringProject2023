@@ -6,10 +6,11 @@ import java.util.Set;
 
 public class StoreManager implements Position {
 
-    enum permissionType {setPermissions, setNewPosition, Inventory, Purchases, EmployeeList}
+    public enum permissionType {setPermissions, setNewPosition, Inventory, Purchases, EmployeeList}
 
     private Store store;
     private Member assigner;
+
     private Set<permissionType> permissions;
 
     public StoreManager(Store store, Member assigner) {
@@ -21,6 +22,9 @@ public class StoreManager implements Position {
     @Override
     public Store getStore() {
         return store;
+    }
+    public Set<permissionType> getPermissions() {
+        return permissions;
     }
 
     @Override
