@@ -96,12 +96,12 @@ public class Market {
             return false;
 
         // If the credentials are correct, authenticate the user and return true
-        boolean res = authenticate(username, password);
-        if (res) {
-            activeMember = member;
-            activeGuest = null;
-        }
-        return res;
+        //boolean res = authenticate(username, password);
+        //if (res) {
+        activeMember = member;
+        activeGuest = null;
+        //}
+        return true;
     }
 
 

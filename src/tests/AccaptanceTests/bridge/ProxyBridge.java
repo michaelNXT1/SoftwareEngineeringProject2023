@@ -46,6 +46,16 @@ public class ProxyBridge implements Bridge{
         }
     }
 
+    @Override
+    public boolean getProduct(int productID, int storeID) {
+        if (real != null) {
+            return real.getProduct(productID, storeID);
+        }
+        else {
+            return false;
+        }
+    }
+
     public String getStoresInform(String storeSubString){
         if (real != null) {
             return real.getStoresInform(storeSubString);

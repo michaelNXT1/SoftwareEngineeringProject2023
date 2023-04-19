@@ -19,14 +19,10 @@ public class SearchProductTests extends ServiceTests {
         register("alon1","alon59311@gmail.com", "alon0601");
         login("alon1","alon59311@gmail.com", "alon0601");
         int storeID = openStore("newStore");
-        addProductToStore(1, 1, storeID, 5);
-        addProductToStore(1, 2, storeID, 5);
+        int productID1 = addProduct(storeID,"test",4.5,"milk",9,1);
+        int productID2 = addProduct(storeID,"test2",3.9,"milk",9,1);
         logout(1);
 
-        login("jjjj", "abcג@gmail.com","12345");
-        openStore("jjj'sStore");
-        addProductToStore(1, 1, storeID, 10);
-        logout(1);
     }
 
     @After
@@ -36,25 +32,30 @@ public class SearchProductTests extends ServiceTests {
 
     @Test
     public void testSearchProductByNameSuccessful(){
-        String products = searchProductsByName("milk");
+        String products = searchProductsByName("test");
         assertNotNull(products);
     }
 
     @Test
     public void testSearchProductsByCategorySuccessful(){
-        String products = searchProductsByCategory("frozen");
+        String products = searchProductsByCategory("milk");
         assertNotNull(products);
     }
 
     @Test
     public void testSearchProductsBySubStringSuccessful(){
-        String products = searchProductsBySubString("milk");
+        String products = searchProductsBySubString("fo");
         assertNotNull(products);
     }
 
     @Test
-    public void testSearchProductsFilterSuccessful(){
-        assertNotNull(filterSearchResultsByCategory("Food"));
+    public void testSearchProductsFilterCategorySuccessful(){
+        assertNotNull(filterSearchResultsByCategory("milk"));
+    }
+
+    @Test
+    public void testSearchProductsFilterPriceSuccessful(){
+        assertNotNull(filterSearchResultsByPrice(3,4));
     }
     @Test
     public void testSearchProductByNameFail(){
@@ -75,10 +76,15 @@ public class SearchProductTests extends ServiceTests {
     }
 
     @Test
-    public void testSearchProductsNoResults(){
+    public void testFilterByCategoryNoResults(){
         String prodcuts = filterSearchResultsByCategory("Foodsss");
         assertNull(prodcuts);
+    }
 
+    @Test
+    public void testFilterByPriceNoResults(){
+        String prodcuts = filterSearchResultsByPrice(1,3);
+        assertNull(prodcuts);
     }
 
 

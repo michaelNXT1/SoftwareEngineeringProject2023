@@ -61,6 +61,14 @@ public abstract class ServiceTests extends TestCase {
         return this.bridge.login(username, email,password);
     }
 
+    public boolean getStore(int storeID){
+        return this.bridge.getStore(storeID);
+    }
+
+    public boolean getProduct(int productID, int storeID){
+        return this.bridge.getProduct(productID, storeID);
+    }
+
     public boolean register(String username, String email,String password){
         return this.bridge.register(username, email,password);
     }

@@ -11,6 +11,9 @@ public interface Bridge {
     boolean register(String username, String email,String password);
     boolean getStore(int storeId);
 
+    boolean getProduct(int productID, int storeID);
+
+
     String getStoresInform(String storeSubString);
 
     String searchProductsByName(String productName);
