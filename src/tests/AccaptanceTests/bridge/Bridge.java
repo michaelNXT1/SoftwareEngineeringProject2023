@@ -14,6 +14,8 @@ public interface Bridge {
     boolean getProduct(int productID, int storeID);
 
 
+    boolean closeStore(int storeID);
+
     String getStoresInform(String storeSubString);
 
     String searchProductsByName(String productName);
