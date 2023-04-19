@@ -2,9 +2,15 @@ package org.example.BusinessLayer;
 
 import java.util.List;
 
-public class StoreOwner  implements Position {
+public class StoreOwner implements Position {
 
     private Store store;
+    private Member assigner;
+
+    public StoreOwner(Store store, Member assigner) {
+        this.store = store;
+        this.assigner = assigner;
+    }
 
     @Override
     public Store getStore() {
@@ -12,62 +18,69 @@ public class StoreOwner  implements Position {
     }
 
     @Override
-    public void changeStoreManagerPermissions(String storeManager, int storeID, StoreManager.permissionType newPermission) {
+    public void addStoreManagerPermissions(Position storeManagerPosition, StoreManager.permissionType newPermission) {
+        storeManagerPosition.addPermission(newPermission);
+    }
+
+    @Override
+    public void removeStoreManagerPermissions(Position storeManagerPosition, StoreManager.permissionType permission) {
+        storeManagerPosition.removePermission(permission);
 
     }
 
     @Override
-    public void setPositionOfMemberToStoreManager(int storeID, String MemberToBecomeManager) {
+    public void setPositionOfMemberToStoreManager(Store store, Member member) throws Exception {
+        member.setToStoreManager(store);
+    }
 
+
+    @Override
+    public void setPositionOfMemberToStoreOwner(Store store, Member member) throws Exception {
+        member.setToStoreOwner(store);
     }
 
     @Override
-    public void setPositionOfMemberToStoreOwner(int storeID, String MemberToBecomeOwner) {
-
+    public void removeProductFromStore(int productID) {
+        store.removeProduct(productID);
     }
 
     @Override
-    public void removeProductFromStore(int storeID, int productID) {
-
+    public void editProductName(int productId, String newName) throws Exception {
+        store.editProductName(productId, newName);
     }
 
     @Override
-    public void editProductName(int storeID, int productID, String newName) {
-
+    public void editProductPrice(int productId, int newPrice) throws Exception {
+        store.editProductPrice(productId, newPrice);
     }
 
     @Override
-    public void editProductPrice(int storeID, int productID, int newPrice) {
-
+    public void editProductCategory(int productId, String newCategory) throws Exception {
+        store.editProductCategory(productId, newCategory);
     }
 
     @Override
-    public void editProductCategory(int storeID, int productID, String newCategory) {
+    public void editProductDescription(int productId, String newDescription) throws Exception {
+        store.editProductDescription(productId, newDescription);
+    }
 
+    public Product addProduct(Store store, String productName, double price, String category, double rating, int quantity) throws Exception {
+        return store.addProduct(productName, price, category, rating, quantity);
     }
 
     @Override
-    public void editProductDescription(int storeID, int productID, String newDescription) {
-
+    public List<Purchase> getPurchaseHistory(Store store) {
+        return store.getPurchaseList();
     }
 
     @Override
-    public void addProduct(int storeID, int productID, String productName, int itemsAmount, int price) {
-
+    public void closeStore() throws IllegalAccessException {
+        throw new IllegalAccessException("This member hasn't permission to close store");
     }
 
     @Override
-    public List<Purchase> getPurchaseHistory(int storeID) {
-        return null;
+    public List<Member> getStoreEmployees() {
+        return store.getEmployees();
     }
 
-    @Override
-    public int openStore(String name) {
-        return 0;
-    }
-
-    @Override
-    public void logout() {
-
-    }
 }
