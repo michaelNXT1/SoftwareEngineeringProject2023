@@ -12,7 +12,7 @@ public class Product {
 
         private PurchaseType purchaseType;
 
-    public Product(int productId, String productName, double price, String category, double rating, int amount) {
+    public Product(int productId, String productName, double price, String category) {
         this.discount = new VisibleDiscount(this);
         this.purchaseType = new BuyItNow(this);
         this.productId = productId;
@@ -30,7 +30,7 @@ public class Product {
         this.purchaseType = purchaseType;
     }
 
-    public int getProductid() {
+    public int getProductId() {
         return productId;
     }
 

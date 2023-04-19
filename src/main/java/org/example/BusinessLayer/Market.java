@@ -20,7 +20,6 @@ public class Market {
     private Guest activeGuest;
     private SystemManager activeSystemManager;
     private boolean marketOpen;
-    SessionManager sessionManager = new SessionManager();
     SecurityUtils securityUtils = new SecurityUtils();
 
     public Market() {
@@ -53,10 +52,8 @@ public class Market {
     }
 
     //use case 1.1
-    public String enterMarket() throws Exception {
+    public void enterMarket() throws Exception {
         Guest guest = new Guest();
-        String sessionId = sessionManager.createSession(guest);
-        return sessionId;
     }
 
     //Use case 2.2
@@ -83,29 +80,39 @@ public class Market {
     }
 
     //use case 2.3
-    public String login(String username, String email, String password) throws Exception {
+    public boolean login(String username, String email, String password) throws Exception {
         checkMarketOpen();
+        //can't login when another user is logged in
+        if (activeMember != null || activeSystemManager != null)
+            throw new Exception("Cannot perform action when logged in");
 
         // Retrieve the stored Member object for the given username
         Member member = users.get(username);
 
-        // If the Member doesn't exist or the password is incorrect, throw exception
+        // If the Member doesn't exist or the password is incorrect, return false
         if (member == null || !passwordEncoder.matches(password, member.getPassword()))
-            throw new Error("Invalid username or password");
+            return false;
 
         // If the credentials are correct, authenticate the user and return true
-        boolean res = securityUtils.authenticate(username, password);
+        boolean res = authenticate(username, password);
         if (res) {
-            String sessionId = sessionManager.createSession(member);
-            return sessionId;
+            activeMember = member;
+            activeGuest = null;
         }
-        return null;
+        return res;
     }
+
+
     //use case 3.1
-    public void logout(String sessionId) throws Exception {
+    public void logout() throws Exception {
         checkMarketOpen();
-        sessionManager.deleteSession(sessionId);
+        if (activeMember == null && activeSystemManager == null)
+            throw new Exception("Cannot perform action when not logged in");
+        activeMember = null;
+        activeSystemManager = null;
+        activeGuest = new Guest();
     }
+
 
     //use case 2.3
     public boolean loginSystemManager(String username, String email, String password) throws Exception {
