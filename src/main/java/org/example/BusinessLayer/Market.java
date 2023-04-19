@@ -268,13 +268,14 @@ public class Market {
     }
 
     //use case 3.2
-    public void openStore(String storeName) throws Exception {
+    public int openStore(String storeName) throws Exception {
         checkMarketOpen();
         if (activeMember == null)
             throw new Exception("Cannot perform action when not logged in");
         //TODO: lock stores variable
         int storeId = stores.keySet().stream().mapToInt(v -> v).max().orElse(0);
         stores.put(storeId, activeMember.openStore(storeName, storeId));
+        return storeId;
         //TODO: release stores variable
     }
 
