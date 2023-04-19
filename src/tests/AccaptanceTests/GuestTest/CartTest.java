@@ -23,7 +23,7 @@ public class CartTest extends ServiceTests {
 
 
         login("hanamaru", "abc@gmail.com","12345");
-        openStore(new Member("hanamaru", "abc@gmail.com","12345"), "newStore");
+        openStore("newStore");
         addProductToStore(sessionId, 1, storeID, 5);
         addProductToStore(sessionId, 2, storeID, 5);
         logout(sessionId);

@@ -18,19 +18,17 @@ public abstract class ServiceTests extends TestCase {
 
         this.bridge = Driver.getBridge();
 
-        int sessionId = 0;
-
-
-        login("admin", "admin@gmail.com","admin");
-        this.bridge.addProductToStore(sessionId, 1, 1,  10);
-        this.bridge.addProductToStore(sessionId, 2, 1,  10);
-        logout(sessionId);
+        this.bridge.setupSystem("alon","alon5931@gmail.com", "alon0601");
 
     }
 
     @After
     public void tearDown() {
 
+    }
+
+    public boolean openMarket(){
+       return this.bridge.openMarket();
     }
 
     public String searchProductsByName(String productName) {
@@ -90,10 +88,12 @@ public abstract class ServiceTests extends TestCase {
 
     public boolean logout(int sessionId){ return bridge.logout(); }
 
-    public boolean openStore(String storeName){ return bridge.openStore(storeName); }
+    public Integer openStore(String storeName){ return bridge.openStore(storeName); }
 
     public boolean addProductToStore(int sessionId, int productId, int storeId, int amount) { return bridge.addProductToStore(sessionId, productId, storeId, amount); }
 
+
+    public Integer addProduct(int storeId, String productName, double price, String category, double rating, int quantity){return this.bridge.addProduct(storeId, productName, price, category, rating, quantity);}
 
     public boolean deleteProduct(int sessionId, int storeId, int productId) { return bridge.deleteProduct(sessionId, storeId, productId); }
 

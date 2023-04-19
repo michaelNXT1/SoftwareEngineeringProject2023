@@ -1,7 +1,5 @@
 package AccaptanceTests.bridge;
 
-import org.example.BusinessLayer.Member;
-
 public class ProxyBridge implements Bridge{
     private Bridge real = null;
 
@@ -9,16 +7,18 @@ public class ProxyBridge implements Bridge{
         if (real == null)
             real = implementation;
     }
-//    public boolean setupSystem(String supplyConfig, String paymentConfig,String path){
-//        if (real != null){
-//            return real.setupSystem(supplyConfig, paymentConfig,path);
-//        }
-//        else{
-//            return false;
-//        }
-//    }
+    public boolean setupSystem(String managerUName, String managerEmail, String managerPass){
+        if (real != null){
+            return real.setupSystem(managerUName, managerEmail,managerPass);
+        }
+        else{
+            return false;
+        }
+    }
 
-    public boolean login(String username, String email,String password) {
+
+
+    public boolean login(String username, String email, String password) {
         if (real != null) {
             return real.login(username, email, password);
         }
@@ -30,6 +30,16 @@ public class ProxyBridge implements Bridge{
     public boolean register(String username, String email,String password) {
         if (real != null) {
             return real.register(username, email, password);
+        }
+        else {
+            return false;
+        }
+    }
+
+
+    public boolean getStore(int storeId) {
+        if (real != null) {
+            return real.getStore(storeId);
         }
         else {
             return false;
@@ -137,6 +147,13 @@ public class ProxyBridge implements Bridge{
         }
     }
 
+    public boolean openMarket() {
+        if(real != null)
+            return real.openMarket();
+        else
+            return false;
+    }
+
 
     public boolean deleteItemInCart(int storeId, int productId) {
         if (real != null) {
@@ -169,12 +186,12 @@ public class ProxyBridge implements Bridge{
 
 
 
-    public boolean openStore(String storeNames){
+    public Integer openStore(String storeNames){
         if (real != null){
             return real.openStore(storeNames);
         }
         else{
-            return false;
+            return -1;
         }
     }
 
@@ -248,12 +265,12 @@ public class ProxyBridge implements Bridge{
     }
 
 
-    public boolean addProduct(int storeId, String productName, double price, String category, double rating, int quantity) {
+    public Integer addProduct(int storeId, String productName, double price, String category, double rating, int quantity) {
         if (real != null) {
             return real.addProduct(storeId, productName, price, category, rating, quantity);
         }
         else {
-            return false;
+            return -1;
         }
     }
 

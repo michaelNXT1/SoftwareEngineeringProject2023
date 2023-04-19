@@ -1,13 +1,15 @@
 package AccaptanceTests.bridge;
 
-import org.example.BusinessLayer.Member;
+import org.example.BusinessLayer.Store;
+import org.example.ServiceLayer.ResponseT;
 
 public interface Bridge {
-  //  boolean setupSystem(String supplyConfig, String paymentConfig, String path);
+    boolean setupSystem(String managerUName, String managerEmail, String managerPass);
 
     boolean login(String username, String email,String password);
 
     boolean register(String username, String email,String password);
+    boolean getStore(int storeId);
 
     String getStoresInform(String storeSubString);
 
@@ -35,7 +37,9 @@ public interface Bridge {
 
     boolean logout();
 
-    boolean openStore(String storeName);
+    boolean openMarket();
+
+    Integer openStore(String storeName);
 
     String viewPurchaseHistory(int storeID);
 
@@ -49,7 +53,7 @@ public interface Bridge {
 
     boolean appointManager(int sessionId, int storeId, String userName);
 
-    boolean addProduct(int storeId, String productName, double price, String category, double rating, int quantity);
+    Integer addProduct(int storeId, String productName, double price, String category, double rating, int quantity);
 
     boolean setProductName(int storeId, int productId, String newName);
 
@@ -60,6 +64,7 @@ public interface Bridge {
     boolean editManagerOptions(int sessionId, String userName, int storeId, int option);
 
     String showStorePositions(int sessionId, int storeId);
+
 
  //   boolean appointOwner(int sessionId, int storeId, String userName);
 

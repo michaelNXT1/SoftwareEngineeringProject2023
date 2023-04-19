@@ -3,6 +3,7 @@ package AccaptanceTests.GuestTest;
 
 
 import AccaptanceTests.ServiceTests;
+import org.apache.commons.lang3.ObjectUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,6 +35,8 @@ public class RegistrationTest extends ServiceTests {
 
     @Test
     public void testRegisterFailureExistingUsername() {
+        register( "sarah", "alon123@gmail.com","12345");
+        register("yohane","alon@gmail.com", "1234");
         assertFalse(register("yohane","alon@gmail.com", "1234"));
         assertFalse(register( "sarah", "alon123@gmail.com","12345"));
     }

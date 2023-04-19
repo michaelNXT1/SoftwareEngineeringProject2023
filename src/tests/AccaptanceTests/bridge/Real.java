@@ -1,26 +1,31 @@
 package AccaptanceTests.bridge;
 
 
-import org.example.BusinessLayer.Member;
 import org.example.ServiceLayer.MarketManager;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-import org.junit.jupiter.api.Assertions;
 
 public class Real implements Bridge {
 
-    MarketManager manager = new MarketManager();
-//    public boolean setupSystem(String supplyConfig, String paymentConfig,String path) {
-//
-//    }
+    private MarketManager manager;
+
+    public Real (){
+         this.manager = new MarketManager();
+    }
+
+    public boolean setupSystem(String managerUName, String managerEmail, String managerPass){
+        return !this.manager.signUpSystemManager(managerUName, managerEmail, managerPass).getError_occurred();
+    }
 
     public boolean login(String username,String email,String password) {
-        return manager.login(username, email, password).getError_occurred();
+        return !manager.login(username, email, password).getError_occurred();
     }
 
     public boolean register(String username,String email,String password) {
-        return manager.signUp(username, email,password).getError_occurred();
+        return !manager.signUp(username, email,password).getError_occurred();
+    }
+
+    @Override
+    public boolean getStore(int storeId) {
+        return !manager.getStore(storeId).getError_occurred();
     }
 
     public String getStoresInform(String storeSubString) {
@@ -51,7 +56,7 @@ public class Real implements Bridge {
 
 
     public boolean addToCart(int storeId, int productId, int amount) {
-        return manager.addProductToCart(storeId, productId, amount).getError_occurred();
+        return !manager.addProductToCart(storeId, productId, amount).getError_occurred();
     }
 
 
@@ -61,11 +66,11 @@ public class Real implements Bridge {
 
 
     public boolean updateAmount(int storeId,int productId, int amount) {
-        return manager.changeProductQuantity(storeId, productId, amount).getError_occurred();
+        return !manager.changeProductQuantity(storeId, productId, amount).getError_occurred();
     }
 
     public boolean deleteItemInCart(int storeId, int productId) {
-        return manager.removeProductFromCart(storeId, productId).getError_occurred();
+        return !manager.removeProductFromCart(storeId, productId).getError_occurred();
     }
 
 //    public boolean clearCart(int sessionId) {
@@ -74,19 +79,23 @@ public class Real implements Bridge {
 
     public boolean buyCart(int sessionId, String cardNumber, String cardMonth, String cardYear, String cardHolder,
                            String cardCcv, String cardId, String buyerName, String address, String city, String country, String zip) {
-        return manager.purchaseShoppingCart().getError_occurred();
+        return !manager.purchaseShoppingCart().getError_occurred();
     }
 
 
     public boolean logout(){
-        return manager.logout().getError_occurred();
+        return !manager.logout().getError_occurred();
 
     }
 
+    @Override
+    public boolean openMarket() {
+        return !this.manager.enterMarket().getError_occurred();
+    }
 
 
-    public boolean openStore(String storeName) {
-        return manager.openStore(storeName).getError_occurred();
+    public Integer openStore(String storeName) {
+        return manager.openStore(storeName).value;
     }
 
     public String viewPurchaseHistory(int storeID){
@@ -95,39 +104,39 @@ public class Real implements Bridge {
 
 
     public boolean addProductToStore(int sessionId, int productId, int storeId, int amount) {
-        return manager.addProductToCart(productId,storeId,amount).getError_occurred();
+        return !manager.addProductToCart(productId,storeId,amount).getError_occurred();
     }
 
 
     public boolean deleteProduct(int sessionId, int storeId, int productId) {
-        return manager.removeProductFromStore(storeId, productId).getError_occurred();
+        return !manager.removeProductFromStore(storeId, productId).getError_occurred();
     }
 
 
 
 
     public boolean appointManager(int sessionId, int storeId, String userName) {
-        return manager.setPositionOfMemberToStoreManager(storeId, userName).getError_occurred();
+        return !manager.setPositionOfMemberToStoreManager(storeId, userName).getError_occurred();
     }
 
 
-    public boolean addProduct(int storeId, String productName, double price, String category, double rating, int quantity) {
-        return manager.addProduct(storeId, productName, price, category, rating, quantity).getError_occurred();
+    public Integer addProduct(int storeId, String productName, double price, String category, double rating, int quantity) {
+        return manager.addProduct(storeId, productName, price, category, rating, quantity).value.getProductId();
     }
 
 
     public boolean setProductName(int storeId, int productId, String newName) {
-        return manager.editProductName(storeId, productId, newName).getError_occurred();
+        return !manager.editProductName(storeId, productId, newName).getError_occurred();
     }
 
 
     public boolean setProductPrice(int storeId, int productId, int newPrice) {
-        return manager.editProductPrice(storeId, productId, newPrice).getError_occurred();
+        return !manager.editProductPrice(storeId, productId, newPrice).getError_occurred();
     }
 
 
     public boolean setProductCategory(int storeId, int productId, String newCategory) {
-        return manager.editProductCategory(storeId, productId, newCategory).getError_occurred();
+        return !manager.editProductCategory(storeId, productId, newCategory).getError_occurred();
     }
 
 
@@ -140,7 +149,7 @@ public class Real implements Bridge {
 //    }
 
     public boolean editManagerOptions(int sessionId, String userName, int storeId, int option){
-        return manager.addStoreManagerPermissions(userName, storeId, option).getError_occurred();
+        return !manager.addStoreManagerPermissions(userName, storeId, option).getError_occurred();
     }
 
     public String showStorePositions(int sessionId, int storeId) {
