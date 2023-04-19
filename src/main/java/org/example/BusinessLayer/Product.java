@@ -8,7 +8,13 @@ public class Product {
         private double rating;
         private int amount;
 
-    public Product(int productId, String productName, double price, String category) {
+        private  Discount discount;
+
+        private PurchaseType purchaseType;
+
+    public Product(int productId, String productName, double price, String category, double rating, int amount) {
+        this.discount = new VisibleDiscount(this);
+        this.purchaseType = new BuyItNow(this);
         this.productId = productId;
         this.productName = productName;
         this.price = price;
@@ -16,7 +22,15 @@ public class Product {
         this.rating = 0;
     }
 
-    public int getProductId() {
+    public void setDiscount(Discount discount) {
+        this.discount = discount;
+    }
+
+    public void setPurchaseType(PurchaseType purchaseType) {
+        this.purchaseType = purchaseType;
+    }
+
+    public int getProductid() {
         return productId;
     }
 
@@ -48,7 +62,8 @@ public class Product {
         this.category = category;
     }
 
-    public double getRating() { return rating;
+    public double getRating() {
+        return rating;
     }
 
     public void setRating(double rating) {
@@ -63,3 +78,5 @@ public class Product {
         this.amount = amount;
     }
     }
+
+
