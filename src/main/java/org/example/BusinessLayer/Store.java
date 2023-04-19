@@ -51,7 +51,7 @@ public class Store {
     }
 
     //use case 5.1
-    public Product addProduct(String productName, double price, String category, double rating, int quantity) throws Exception {
+    public Product addProduct(String productName, double price, String category, int quantity) throws Exception {
         if (products.keySet().stream().anyMatch(p -> p.getProductName().equals(productName)))
             throw new Exception("Product name already exists");
         Product p = new Product(products.keySet().stream().max(Comparator.comparingInt(Product::getProductId)).get().getProductId() + 1, productName, price, category);
