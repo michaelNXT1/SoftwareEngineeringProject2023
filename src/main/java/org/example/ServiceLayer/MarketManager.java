@@ -28,18 +28,18 @@ public class MarketManager implements IMarketManager {
     }
 
     //use case 2.3
-    public ResponseT<String> login(String username, String email, String password) {
+    public Response login(String username, String email, String password) {
         try {
-            String ret = market.login(username, email, password);
-            return ResponseT.fromValue(ret);
+            market.login(username, email, password);
+            return new Response();
         } catch (Exception e) {
-            return ResponseT.fromError(e.getMessage());
+            return new Response(e.getMessage());
         }
     }
 
-    public ResponseT<String> loginSystemManager(String username, String email, String password) {
+    public ResponseT<Boolean> loginSystemManager(String username, String email, String password) {
         try {
-            String ret = market.loginSystemManager(username, email, password);
+            Boolean ret = market.loginSystemManager(username, email, password);
             return ResponseT.fromValue(ret);
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
@@ -177,18 +177,9 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public Response logout(String sessionId) {
+    public Response logout() {
         try {
-            market.logout(sessionId);
-            return new Response();
-        } catch (Exception e) {
-            return new Response(e.getMessage());
-        }
-    }
-
-    public Response logoutSystemManager(String sessionId) {
-        try {
-            market.logoutSystemManager(sessionId);
+            market.logout();
             return new Response();
         } catch (Exception e) {
             return new Response(e.getMessage());
@@ -271,15 +262,6 @@ public class MarketManager implements IMarketManager {
     public Response addStoreManagerPermissions(String storeManager, int storeID, int newPermission) {
         try {
             market.addStoreManagerPermissions(storeManager, storeID, newPermission);
-            return new Response();
-        } catch (Exception e) {
-            return new Response(e.getMessage());
-        }
-    }
-
-    public Response removeStoreManagerPermissions(String storeManager, int storeID, int newPermission) {
-        try {
-            market.removeStoreManagerPermissions(storeManager, storeID, newPermission);
             return new Response();
         } catch (Exception e) {
             return new Response(e.getMessage());
