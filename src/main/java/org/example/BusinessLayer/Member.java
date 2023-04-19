@@ -56,18 +56,6 @@ public class Member extends Guest {
         SecurityUtils.logout();
     }
 
-    public List<StoreFounder> getStoreFounderPositions() {
-        List<StoreFounder> positions = new ArrayList<>();
-        synchronized (this.positions) {
-            for (Position p : this.positions) {
-                if (p instanceof StoreFounder) {
-                    positions.add((StoreFounder) p);
-                }
-            }
-        }
-        return positions;
-    }
-
     public Position getStorePosition(Store store) {
         synchronized (positions) {
             for (Position position : positions) {
