@@ -177,9 +177,9 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public Response logout() {
+    public Response logout(String sessionId) {
         try {
-            market.logout();
+            market.logout(sessionId);
             return new Response();
         } catch (Exception e) {
             return new Response(e.getMessage());
