@@ -21,13 +21,13 @@ public class SearchProductTests extends ServiceTests {
 
 
         login("hanamaru", "abc@gmail.com","12345");
-        openStore(new Member("hanamaru", "abc@gmail.com","12345"), "newStore");
+        openStore("newStore");
         addProductToStore(sessionId, 1, storeID, 5);
         addProductToStore(sessionId, 2, storeID, 5);
         logout(sessionId);
 
         login("jjjj", "abcג@gmail.com","12345");
-        openStore(new Member("hanamaru", "abc@gmail.com","12345"), "jjj'sStore");
+        openStore("jjj'sStore");
         addProductToStore(sessionId, 1, storeID, 10);
         logout(sessionId);
     }
@@ -57,7 +57,7 @@ public class SearchProductTests extends ServiceTests {
 
     @Test
     public void testSearchProductsFilterSuccessful(){
-        assertNotNull(filter("Food"));
+        assertNotNull(filterSearchResultsByCategory("Food"));
     }
     @Test
     public void testSearchProductByNameFail(){
@@ -78,12 +78,8 @@ public class SearchProductTests extends ServiceTests {
     }
 
     @Test
-    public void testSearchProductsFilterFail(){
-        assertNull(filter("Foodsss"));
-    }
-    @Test
     public void testSearchProductsNoResults(){
-        String prodcuts = filter("Foodsss");
+        String prodcuts = filterSearchResultsByCategory("Foodsss");
         assertNull(prodcuts);
 
     }
