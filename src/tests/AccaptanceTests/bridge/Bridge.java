@@ -68,6 +68,11 @@ public interface Bridge {
 
     String showStorePositions(int sessionId, int storeId);
 
+    boolean editProductPrice(int storeId, int productId, int newPrice);
+
+    boolean editProductCategory(int storeId, int productId, String newCategory);
+
+    boolean editProductName(int storeId, int productId, String newName);
 
  //   boolean appointOwner(int sessionId, int storeId, String userName);
 

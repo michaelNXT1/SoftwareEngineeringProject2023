@@ -52,6 +52,19 @@ public abstract class ServiceTests extends TestCase {
         return this.bridge.filterSearchResultsByPrice(minPrice, maxPrice);
     }
 
+
+    public boolean editProductName(int storeId, int productId, String newName){
+        return this.bridge.editProductName(storeId, productId, newName);
+    }
+
+    public boolean editProductCategory(int storeId, int productId, String newCategory){
+        return this.bridge.editProductCategory(storeId, productId, newCategory);
+    }
+
+    public boolean editProductPrice(int storeId, int productId, int newPrice){
+        return this.bridge.editProductPrice(storeId, productId, newPrice);
+    }
+
     public void clearDB(){
         this.bridge.clearDatabase(); // start tests with a clean database
     }
