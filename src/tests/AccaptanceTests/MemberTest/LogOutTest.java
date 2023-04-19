@@ -11,7 +11,8 @@ public class LogOutTest extends ServiceTests {
 
     @Before
     public void setUp(){
-        login("hanamaru", "abc@gmail.com","12345");
+        register("alon1","alon59311@gmail.com", "alon0601");
+        login("alon1","alon59311@gmail.com", "alon0601");
     }
 
 
@@ -22,7 +23,8 @@ public class LogOutTest extends ServiceTests {
 
     @Test
     public void testLogoutFailedNotLoggedIn(){
-        logout(2);
+        logout(1);
+        assertFalse(logout(1));
     }
 
 
