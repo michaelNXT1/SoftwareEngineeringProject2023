@@ -28,18 +28,18 @@ public class MarketManager implements IMarketManager {
     }
 
     //use case 2.3
-    public Response login(String username, String email, String password) {
+    public ResponseT<String> login(String username, String email, String password) {
         try {
-            market.login(username, email, password);
-            return new Response();
+            String ret = market.login(username, email, password);
+            return ResponseT.fromValue(ret);
         } catch (Exception e) {
-            return new Response(e.getMessage());
+            return ResponseT.fromError(e.getMessage());
         }
     }
 
-    public ResponseT<Boolean> loginSystemManager(String username, String email, String password) {
+    public ResponseT<String> loginSystemManager(String username, String email, String password) {
         try {
-            Boolean ret = market.loginSystemManager(username, email, password);
+            String ret = market.loginSystemManager(username, email, password);
             return ResponseT.fromValue(ret);
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
@@ -177,9 +177,18 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public Response logout() {
+    public Response logout(String sessionId) {
         try {
-            market.logout();
+            market.logout(sessionId);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
+    public Response logoutSystemManager(String sessionId) {
+        try {
+            market.logoutSystemManager(sessionId);
             return new Response();
         } catch (Exception e) {
             return new Response(e.getMessage());
@@ -187,12 +196,12 @@ public class MarketManager implements IMarketManager {
     }
 
     //use case 3.2
-    public Response openStore(String storeName) {
+    public ResponseT<Integer> openStore(String storeName) {
         try {
-            market.openStore(storeName);
-            return new Response();
+            Integer ret = market.openStore(storeName);
+            return ResponseT.fromValue(ret);
         } catch (Exception e) {
-            return new Response(e.getMessage());
+            return ResponseT.fromError(e.getMessage());
         }
     }
 
