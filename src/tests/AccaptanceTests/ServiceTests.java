@@ -79,9 +79,9 @@ public abstract class ServiceTests extends TestCase {
         return bridge.deleteItemInCart(storeId, productId);
     }
 
-    public boolean clearCart(int sessionId){
-        return bridge.clearCart(sessionId);
-    }
+//    public boolean clearCart(int sessionId){
+//        return bridge.clearCart(sessionId);
+//    }
 
     public boolean buyCart(int sessionId, String cardNumber, String cardMonth, String cardYear, String cardHolder,
                            String cardCcv, String cardId, String buyerName, String address, String city, String country, String zip){
@@ -101,7 +101,7 @@ public abstract class ServiceTests extends TestCase {
 
 //    public boolean appointOwner(int sessionId, int storeId, String userName) { return bridge.appointOwner(sessionId, storeId, userName); }
 
-    public boolean removeManager(int sessionId, int storeId, int userId) { return bridge.removeManager(sessionId, storeId, userId); }
+//    public boolean removeManager(int sessionId, int storeId, int userId) { return bridge.removeManager(sessionId, storeId, userId); }
 
 //    public boolean removeOwner(int sessionId, int storeId, int userId) { return bridge.removeOwner(sessionId, storeId, userId); }
 

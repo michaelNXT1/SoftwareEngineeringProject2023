@@ -68,9 +68,9 @@ public class Real implements Bridge {
         return manager.removeProductFromCart(storeId, productId).getError_occurred();
     }
 
-    public boolean clearCart(int sessionId) {
-        return manager.clearCart(sessionId).getError_occurred();
-    }
+//    public boolean clearCart(int sessionId) {
+//        return manager.clearCart(sessionId).getError_occurred();
+//    }
 
     public boolean buyCart(int sessionId, String cardNumber, String cardMonth, String cardYear, String cardHolder,
                            String cardCcv, String cardId, String buyerName, String address, String city, String country, String zip) {
@@ -135,9 +135,9 @@ public class Real implements Bridge {
         return false;
     }
 
-    public boolean removeManager(int sessionId, int storeId, int userId) {
-        return manager.deleteManager(storeId, userId).getError_occurred();
-    }
+//    public boolean removeManager(int sessionId, int storeId, int userId) {
+//        return manager.deleteManager(storeId, userId).getError_occurred();
+//    }
 
     public boolean editManagerOptions(int sessionId, String userName, int storeId, int option){
         return manager.addStoreManagerPermissions(userName, storeId, option).getError_occurred();

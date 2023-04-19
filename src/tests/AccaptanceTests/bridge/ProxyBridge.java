@@ -147,14 +147,14 @@ public class ProxyBridge implements Bridge{
         }
     }
 
-    public boolean clearCart(int sessionId) {
-        if (real != null) {
-            return real.clearCart(sessionId);
-        }
-        else {
-            return false;
-        }
-    }
+//    public boolean clearCart(int sessionId) {
+//        if (real != null) {
+//            return real.clearCart(sessionId);
+//        }
+//        else {
+//            return false;
+//        }
+//    }
 
     public boolean buyCart(int sessionId, String cardNumber, String cardMonth, String cardYear, String cardHolder,
                            String cardCcv, String cardId, String buyerName, String address, String city, String country, String zip) {
@@ -321,14 +321,14 @@ public class ProxyBridge implements Bridge{
 //        }
 //    }
 
-    public boolean removeManager(int sessionId, int storeId, int userId){
-        if(real != null){
-            return real.removeManager(sessionId, storeId, userId);
-        }
-        else{
-            return false;
-        }
-    }
+//    public boolean removeManager(int sessionId, int storeId, int userId){
+//        if(real != null){
+//            return real.removeManager(sessionId, storeId, userId);
+//        }
+//        else{
+//            return false;
+//        }
+//    }
 
     public boolean removeStore(int storeId){
         if(real != null){

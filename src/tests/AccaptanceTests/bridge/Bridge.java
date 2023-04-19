@@ -27,7 +27,7 @@ public interface Bridge {
 
     boolean deleteItemInCart(int storeId, int productId);
 
-    boolean clearCart(int sessionId);
+//    boolean clearCart(int sessionId);
 
     boolean buyCart(int sessionId, String cardNumber, String cardMonth, String cardYear, String cardHolder, String cardCcv, String cardId, String buyerName, String address, String city, String country, String zip);
 
@@ -64,7 +64,7 @@ public interface Bridge {
  //   boolean appointOwner(int sessionId, int storeId, String userName);
 
 
-    boolean removeManager(int sessionId, int storeId, int userId);
+//    boolean removeManager(int sessionId, int storeId, int userId);
 
     boolean removeStore(int storeId);
 
