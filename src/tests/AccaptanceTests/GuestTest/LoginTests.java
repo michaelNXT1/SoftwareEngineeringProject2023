@@ -14,6 +14,7 @@ public class LoginTests extends ServiceTests {
      * */
     @Before
     public void setUp(){
+        super.setUp();
         register("hanamaru", "abc@gmail.com","12345");
         register("chika", "abcd@gmail.com","12345");
     }
@@ -27,19 +28,16 @@ public class LoginTests extends ServiceTests {
     @Test
     public void testLoginSuccessful(){
         assertTrue(login("hanamaru", "abc@gmail.com","12345"));
-        //logout(Database.sessionId);
     }
 
     @Test
     public void testLoginFailureWrongPassword(){
         assertFalse(login("hanamaru", "abc@gmail.com","12345657"));
-
     }
 
     @Test
     public void testLoginFailureNonExistingUser(){
         assertFalse(login("yohariko","abcd@gmail.com", "1234"));
-
     }
 
 

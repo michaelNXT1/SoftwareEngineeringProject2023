@@ -1,5 +1,9 @@
-package org.example.BusinessLayer;
+package UnitTests;
 
+import org.example.BusinessLayer.Market;
+import org.example.BusinessLayer.Product;
+import org.example.BusinessLayer.Store;
+import org.example.BusinessLayer.StoreManager;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 

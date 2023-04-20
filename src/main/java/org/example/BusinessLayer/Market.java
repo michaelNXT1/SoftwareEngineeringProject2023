@@ -1,7 +1,9 @@
 package org.example.BusinessLayer;
 
 import org.example.Security.SecurityUtils;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,14 +22,13 @@ public class Market {
     private Guest activeGuest;
     private SystemManager activeSystemManager;
     private boolean marketOpen;
-    SessionManager sessionManager = new SessionManager();
     SecurityUtils securityUtils = new SecurityUtils();
 
     public Market() {
         stores = new HashMap<>();
         systemManagers = new HashMap<>();
         users = new HashMap<>();
-//        passwordEncoder = new ???
+        passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         activeGuest = null;
         activeMember = null;
         marketOpen = false;
@@ -53,10 +54,8 @@ public class Market {
     }
 
     //use case 1.1
-    public String enterMarket() throws Exception {
+    public void enterMarket() throws Exception {
         Guest guest = new Guest();
-        String sessionId = sessionManager.createSession(guest);
-        return sessionId;
     }
 
     //Use case 2.2
@@ -83,52 +82,61 @@ public class Market {
     }
 
     //use case 2.3
-    public String login(String username, String email, String password) throws Exception {
+    public boolean login(String username, String email, String password) throws Exception {
         checkMarketOpen();
+        //can't login when another user is logged in
+        if (activeMember != null || activeSystemManager != null)
+            throw new Exception("Cannot perform action when logged in");
 
         // Retrieve the stored Member object for the given username
         Member member = users.get(username);
 
-        // If the Member doesn't exist or the password is incorrect, throw exception
+        // If the Member doesn't exist or the password is incorrect, return false
         if (member == null || !passwordEncoder.matches(password, member.getPassword()))
-            throw new Error("Invalid username or password");
+            return false;
 
         // If the credentials are correct, authenticate the user and return true
-        boolean res = securityUtils.authenticate(username, password);
-        if (res) {
-            String sessionId = sessionManager.createSession(member);
-            return sessionId;
-        }
-        return null;
-    }
-    //use case 3.1
-    public void logout(String sessionId) throws Exception {
-        checkMarketOpen();
-        sessionManager.deleteSession(sessionId);
+        //boolean res = authenticate(username, password);
+        //if (res) {
+        activeMember = member;
+        activeGuest = null;
+        //}
+        return true;
     }
 
-    //use case 2.3
-    public String loginSystemManager(String username, String email, String password) throws Exception {
+
+    //use case 3.1
+    public void logout() throws Exception {
         checkMarketOpen();
+        if (activeMember == null && activeSystemManager == null)
+            throw new Exception("Cannot perform action when not logged in");
+        activeMember = null;
+        activeSystemManager = null;
+        activeGuest = new Guest();
+    }
+
+
+    //use case 2.3
+    public boolean loginSystemManager(String username, String email, String password) throws Exception {
+        checkMarketOpen();
+        //can't login when another user is logged in
+        if (activeMember != null || activeSystemManager != null)
+            throw new Exception("Cannot perform action when logged in");
 
         // Retrieve the stored Member object for the given username
         SystemManager sm = systemManagers.get(username);
 
         // If the Member doesn't exist or the password is incorrect, return false
         if (sm == null || !passwordEncoder.matches(password, sm.getPassword()))
-            throw new Error("Invalid username or password");
+            return false;
 
         // If the credentials are correct, authenticate the user and return true
         boolean res = authenticate(username, password);
         if (res) {
-            String sessionId = sessionManager.createSessionForSystemManager(sm);
-            return sessionId;
+            activeSystemManager = sm;
+            activeGuest = null;
         }
-        return null;
-    }
-    public void logoutSystemManager(String sessionId) throws Exception {
-        checkMarketOpen();
-        sessionManager.deleteSessionForSystemManager(sessionId);
+        return res;
     }
 
     //use case 2.4 - store name
@@ -298,7 +306,7 @@ public class Market {
         if (!storeExists(storeId))
             throw new Exception("Store id doesn't exist");
         Position p = checkPositionLegal(storeId);
-        return p.addProduct(stores.get(storeId), productName, price, category, rating, quantity);
+        return p.addProduct(stores.get(storeId), productName, price, category, quantity);
     }
 
     //use case 5.2 - by product name
@@ -368,19 +376,6 @@ public class Market {
             throw new Exception("the name of the store manager has not have that position in this store");
         else
             p.addStoreManagerPermissions(storeManagerPosition, perm);
-    }
-    //use case 5.10
-    public void removeStoreManagerPermissions(String storeManager, int storeID, int permission) throws Exception {
-        checkMarketOpen();
-        if (activeMember == null)
-            throw new Exception("Cannot perform action when not logged in");
-        StoreManager.permissionType perm = StoreManager.permissionType.values()[permission];
-        Position p = checkPositionLegal(storeID);
-        Position storeManagerPosition = users.get(storeManager).getStorePosition(stores.get(storeID));
-        if (storeManagerPosition == null)
-            throw new Exception("the name of the store manager has not have that position in this store");
-        else
-            p.removeStoreManagerPermissions(storeManagerPosition, perm);
     }
 
     //use case 5.11

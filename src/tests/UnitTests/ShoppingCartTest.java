@@ -1,5 +1,6 @@
-package org.example.BusinessLayer;
+package UnitTests;
 
+import org.example.BusinessLayer.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -52,4 +53,9 @@ class ShoppingCartTest {
         Purchase purchase = shoppingCart.purchaseShoppingCart();
         assertTrue(purchase.getProductList().contains(product2));
     }
+
+    //טסט שאין מספיק מוצרים במלאי
+    //מערכת כספים לא עובד והמלאי לא משתנה ואין תשלום
+    //שימוש בmocks
+    //
 }
