@@ -10,6 +10,7 @@ public class StoreOwnerTest extends TestCase {
     StoreOwner storeOwner;
     Member member;
     Store store;
+    Product p;
     @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
@@ -20,6 +21,7 @@ public class StoreOwnerTest extends TestCase {
         //storeManager = new StoreManager(store,member);
         //storeFounder = new StoreFounder(store);
         storeOwner = new StoreOwner(store,member);
+        p = null;
     }
 
     public void testChangeStoreManagerPermissions() {
@@ -29,39 +31,58 @@ public class StoreOwnerTest extends TestCase {
         storeOwner.removeStoreManagerPermissions(storeManager, StoreManager.permissionType.Inventory);
     }
 
-    public void testSetPositionOfMemberToStoreManager() {
+    public void testRemoveProductFromStore() throws Exception {
+        p = store.addProduct("Product 1", 10.0, "proxyProduct", 100);
+        int productId = p.getProductId();
+        storeOwner.removeProductFromStore(productId);
+        assertNull(store.getProduct(p.getProductId()));
     }
 
-    public void testSetPositionOfMemberToStoreOwner() {
+    public void testEditProductName() throws Exception {
+        p = store.addProduct("Product 1", 10.0, "proxyProduct", 100);
+        int productId = p.getProductId();
+        storeOwner.editProductName(productId, "Product 2");
+        assertEquals(p.getProductName(),"Product 2");
     }
 
-    public void testRemoveProductFromStore() {
+    public void testEditProductPrice() throws Exception {
+        p = store.addProduct("Product 1", 10.0, "proxyProduct", 100);
+        int productId = p.getProductId();
+        storeOwner.editProductPrice(productId, 60.0);
+        assertEquals(p.getProductPrice(),60.0);
     }
 
-    public void testEditProductName() {
+    public void testEditProductCategory() throws Exception {
+        p = store.addProduct("Product 1", 10.0, "proxyProduct", 100);
+        int productId = p.getProductId();
+        storeOwner.editProductCategory(productId, "new category");
+        assertEquals(p.getCategory(),"new category");
     }
 
-    public void testEditProductPrice() {
+    public void testEditProductDescription() throws Exception {
+        p = store.addProduct("Product 1", 10.0, "proxyProduct", 100);
+        int productId = p.getProductId();
+        storeOwner.editProductDescription(productId, Long.parseLong("new description"));
+        assertEquals(p.getDescription(),Long.parseLong("new description"));
     }
 
-    public void testEditProductCategory() {
-    }
-
-    public void testEditProductDescription() {
-    }
-
-    public void testAddProduct() {
+    public void testAddProduct() throws Exception {
+        p = storeOwner.addProduct(store,"Product 1", 10.0, "proxyProduct", 100);
+        assertEquals(p,store.getProduct(p.getProductId()));
     }
 
     public void testGetPurchaseHistory() {
+        assertTrue(storeOwner.getPurchaseHistory(store).isEmpty());
     }
 
-    public void testAddPermission() {
-    }
 
-    public void testRemovePermission() {
-    }
+    public void testCloseStore() throws IllegalAccessException {
+        try {
+            storeOwner.closeStore();
+            fail("Expected IllegalAccessException was not thrown");
+        } catch (IllegalAccessException e) {
+            assertEquals("This member hasn't permission to close store", e.getMessage());
 
-    public void testCloseStore() {
+        }
     }
 }
