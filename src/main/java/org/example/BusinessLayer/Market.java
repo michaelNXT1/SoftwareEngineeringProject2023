@@ -1,7 +1,9 @@
 package org.example.BusinessLayer;
 
 import org.example.Security.SecurityUtils;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +28,7 @@ public class Market {
         stores = new HashMap<>();
         systemManagers = new HashMap<>();
         users = new HashMap<>();
-//        passwordEncoder = new ???
+        passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         activeGuest = null;
         activeMember = null;
         marketOpen = false;
@@ -94,12 +96,12 @@ public class Market {
             return false;
 
         // If the credentials are correct, authenticate the user and return true
-        boolean res = authenticate(username, password);
-        if (res) {
-            activeMember = member;
-            activeGuest = null;
-        }
-        return res;
+        //boolean res = authenticate(username, password);
+        //if (res) {
+        activeMember = member;
+        activeGuest = null;
+        //}
+        return true;
     }
 
 

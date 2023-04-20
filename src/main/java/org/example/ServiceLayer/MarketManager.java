@@ -7,7 +7,21 @@ import java.util.Map;
 
 public class MarketManager implements IMarketManager {
     private Market market;
-    
+
+    public MarketManager(){
+        this.market = new Market();
+    }
+
+    public Response signUpSystemManager(String username, String email, String password){
+        try {
+            market.signUpSystemManager(username,email,password);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
+
     public Response enterMarket() {
         try {
             market.enterMarket();
