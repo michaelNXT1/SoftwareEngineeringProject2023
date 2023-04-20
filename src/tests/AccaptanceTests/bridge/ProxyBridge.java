@@ -339,6 +339,16 @@ public class ProxyBridge implements Bridge{
         }
     }
 
+    @Override
+    public boolean getStoresPurchases() {
+        if(real != null){
+            return real.getStoresPurchases();
+        }
+        else{
+            return false;
+        }
+    }
+
 
     public String showStorePositions(int sessionId, int storeId){
         if(real != null){

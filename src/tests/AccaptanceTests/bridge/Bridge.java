@@ -68,6 +68,8 @@ public interface Bridge {
 
     boolean editManagerOptions(int sessionId, String userName, int storeId, int option);
 
+    boolean getStoresPurchases();
+
     String showStorePositions(int sessionId, int storeId);
 
     boolean editProductPrice(int storeId, int productId, int newPrice);

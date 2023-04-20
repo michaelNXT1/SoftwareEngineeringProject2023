@@ -162,6 +162,11 @@ public class Real implements Bridge {
         return !manager.addStoreManagerPermissions(userName, storeId, option).getError_occurred();
     }
 
+    @Override
+    public boolean getStoresPurchases() {
+        return !this.manager.getStoresPurchases().getError_occurred();
+    }
+
     public String showStorePositions(int sessionId, int storeId) {
         return manager.getStoreEmployees(storeId).value.toString();
     }

@@ -146,20 +146,15 @@ public abstract class ServiceTests extends TestCase {
         return this.bridge.getStore(storeID);
     }
 
+    public boolean getStoresPurchases(){
+        return this.bridge.getStoresPurchases();
+    }
+
     public String viewPurchaseHistory(int sessionId, int storeID){
         return bridge.viewPurchaseHistory(storeID);
     }
 
-//    public String searchUserHistory(int sessionId, int userId) { return this.bridge.searchUserHistory(sessionId, userId);}
-//
-//    public String getStoreHistory(int sessionId, int storeId) { return this.bridge.getStoreHistory(sessionId, storeId); }
-//
-//    public String viewShopHistory(int sessionId, int storeId){ return bridge.viewShopHistory(sessionId, storeId); }
-
-//    public boolean setupSystem(String suppyConfig, String paymentConfig,String path) { return bridge.setupSystem(suppyConfig, paymentConfig,path); }
 
 //    public int startSession() { return this.bridge.startSession(); }
-
-//    public void addProductInfo(int sessionId, int id, String name, String category, double basePrice) { this.bridge.addProductInfo(sessionId, id, name, category, basePrice);}
 
 }
