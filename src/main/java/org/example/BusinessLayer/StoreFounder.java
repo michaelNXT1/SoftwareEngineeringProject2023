@@ -7,9 +7,9 @@ public class StoreFounder implements Position {
     private Store store;
     private Member assigner;
 
-    public StoreFounder(Store store, Member assigner) {
+    public StoreFounder(Store store) {
         this.store = store;
-        this.assigner = assigner;
+        this.assigner = null;
     }
 
     @Override
@@ -48,7 +48,7 @@ public class StoreFounder implements Position {
     }
 
     @Override
-    public void editProductPrice(int productId, int newPrice) throws Exception {
+    public void editProductPrice(int productId, double newPrice) throws Exception {
         store.editProductPrice(productId, newPrice);
     }
 
@@ -58,13 +58,13 @@ public class StoreFounder implements Position {
     }
 
     @Override
-    public void editProductDescription(int productId, String newDescription) throws Exception {
+    public void editProductDescription(int productId, long newDescription) throws Exception {
         store.editProductDescription(productId, newDescription);
     }
 
     @Override
-    public Product addProduct(Store store, String productName, double price, String category, double rating, int quantity) throws Exception {
-        return store.addProduct(productName, price, category,quantity);
+    public Product addProduct(Store store, String productName, double price, String category, int quantity) throws Exception {
+        return store.addProduct(productName, price, category, quantity);
     }
 
     @Override
