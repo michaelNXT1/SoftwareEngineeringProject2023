@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ShoppingCart {
-    List<ShoppingBag> shoppingBags;
+    public List<ShoppingBag> shoppingBags;
 
     public ShoppingCart() {
         shoppingBags = new ArrayList<>();

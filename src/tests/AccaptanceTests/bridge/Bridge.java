@@ -1,7 +1,5 @@
 package AccaptanceTests.bridge;
 
-import org.example.BusinessLayer.Store;
-import org.example.ServiceLayer.ResponseT;
 
 public interface Bridge {
     boolean setupSystem(String managerUName, String managerEmail, String managerPass);
