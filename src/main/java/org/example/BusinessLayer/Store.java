@@ -51,7 +51,7 @@ public class Store {
     }
 
     //use case 5.1
-    public Product addProduct(String productName, double price, String category, double rating, int quantity) throws Exception {
+    public Product addProduct(String productName, double price, String category, int quantity) throws Exception {
         if (products.keySet().stream().anyMatch(p -> p.getProductName().equals(productName)))
             throw new Exception("Product name already exists");
         Product p = new Product(products.keySet().stream().max(Comparator.comparingInt(Product::getProductId)).get().getProductId() + 1, productName, price, category);
@@ -102,7 +102,7 @@ public class Store {
         getProduct(productId).setProductName(newName);
     }
 
-    public void editProductPrice(int productId, int newPrice) throws Exception {
+    public void editProductPrice(int productId, double newPrice) throws Exception {
         checkProductExists(productId);
         getProduct(productId).setPrice(newPrice);
     }
@@ -112,9 +112,9 @@ public class Store {
         getProduct(productId).setCategory(newCategory);
     }
 
-    public void editProductDescription(int productId, String newDescription) throws Exception {
-//        checkProductExists(productId);
-//        getProduct(productId).set(newDescription);
+    public void editProductDescription(int productId, long newDescription) throws Exception {
+       checkProductExists(productId);
+       getProduct(productId).setDescription(newDescription);
     }
 
     private void checkProductExists(int productId) throws Exception {

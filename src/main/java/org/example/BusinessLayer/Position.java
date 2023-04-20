@@ -18,13 +18,13 @@ public interface Position {
 
     void editProductName(int productId, String newName) throws Exception;   //5.2
 
-    void editProductPrice(int productId, int newPrice) throws Exception;    //5.2
+    void editProductPrice(int productId, double newPrice) throws Exception;    //5.2
 
     void editProductCategory(int productId, String newCategory) throws Exception;    //5.2
 
-    void editProductDescription(int productId, String newDescription) throws Exception;    //5.2
+    void editProductDescription(int productId, long newDescription) throws Exception;    //5.2
 
-    Product addProduct(Store store, String productName, double price, String category, double rating, int quantity) throws Exception; //5.1
+    Product addProduct(Store store, String productName, double price, String category, int quantity) throws Exception; //5.1
 
     List<Purchase> getPurchaseHistory(Store store) throws IllegalAccessException;   //4.1
 

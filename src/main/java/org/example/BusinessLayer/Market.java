@@ -306,7 +306,7 @@ public class Market {
         if (!storeExists(storeId))
             throw new Exception("Store id doesn't exist");
         Position p = checkPositionLegal(storeId);
-        return p.addProduct(stores.get(storeId), productName, price, category, rating, quantity);
+        return p.addProduct(stores.get(storeId), productName, price, category, quantity);
     }
 
     //use case 5.2 - by product name

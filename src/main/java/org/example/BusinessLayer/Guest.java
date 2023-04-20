@@ -16,7 +16,7 @@ public class Guest {
         purchaseHistory = new ArrayList<>();
     }
 
-    void addProductToShoppingCart(Store s, int productId, int itemsAmount) throws Exception { //2.10
+    public void addProductToShoppingCart(Store s, int productId, int itemsAmount) throws Exception { //2.10
         shoppingCart.setProductQuantity(s, productId, itemsAmount);
     }
 

@@ -56,18 +56,6 @@ public class Member extends Guest {
         SecurityUtils.logout();
     }
 
-    public List<StoreFounder> getStoreFounderPositions() {
-        List<StoreFounder> positions = new ArrayList<>();
-        synchronized (this.positions) {
-            for (Position p : this.positions) {
-                if (p instanceof StoreFounder) {
-                    positions.add((StoreFounder) p);
-                }
-            }
-        }
-        return positions;
-    }
-
     public Position getStorePosition(Store store) {
         synchronized (positions) {
             for (Position position : positions) {
@@ -99,7 +87,7 @@ public class Member extends Guest {
 
     public Store openStore(String name, int storeID) {
         Store newStore = new Store(storeID, name, this);
-        StoreFounder newStoreFounder = new StoreFounder(newStore, this);
+        StoreFounder newStoreFounder = new StoreFounder(newStore);
         newStore.setOpen(true);
         try {
             positions.add(newStoreFounder);
