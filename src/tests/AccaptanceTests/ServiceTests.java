@@ -3,9 +3,8 @@ package AccaptanceTests;
 import AccaptanceTests.bridge.Bridge;
 
 
-import AccaptanceTests.bridge.Driver;
+import AccaptanceTests.bridge.*;
 import junit.framework.TestCase;
-import org.example.BusinessLayer.Member;
 import org.junit.After;
 
 
