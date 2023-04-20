@@ -416,7 +416,7 @@ public class Market {
     }
 
 
-    private boolean usernameExists(String username) {
+    public boolean usernameExists(String username) {
         return users.values().stream().anyMatch(m -> m.getUsername().equals(username));
     }
 
