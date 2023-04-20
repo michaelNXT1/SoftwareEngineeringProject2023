@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.Map;
 
 public class Purchase {
+    public List<PurchaseProduct> getProductList() {
+        return productList;
+    }
+
     private List<PurchaseProduct> productList;
     private PaymentDetails paymentDetails;
 

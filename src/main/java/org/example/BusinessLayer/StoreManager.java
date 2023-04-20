@@ -6,10 +6,11 @@ import java.util.Set;
 
 public class StoreManager implements Position {
 
-    enum permissionType {setPermissions, setNewPosition, Inventory, Purchases, EmployeeList}
+    public enum permissionType {setPermissions, setNewPosition, Inventory, Purchases, EmployeeList}
 
     private Store store;
     private Member assigner;
+
     private Set<permissionType> permissions;
 
     public StoreManager(Store store, Member assigner) {
@@ -21,6 +22,9 @@ public class StoreManager implements Position {
     @Override
     public Store getStore() {
         return store;
+    }
+    public Set<permissionType> getPermissions() {
+        return permissions;
     }
 
     @Override
@@ -84,7 +88,7 @@ public class StoreManager implements Position {
     }
 
     @Override
-    public void editProductPrice(int productId, int newPrice) throws Exception {
+    public void editProductPrice(int productId, double newPrice) throws Exception {
         //TODO: Check if he has appropriate access permission
         if (permissions.contains(permissionType.Inventory))
             store.editProductPrice(productId, newPrice);
@@ -104,7 +108,7 @@ public class StoreManager implements Position {
     }
 
     @Override
-    public void editProductDescription(int productId, String newDescription) throws Exception {
+    public void editProductDescription(int productId, long newDescription) throws Exception {
         //TODO: Check if he has appropriate access permission
         if (permissions.contains(permissionType.Inventory))
             store.editProductDescription(productId, newDescription);
@@ -113,10 +117,10 @@ public class StoreManager implements Position {
         }
     }
 
-    public Product addProduct(Store store, String productName, double price, String category, double rating, int quantity) throws Exception {
+    public Product addProduct(Store store, String productName, double price, String category, int quantity) throws Exception {
         //TODO: Check if he has appropriate access permission
         if (permissions.contains(permissionType.Inventory))
-            return store.addProduct(productName, price, category, rating, quantity);
+            return store.addProduct(productName, price, category, quantity);
         else {
             throw new IllegalAccessException("This member hasn't permission to add product to the store");
         }
