@@ -87,9 +87,10 @@ public class StoreManagerTest extends TestCase {
             storeFounder.addStoreManagerPermissions(storeManager, StoreManager.permissionType.Inventory);
             // act
             Product p = storeManager.addProduct(store,"Product 1", 10.0, "proxyProduct", 100);
+            int productId = p.getProductId();
             // assert
             storeManager.removeProductFromStore(p.getProductId());
-            assertNull(store.getProduct(p.getProductId()));
+            assertNull(store.getProduct(productId));
         }catch (Exception e){
             fail("Product name already exists");
         }
