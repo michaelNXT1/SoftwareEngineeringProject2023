@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-<<<<<<< HEAD
-      <module fileurl="file://$PROJECT_DIR$/../SoftwareEngineeringProject2023.iml" filepath="$PROJECT_DIR$/../SoftwareEngineeringProject2023.iml" />
-=======
       <module fileurl="file://$PROJECT_DIR$/SoftwareEngineeringProject2023.iml" filepath="$PROJECT_DIR$/SoftwareEngineeringProject2023.iml" />
-      <module fileurl="file://$PROJECT_DIR$/SoftwareEngineeringProject2023 (1).iml" filepath="$PROJECT_DIR$/SoftwareEngineeringProject2023 (1).iml" />
->>>>>>> 800e60cb425e1530b19ef1e4d210d47b1e75c747
     </modules>
   </component>
 </project>
