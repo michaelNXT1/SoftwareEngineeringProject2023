@@ -52,6 +52,19 @@ public abstract class ServiceTests extends TestCase {
         return this.bridge.filterSearchResultsByPrice(minPrice, maxPrice);
     }
 
+
+    public boolean editProductName(int storeId, int productId, String newName){
+        return this.bridge.editProductName(storeId, productId, newName);
+    }
+
+    public boolean editProductCategory(int storeId, int productId, String newCategory){
+        return this.bridge.editProductCategory(storeId, productId, newCategory);
+    }
+
+    public boolean editProductPrice(int storeId, int productId, int newPrice){
+        return this.bridge.editProductPrice(storeId, productId, newPrice);
+    }
+
     public void clearDB(){
         this.bridge.clearDatabase(); // start tests with a clean database
     }
@@ -59,6 +72,14 @@ public abstract class ServiceTests extends TestCase {
 
     public boolean login (String username, String email,String password){
         return this.bridge.login(username, email,password);
+    }
+
+    public boolean getStore(int storeID){
+        return this.bridge.getStore(storeID);
+    }
+
+    public boolean getProduct(int productID, int storeID){
+        return this.bridge.getProduct(productID, storeID);
     }
 
     public boolean register(String username, String email,String password){
@@ -119,20 +140,21 @@ public abstract class ServiceTests extends TestCase {
         return this.bridge.getStoresInform(storeSub);
     }
 
+    public String showStorePositions(int sessionId, int storeId){return this.bridge.showStorePositions(sessionId, storeId);}
+
+    public boolean closeStore(int storeID){
+        return this.bridge.getStore(storeID);
+    }
+
+    public boolean getStoresPurchases(){
+        return this.bridge.getStoresPurchases();
+    }
+
     public String viewPurchaseHistory(int sessionId, int storeID){
         return bridge.viewPurchaseHistory(storeID);
     }
 
-//    public String searchUserHistory(int sessionId, int userId) { return this.bridge.searchUserHistory(sessionId, userId);}
-//
-//    public String getStoreHistory(int sessionId, int storeId) { return this.bridge.getStoreHistory(sessionId, storeId); }
-//
-//    public String viewShopHistory(int sessionId, int storeId){ return bridge.viewShopHistory(sessionId, storeId); }
-
-//    public boolean setupSystem(String suppyConfig, String paymentConfig,String path) { return bridge.setupSystem(suppyConfig, paymentConfig,path); }
 
 //    public int startSession() { return this.bridge.startSession(); }
-
-//    public void addProductInfo(int sessionId, int id, String name, String category, double basePrice) { this.bridge.addProductInfo(sessionId, id, name, category, basePrice);}
 
 }

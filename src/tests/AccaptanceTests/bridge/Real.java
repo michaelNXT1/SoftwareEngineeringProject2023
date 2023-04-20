@@ -28,6 +28,16 @@ public class Real implements Bridge {
         return !manager.getStore(storeId).getError_occurred();
     }
 
+    @Override
+    public boolean getProduct(int productID, int storeID) {
+        return !manager.getProduct(productID, storeID).getError_occurred();
+    }
+
+    @Override
+    public boolean closeStore(int storeID) {
+        return !this.manager.closeStore(storeID).getError_occurred();
+    }
+
     public String getStoresInform(String storeSubString) {
         return manager.getStores(storeSubString).value.toString();
     }
@@ -152,9 +162,27 @@ public class Real implements Bridge {
         return !manager.addStoreManagerPermissions(userName, storeId, option).getError_occurred();
     }
 
+    @Override
+    public boolean getStoresPurchases() {
+        return !this.manager.getStoresPurchases().getError_occurred();
+    }
+
     public String showStorePositions(int sessionId, int storeId) {
         return manager.getStoreEmployees(storeId).value.toString();
     }
+
+    @Override
+    public boolean editProductPrice(int storeId, int productId, int newPrice) {
+        return !manager.editProductPrice(storeId, productId, newPrice).getError_occurred();
+    }
+
+    @Override
+    public boolean editProductCategory(int storeId, int productId, String newCategory) {
+        return !manager.editProductCategory(storeId, productId, newCategory).getError_occurred();    }
+
+    @Override
+    public boolean editProductName(int storeId, int productId, String newName) {
+        return !manager.editProductName(storeId, productId, newName).getError_occurred();    }
 
 //    public boolean appointOwner(int sessionId, int storeId, int userId) {
 //        return manager.addStoreOwner(storeId, userId).getError_occurred();

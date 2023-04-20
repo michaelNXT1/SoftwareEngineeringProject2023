@@ -46,6 +46,26 @@ public class ProxyBridge implements Bridge{
         }
     }
 
+    @Override
+    public boolean getProduct(int productID, int storeID) {
+        if (real != null) {
+            return real.getProduct(productID, storeID);
+        }
+        else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean closeStore(int storeID) {
+        if (real != null) {
+            return real.closeStore(storeID);
+        }
+        else {
+            return false;
+        }
+    }
+
     public String getStoresInform(String storeSubString){
         if (real != null) {
             return real.getStoresInform(storeSubString);
@@ -319,6 +339,16 @@ public class ProxyBridge implements Bridge{
         }
     }
 
+    @Override
+    public boolean getStoresPurchases() {
+        if(real != null){
+            return real.getStoresPurchases();
+        }
+        else{
+            return false;
+        }
+    }
+
 
     public String showStorePositions(int sessionId, int storeId){
         if(real != null){
@@ -326,6 +356,36 @@ public class ProxyBridge implements Bridge{
         }
         else{
             return null;
+        }
+    }
+
+    @Override
+    public boolean editProductPrice(int storeId, int productId, int newPrice) {
+        if(real != null){
+            return real.editProductPrice(storeId, productId, newPrice);
+        }
+        else{
+            return false;
+        }
+    }
+
+    @Override
+    public boolean editProductCategory(int storeId, int productId, String newCategory) {
+        if(real != null){
+            return real.editProductCategory(storeId, productId, newCategory);
+        }
+        else{
+            return false;
+        }
+    }
+
+    @Override
+    public boolean editProductName(int storeId, int productId, String newName) {
+        if(real != null){
+            return real.editProductName(storeId, productId, newName);
+        }
+        else{
+            return false;
         }
     }
 

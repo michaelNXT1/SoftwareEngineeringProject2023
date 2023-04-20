@@ -11,6 +11,11 @@ public interface Bridge {
     boolean register(String username, String email,String password);
     boolean getStore(int storeId);
 
+    boolean getProduct(int productID, int storeID);
+
+
+    boolean closeStore(int storeID);
+
     String getStoresInform(String storeSubString);
 
     String searchProductsByName(String productName);
@@ -63,8 +68,15 @@ public interface Bridge {
 
     boolean editManagerOptions(int sessionId, String userName, int storeId, int option);
 
+    boolean getStoresPurchases();
+
     String showStorePositions(int sessionId, int storeId);
 
+    boolean editProductPrice(int storeId, int productId, int newPrice);
+
+    boolean editProductCategory(int storeId, int productId, String newCategory);
+
+    boolean editProductName(int storeId, int productId, String newName);
 
  //   boolean appointOwner(int sessionId, int storeId, String userName);
 

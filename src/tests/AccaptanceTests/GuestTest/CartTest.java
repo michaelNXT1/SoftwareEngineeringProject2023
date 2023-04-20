@@ -17,20 +17,8 @@ public class CartTest extends ServiceTests {
     @Before
     public void setUp(){
         super.setUp();
-
-        int sessionId = 1;
-        int storeID = 1;
-
-
-        login("hanamaru", "abc@gmail.com","12345");
-        openStore("newStore");
-        addProductToStore(sessionId, 1, storeID, 5);
-        addProductToStore(sessionId, 2, storeID, 5);
-        logout(sessionId);
-
-        addToCart(storeID,1, 5);
-        addToCart(storeID, 1,2);
-
+        register("alon1","alon59311@gmail.com", "alon0601");
+        login("alon1","alon59311@gmail.com", "alon0601");
     }
 
     @After
@@ -41,10 +29,9 @@ public class CartTest extends ServiceTests {
 
 
 
-    //USE CASE 2.7.1
 //    @Test
 //    public void testViewCartSuccessful(){
-//        String cart = viewCart(Database.sessionId);
+//        String cart = viewCart();
 //       // assertEquals(cart, Database.Cart);
 //        logout(Database.sessionId);
 //        login(Database.sessionId, "hanamaru", "123456");
@@ -55,31 +42,47 @@ public class CartTest extends ServiceTests {
 //    }
 
 
-    //USE CASE 2.7.2
-//    @Test
-//    public void testEditAmountInCartSuccessful(){
-//        assertTrue(updateAmount(Database.sessionId, Database.userToStore.get("chika"),1, 3));
-//        assertTrue(updateAmount(Database.sessionId, Database.userToStore.get("chika"),2, 5));
-//    }
+    @Test
+    public void testEditAmountInCartSuccessful(){
+        int storeID = openStore("newStore");
+        int productID1 = addProduct(storeID,"test",4.5,"milk",9,10);
+        int productID2 = addProduct(storeID,"test2",3.9,"milk",9,10);
+        addToCart(storeID,productID1, 5);
+        addToCart(storeID, productID2,2);
+        assertTrue(updateAmount(storeID, productID1,1));
+    }
 
-//    @Test
-//    public void testEditAmountInCartNonPositiveAmountFailure(){
-//        assertFalse(updateAmount(Database.sessionId, Database.userToStore.get("chika"),1,-5));
-//
-//
-//    }
+    @Test
+    public void testEditAmountInCartNonPositiveAmountFailure(){
+        int storeID = openStore("newStore");
+        int productID1 = addProduct(storeID,"test",4.5,"milk",9,10);
+        assertFalse(updateAmount(storeID,productID1,-5));
 
-//    //USE CASE 2.7.3
-//    @Test
-//    public void testDeleteItemInCartSuccessful(){
-//        assertTrue(deleteItemInCart(Database.sessionId, Database.userToStore.get("chika"),1));
-//    }
 
-//    //USE CASE 2.7.4
-//    @Test
-//    public void testDeleteAllCartSuccessful(){
-//        assertTrue(clearCart(Database.sessionId));
-//    }
-//
+    }
+
+    @Test
+    public void testEditAmountInCartProductNotInCartAmountFailure(){
+        int storeID = openStore("newStore");
+        assertFalse(updateAmount(storeID,1,3));
+    }
+
+    //USE CASE 2.7.3
+    @Test
+    public void testDeleteItemInCartSuccessful(){
+        int storeID = openStore("newStore");
+        int productID1 = addProduct(storeID,"test",4.5,"milk",9,10);
+        addToCart(storeID,productID1, 5);
+        assertTrue(deleteItemInCart(storeID, productID1));
+    }
+
+    //USE CASE 2.7.4
+    @Test
+    public void testDeleteItemNotExistFail(){
+        int storeID = openStore("newStore");
+        int productID1 = addProduct(storeID,"test",4.5,"milk",9,10);
+        assertFalse(deleteItemInCart(storeID,productID1));
+    }
+
 
 }
