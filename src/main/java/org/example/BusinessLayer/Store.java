@@ -11,6 +11,7 @@ public class Store {
     private PurchasePolicy purchasePolicy;
     private DiscountPolicy discountPolicy;
     private boolean isOpen;
+    private int productIdCounter;
 
     public Store(int storeId, String storeName, Member m) {
         this.storeId = storeId;
@@ -19,6 +20,7 @@ public class Store {
         this.purchaseList = new ArrayList<>();
         this.employees = new ArrayList<>();
         employees.add(m);
+        productIdCounter = 0;
     }
 
     public String getStoreName() {
@@ -54,7 +56,7 @@ public class Store {
     public Product addProduct(String productName, double price, String category, int quantity) throws Exception {
         if (products.keySet().stream().anyMatch(p -> p.getProductName().equals(productName)))
             throw new Exception("Product name already exists");
-        Product p = new Product(products.keySet().stream().max(Comparator.comparingInt(Product::getProductId)).get().getProductId() + 1, productName, price, category);
+        Product p = new Product(productIdCounter++, productName, price, category);
         products.put(p, quantity);
         return p;
     }
@@ -113,12 +115,12 @@ public class Store {
     }
 
     public void editProductDescription(int productId, long newDescription) throws Exception {
-       checkProductExists(productId);
-       getProduct(productId).setDescription(newDescription);
+        checkProductExists(productId);
+        getProduct(productId).setDescription(newDescription);
     }
 
     private void checkProductExists(int productId) throws Exception {
-        if(products.keySet().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null)==null)
+        if (products.keySet().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null) == null)
             throw new Exception("product id doesn't exist");
     }
 

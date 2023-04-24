@@ -10,7 +10,7 @@ import java.util.Map;
 public class ShoppingBag {
     private ShoppingCart shoppingCart;
     private Store store;
-    private Map<Product, Integer> productList;
+    private Map<Integer, Integer> productList;
     private Purchase bagPurchase;
 
     public ShoppingBag(ShoppingCart shoppingCart, Store store) {
@@ -25,7 +25,7 @@ public class ShoppingBag {
     public void setProductQuantity(int productId, int quantity) throws Exception {
         Product p = store.getProduct(productId);
         if (store.getProducts().get(p) >= quantity)
-            productList.put(p, quantity);
+            productList.put(productId, quantity);
     }
 
     //Use case 2.13
@@ -35,9 +35,15 @@ public class ShoppingBag {
     }
 
     //Use case 2.14
-    public Pair<PurchaseProduct, Boolean> purchaseProduct(Product p) {
+    public Pair<PurchaseProduct, Boolean> purchaseProduct(int productId) throws Exception {
         PurchaseProduct pp;
         //TODO: lock store
+        Product p;
+        try {
+            p = store.getProduct(productId);
+        } catch (Exception e) {
+            return new Pair(null, false);
+        }
         if (!store.addToProductQuantity(p, -1 * productList.get(p)))
             return new Pair(null, false);
         pp = new PurchaseProduct(p, productList.get(p));
@@ -48,7 +54,7 @@ public class ShoppingBag {
 
     public Pair<List<PurchaseProduct>, Boolean> purchaseShoppingBag() throws Exception {
         List<PurchaseProduct> retList = new ArrayList<>();
-        for (Map.Entry<Product, Integer> e : productList.entrySet()) {
+        for (Map.Entry<Integer, Integer> e : productList.entrySet()) {
             Pair<PurchaseProduct, Boolean> ppp = purchaseProduct(e.getKey());
             if (ppp.getSecond()) {
                 retList.add(ppp.getFirst());
@@ -75,7 +81,7 @@ public class ShoppingBag {
         return store;
     }
 
-    public Map<Product, Integer> getProductList() {
+    public Map<Integer, Integer> getProductList() {
         return productList;
     }
 
