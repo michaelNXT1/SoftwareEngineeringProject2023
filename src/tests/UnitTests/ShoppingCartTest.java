@@ -49,7 +49,7 @@ class ShoppingCartTest {
     }
 
     @Test
-    void purchaseShoppingCart() {
+    void purchaseShoppingCart() throws Exception {
         Purchase purchase = shoppingCart.purchaseShoppingCart();
         assertTrue(purchase.getProductList().contains(product2));
     }

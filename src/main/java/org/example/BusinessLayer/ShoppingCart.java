@@ -1,8 +1,15 @@
 package org.example.BusinessLayer;
 
+import com.helger.commons.collection.map.MapEntry;
+import org.example.Utils.Pair;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import static com.fasterxml.jackson.databind.type.LogicalType.Collection;
 
 public class ShoppingCart {
     public List<ShoppingBag> shoppingBags;
@@ -27,18 +34,26 @@ public class ShoppingCart {
     }
 
     //Use case 2.14
-    public Purchase purchaseShoppingCart() {
-        List<PurchaseProduct> totalProducts = new ArrayList<>();
+    public Purchase purchaseShoppingCart() throws Exception {
+        if (isEmpty())
+            throw new Exception("Purchase failed, cart is empty");
+        Map<ShoppingBag, List<PurchaseProduct>> shoppingBagMap = new HashMap<>();
         for (ShoppingBag sb : shoppingBags) {
-            for (Map.Entry<Product, Integer> e : sb.getProductList().entrySet()) {
-                PurchaseProduct pp = sb.purchaseProduct(e.getKey());
-                if (pp != null)
-                    totalProducts.add(pp);
+            Pair<List<PurchaseProduct>, Boolean> sbp = sb.purchaseShoppingBag();
+            if (sbp.getSecond()) {
+                shoppingBagMap.put(sb, sbp.getFirst());
+            } else {
+                for (Map.Entry<ShoppingBag, List<PurchaseProduct>> entry : shoppingBagMap.entrySet())
+                    entry.getKey().revertPurchase(entry.getValue());
+                throw new Exception("Purchase failed, not all products were in stock as requested.");
             }
-            sb.closePurchase();
         }
-        shoppingBags.removeIf(sb -> sb.getProductList().isEmpty());
-        return new Purchase(totalProducts);
+        shoppingBags.clear();
+        List<PurchaseProduct> flattenedList = shoppingBagMap.values()
+                .stream()
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+        return new Purchase(flattenedList);
     }
 
     private ShoppingBag getShoppingBag(Store s) {
@@ -50,5 +65,9 @@ public class ShoppingCart {
                     shoppingBags.add(newBag);
                     return newBag;
                 });
+    }
+
+    private boolean isEmpty() {
+        return shoppingBags.stream().allMatch(ShoppingBag::isEmpty);
     }
 }

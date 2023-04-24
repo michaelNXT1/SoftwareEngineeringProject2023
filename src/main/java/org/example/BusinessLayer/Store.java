@@ -30,10 +30,10 @@ public class Store {
     }
 
     //Use case 2.14
-    public boolean updateProductQuantity(Product p, int newQuantity) {
+    public boolean addToProductQuantity(Product p, int amountToAdd) {
         if (products.containsKey(p)) {
-            if (products.get(p) + newQuantity >= 0) {
-                products.put(p, products.get(p) + newQuantity);
+            if (products.get(p) + amountToAdd >= 0) {
+                products.put(p, products.get(p) + amountToAdd);
                 return true;
             }
         }
