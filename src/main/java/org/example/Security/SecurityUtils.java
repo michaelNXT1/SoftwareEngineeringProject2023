@@ -23,7 +23,7 @@ public class SecurityUtils {
             return false;
         }
         try {
-            HttpServletRequest servletRequest = request.getHttpServletRequest();
+            HttpServletRequest servletRequest = (HttpServletRequest) request.getHttpServletRequest();
             servletRequest.login(username, password);
             return true;
         } catch (jakarta.servlet.ServletException e) {
