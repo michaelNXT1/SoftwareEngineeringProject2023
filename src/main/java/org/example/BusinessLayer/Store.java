@@ -4,11 +4,11 @@ import java.util.*;
 
 public class Store {
     private final int storeId;
-    private String storeName;
-    private Map<Product, Integer> products;
-    private List<Purchase> purchaseList;
-    private List<Member> employees;
-    private PurchasePolicy purchasePolicy;
+    private final String storeName;
+    private final Map<Product, Integer> products;
+    private final List<Purchase> purchaseList;
+    private final List<Member> employees;
+    private List<PurchasePolicy> purchasePolicies;
     private DiscountPolicy discountPolicy;
     private boolean isOpen;
     private int productIdCounter;
@@ -53,10 +53,10 @@ public class Store {
     }
 
     //use case 5.1
-    public Product addProduct(String productName, double price, String category, int quantity,String description) throws Exception {
+    public Product addProduct(String productName, double price, String category, int quantity, String description) throws Exception {
         if (products.keySet().stream().anyMatch(p -> p.getProductName().equals(productName)))
             throw new Exception("Product name already exists");
-        Product p = new Product(productIdCounter++, productName, price, category,description);
+        Product p = new Product(productIdCounter++, productName, price, category, description);
         products.put(p, quantity);
         return p;
     }
@@ -118,6 +118,14 @@ public class Store {
         checkProductExists(productId);
         getProduct(productId).setDescription(newDescription);
     }
+
+    public boolean checkPoliciesFulfilled(Map<Integer, Integer> productIdList) throws Exception {
+        Map<Product, Integer> productList = new HashMap<>();
+        for (Map.Entry<Integer, Integer> e : productIdList.entrySet())
+            productList.put(getProduct(e.getKey()), e.getValue());
+        return purchasePolicies.stream().allMatch(policy -> policy.checkPolicyFulfilled(productList));
+    }
+
 
     private void checkProductExists(int productId) throws Exception {
         if (products.keySet().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null) == null)

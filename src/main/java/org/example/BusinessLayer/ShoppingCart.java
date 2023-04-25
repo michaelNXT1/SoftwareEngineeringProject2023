@@ -1,6 +1,5 @@
 package org.example.BusinessLayer;
 
-import com.helger.commons.collection.map.MapEntry;
 import org.example.Utils.Pair;
 
 import java.util.ArrayList;
@@ -8,8 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static com.fasterxml.jackson.databind.type.LogicalType.Collection;
 
 public class ShoppingCart {
     public List<ShoppingBag> shoppingBags;
@@ -61,7 +58,7 @@ public class ShoppingCart {
                 .filter(sb -> sb.getStore().equals(s))
                 .findFirst()
                 .orElseGet(() -> {
-                    ShoppingBag newBag = new ShoppingBag(this, s);
+                    ShoppingBag newBag = new ShoppingBag(s);
                     shoppingBags.add(newBag);
                     return newBag;
                 });
