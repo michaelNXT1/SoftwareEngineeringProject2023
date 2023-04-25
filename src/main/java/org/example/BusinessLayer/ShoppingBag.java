@@ -1,13 +1,16 @@
 package org.example.BusinessLayer;
 
+import org.example.Utils.Pair;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ShoppingBag {
     private ShoppingCart shoppingCart;
     private Store store;
-    private Map<Product, Integer> productList;
+    private Map<Integer, Integer> productList;
     private Purchase bagPurchase;
 
     public ShoppingBag(ShoppingCart shoppingCart, Store store) {
@@ -22,7 +25,7 @@ public class ShoppingBag {
     public void setProductQuantity(int productId, int quantity) throws Exception {
         Product p = store.getProduct(productId);
         if (store.getProducts().get(p) >= quantity)
-            productList.put(p, quantity);
+            productList.put(productId, quantity);
     }
 
     //Use case 2.13
@@ -32,23 +35,42 @@ public class ShoppingBag {
     }
 
     //Use case 2.14
-    public PurchaseProduct purchaseProduct(Product p) {
+    public Pair<PurchaseProduct, Boolean> purchaseProduct(int productId) throws Exception {
         PurchaseProduct pp;
         //TODO: lock store
-        if (!store.updateProductQuantity(p, -1 * productList.get(p)))
-            return null;
+        Product p;
+        try {
+            p = store.getProduct(productId);
+        } catch (Exception e) {
+            return new Pair(null, false);
+        }
+        if (!store.addToProductQuantity(p, -1 * productList.get(p)))
+            return new Pair(null, false);
         pp = new PurchaseProduct(p, productList.get(p));
-        bagPurchase.addProduct(pp);
         //TODO: release store
         productList.remove(p);
-        return pp;
+        return new Pair(pp, true);
     }
 
-    //Use case 2.14
-    public void closePurchase() {
-        //TODO: lock store(?)
+    public Pair<List<PurchaseProduct>, Boolean> purchaseShoppingBag() throws Exception {
+        List<PurchaseProduct> retList = new ArrayList<>();
+        for (Map.Entry<Integer, Integer> e : productList.entrySet()) {
+            Pair<PurchaseProduct, Boolean> ppp = purchaseProduct(e.getKey());
+            if (ppp.getSecond()) {
+                retList.add(ppp.getFirst());
+                bagPurchase.addProduct(ppp.getFirst());
+            } else {
+                revertPurchase(retList);
+                return new Pair(null, false);
+            }
+        }
         store.addPurchase(bagPurchase);
-        //TODO: release store(?)
+        return new Pair(retList, true);
+    }
+
+    public void revertPurchase(List<PurchaseProduct> retList) throws Exception {
+        for (PurchaseProduct p : retList)
+            store.addToProductQuantity(store.getProduct(p.getProductId()), p.getQuantity());
     }
 
     public ShoppingCart getShoppingCart() {
@@ -59,7 +81,11 @@ public class ShoppingBag {
         return store;
     }
 
-    public Map<Product, Integer> getProductList() {
+    public Map<Integer, Integer> getProductList() {
         return productList;
+    }
+
+    public boolean isEmpty() {
+        return productList.values().stream().allMatch(integer -> integer == 0);
     }
 }

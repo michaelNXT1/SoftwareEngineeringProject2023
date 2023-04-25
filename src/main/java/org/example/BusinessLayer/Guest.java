@@ -28,7 +28,7 @@ public class Guest {
         shoppingCart.setProductQuantity(s, productId, newQuantity);
     }
 
-    public Purchase purchaseShoppingCart() {    //2.14
+    public Purchase purchaseShoppingCart() throws Exception {    //2.14
         Purchase p = shoppingCart.purchaseShoppingCart();
         purchaseHistory.add(p);
         return p;

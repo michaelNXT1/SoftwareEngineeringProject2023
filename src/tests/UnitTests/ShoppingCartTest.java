@@ -45,12 +45,14 @@ class ShoppingCartTest {
     @Test
     void removeProduct() throws Exception {
         shoppingCart.removeProduct(store1, 0);
+        //TODO: purchase doesn't hold Product, but PurchaseProduct, need to fix
         assertFalse(shoppingCart.shoppingBags.get(0).getProductList().containsKey(product1));
     }
 
     @Test
-    void purchaseShoppingCart() {
+    void purchaseShoppingCart() throws Exception {
         Purchase purchase = shoppingCart.purchaseShoppingCart();
+        //TODO: purchase doesn't hold Product, but PurchaseProduct, need to fix
         assertTrue(purchase.getProductList().contains(product2));
     }
 
