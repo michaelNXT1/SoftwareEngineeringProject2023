@@ -9,7 +9,7 @@ public class Store {
     private final List<Purchase> purchaseList;
     private final List<Member> employees;
     private List<PurchasePolicy> purchasePolicies;
-    private DiscountPolicy discountPolicy;
+    private List<DiscountPolicy> discountPolicies;
     private boolean isOpen;
     private int productIdCounter;
 
@@ -120,10 +120,20 @@ public class Store {
     }
 
     public boolean checkPoliciesFulfilled(Map<Integer, Integer> productIdList) throws Exception {
+        Map<Product, Integer> productList = getProductIntegerMap(productIdList);
+        return purchasePolicies.stream().allMatch(policy -> policy.checkPolicyFulfilled(productList));
+    }
+
+    public boolean calculateDiscounts(Map<Integer, Integer> productIdList) throws Exception {
+        Map<Product, Integer> productList = getProductIntegerMap(productIdList);
+        return discountPolicies.stream().allMatch(policy -> policy.checkPolicyFulfilled(productList));
+    }
+
+    private Map<Product, Integer> getProductIntegerMap(Map<Integer, Integer> productIdList) throws Exception {
         Map<Product, Integer> productList = new HashMap<>();
         for (Map.Entry<Integer, Integer> e : productIdList.entrySet())
             productList.put(getProduct(e.getKey()), e.getValue());
-        return purchasePolicies.stream().allMatch(policy -> policy.checkPolicyFulfilled(productList));
+        return productList;
     }
 
 

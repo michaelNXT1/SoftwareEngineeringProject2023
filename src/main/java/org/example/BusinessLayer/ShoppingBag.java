@@ -54,6 +54,7 @@ public class ShoppingBag {
     public Pair<List<PurchaseProduct>, Boolean> purchaseShoppingBag() throws Exception {
         if (!store.checkPoliciesFulfilled(productList))
             throw new Exception("Store purchase policies are not fulfilled in this cart");
+        store.checkPoliciesFulfilled(productList);
         List<PurchaseProduct> retList = new ArrayList<>();
         for (Map.Entry<Integer, Integer> e : productList.entrySet()) {
             Pair<PurchaseProduct, Boolean> ppp = purchaseProduct(e.getKey());
