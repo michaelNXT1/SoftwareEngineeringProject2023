@@ -45,8 +45,8 @@ public class CartTest extends ServiceTests {
     @Test
     public void testEditAmountInCartSuccessful(){
         int storeID = openStore("newStore");
-        int productID1 = addProduct(storeID,"test",4.5,"milk",9,10);
-        int productID2 = addProduct(storeID,"test2",3.9,"milk",9,10);
+        int productID1 = addProduct(storeID,"test",4.5,"milk",9,"10");
+        int productID2 = addProduct(storeID,"test2",3.9,"milk",9,"10");
         addToCart(storeID,productID1, 5);
         addToCart(storeID, productID2,2);
         assertTrue(updateAmount(storeID, productID1,1));
@@ -55,7 +55,7 @@ public class CartTest extends ServiceTests {
     @Test
     public void testEditAmountInCartNonPositiveAmountFailure(){
         int storeID = openStore("newStore");
-        int productID1 = addProduct(storeID,"test",4.5,"milk",9,10);
+        int productID1 = addProduct(storeID,"test",4.5,"milk",9,"10");
         assertFalse(updateAmount(storeID,productID1,-5));
 
 
@@ -71,7 +71,7 @@ public class CartTest extends ServiceTests {
     @Test
     public void testDeleteItemInCartSuccessful(){
         int storeID = openStore("newStore");
-        int productID1 = addProduct(storeID,"test",4.5,"milk",9,10);
+        int productID1 = addProduct(storeID,"test",4.5,"milk",9,"10");
         addToCart(storeID,productID1, 5);
         assertTrue(deleteItemInCart(storeID, productID1));
     }
@@ -80,7 +80,7 @@ public class CartTest extends ServiceTests {
     @Test
     public void testDeleteItemNotExistFail(){
         int storeID = openStore("newStore");
-        int productID1 = addProduct(storeID,"test",4.5,"milk",9,10);
+        int productID1 = addProduct(storeID,"test",4.5,"milk",9,"10");
         assertFalse(deleteItemInCart(storeID,productID1));
     }
 

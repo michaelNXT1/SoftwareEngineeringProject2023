@@ -22,9 +22,9 @@ public interface Position {
 
     void editProductCategory(int productId, String newCategory) throws Exception;    //5.2
 
-    void editProductDescription(int productId, long newDescription) throws Exception;    //5.2
+    void editProductDescription(int productId, String newDescription) throws Exception;    //5.2
 
-    Product addProduct(Store store, String productName, double price, String category, int quantity) throws Exception; //5.1
+    Product addProduct(Store store, String productName, double price, String category, int quantity,String description) throws Exception; //5.1
 
     List<Purchase> getPurchaseHistory(Store store) throws IllegalAccessException;   //4.1
 

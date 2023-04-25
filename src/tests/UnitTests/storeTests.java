@@ -19,7 +19,7 @@ class storeTests {
     void setUp() throws Exception {
         employee = new Member("shanihd99", "shanihd99@gmail.com", "123456");
         store = new Store(1, "my_store", employee);
-        product = store.addProduct("barbi", 50, "toys", 5);
+        product = store.addProduct("barbi", 50, "toys", 5,"aa");
     }
 
     @org.junit.jupiter.api.Test
@@ -48,7 +48,7 @@ class storeTests {
 
     @org.junit.jupiter.api.Test
     void testAddProduct() throws Exception {
-        assertThrows(Exception.class, () -> store.addProduct("bratz", 60.9, "toy", 7));
+        assertThrows(Exception.class, () -> store.addProduct("bratz", 60.9, "toy", 7,"vv"));
         assertEquals("bratz", store.getProducts().keySet().stream().filter(p -> p.getProductId() == product.getProductId()).findFirst().orElse(null).getProductName());
     }
 

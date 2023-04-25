@@ -58,13 +58,13 @@ public class StoreFounder implements Position {
     }
 
     @Override
-    public void editProductDescription(int productId, long newDescription) throws Exception {
+    public void editProductDescription(int productId, String newDescription) throws Exception {
         store.editProductDescription(productId, newDescription);
     }
 
     @Override
-    public Product addProduct(Store store, String productName, double price, String category, int quantity) throws Exception {
-        return store.addProduct(productName, price, category, quantity);
+    public Product addProduct(Store store, String productName, double price, String category, int quantity ,String description) throws Exception {
+        return store.addProduct(productName, price, category, quantity,description);
     }
 
     @Override

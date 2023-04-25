@@ -108,7 +108,7 @@ public class StoreManager implements Position {
     }
 
     @Override
-    public void editProductDescription(int productId, long newDescription) throws Exception {
+    public void editProductDescription(int productId, String newDescription) throws Exception {
         //TODO: Check if he has appropriate access permission
         if (permissions.contains(permissionType.Inventory))
             store.editProductDescription(productId, newDescription);
@@ -117,10 +117,10 @@ public class StoreManager implements Position {
         }
     }
 
-    public Product addProduct(Store store, String productName, double price, String category, int quantity) throws Exception {
+    public Product addProduct(Store store, String productName, double price, String category, int quantity, String description) throws Exception {
         //TODO: Check if he has appropriate access permission
         if (permissions.contains(permissionType.Inventory))
-            return store.addProduct(productName, price, category, quantity);
+            return store.addProduct(productName, price, category, quantity, description);
         else {
             throw new IllegalAccessException("This member hasn't permission to add product to the store");
         }

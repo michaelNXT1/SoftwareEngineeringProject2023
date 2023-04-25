@@ -53,10 +53,10 @@ public class Store {
     }
 
     //use case 5.1
-    public Product addProduct(String productName, double price, String category, int quantity) throws Exception {
+    public Product addProduct(String productName, double price, String category, int quantity,String description) throws Exception {
         if (products.keySet().stream().anyMatch(p -> p.getProductName().equals(productName)))
             throw new Exception("Product name already exists");
-        Product p = new Product(productIdCounter++, productName, price, category);
+        Product p = new Product(productIdCounter++, productName, price, category,description);
         products.put(p, quantity);
         return p;
     }
@@ -114,7 +114,7 @@ public class Store {
         getProduct(productId).setCategory(newCategory);
     }
 
-    public void editProductDescription(int productId, long newDescription) throws Exception {
+    public void editProductDescription(int productId, String newDescription) throws Exception {
         checkProductExists(productId);
         getProduct(productId).setDescription(newDescription);
     }

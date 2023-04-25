@@ -44,9 +44,9 @@ public class ShoppingBag {
         } catch (Exception e) {
             return new Pair(null, false);
         }
-        if (!store.addToProductQuantity(p, -1 * productList.get(p)))
+        if (!store.addToProductQuantity(p, -1 * productList.get(productId)))
             return new Pair(null, false);
-        pp = new PurchaseProduct(p, productList.get(p));
+        pp = new PurchaseProduct(p, productList.get(productId));
         //TODO: release store
         productList.remove(p);
         return new Pair(pp, true);

@@ -7,13 +7,13 @@ public class Product {
         private String category;
         private double rating;
         private int amount;
-        private long description;
+        private String description;
 
         private  Discount discount;
 
         private PurchaseType purchaseType;
 
-    public Product(int productId, String productName, double price, String category) {
+    public Product(int productId, String productName, double price, String category,String description) {
         this.discount = new VisibleDiscount(this);
         this.purchaseType = new BuyItNow(this);
         this.productId = productId;
@@ -21,7 +21,7 @@ public class Product {
         this.price = price;
         this.category = category;
         this.rating = 0;
-        this.description = Long.parseLong("");
+        this.description = description;
     }
 
     public void setDiscount(Discount discount) {
@@ -84,11 +84,11 @@ public class Product {
         return price;
     }
 
-    public long getDescription() {
+    public String getDescription() {
         return description;
     }
 
-    public void setDescription(long newDescription) {
+    public void setDescription(String newDescription) {
         this.description = newDescription;
     }
 }

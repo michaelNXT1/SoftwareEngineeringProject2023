@@ -31,42 +31,42 @@ public class StoreFounderTest extends TestCase {
     }
 
     public void testRemoveProductFromStore() throws Exception {
-        p = store.addProduct("Product 1", 10.0, "proxyProduct", 100);
+        p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"bb");
         int productId = p.getProductId();
         storeFounder.removeProductFromStore(productId);
         assertNull(store.getProduct(p.getProductId()));
     }
 
     public void testEditProductName() throws Exception {
-        p = store.addProduct("Product 1", 10.0, "proxyProduct", 100);
+        p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"aa");
         int productId = p.getProductId();
         storeFounder.editProductName(productId, "Product 2");
         assertEquals(p.getProductName(),"Product 2");
     }
 
     public void testEditProductPrice() throws Exception {
-        p = store.addProduct("Product 1", 10.0, "proxyProduct", 100);
+        p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"aa");
         int productId = p.getProductId();
         storeFounder.editProductPrice(productId, 60.0);
         assertEquals(p.getProductPrice(),60.0);
     }
 
     public void testEditProductCategory() throws Exception {
-        p = store.addProduct("Product 1", 10.0, "proxyProduct", 100);
+        p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"aa");
         int productId = p.getProductId();
         storeFounder.editProductCategory(productId, "new category");
         assertEquals(p.getCategory(),"new category");
     }
 
     public void testEditProductDescription() throws Exception {
-        p = store.addProduct("Product 1", 10.0, "proxyProduct", 100);
+        p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"ddd");
         int productId = p.getProductId();
-        storeFounder.editProductDescription(productId, Long.parseLong("new description"));
+        storeFounder.editProductDescription(productId, "new description");
         assertEquals(p.getDescription(),Long.parseLong("new description"));
     }
 
     public void testAddProduct() throws Exception {
-        p = storeFounder.addProduct(store,"Product 1", 10.0, "proxyProduct", 100);
+        p = storeFounder.addProduct(store,"Product 1", 10.0, "proxyProduct", 100,"bbb");
         assertEquals(p,store.getProduct(p.getProductId()));
     }
 

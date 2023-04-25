@@ -24,6 +24,10 @@ public class LoginTests extends ServiceTests {
         clearDB();
     }
 
+    @AfterEach
+    public void tearD(){
+        logout(1);
+    }
 
     @Test
     public void testLoginSuccessful(){
