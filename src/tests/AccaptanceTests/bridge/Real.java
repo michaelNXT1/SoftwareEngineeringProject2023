@@ -30,7 +30,7 @@ public class Real implements Bridge {
 
     @Override
     public boolean getProduct(int productID, int storeID) {
-        return !manager.getProduct(productID, storeID).getError_occurred();
+        return !manager.getProduct(storeID, productID).getError_occurred();
     }
 
     @Override
@@ -130,8 +130,8 @@ public class Real implements Bridge {
     }
 
 
-    public Integer addProduct(int storeId, String productName, double price, String category, double rating, int quantity) {
-        return manager.addProduct(storeId, productName, price, category, rating, quantity).value.getProductId();
+    public Integer addProduct(int storeId, String productName, double price, String category, int quantity, String description) {
+        return manager.addProduct(storeId, productName, price, category, quantity,description).value.getProductId();
     }
 
 

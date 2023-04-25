@@ -113,7 +113,7 @@ public abstract class ServiceTests extends TestCase {
     public boolean addProductToStore(int sessionId, int productId, int storeId, int amount) { return bridge.addProductToStore(sessionId, productId, storeId, amount); }
 
 
-    public Integer addProduct(int storeId, String productName, double price, String category, double rating, int quantity){return this.bridge.addProduct(storeId, productName, price, category, rating, quantity);}
+    public Integer addProduct(int storeId, String productName, double price, String category, int quantity,String description){return this.bridge.addProduct(storeId, productName, price, category, quantity,description );}
 
     public boolean deleteProduct(int sessionId, int storeId, int productId) { return bridge.deleteProduct(sessionId, storeId, productId); }
 

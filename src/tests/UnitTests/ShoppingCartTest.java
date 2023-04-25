@@ -20,9 +20,9 @@ class ShoppingCartTest {
     @BeforeAll
     void beforeAll() throws Exception {
         shoppingCart = new ShoppingCart();
-        product1 = new Product(1, "wine", 60.0, "alcohol");
-        product2 = new Product(2, "cheese", 9.5, "milk");
-        product3 = new Product(3, "steak", 120.0, "meat");
+        product1 = new Product(1, "wine", 60.0, "alcohol","aa");
+        product2 = new Product(2, "cheese", 9.5, "milk","bb");
+        product3 = new Product(3, "steak", 120.0, "meat","cc");
         market = new Market();
         market.signUp("idan123", "idanlobel2@gmail.com", "wswsad32");
         store1 = new Store(1, "Shufersal" , member);

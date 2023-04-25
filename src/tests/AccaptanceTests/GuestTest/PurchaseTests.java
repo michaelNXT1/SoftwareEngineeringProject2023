@@ -17,7 +17,7 @@ public class PurchaseTests extends ServiceTests {
         register("alon1","alon59311@gmail.com", "alon0601");
         login("alon1","alon59311@gmail.com", "alon0601");
         int storeID2 = openStore("newStore3");
-        int productID2 = addProduct(storeID2,"test2",3.9,"milk",9,1);
+        int productID2 = addProduct(storeID2,"test2",3.9,"milk",9,"1");
         addToCart(storeID2, productID2, 5);
 
 
@@ -38,7 +38,7 @@ public class PurchaseTests extends ServiceTests {
 
     @Test
     public void testNothingInCartSuccessful(){
-        deleteItemInCart(1,1);
+        deleteItemInCart(0,0);
         assertFalse(buyCart(1, "12345678", "04", "2021", "me", "777",
                 "12123123", "me", "1428 Elm Street", "Springwood", "Ohio, United States", "12345"));
     }

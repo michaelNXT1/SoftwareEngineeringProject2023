@@ -33,8 +33,8 @@ class MarketTest {
         market.openStore("Mamtakim");
 //        product1 = new Product(111, "milk", 6.14, "milk");
 //        product2 = new Product(123, "Carlsberg beer", 10.5, "alcohol");
-        market.getStore(0).addProduct("milk", 50, "milk", 15);
-        market.getStore(1).addProduct("beer", 50, "alcohol", 100);
+        market.getStore(0).addProduct("milk", 50, "milk", 15,"aa");
+        market.getStore(1).addProduct("beer", 50, "alcohol", 100,"bb");
     }
 
     @org.junit.jupiter.api.Test

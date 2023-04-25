@@ -285,9 +285,9 @@ public class ProxyBridge implements Bridge{
     }
 
 
-    public Integer addProduct(int storeId, String productName, double price, String category, double rating, int quantity) {
+    public Integer addProduct(int storeId, String productName, double price, String category, int quantity, String description) {
         if (real != null) {
-            return real.addProduct(storeId, productName, price, category, rating, quantity);
+            return real.addProduct(storeId, productName, price, category, quantity,description);
         }
         else {
             return -1;

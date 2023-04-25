@@ -19,8 +19,8 @@ public class viewHist extends ServiceTests {
     @Test
     public void testViewPurchaseHistory(){
         int storeID = openStore("newStore");
-        int productID1 = addProduct(storeID,"test",4.5,"milk",9,10);
-        int productID2 = addProduct(storeID,"test2",3.9,"milk",9,10);
+        int productID1 = addProduct(storeID,"test",4.5,"milk",9,"10");
+        int productID2 = addProduct(storeID,"test2",3.9,"milk",9,"10");
         addToCart(storeID, productID1,1);
         addToCart(storeID, productID2,2);
         buyCart(1, "12345678", "04", "2021", "me", "777",
@@ -32,8 +32,8 @@ public class viewHist extends ServiceTests {
     @Test
     public void testViewPurchaseNotHisStoreHistory(){
         int storeID = openStore("newStore");
-        int productID1 = addProduct(storeID,"test",4.5,"milk",9,10);
-        int productID2 = addProduct(storeID,"test2",3.9,"milk",9,10);
+        int productID1 = addProduct(storeID,"test",4.5,"milk",9,"10");
+        int productID2 = addProduct(storeID,"test2",3.9,"milk",9,"10");
         addToCart(storeID, productID1,1);
         addToCart(storeID, productID2,2);
         buyCart(1, "12345678", "04", "2021", "me", "777",

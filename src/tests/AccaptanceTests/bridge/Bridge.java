@@ -56,7 +56,7 @@ public interface Bridge {
 
     boolean appointManager(int sessionId, int storeId, String userName);
 
-    Integer addProduct(int storeId, String productName, double price, String category, double rating, int quantity);
+    Integer addProduct(int storeId, String productName, double price, String category, int quantity, String description);
 
     boolean setProductName(int storeId, int productId, String newName);
 

@@ -299,14 +299,14 @@ public class Market {
     }
 
     //use case 5.1
-    public Product addProduct(int storeId, String productName, double price, String category, double rating, int quantity) throws Exception {
+    public Product addProduct(int storeId, String productName, double price, String category, int quantity, String description) throws Exception {
         checkMarketOpen();
         if (activeMember == null)
             throw new Exception("Cannot perform action when not logged in");
         if (!storeExists(storeId))
             throw new Exception("Store id doesn't exist");
         Position p = checkPositionLegal(storeId);
-        return p.addProduct(stores.get(storeId), productName, price, category, quantity);
+        return p.addProduct(stores.get(storeId), productName, price, category, quantity,description);
     }
 
     //use case 5.2 - by product name

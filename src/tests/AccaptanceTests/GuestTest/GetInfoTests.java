@@ -31,8 +31,8 @@ public class GetInfoTests extends ServiceTests {
     @Test
     public void testShowProductInfoExist(){
         int storeID2 = openStore("newStore3");
-        int productID1 = addProduct(storeID2,"test",3.9,"milk",9,10);
-        int productID2 = addProduct(storeID2,"test2",3.9,"milk",9,10);
+        int productID1 = addProduct(storeID2,"test",3.9,"milk",9,"10");
+        int productID2 = addProduct(storeID2,"test2",3.9,"milk",9,"10");
         assertTrue(getProduct(productID1,storeID2));
         assertTrue(getProduct(productID2,storeID2));
     }
