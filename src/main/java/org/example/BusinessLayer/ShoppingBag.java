@@ -26,12 +26,14 @@ public class ShoppingBag {
         Product p = store.getProduct(productId);
         if (store.getProducts().get(p) >= quantity)
             productList.put(productId, quantity);
+        else
+            throw new Exception("Requested product quantity not available.");
     }
 
     //Use case 2.13
     public void removeProduct(int productId) throws Exception {
         Product p = store.getProduct(productId);
-        productList.remove(p);
+        productList.remove(productId);
     }
 
     //Use case 2.14
@@ -48,7 +50,7 @@ public class ShoppingBag {
             return new Pair(null, false);
         pp = new PurchaseProduct(p, productList.get(productId));
         //TODO: release store
-        productList.remove(p);
+        productList.remove(productId);
         return new Pair(pp, true);
     }
 
