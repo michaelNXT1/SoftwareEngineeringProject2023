@@ -71,24 +71,24 @@ public class Market {
         // hash password using password encoder
         String hashedPassword = passwordEncoder.encode(password);
 
-        // create new Member object with hashed password
+        // create new Member's object with hashed password
         Member newMember = new Member(username, email, hashedPassword);
 
         // discard plain-text password
         password = null;
 
-        // store new Member object in users map
+        // store new Member's object in users map
         users.put(username, newMember);
     }
 
     //use case 2.3
     public boolean login(String username, String email, String password) throws Exception {
         checkMarketOpen();
-        //can't login when another user is logged in
+        //can't log in when another user is logged in
         if (activeMember != null || activeSystemManager != null)
             throw new Exception("Cannot perform action when logged in");
 
-        // Retrieve the stored Member object for the given username
+        // Retrieve the stored Member's object for the given username
         Member member = users.get(username);
 
         // If the Member doesn't exist or the password is incorrect, return false
@@ -119,11 +119,11 @@ public class Market {
     //use case 2.3
     public boolean loginSystemManager(String username, String email, String password) throws Exception {
         checkMarketOpen();
-        //can't login when another user is logged in
+        //can't log in when another user is logged in
         if (activeMember != null || activeSystemManager != null)
             throw new Exception("Cannot perform action when logged in");
 
-        // Retrieve the stored Member object for the given username
+        // Retrieve the stored Member's object for the given username
         SystemManager sm = systemManagers.get(username);
 
         // If the Member doesn't exist or the password is incorrect, return false
