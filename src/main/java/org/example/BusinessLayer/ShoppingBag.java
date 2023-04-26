@@ -32,7 +32,7 @@ public class ShoppingBag {
 
     //Use case 2.13
     public void removeProduct(int productId) throws Exception {
-        Product p = store.getProduct(productId);
+        store.getProduct(productId);
         productList.remove(productId);
     }
 
