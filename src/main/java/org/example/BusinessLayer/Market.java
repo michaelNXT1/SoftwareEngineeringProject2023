@@ -360,8 +360,14 @@ public class Market {
         checkMarketOpen();
         if (activeMember == null)
             throw new Exception("Cannot perform action when not logged in");
+        Store s = stores.get(storeID);
+        if (s == null)
+            throw new Exception("the store id is not in the system");
         Position p = checkPositionLegal(storeID);
-        p.setPositionOfMemberToStoreManager(stores.get(storeID), users.get(MemberToBecomeManager));
+        Member m= users.get(MemberToBecomeManager);
+        if (m == null)
+            throw new Exception("MemberToBecomeManager is not a member ");
+        p.setPositionOfMemberToStoreManager(s, m);
     }
 
     //use case 5.10
