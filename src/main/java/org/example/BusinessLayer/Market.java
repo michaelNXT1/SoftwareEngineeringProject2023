@@ -374,8 +374,26 @@ public class Market {
         Position storeManagerPosition = users.get(storeManager).getStorePosition(stores.get(storeID));
         if (storeManagerPosition == null)
             throw new Exception("the name of the store manager has not have that position in this store");
-        else
+        else if (storeManagerPosition.getAssigner() != activeMember) {
+            throw new Exception("only the systemManager's assigner can edit his permissions");
+        } else
             p.addStoreManagerPermissions(storeManagerPosition, perm);
+    }
+
+    //use case 5.10
+    public void removeStoreManagerPermissions(String storeManager, int storeID, int permission) throws Exception {
+        checkMarketOpen();
+        if (activeMember == null)
+            throw new Exception("Cannot perform action when not logged in");
+        StoreManager.permissionType perm = StoreManager.permissionType.values()[permission];
+        Position p = checkPositionLegal(storeID);
+        Position storeManagerPosition = users.get(storeManager).getStorePosition(stores.get(storeID));
+        if (storeManagerPosition == null)
+            throw new Exception("the name of the store manager has not have that position in this store");
+        else if (storeManagerPosition.getAssigner() != activeMember) {
+            throw new Exception("only the systemManager's assigner can edit his permissions");
+        } else
+            p.removeStoreManagerPermissions(storeManagerPosition, perm);
     }
 
     //use case 5.11
