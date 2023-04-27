@@ -303,8 +303,7 @@ public class Market {
         checkMarketOpen();
         if (activeMember == null)
             throw new Exception("Cannot perform action when not logged in");
-        if (!storeExists(storeId))
-            throw new Exception("Store id doesn't exist");
+        checkStoreExists(storeId);
         Position p = checkPositionLegal(storeId);
         return p.addProduct(stores.get(storeId), productName, price, category, quantity,description);
     }
