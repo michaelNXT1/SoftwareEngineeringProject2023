@@ -354,6 +354,20 @@ public class Market {
         Position p = checkPositionLegal(storeId);
         p.removeProductFromStore(productId);
     }
+    //use case 5.8
+    public void setPositionOfMemberToStoreOwner(int storeID, String MemberToBecomeOwner) throws Exception {
+        checkMarketOpen();
+        if (activeMember == null)
+            throw new Exception("Cannot perform action when not logged in");
+        Store s = stores.get(storeID);
+        if (s == null)
+            throw new Exception("the store id is not in the system");
+        Position p = checkPositionLegal(storeID);
+        Member m= users.get(MemberToBecomeOwner);
+        if (m == null)
+            throw new Exception("MemberToBecomeOwner is not a member");
+        p.setPositionOfMemberToStoreOwner(s, m);
+    }
 
     //use case 5.9
     public void setPositionOfMemberToStoreManager(int storeID, String MemberToBecomeManager) throws Exception {

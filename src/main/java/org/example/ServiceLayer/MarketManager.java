@@ -272,6 +272,14 @@ public class MarketManager implements IMarketManager {
             return new Response(e.getMessage());
         }
     }
+    public Response setPositionOfMemberToStoreOwner(int storeID, String MemberToBecomeOwner){
+        try {
+            market.setPositionOfMemberToStoreOwner(storeID, MemberToBecomeOwner);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
 
     public Response addStoreManagerPermissions(String storeManager, int storeID, int newPermission) {
         try {
