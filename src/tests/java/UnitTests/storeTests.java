@@ -1,6 +1,8 @@
 package UnitTests;
 
-import org.junit.Test;
+import BusinessLayer.Member;
+import BusinessLayer.Product;
+import BusinessLayer.Store;
 
 import org.example.BusinessLayer.*;
 import org.junit.jupiter.api.*;

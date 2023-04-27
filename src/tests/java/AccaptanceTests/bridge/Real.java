@@ -1,7 +1,7 @@
 package AccaptanceTests.bridge;
 
 
-import org.example.ServiceLayer.MarketManager;
+import ServiceLayer.MarketManager;
 
 public class Real implements Bridge {
 
