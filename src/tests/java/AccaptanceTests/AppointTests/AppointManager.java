@@ -4,6 +4,7 @@ import AccaptanceTests.ServiceTests;
 import org.junit.Before;
 import org.junit.Test;
 
+
 public class AppointManager extends ServiceTests {
     @Before
     public void setUp(){
@@ -25,7 +26,8 @@ public class AppointManager extends ServiceTests {
         int storeID = openStore("newStore");
         logout("1");
         login("alon12","alon593112@gmail.com", "alon0601");
-        assertFalse(appointManager(1, storeID, "alon1"));
+        boolean ans = appointManager(1, storeID, "alon1");
+        assertFalse(ans);
     }
 
     @Test

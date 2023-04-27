@@ -27,7 +27,7 @@ public abstract class ServiceTests extends TestCase {
     }
 
     public boolean openMarket(){
-       return this.bridge.openMarket();
+        return this.bridge.openMarket();
     }
 
     public String searchProductsByName(String productName) {
