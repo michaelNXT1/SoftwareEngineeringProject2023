@@ -351,6 +351,9 @@ public class Market {
         checkMarketOpen();
         if (activeMember == null)
             throw new Exception("Cannot perform action when not logged in");
+        Store s = stores.get(storeId);
+        if (s == null)
+            throw new Exception("the store id is not in the system");
         Position p = checkPositionLegal(storeId);
         p.removeProductFromStore(productId);
     }
