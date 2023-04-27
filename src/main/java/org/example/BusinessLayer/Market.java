@@ -248,6 +248,7 @@ public class Market {
 
     //use case 2.12
     public void changeProductQuantity(int storeId, int productId, int quantity) throws Exception {
+        //need to check that the user is logged in
         checkMarketOpen();
         Store s = getStore(storeId);
         if (activeMember == null)
@@ -258,8 +259,11 @@ public class Market {
 
     //use case 2.13
     public void removeProductFromCart(int storeId, int productId) throws Exception {
+        //need to check that the user is logged in
         checkMarketOpen();
+        checkStoreExists(storeId);
         Store s = getStore(storeId);
+        //why need to separate between guest or member?!
         if (activeMember == null)
             activeGuest.removeProductFromShoppingCart(s, productId);
         else
@@ -303,8 +307,7 @@ public class Market {
         checkMarketOpen();
         if (activeMember == null)
             throw new Exception("Cannot perform action when not logged in");
-        if (!storeExists(storeId))
-            throw new Exception("Store id doesn't exist");
+        checkStoreExists(storeId);
         Position p = checkPositionLegal(storeId);
         return p.addProduct(stores.get(storeId), productName, price, category, quantity,description);
     }
@@ -351,8 +354,21 @@ public class Market {
         checkMarketOpen();
         if (activeMember == null)
             throw new Exception("Cannot perform action when not logged in");
+        checkStoreExists(storeId);
         Position p = checkPositionLegal(storeId);
         p.removeProductFromStore(productId);
+    }
+    //use case 5.8
+    public void setPositionOfMemberToStoreOwner(int storeID, String MemberToBecomeOwner) throws Exception {
+        checkMarketOpen();
+        if (activeMember == null)
+            throw new Exception("Cannot perform action when not logged in");
+        checkStoreExists(storeID);
+        Position p = checkPositionLegal(storeID);
+        Member m= users.get(MemberToBecomeOwner);
+        if (m == null)
+            throw new Exception("MemberToBecomeOwner is not a member");
+        p.setPositionOfMemberToStoreOwner(stores.get(storeID), m);
     }
 
     //use case 5.9
@@ -360,8 +376,12 @@ public class Market {
         checkMarketOpen();
         if (activeMember == null)
             throw new Exception("Cannot perform action when not logged in");
+        checkStoreExists(storeID);
         Position p = checkPositionLegal(storeID);
-        p.setPositionOfMemberToStoreManager(stores.get(storeID), users.get(MemberToBecomeManager));
+        Member m= users.get(MemberToBecomeManager);
+        if (m == null)
+            throw new Exception("MemberToBecomeManager is not a member ");
+        p.setPositionOfMemberToStoreManager(stores.get(storeID), m);
     }
 
     //use case 5.10
@@ -374,8 +394,26 @@ public class Market {
         Position storeManagerPosition = users.get(storeManager).getStorePosition(stores.get(storeID));
         if (storeManagerPosition == null)
             throw new Exception("the name of the store manager has not have that position in this store");
-        else
+        else if (storeManagerPosition.getAssigner() != activeMember) {
+            throw new Exception("only the systemManager's assigner can edit his permissions");
+        } else
             p.addStoreManagerPermissions(storeManagerPosition, perm);
+    }
+
+    //use case 5.10
+    public void removeStoreManagerPermissions(String storeManager, int storeID, int permission) throws Exception {
+        checkMarketOpen();
+        if (activeMember == null)
+            throw new Exception("Cannot perform action when not logged in");
+        StoreManager.permissionType perm = StoreManager.permissionType.values()[permission];
+        Position p = checkPositionLegal(storeID);
+        Position storeManagerPosition = users.get(storeManager).getStorePosition(stores.get(storeID));
+        if (storeManagerPosition == null)
+            throw new Exception("the name of the store manager has not have that position in this store");
+        else if (storeManagerPosition.getAssigner() != activeMember) {
+            throw new Exception("only the systemManager's assigner can edit his permissions");
+        } else
+            p.removeStoreManagerPermissions(storeManagerPosition, perm);
     }
 
     //use case 5.11

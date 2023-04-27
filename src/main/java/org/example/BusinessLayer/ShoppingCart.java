@@ -19,6 +19,8 @@ public class ShoppingCart {
     //Use case 2.12
     public void setProductQuantity(Store s, int productId, int quantity) throws Exception {
         //TODO: add purchase type check
+        if (quantity < 0)
+            throw new Exception("cannot change quantity to less then 0");
         getShoppingBag(s).setProductQuantity(productId, quantity);
     }
 

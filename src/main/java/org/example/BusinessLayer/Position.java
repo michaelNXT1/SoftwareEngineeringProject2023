@@ -4,7 +4,8 @@ import java.util.List;
 
 public interface Position {
 
-    Store getStore();
+    public Store getStore();
+    public Member getAssigner();
 
     public void addStoreManagerPermissions(Position storeManagerPosition, StoreManager.permissionType newPermission) throws IllegalAccessException;   //5.10
 
