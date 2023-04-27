@@ -16,6 +16,7 @@ public class StoreFounder implements Position {
     public Store getStore() {
         return store;
     }
+    public Member getAssigner() { return assigner;}
 
     @Override
     public void addStoreManagerPermissions(Position storeManagerPosition, StoreManager.permissionType newPermission) {
@@ -82,5 +83,6 @@ public class StoreFounder implements Position {
     public List<Member> getStoreEmployees() {
         return store.getEmployees();
     }
+
 
 }
