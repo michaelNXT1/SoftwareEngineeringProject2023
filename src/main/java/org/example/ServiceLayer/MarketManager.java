@@ -12,9 +12,9 @@ public class MarketManager implements IMarketManager {
         this.market = new Market();
     }
 
-    public Response signUpSystemManager(String username, String email, String password){
+    public Response signUpSystemManager(String username, String password){
         try {
-            market.signUpSystemManager(username,email,password);
+            market.signUpSystemManager(username,password);
             return new Response();
         } catch (Exception e) {
             return new Response(e.getMessage());
@@ -32,9 +32,9 @@ public class MarketManager implements IMarketManager {
     }
 
     //use case 2.2
-    public Response signUp(String username, String email, String password) {
+    public Response signUp(String username, String password) {
         try {
-            market.signUp(username, email, password);
+            market.signUp(username, password);
             return new Response();
         } catch (Exception e) {
             return new Response(e.getMessage());
@@ -53,7 +53,7 @@ public class MarketManager implements IMarketManager {
 
     public ResponseT<String> loginSystemManager(String username, String email, String password) {
         try {
-            String ret = market.loginSystemManager(username, email, password);
+            String ret = market.loginSystemManager(username, password);
             return ResponseT.fromValue(ret);
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());

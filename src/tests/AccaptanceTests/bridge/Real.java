@@ -11,8 +11,8 @@ public class Real implements Bridge {
          this.manager = new MarketManager();
     }
 
-    public boolean setupSystem(String managerUName, String managerEmail, String managerPass){
-        return !this.manager.signUpSystemManager(managerUName, managerEmail, managerPass).getError_occurred();
+    public boolean setupSystem(String managerUName, String managerPass){
+        return !this.manager.signUpSystemManager(managerUName, managerPass).getError_occurred();
     }
 
     public boolean login(String username,String email,String password) {
@@ -20,7 +20,7 @@ public class Real implements Bridge {
     }
 
     public boolean register(String username,String email,String password) {
-        return !manager.signUp(username, email,password).getError_occurred();
+        return !manager.signUp(username, password).getError_occurred();
     }
 
     @Override

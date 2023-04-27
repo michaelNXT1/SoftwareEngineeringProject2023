@@ -36,19 +36,13 @@ public class Market {
         marketOpen = false;
     }
 
-    public void signUpSystemManager(String username, String email, String password) throws Exception {
+    public void signUpSystemManager(String username, String password) throws Exception {
         if (usernameExists(username))
             throw new Exception("Username already exists");
-        if (emailExists(email))
-            throw new Exception("Email already exists");
-
         // hash password using password encoder
         String hashedPassword = passwordEncoder.encode(password);
 
-        SystemManager sm = new SystemManager(username, email, hashedPassword);
-
-        // discard plain-text password
-        password = null;
+        SystemManager sm = new SystemManager(username, hashedPassword);
 
         systemManagers.put(username, sm);
         if (!marketOpen)
@@ -63,28 +57,22 @@ public class Market {
     }
 
     //Use case 2.2
-    public void signUp(String username, String email, String password) throws Exception {
+    public void signUp(String username, String password) throws Exception {
         checkMarketOpen();
         if (usernameExists(username))
             throw new Exception("Username already exists");
-        if (emailExists(email))
-            throw new Exception("Email already exists");
-
         // hash password using password encoder
         String hashedPassword = passwordEncoder.encode(password);
 
         // create new Member's object with hashed password
-        Member newMember = new Member(username, email, hashedPassword);
-
-        // discard plain-text password
-        password = null;
+        Member newMember = new Member(username, hashedPassword);
 
         // store new Member's object in users map
         users.put(username, newMember);
     }
 
     //use case 2.3
-    public String login(String username, String email, String password) throws Exception {
+    public String login(String username, String password) throws Exception {
         checkMarketOpen();
         // Retrieve the stored Member's object for the given username
         Member member = users.get(username);
@@ -102,7 +90,6 @@ public class Market {
         return null;
     }
 
-
     //use case 3.1
     public void logout(String sessionId) throws Exception {
         checkMarketOpen();
@@ -112,7 +99,7 @@ public class Market {
 
 
     //use case 2.3
-    public String loginSystemManager(String username, String email, String password) throws Exception {
+    public String loginSystemManager(String username, String password) throws Exception {
         checkMarketOpen();
         // Retrieve the stored Member's object for the given username
         SystemManager sm = systemManagers.get(username);
@@ -136,8 +123,9 @@ public class Market {
 
 
     //use case 2.4 - store name
-    public List<Store> getStores(String storeSubString) throws Exception {
+    public List<Store> getStores(String sessionId, String storeSubString) throws Exception {
         checkMarketOpen();
+        sessionManager.getSession(sessionId);
         if (stringIsEmpty(storeSubString))
             return new ArrayList<>();
         return stores.values().stream().filter(s -> s.getStoreName().contains(storeSubString)).collect(Collectors.toList());
@@ -447,10 +435,6 @@ public class Market {
 
     public boolean usernameExists(String username) {
         return users.values().stream().anyMatch(m -> m.getUsername().equals(username));
-    }
-
-    private boolean emailExists(String email) {
-        return users.values().stream().anyMatch(m -> m.getEmail().equals(email));
     }
 
     private boolean storeExists(int storeId) {

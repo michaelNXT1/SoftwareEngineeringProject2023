@@ -24,7 +24,7 @@ public class CloseStoreTest extends ServiceTests {
     @Test
     public void closeStoreNotOwnerFail(){
         int storeID = openStore("newStore");
-        logout(1);
+        logout("1");
         login("alon12","alon593112@gmail.com", "alon0601");
         assertFalse(closeStore(storeID));
     }

@@ -21,12 +21,17 @@ public class SessionManager {
         sessions.put(sessionId, user);
         return sessionId;
     }
-    public Guest getSession(String sessionId) {
+    public Guest getSession(String sessionId) throws Exception {
+        Guest g = sessions.get(sessionId);
+        if (g == null)
+            throw new Exception("user session doesnt exist");
         return sessions.get(sessionId);
     }
 
-    public void deleteSession(String sessionId) {
-        sessions.remove(sessionId);
+    public void deleteSession(String sessionId) throws Exception {
+        Guest g = sessions.remove(sessionId);
+        if (g == null)
+            throw new Exception("user session doesnt exist");
     }
     public String generateSessionId() {
         SecureRandom random = new SecureRandom();
@@ -40,7 +45,9 @@ public class SessionManager {
         systemManagerSessions.put(sessionId, sm);
         return sessionId;
     }
-    public void deleteSessionForSystemManager(String sessionId) {
-        systemManagerSessions.remove(sessionId);
+    public void deleteSessionForSystemManager(String sessionId) throws Exception {
+        SystemManager sm = systemManagerSessions.remove(sessionId);
+        if (sm == null)
+            throw new Exception("user session doesnt exist");
     }
 }

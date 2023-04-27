@@ -7,9 +7,9 @@ public class ProxyBridge implements Bridge{
         if (real == null)
             real = implementation;
     }
-    public boolean setupSystem(String managerUName, String managerEmail, String managerPass){
+    public boolean setupSystem(String managerUName, String managerPass){
         if (real != null){
-            return real.setupSystem(managerUName, managerEmail,managerPass);
+            return real.setupSystem(managerUName, managerPass);
         }
         else{
             return false;
@@ -18,18 +18,18 @@ public class ProxyBridge implements Bridge{
 
 
 
-    public boolean login(String username, String email, String password) {
+    public boolean login(String username, String password) {
         if (real != null) {
-            return real.login(username, email, password);
+            return real.login(username, password);
         }
         else {
             return false;
         }
     }
 
-    public boolean register(String username, String email,String password) {
+    public boolean register(String username, String password) {
         if (real != null) {
-            return real.register(username, email, password);
+            return real.register(username, password);
         }
         else {
             return false;

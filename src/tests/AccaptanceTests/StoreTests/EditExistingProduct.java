@@ -55,7 +55,7 @@ public class EditExistingProduct extends ServiceTests {
 
     @Test
     public void editNameExistingProductNotPremitionFAil(){
-        logout(1);
+        logout("1");
         login("alon1","alon59311@gmail.com", "alon0601");
         int storeID = openStore("newStore");
         int productID1 = addProduct(storeID,"test",3.9,"milk",9,"10");

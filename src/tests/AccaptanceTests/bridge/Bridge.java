@@ -2,11 +2,11 @@ package AccaptanceTests.bridge;
 
 
 public interface Bridge {
-    boolean setupSystem(String managerUName, String managerEmail, String managerPass);
+    boolean setupSystem(String managerUName, String managerPass);
 
-    boolean login(String username, String email,String password);
+    boolean login(String username, String password);
 
-    boolean register(String username, String email,String password);
+    boolean register(String username, String password);
     boolean getStore(int storeId);
 
     boolean getProduct(int productID, int storeID);

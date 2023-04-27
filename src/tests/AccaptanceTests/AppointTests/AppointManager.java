@@ -23,7 +23,7 @@ public class AppointManager extends ServiceTests {
     @Test
     public void appointManagerWithoutPremToFail(){
         int storeID = openStore("newStore");
-        logout(1);
+        logout("1");
         login("alon12","alon593112@gmail.com", "alon0601");
         assertFalse(appointManager(1, storeID, "alon1"));
     }

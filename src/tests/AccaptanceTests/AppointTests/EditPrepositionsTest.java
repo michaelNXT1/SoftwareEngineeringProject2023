@@ -25,7 +25,7 @@ public class EditPrepositionsTest extends ServiceTests {
     @Test
     public void editingManagerPremFail(){
         int storeID = openStore("newStore");
-        logout(1);
+        logout("1");
         login("alon12","alon593112@gmail.com", "alon0601");
         assertFalse(editManagerOptions(1, storeID, "alon1",2));
     }
