@@ -1,5 +1,6 @@
 package org.example.BusinessLayer;
 
+import org.example.BusinessLayer.Logger.SystemLogger;
 import org.example.Security.SecurityUtils;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +22,8 @@ public class Market {
     private Member activeMember;
     private Guest activeGuest;
     private SystemManager activeSystemManager;
+
+    private SystemLogger logger;
     private boolean marketOpen;
     SecurityUtils securityUtils = new SecurityUtils();
     SessionManager sessionManager = new SessionManager();
@@ -34,13 +37,19 @@ public class Market {
         activeGuest = null;
         activeMember = null;
         marketOpen = false;
+        this.logger = new SystemLogger();
     }
 
     public void signUpSystemManager(String username, String email, String password) throws Exception {
-        if (usernameExists(username))
+        logger.info(String.format("Sign Up new System Manager: %s",username));
+        if (usernameExists(username)) {
+            logger.error(String.format("Username already exists :%s",username));
             throw new Exception("Username already exists");
-        if (emailExists(email))
+        }
+        if (emailExists(email)) {
+            logger.error(String.format("Email already exists :%s",email));
             throw new Exception("Email already exists");
+        }
 
         // hash password using password encoder
         String hashedPassword = passwordEncoder.encode(password);
@@ -51,24 +60,37 @@ public class Market {
         password = null;
 
         systemManagers.put(username, sm);
-        if (!marketOpen)
+        logger.info(String.format("new manager added to the system: %s",username));
+        if (!marketOpen) {
+            logger.info(String.format("The market now open"));
             marketOpen = true;
+        }
     }
 
     //use case 1.1
     public String enterMarket() throws Exception {
         Guest guest = new Guest();
         String sessionId = sessionManager.createSession(guest);
+        logger.info(String.format("new guest entered the system with sessionID: %s",sessionId));
         return sessionId;
     }
 
     //Use case 2.2
     public void signUp(String username, String email, String password) throws Exception {
-        checkMarketOpen();
-        if (usernameExists(username))
+        logger.info(String.format("%s start his sign up process",username));
+        if(!checkMarketOpen()){
+            logger.error("marker is not open yet");
+            throw new Exception("market is not open yet");
+        }
+        if (usernameExists(username)) {
+            logger.error(String.format("Username already exists :%s", username));
             throw new Exception("Username already exists");
+        }
         if (emailExists(email))
-            throw new Exception("Email already exists");
+        {
+            logger.error(String.format("email already exists :%s", email));
+            throw new Exception("email already exists");
+        }
 
         // hash password using password encoder
         String hashedPassword = passwordEncoder.encode(password);
@@ -80,22 +102,30 @@ public class Market {
         password = null;
 
         // store new Member's object in users map
+        logger.info(String.format("%s signed up to the system",username));
         users.put(username, newMember);
     }
 
     //use case 2.3
     public String login(String username, String email, String password) throws Exception {
-        checkMarketOpen();
+        logger.info(String.format("%s trying to log in to the system",username));
+        if(!checkMarketOpen()){
+            logger.error("marker is not open yet");
+            throw new Exception("market is not open yet");
+        }
         // Retrieve the stored Member's object for the given username
         Member member = users.get(username);
 
         // If the Member doesn't exist or the password is incorrect, throw exception
-        if (member == null || !passwordEncoder.matches(password, member.getPassword()))
+        if (member == null || !passwordEncoder.matches(password, member.getPassword())) {
+            logger.error(String.format("%s have Invalid username or password", username));
             throw new Error("Invalid username or password");
+        }
 
         // If the credentials are correct, authenticate the user and return true
         boolean res = securityUtils.authenticate(username, password);
         if (res) {
+            logger.info(String.format("%s the user passed authenticate check and logged in to the system",username));
             String sessionId = sessionManager.createSession(member);
             return sessionId;
         }
@@ -105,7 +135,11 @@ public class Market {
 
     //use case 3.1
     public void logout(String sessionId) throws Exception {
-        checkMarketOpen();
+        if(!checkMarketOpen()){
+            logger.error("marker is not open yet");
+            throw new Exception("market is not open yet");
+        }
+        logger.info(String.format("%s trying to log out of the system",sessionId));
         sessionManager.deleteSession(sessionId);
     }
 
@@ -113,31 +147,45 @@ public class Market {
 
     //use case 2.3
     public String loginSystemManager(String username, String email, String password) throws Exception {
-        checkMarketOpen();
+        if(!checkMarketOpen()){
+            logger.error("marker is not open yet");
+            throw new Exception("market is not open yet");
+        }
+        logger.info(String.format("%s trying to log in to the systemMnager",username));
         // Retrieve the stored Member's object for the given username
         SystemManager sm = systemManagers.get(username);
 
         // If the Member doesn't exist or the password is incorrect, return false
-        if (sm == null || !passwordEncoder.matches(password, sm.getPassword()))
+        if (sm == null || !passwordEncoder.matches(password, sm.getPassword())) {
+            logger.error(String.format("%s has Invalid username or password",username));
             throw new Error("Invalid username or password");
+        }
 
         // If the credentials are correct, authenticate the user and return true
         boolean res = authenticate(username, password);
         if (res) {
+            logger.info(String.format("%s the user passed authenticate check and logged in to the systemManager",username));
             String sessionId = sessionManager.createSessionForSystemManager(sm);
             return sessionId;
         }
         return null;
     }
     public void logoutSystemManager(String sessionId) throws Exception {
-        checkMarketOpen();
+        if(!checkMarketOpen()){
+            logger.error("marker is not open yet");
+            throw new Exception("market is not open yet");
+        }
+        logger.info(String.format("%s trying to log out of the system",sessionId));
         sessionManager.deleteSessionForSystemManager(sessionId);
     }
 
 
     //use case 2.4 - store name
     public List<Store> getStores(String storeSubString) throws Exception {
-        checkMarketOpen();
+        if(!checkMarketOpen()){
+            logger.error("marker is not open yet");
+            throw new Exception("market is not open yet");
+        }        logger.info(String.format("get all stores including this sub string %s",storeSubString));
         if (stringIsEmpty(storeSubString))
             return new ArrayList<>();
         return stores.values().stream().filter(s -> s.getStoreName().contains(storeSubString)).collect(Collectors.toList());
@@ -145,22 +193,36 @@ public class Market {
 
     //use case 2.4 - store id
     public Store getStore(int storeId) throws Exception {
-        checkMarketOpen();
-        checkStoreExists(storeId);
+        if(!checkMarketOpen()){
+            logger.error("marker is not open yet");
+            throw new Exception("market is not open yet");
+        }        logger.info(String.format("get the store with specific storeID : %d",storeId));
+        if(!checkStoreExists(storeId)){
+            logger.error(String.format("the requested store is not exist : %d",storeId));
+            throw new Exception("this store is not exist");
+        }
         return stores.get(storeId);
     }
 
     //use case 2.5
     public Product getProduct(int storeId, int productId) throws Exception {
-        checkMarketOpen();
-        checkStoreExists(storeId);
+        if(!checkMarketOpen()){
+            logger.error("marker is not open yet");
+            throw new Exception("market is not open yet");
+        }        logger.info(String.format("gettig product by product id : %d and store id : %d",productId,storeId));
+        if(!checkStoreExists(storeId)){
+            logger.error(String.format("the requested store is not exist : %d",storeId));
+            throw new Exception("this store is not exist");
+        }
         return stores.get(storeId).getProduct(productId);
     }
 
     //use case 2.6
     public List<Product> getProductsByName(String productName) throws Exception {
-        checkMarketOpen();
-        List<Product> list = new ArrayList<>();
+        if(!checkMarketOpen()){
+            logger.error("marker is not open yet");
+            throw new Exception("market is not open yet");
+        }        List<Product> list = new ArrayList<>();
         if (!stringIsEmpty(productName))
             stores.values().forEach(s -> list.addAll(s.getProducts().keySet().stream().filter(p -> p.getProductName().equals(productName)).collect(Collectors.toList())));
         if (activeMember == null)
@@ -172,7 +234,10 @@ public class Market {
 
     //use case 2.7
     public List<Product> getProductsByCategory(String productCategory) throws Exception {
-        checkMarketOpen();
+        if(!checkMarketOpen()){
+            logger.error("marker is not open yet");
+            throw new Exception("market is not open yet");
+        }
         List<Product> list = new ArrayList<>();
         if (!stringIsEmpty(productCategory))
             stores.values().forEach(s -> list.addAll(s.getProducts().keySet().stream().filter(p -> p.getCategory().equals(productCategory)).collect(Collectors.toList())));
@@ -185,7 +250,10 @@ public class Market {
 
     //use case 2.8
     public List<Product> getProductsBySubstring(String productSubstring) throws Exception {
-        checkMarketOpen();
+        if(!checkMarketOpen()){
+            logger.error("marker is not open yet");
+            throw new Exception("market is not open yet");
+        }
         List<Product> list = new ArrayList<>();
         if (!stringIsEmpty(productSubstring))
             stores.values().forEach(s -> list.addAll(s.getProducts().keySet().stream().filter(p -> p.getProductName().contains(productSubstring)).collect(Collectors.toList())));
@@ -198,7 +266,10 @@ public class Market {
 
     //use case __.__
     public List<Product> getSearchResults() throws Exception {
-        checkMarketOpen();
+        if(!checkMarketOpen()){
+            logger.error("marker is not open yet");
+            throw new Exception("market is not open yet");
+        }
         if (activeMember == null)
             return activeGuest.getSearchResults();
         else
@@ -207,7 +278,10 @@ public class Market {
 
     //use case 2.9 - by category
     public List<Product> filterSearchResultsByCategory(String category) throws Exception {
-        checkMarketOpen();
+        if(!checkMarketOpen()){
+            logger.error("marker is not open yet");
+            throw new Exception("market is not open yet");
+        }
         if (activeMember == null)
             return activeGuest.filterSearchResultsByCategory(category);
         else
@@ -216,7 +290,10 @@ public class Market {
 
     //use case 2.9 - by price range
     public List<Product> filterSearchResultsByPrice(double minPrice, double maxPrice) throws Exception {
-        checkMarketOpen();
+        if(!checkMarketOpen()){
+            logger.error("marker is not open yet");
+            throw new Exception("market is not open yet");
+        }
         if (activeMember == null)
             return activeGuest.filterSearchResultsByPrice(minPrice, maxPrice);
         else
@@ -225,7 +302,10 @@ public class Market {
 
     //use case 2.10
     public void addProductToCart(int storeId, int productId, int quantity) throws Exception {
-        checkMarketOpen();
+        if(!checkMarketOpen()){
+            logger.error("marker is not open yet");
+            throw new Exception("market is not open yet");
+        }
         Store s = getStore(storeId);
         if (activeMember == null)
             activeGuest.addProductToShoppingCart(s, productId, quantity);
@@ -235,7 +315,10 @@ public class Market {
 
     //use case 2.11
     public ShoppingCart getShoppingCart() throws Exception {
-        checkMarketOpen();
+        if(!checkMarketOpen()){
+            logger.error("marker is not open yet");
+            throw new Exception("market is not open yet");
+        }
         if (activeMember == null)
             return activeGuest.displayShoppingCart();
         else
@@ -245,7 +328,10 @@ public class Market {
     //use case 2.12
     public void changeProductQuantity(int storeId, int productId, int quantity) throws Exception {
         //need to check that the user is logged in
-        checkMarketOpen();
+        if(!checkMarketOpen()){
+            logger.error("marker is not open yet");
+            throw new Exception("market is not open yet");
+        }
         Store s = getStore(storeId);
         if (activeMember == null)
             activeGuest.addProductToShoppingCart(s, productId, quantity);
@@ -256,7 +342,10 @@ public class Market {
     //use case 2.13
     public void removeProductFromCart(int storeId, int productId) throws Exception {
         //need to check that the user is logged in
-        checkMarketOpen();
+        if(!checkMarketOpen()){
+            logger.error("marker is not open yet");
+            throw new Exception("market is not open yet");
+        }
         checkStoreExists(storeId);
         Store s = getStore(storeId);
         //why need to separate between guest or member?!
@@ -268,7 +357,10 @@ public class Market {
 
     //use case 2.14
     public Purchase purchaseShoppingCart() throws Exception {
-        checkMarketOpen();
+        if(!checkMarketOpen()){
+            logger.error("marker is not open yet");
+            throw new Exception("market is not open yet");
+        }
         if (activeMember == null)
             return activeGuest.purchaseShoppingCart();
         else
@@ -277,7 +369,10 @@ public class Market {
 
     //use case 3.2
     public int openStore(String storeName) throws Exception {
-        checkMarketOpen();
+        if(!checkMarketOpen()){
+            logger.error("marker is not open yet");
+            throw new Exception("market is not open yet");
+        }
         if (activeMember == null)
             throw new Exception("Cannot perform action when not logged in");
         //TODO: lock stores variable
@@ -289,7 +384,10 @@ public class Market {
 
     //use case 4.1
     public List<Purchase> getPurchaseHistory(int storeId) throws Exception {
-        checkMarketOpen();
+        if(!checkMarketOpen()){
+            logger.error("marker is not open yet");
+            throw new Exception("market is not open yet");
+        }
         if (activeMember == null)
             throw new Exception("Cannot perform action when not logged in");
         if (!storeExists(storeId))
@@ -300,7 +398,10 @@ public class Market {
 
     //use case 5.1
     public Product addProduct(int storeId, String productName, double price, String category, int quantity, String description) throws Exception {
-        checkMarketOpen();
+        if(!checkMarketOpen()){
+            logger.error("marker is not open yet");
+            throw new Exception("market is not open yet");
+        }
         if (activeMember == null)
             throw new Exception("Cannot perform action when not logged in");
         checkStoreExists(storeId);
@@ -310,7 +411,10 @@ public class Market {
 
     //use case 5.2 - by product name
     public void editProductName(int storeId, int productId, String newName) throws Exception {
-        checkMarketOpen();
+        if(!checkMarketOpen()){
+            logger.error("marker is not open yet");
+            throw new Exception("market is not open yet");
+        }
         if (activeMember == null)
             throw new Exception("Cannot perform action when not logged in");
         checkStoreExists(storeId);
@@ -320,7 +424,10 @@ public class Market {
 
     //use case 5.2 - by product price
     public void editProductPrice(int storeId, int productId, int newPrice) throws Exception {
-        checkMarketOpen();
+        if(!checkMarketOpen()){
+            logger.error("marker is not open yet");
+            throw new Exception("market is not open yet");
+        }
         if (activeMember == null)
             throw new Exception("Cannot perform action when not logged in");
         checkStoreExists(storeId);
@@ -330,7 +437,10 @@ public class Market {
 
     //use case 5.2 - by product category
     public void editProductCategory(int storeId, int productId, String newCategory) throws Exception {
-        checkMarketOpen();
+        if(!checkMarketOpen()){
+            logger.error("marker is not open yet");
+            throw new Exception("market is not open yet");
+        }
         if (activeMember == null)
             throw new Exception("Cannot perform action when not logged in");
         checkStoreExists(storeId);
@@ -347,7 +457,10 @@ public class Market {
 
     //use case 5.3
     public void removeProductFromStore(int storeId, int productId) throws Exception {
-        checkMarketOpen();
+        if(!checkMarketOpen()){
+            logger.error("marker is not open yet");
+            throw new Exception("market is not open yet");
+        }
         if (activeMember == null)
             throw new Exception("Cannot perform action when not logged in");
         checkStoreExists(storeId);
@@ -356,7 +469,10 @@ public class Market {
     }
     //use case 5.8
     public void setPositionOfMemberToStoreOwner(int storeID, String MemberToBecomeOwner) throws Exception {
-        checkMarketOpen();
+        if(!checkMarketOpen()){
+            logger.error("marker is not open yet");
+            throw new Exception("market is not open yet");
+        }
         if (activeMember == null)
             throw new Exception("Cannot perform action when not logged in");
         checkStoreExists(storeID);
@@ -369,7 +485,10 @@ public class Market {
 
     //use case 5.9
     public void setPositionOfMemberToStoreManager(int storeID, String MemberToBecomeManager) throws Exception {
-        checkMarketOpen();
+        if(!checkMarketOpen()){
+            logger.error("marker is not open yet");
+            throw new Exception("market is not open yet");
+        }
         if (activeMember == null)
             throw new Exception("Cannot perform action when not logged in");
         checkStoreExists(storeID);
@@ -382,7 +501,10 @@ public class Market {
 
     //use case 5.10
     public void addStoreManagerPermissions(String storeManager, int storeID, int newPermission) throws Exception {
-        checkMarketOpen();
+        if(!checkMarketOpen()){
+            logger.error("marker is not open yet");
+            throw new Exception("market is not open yet");
+        }
         if (activeMember == null)
             throw new Exception("Cannot perform action when not logged in");
         StoreManager.permissionType perm = StoreManager.permissionType.values()[newPermission];
@@ -398,7 +520,10 @@ public class Market {
 
     //use case 5.10
     public void removeStoreManagerPermissions(String storeManager, int storeID, int permission) throws Exception {
-        checkMarketOpen();
+        if(!checkMarketOpen()){
+            logger.error("marker is not open yet");
+            throw new Exception("market is not open yet");
+        }
         if (activeMember == null)
             throw new Exception("Cannot perform action when not logged in");
         StoreManager.permissionType perm = StoreManager.permissionType.values()[permission];
@@ -414,7 +539,10 @@ public class Market {
 
     //use case 5.11
     public List<Member> getStoreEmployees(int storeId) throws Exception {
-        checkMarketOpen();
+        if(!checkMarketOpen()){
+            logger.error("marker is not open yet");
+            throw new Exception("market is not open yet");
+        }
         if (activeMember == null)
             throw new Exception("Cannot perform action when not logged in");
         Position p = checkPositionLegal(storeId);
@@ -423,7 +551,10 @@ public class Market {
 
     //use case 6.1
     public void closeStore(int storeId) throws Exception {
-        checkMarketOpen();
+        if(!checkMarketOpen()){
+            logger.error("marker is not open yet");
+            throw new Exception("market is not open yet");
+        }
         if (activeMember == null)
             throw new Exception("Cannot perform action when not logged in");
         checkStoreExists(storeId);
@@ -433,7 +564,10 @@ public class Market {
 
     //use case 7.1
     public Map<Store, List<Purchase>> getStoresPurchases() throws Exception {
-        checkMarketOpen();
+        if(!checkMarketOpen()){
+            logger.error("marker is not open yet");
+            throw new Exception("market is not open yet");
+        }
         Map<Store, List<Purchase>> ret = new HashMap<>();
         for (Store s : stores.values()) {
             ret.put(s, new ArrayList<>());
@@ -461,9 +595,8 @@ public class Market {
         return value == null || value.equals("");
     }
 
-    private void checkStoreExists(int storeId) throws Exception {
-        if (!storeExists(storeId))
-            throw new Exception("store id doesn't exist");
+    private boolean checkStoreExists(int storeId) throws Exception {
+        return storeExists(storeId);
     }
 
     private Position checkPositionLegal(int storeId) throws Exception {
@@ -473,9 +606,8 @@ public class Market {
         return p;
     }
 
-    private void checkMarketOpen() throws Exception {
-        if (!marketOpen)
-            throw new Exception("market is closed");
+    private boolean checkMarketOpen() throws Exception {
+        return marketOpen;
     }
 
 }
