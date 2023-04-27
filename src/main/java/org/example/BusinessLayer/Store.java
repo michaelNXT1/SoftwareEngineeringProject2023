@@ -56,8 +56,6 @@ public class Store {
     public Product addProduct(String productName, double price, String category, int quantity,String description) throws Exception {
         if (products.keySet().stream().anyMatch(p -> p.getProductName().equals(productName)))
             throw new Exception("Product name already exists");
-        if (price < 0)
-            throw new Exception("cannot add product with negative price");
         Product p = new Product(productIdCounter++, productName, price, category,description);
         products.put(p, quantity);
         return p;

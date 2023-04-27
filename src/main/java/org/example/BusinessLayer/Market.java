@@ -248,6 +248,7 @@ public class Market {
 
     //use case 2.12
     public void changeProductQuantity(int storeId, int productId, int quantity) throws Exception {
+        //need to check that the user is logged in
         checkMarketOpen();
         Store s = getStore(storeId);
         if (activeMember == null)
@@ -258,8 +259,11 @@ public class Market {
 
     //use case 2.13
     public void removeProductFromCart(int storeId, int productId) throws Exception {
+        //need to check that the user is logged in
         checkMarketOpen();
+        checkStoreExists(storeId);
         Store s = getStore(storeId);
+        //why need to separate between guest or member?!
         if (activeMember == null)
             activeGuest.removeProductFromShoppingCart(s, productId);
         else
