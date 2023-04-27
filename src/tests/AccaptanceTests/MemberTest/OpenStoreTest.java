@@ -28,7 +28,7 @@ public class OpenStoreTest extends ServiceTests{
 
     @Test
     public void testOpenStoreFailureNotLoggedIn(){
-        logout(1);
+        logout("1");
         assertNull(openStore("newee"));
         assertNull(openStore("newee"));
     }

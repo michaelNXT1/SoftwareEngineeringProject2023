@@ -106,7 +106,7 @@ public abstract class ServiceTests extends TestCase {
         return bridge.buyCart(sessionId, cardNumber, cardMonth, cardYear, cardHolder, cardCcv, cardId, buyerName, address, city, country, zip);
     }
 
-    public boolean logout(int sessionId){ return bridge.logout(); }
+    public boolean logout(String sessionId){ return bridge.logout(sessionId); }
 
     public Integer openStore(String storeName){ return bridge.openStore(storeName); }
 
