@@ -158,9 +158,9 @@ public class ProxyBridge implements Bridge{
     }
 
 
-    public boolean logout() {
+    public boolean logout(String sessionId) {
         if (real != null) {
-            return real.logout();
+            return real.logout(sessionId);
         }
         else {
             return false;

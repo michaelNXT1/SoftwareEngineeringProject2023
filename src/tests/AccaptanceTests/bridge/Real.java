@@ -74,7 +74,6 @@ public class Real implements Bridge {
         return manager.getShoppingCart().value.toString();
     }
 
-
     public boolean updateAmount(int storeId,int productId, int amount) {
         return !manager.changeProductQuantity(storeId, productId, amount).getError_occurred();
     }
@@ -93,9 +92,8 @@ public class Real implements Bridge {
     }
 
 
-    public boolean logout(){
-        return !manager.logout().getError_occurred();
-
+    public boolean logout(String sessionId){
+        return !manager.logout(sessionId).getError_occurred();
     }
 
     @Override
