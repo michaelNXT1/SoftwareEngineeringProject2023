@@ -351,9 +351,7 @@ public class Market {
         checkMarketOpen();
         if (activeMember == null)
             throw new Exception("Cannot perform action when not logged in");
-        Store s = stores.get(storeId);
-        if (s == null)
-            throw new Exception("the store id is not in the system");
+        checkStoreExists(storeId);
         Position p = checkPositionLegal(storeId);
         p.removeProductFromStore(productId);
     }
@@ -362,14 +360,12 @@ public class Market {
         checkMarketOpen();
         if (activeMember == null)
             throw new Exception("Cannot perform action when not logged in");
-        Store s = stores.get(storeID);
-        if (s == null)
-            throw new Exception("the store id is not in the system");
+        checkStoreExists(storeID);
         Position p = checkPositionLegal(storeID);
         Member m= users.get(MemberToBecomeOwner);
         if (m == null)
             throw new Exception("MemberToBecomeOwner is not a member");
-        p.setPositionOfMemberToStoreOwner(s, m);
+        p.setPositionOfMemberToStoreOwner(stores.get(storeID), m);
     }
 
     //use case 5.9
@@ -377,14 +373,12 @@ public class Market {
         checkMarketOpen();
         if (activeMember == null)
             throw new Exception("Cannot perform action when not logged in");
-        Store s = stores.get(storeID);
-        if (s == null)
-            throw new Exception("the store id is not in the system");
+        checkStoreExists(storeID);
         Position p = checkPositionLegal(storeID);
         Member m= users.get(MemberToBecomeManager);
         if (m == null)
             throw new Exception("MemberToBecomeManager is not a member ");
-        p.setPositionOfMemberToStoreManager(s, m);
+        p.setPositionOfMemberToStoreManager(stores.get(storeID), m);
     }
 
     //use case 5.10
