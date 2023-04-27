@@ -1,5 +1,6 @@
 package org.example.BusinessLayer;
 
+import org.example.BusinessLayer.Logger.SystemLogger;
 import org.example.Security.SecurityUtils;
 
 import java.security.Principal;
@@ -12,6 +13,8 @@ public class Member extends Guest {
     private String username;
     private String email;
     private String hashedPassword;
+
+    private SystemLogger logger;
     private List<Position> positions = new LinkedList<>(); //all the positions of this member, note that position act as a state
 
     public Member(String username, String email, String hashedPassword) {
@@ -19,6 +22,7 @@ public class Member extends Guest {
         this.username = username;
         this.email = email;
         this.hashedPassword = hashedPassword;
+        this.logger = new SystemLogger();
     }
 
     // getter, setter
@@ -70,6 +74,7 @@ public class Member extends Guest {
 
     public void setToStoreManager(Store store) throws Exception {
         if (getStorePosition(store) != null) {
+            logger.error(String.format("the member is already have a different position in this store : %s",store.getStoreName()));
             throw new Exception("the member is already have a different position in this store");
         } else {
             positions.add(new StoreManager(store, this));
@@ -79,6 +84,7 @@ public class Member extends Guest {
 
     public void setToStoreOwner(Store store) throws Exception {
         if (getStorePosition(store) != null) {
+            logger.error(String.format("the member is already have a different position in this store : %s",store.getStoreName()));
             throw new Exception("the member is already have a different position in this store");
         } else {
             positions.add(new StoreOwner(store, this));

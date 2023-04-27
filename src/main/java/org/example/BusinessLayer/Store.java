@@ -1,5 +1,7 @@
 package org.example.BusinessLayer;
 
+import org.example.BusinessLayer.Logger.SystemLogger;
+
 import java.util.*;
 
 public class Store {
@@ -13,6 +15,8 @@ public class Store {
     private boolean isOpen;
     private int productIdCounter;
 
+    private SystemLogger logger;
+
     public Store(int storeId, String storeName, Member m) {
         this.storeId = storeId;
         this.storeName = storeName;
@@ -20,6 +24,7 @@ public class Store {
         this.purchaseList = new ArrayList<>();
         this.employees = new ArrayList<>();
         employees.add(m);
+        this.logger = new SystemLogger();
         productIdCounter = 0;
     }
 
@@ -54,8 +59,10 @@ public class Store {
 
     //use case 5.1
     public Product addProduct(String productName, double price, String category, int quantity, String description) throws Exception {
-        if (products.keySet().stream().anyMatch(p -> p.getProductName().equals(productName)))
+        if (products.keySet().stream().anyMatch(p -> p.getProductName().equals(productName))) {
+            logger.error(String.format("%s already exist",productName));
             throw new Exception("Product name already exists");
+        }
         Product p = new Product(productIdCounter++, productName, price, category, description);
         products.put(p, quantity);
         return p;
@@ -69,6 +76,7 @@ public class Store {
         try {
             p = getProduct(productId);
         } catch (Exception e) {
+            logger.error(String.format("%d product doesnt exist",productId));
             throw new RuntimeException(e);
         }
         if (products.containsKey(p))
@@ -92,15 +100,19 @@ public class Store {
 
     public Product getProduct(int productId) throws Exception {
         Product ret = products.keySet().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null);
-        if (ret == null)
+        if (ret == null) {
+            logger.error(String.format("%d product doesnt exist",productId));
             throw new Exception("Product doesn't exist");
+        }
         return ret;
     }
 
     public void editProductName(int productId, String newName) throws Exception {
         checkProductExists(productId);
-        if (products.keySet().stream().anyMatch(p -> p.getProductName().equals(newName)))
+        if (products.keySet().stream().anyMatch(p -> p.getProductName().equals(newName))){
+            logger.error(String.format("%s already exist",newName));
             throw new Exception("Product name already exists");
+        }
         getProduct(productId).setProductName(newName);
     }
 
@@ -138,8 +150,10 @@ public class Store {
 
 
     private void checkProductExists(int productId) throws Exception {
-        if (products.keySet().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null) == null)
+        if (products.keySet().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null) == null) {
+            logger.error(String.format("%d product doesnt exist",productId));
             throw new Exception("product id doesn't exist");
+        }
     }
 
     public void addEmployee(Member member) {
