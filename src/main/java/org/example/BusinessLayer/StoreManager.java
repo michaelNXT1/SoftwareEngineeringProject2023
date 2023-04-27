@@ -23,6 +23,11 @@ public class StoreManager implements Position {
     public Store getStore() {
         return store;
     }
+    @Override
+    public Member getAssigner() {
+        return assigner;
+    }
+
     public Set<permissionType> getPermissions() {
         return permissions;
     }

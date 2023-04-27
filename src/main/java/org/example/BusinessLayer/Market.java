@@ -23,6 +23,8 @@ public class Market {
     private SystemManager activeSystemManager;
     private boolean marketOpen;
     SecurityUtils securityUtils = new SecurityUtils();
+    SessionManager sessionManager = new SessionManager();
+
 
     public Market() {
         stores = new HashMap<>();
@@ -54,15 +56,15 @@ public class Market {
     }
 
     //use case 1.1
-    public void enterMarket() throws Exception {
+    public String enterMarket() throws Exception {
         Guest guest = new Guest();
+        String sessionId = sessionManager.createSession(guest);
+        return sessionId;
     }
 
     //Use case 2.2
     public void signUp(String username, String email, String password) throws Exception {
         checkMarketOpen();
-        if (activeMember != null)
-            throw new Exception("Cannot perform action when logged in");
         if (usernameExists(username))
             throw new Exception("Username already exists");
         if (emailExists(email))
@@ -82,62 +84,56 @@ public class Market {
     }
 
     //use case 2.3
-    public boolean login(String username, String email, String password) throws Exception {
+    public String login(String username, String email, String password) throws Exception {
         checkMarketOpen();
-        //can't log in when another user is logged in
-        if (activeMember != null || activeSystemManager != null)
-            throw new Exception("Cannot perform action when logged in");
-
         // Retrieve the stored Member's object for the given username
         Member member = users.get(username);
 
-        // If the Member doesn't exist or the password is incorrect, return false
+        // If the Member doesn't exist or the password is incorrect, throw exception
         if (member == null || !passwordEncoder.matches(password, member.getPassword()))
-            return false;
+            throw new Error("Invalid username or password");
 
         // If the credentials are correct, authenticate the user and return true
-        //boolean res = authenticate(username, password);
-        //if (res) {
-        activeMember = member;
-        activeGuest = null;
-        //}
-        return true;
+        boolean res = securityUtils.authenticate(username, password);
+        if (res) {
+            String sessionId = sessionManager.createSession(member);
+            return sessionId;
+        }
+        return null;
     }
 
 
     //use case 3.1
-    public void logout() throws Exception {
+    public void logout(String sessionId) throws Exception {
         checkMarketOpen();
-        if (activeMember == null && activeSystemManager == null)
-            throw new Exception("Cannot perform action when not logged in");
-        activeMember = null;
-        activeSystemManager = null;
-        activeGuest = new Guest();
+        sessionManager.deleteSession(sessionId);
     }
 
 
-    //use case 2.3
-    public boolean loginSystemManager(String username, String email, String password) throws Exception {
-        checkMarketOpen();
-        //can't log in when another user is logged in
-        if (activeMember != null || activeSystemManager != null)
-            throw new Exception("Cannot perform action when logged in");
 
+    //use case 2.3
+    public String loginSystemManager(String username, String email, String password) throws Exception {
+        checkMarketOpen();
         // Retrieve the stored Member's object for the given username
         SystemManager sm = systemManagers.get(username);
 
         // If the Member doesn't exist or the password is incorrect, return false
         if (sm == null || !passwordEncoder.matches(password, sm.getPassword()))
-            return false;
+            throw new Error("Invalid username or password");
 
         // If the credentials are correct, authenticate the user and return true
         boolean res = authenticate(username, password);
         if (res) {
-            activeSystemManager = sm;
-            activeGuest = null;
+            String sessionId = sessionManager.createSessionForSystemManager(sm);
+            return sessionId;
         }
-        return res;
+        return null;
     }
+    public void logoutSystemManager(String sessionId) throws Exception {
+        checkMarketOpen();
+        sessionManager.deleteSessionForSystemManager(sessionId);
+    }
+
 
     //use case 2.4 - store name
     public List<Store> getStores(String storeSubString) throws Exception {
@@ -248,6 +244,7 @@ public class Market {
 
     //use case 2.12
     public void changeProductQuantity(int storeId, int productId, int quantity) throws Exception {
+        //need to check that the user is logged in
         checkMarketOpen();
         Store s = getStore(storeId);
         if (activeMember == null)
@@ -258,8 +255,11 @@ public class Market {
 
     //use case 2.13
     public void removeProductFromCart(int storeId, int productId) throws Exception {
+        //need to check that the user is logged in
         checkMarketOpen();
+        checkStoreExists(storeId);
         Store s = getStore(storeId);
+        //why need to separate between guest or member?!
         if (activeMember == null)
             activeGuest.removeProductFromShoppingCart(s, productId);
         else
@@ -303,8 +303,7 @@ public class Market {
         checkMarketOpen();
         if (activeMember == null)
             throw new Exception("Cannot perform action when not logged in");
-        if (!storeExists(storeId))
-            throw new Exception("Store id doesn't exist");
+        checkStoreExists(storeId);
         Position p = checkPositionLegal(storeId);
         return p.addProduct(stores.get(storeId), productName, price, category, quantity,description);
     }
@@ -351,8 +350,21 @@ public class Market {
         checkMarketOpen();
         if (activeMember == null)
             throw new Exception("Cannot perform action when not logged in");
+        checkStoreExists(storeId);
         Position p = checkPositionLegal(storeId);
         p.removeProductFromStore(productId);
+    }
+    //use case 5.8
+    public void setPositionOfMemberToStoreOwner(int storeID, String MemberToBecomeOwner) throws Exception {
+        checkMarketOpen();
+        if (activeMember == null)
+            throw new Exception("Cannot perform action when not logged in");
+        checkStoreExists(storeID);
+        Position p = checkPositionLegal(storeID);
+        Member m= users.get(MemberToBecomeOwner);
+        if (m == null)
+            throw new Exception("MemberToBecomeOwner is not a member");
+        p.setPositionOfMemberToStoreOwner(stores.get(storeID), m);
     }
 
     //use case 5.9
@@ -360,8 +372,12 @@ public class Market {
         checkMarketOpen();
         if (activeMember == null)
             throw new Exception("Cannot perform action when not logged in");
+        checkStoreExists(storeID);
         Position p = checkPositionLegal(storeID);
-        p.setPositionOfMemberToStoreManager(stores.get(storeID), users.get(MemberToBecomeManager));
+        Member m= users.get(MemberToBecomeManager);
+        if (m == null)
+            throw new Exception("MemberToBecomeManager is not a member ");
+        p.setPositionOfMemberToStoreManager(stores.get(storeID), m);
     }
 
     //use case 5.10
@@ -374,8 +390,26 @@ public class Market {
         Position storeManagerPosition = users.get(storeManager).getStorePosition(stores.get(storeID));
         if (storeManagerPosition == null)
             throw new Exception("the name of the store manager has not have that position in this store");
-        else
+        else if (storeManagerPosition.getAssigner() != activeMember) {
+            throw new Exception("only the systemManager's assigner can edit his permissions");
+        } else
             p.addStoreManagerPermissions(storeManagerPosition, perm);
+    }
+
+    //use case 5.10
+    public void removeStoreManagerPermissions(String storeManager, int storeID, int permission) throws Exception {
+        checkMarketOpen();
+        if (activeMember == null)
+            throw new Exception("Cannot perform action when not logged in");
+        StoreManager.permissionType perm = StoreManager.permissionType.values()[permission];
+        Position p = checkPositionLegal(storeID);
+        Position storeManagerPosition = users.get(storeManager).getStorePosition(stores.get(storeID));
+        if (storeManagerPosition == null)
+            throw new Exception("the name of the store manager has not have that position in this store");
+        else if (storeManagerPosition.getAssigner() != activeMember) {
+            throw new Exception("only the systemManager's assigner can edit his permissions");
+        } else
+            p.removeStoreManagerPermissions(storeManagerPosition, perm);
     }
 
     //use case 5.11

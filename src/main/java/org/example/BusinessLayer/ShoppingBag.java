@@ -8,20 +8,17 @@ import java.util.List;
 import java.util.Map;
 
 public class ShoppingBag {
-    private ShoppingCart shoppingCart;
-    private Store store;
-    private Map<Integer, Integer> productList;
-    private Purchase bagPurchase;
+    private final Store store;
+    private final Map<Integer, Integer> productList;
+    private final Purchase bagPurchase;
 
-    public ShoppingBag(ShoppingCart shoppingCart, Store store) {
-        this.shoppingCart = shoppingCart;
+    public ShoppingBag(Store store) {
         this.store = store;
         this.productList = new HashMap<>();
         bagPurchase = new Purchase(new ArrayList<>());
     }
 
-    //Use case 2.10
-    //Use case 2.12
+    //Use case 2.10 & Use case 2.12
     public void setProductQuantity(int productId, int quantity) throws Exception {
         Product p = store.getProduct(productId);
         if (store.getProducts().get(p) >= quantity)
@@ -32,29 +29,32 @@ public class ShoppingBag {
 
     //Use case 2.13
     public void removeProduct(int productId) throws Exception {
-        Product p = store.getProduct(productId);
+        store.getProduct(productId);
         productList.remove(productId);
     }
 
     //Use case 2.14
-    public Pair<PurchaseProduct, Boolean> purchaseProduct(int productId) throws Exception {
+    public Pair<PurchaseProduct, Boolean> purchaseProduct(int productId) {
         PurchaseProduct pp;
         //TODO: lock store
         Product p;
         try {
             p = store.getProduct(productId);
         } catch (Exception e) {
-            return new Pair(null, false);
+            return new Pair<>(null, false);
         }
         if (!store.addToProductQuantity(p, -1 * productList.get(productId)))
-            return new Pair(null, false);
+            return new Pair<>(null, false);
         pp = new PurchaseProduct(p, productList.get(productId));
         //TODO: release store
         productList.remove(productId);
-        return new Pair(pp, true);
+        return new Pair<>(pp, true);
     }
 
     public Pair<List<PurchaseProduct>, Boolean> purchaseShoppingBag() throws Exception {
+        if (!store.checkPoliciesFulfilled(productList))
+            throw new Exception("Store purchase policies are not fulfilled in this cart");
+        store.checkPoliciesFulfilled(productList);
         List<PurchaseProduct> retList = new ArrayList<>();
         for (Map.Entry<Integer, Integer> e : productList.entrySet()) {
             Pair<PurchaseProduct, Boolean> ppp = purchaseProduct(e.getKey());
@@ -63,20 +63,16 @@ public class ShoppingBag {
                 bagPurchase.addProduct(ppp.getFirst());
             } else {
                 revertPurchase(retList);
-                return new Pair(null, false);
+                return new Pair<>(null, false);
             }
         }
         store.addPurchase(bagPurchase);
-        return new Pair(retList, true);
+        return new Pair<>(retList, true);
     }
 
     public void revertPurchase(List<PurchaseProduct> retList) throws Exception {
         for (PurchaseProduct p : retList)
             store.addToProductQuantity(store.getProduct(p.getProductId()), p.getQuantity());
-    }
-
-    public ShoppingCart getShoppingCart() {
-        return shoppingCart;
     }
 
     public Store getStore() {

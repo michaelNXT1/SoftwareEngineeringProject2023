@@ -38,7 +38,7 @@ public interface Bridge {
 
     String showCart();
 
-    boolean logout();
+    boolean logout(String sessionId);
 
     boolean openMarket();
 

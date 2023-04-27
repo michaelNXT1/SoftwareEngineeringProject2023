@@ -16,6 +16,11 @@ public class StoreOwner implements Position {
     public Store getStore() {
         return store;
     }
+    @Override
+    public Member getAssigner() {
+        return assigner;
+    }
+
 
     @Override
     public void addStoreManagerPermissions(Position storeManagerPosition, StoreManager.permissionType newPermission) {
