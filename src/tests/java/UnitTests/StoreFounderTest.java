@@ -2,7 +2,6 @@ package UnitTests;
 
 import BusinessLayer.*;
 import junit.framework.TestCase;
-import org.example.BusinessLayer.*;
 import org.junit.jupiter.api.BeforeEach;
 
 public class StoreFounderTest extends TestCase {
