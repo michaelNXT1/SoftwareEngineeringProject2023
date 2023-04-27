@@ -13,7 +13,7 @@ public class Product {
 
         private PurchaseType purchaseType;
 
-    public Product(int productId, String productName, double price, String category,String description) throws Exception {
+    public Product(int productId, String productName, double price, String category,String description) throws Exception{
         if (price < 0)
             throw new Exception("cannot add product with negative price");
         this.discount = new VisibleDiscount(this);
