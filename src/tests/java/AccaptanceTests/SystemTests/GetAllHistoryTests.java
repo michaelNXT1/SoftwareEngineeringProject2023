@@ -2,6 +2,7 @@ package AccaptanceTests.SystemTests;
 
 import AccaptanceTests.ServiceTests;
 import org.junit.Before;
+import junit.framework.TestCase;
 import org.junit.Test;
 
 public class GetAllHistoryTests extends ServiceTests {

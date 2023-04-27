@@ -1,0 +1,17 @@
+package AccaptanceTests.MemberTest;
+import AccaptanceTests.GuestTest.*;
+import AccaptanceTests.ServiceTests;
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
+
+public class MemberTest extends ServiceTests{
+
+    public static Test suite(){
+        TestSuite suite = new TestSuite("Member tests");
+        suite.addTest(new TestSuite(LogOutTest.class));
+        suite.addTest(new TestSuite(OpenStoreTest.class));
+        suite.addTest(new TestSuite(viewHist.class));
+        return suite;
+    }
+}
