@@ -1,5 +1,7 @@
 Code/.idea
 Code/target
 Code/logs
+target/
+.idea
 src/.idea
 src/.target
