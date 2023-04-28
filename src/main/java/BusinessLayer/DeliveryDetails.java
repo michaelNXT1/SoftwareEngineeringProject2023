@@ -1,4 +1,4 @@
-package org.example.BusinessLayer;
+package BusinessLayer;
 
 public class DeliveryDetails {
     private String street;
