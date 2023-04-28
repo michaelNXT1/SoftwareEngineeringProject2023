@@ -31,6 +31,14 @@ public class MarketManager implements IMarketManager {
             return new Response(e.getMessage());
         }
     }
+    public Response exitMarket(String sessionId){
+        try {
+            market.exitMarket(sessionId);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
 
     //use case 2.2
     public Response signUp(String username, String password) {

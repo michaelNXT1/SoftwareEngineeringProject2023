@@ -67,6 +67,10 @@ public class Market {
         logger.info(String.format("new guest entered the system with sessionID: %s",sessionId));
         return sessionId;
     }
+    public void exitMarket(String sessionId) throws Exception {
+        checkMarketOpen();
+        sessionManager.deleteSession(sessionId);
+    }
 
     //Use case 2.2
     public void signUp(String username, String password) throws Exception {
