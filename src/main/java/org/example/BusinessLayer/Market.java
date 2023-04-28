@@ -50,6 +50,10 @@ public class Market {
         String sessionId = sessionManager.createSession(guest);
         return sessionId;
     }
+    public void exitMarket(String sessionId) throws Exception {
+        checkMarketOpen();
+        sessionManager.deleteSession(sessionId);
+    }
 
     //Use case 2.2
     public void signUp(String username, String password) throws Exception {
