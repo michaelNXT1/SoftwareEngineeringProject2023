@@ -2,13 +2,15 @@ package BusinessLayer;
 
 public class PurchaseProduct {
     private int productId;
+    private int storeId;
     private String productName;
     private String productCategory;
     private double price;
     private int quantity;
 
-    public PurchaseProduct(Product p, int quantity) {
+    public PurchaseProduct(Product p, int quantity, int storeId) {
         this.productId = p.getProductId();
+        this.storeId = storeId;
         this.productName = p.getProductName();
         this.productCategory = p.getCategory();
         this.price = p.getPrice();
@@ -17,6 +19,10 @@ public class PurchaseProduct {
 
     public int getProductId() {
         return productId;
+    }
+
+    public int getStoreId() {
+        return storeId;
     }
 
     public String getProductName() {

@@ -80,4 +80,7 @@ public class ShoppingCart {
     private boolean isEmpty() {
         return shoppingBags.stream().allMatch(ShoppingBag::isEmpty);
     }
+
+    public void revertPurchase(Purchase purchase) {
+    }
 }
