@@ -1,6 +1,6 @@
 package UnitTests;
 
-import org.example.BusinessLayer.*;
+import BusinessLayer.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
