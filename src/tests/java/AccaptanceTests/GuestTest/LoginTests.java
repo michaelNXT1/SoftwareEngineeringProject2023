@@ -26,7 +26,7 @@ public class LoginTests extends ServiceTests {
 
     @AfterEach
     public void tearD(){
-        logout(1);
+        logout("1");
     }
 
     @Test

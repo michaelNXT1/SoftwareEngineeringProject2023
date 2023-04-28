@@ -9,9 +9,9 @@ public class EditPrepositionsTest extends ServiceTests {
     @Before
     public void setUp(){
         super.setUp();
-        register("alon1","alon59311@gmail.com", "alon0601");
-        register("alon12","alon593112@gmail.com", "alon0601");
-        login("alon1","alon59311@gmail.com", "alon0601");
+        register("alon1","alon0601");
+        register("alon12", "alon0601");
+        login("alon1", "alon0601");
 
     }
 
@@ -25,7 +25,7 @@ public class EditPrepositionsTest extends ServiceTests {
     @Test
     public void editingManagerPremFail(){
         int storeID = openStore("newStore");
-        logout(1);
+        logout("1");
         login("alon12","alon593112@gmail.com", "alon0601");
         assertFalse(editManagerOptions(1, storeID, "alon1",2));
     }

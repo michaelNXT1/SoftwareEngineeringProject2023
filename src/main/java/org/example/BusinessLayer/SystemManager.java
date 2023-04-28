@@ -3,12 +3,10 @@ package org.example.BusinessLayer;
 public class SystemManager {
 
     private String username;
-    private String email;
     private String hashedPassword;
 
-    public SystemManager(String username, String email, String hashedPassword) {
+    public SystemManager(String username, String hashedPassword) {
         this.username = username;
-        this.email = email;
         this.hashedPassword = hashedPassword;
     }
 

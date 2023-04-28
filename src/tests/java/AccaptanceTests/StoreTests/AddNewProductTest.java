@@ -33,7 +33,7 @@ public class AddNewProductTest extends ServiceTests {
     public void addProductAsStoreOwnerNotHisStoreFail(){
         int storeID = openStore("newStore");
         int productID1 = addProduct(storeID,"test",3.9,"milk",9,"10");
-        logout(1);
+        logout("1");
         login("alon12","alon593112@gmail.com", "alon0601");
         assertFalse(addProductToStore(1,productID1,storeID,5));
     }
