@@ -37,9 +37,9 @@ public class ProxyBridge implements Bridge{
     }
 
 
-    public boolean getStore(int storeId) {
+    public boolean getStore(String sessionId, int storeId) {
         if (real != null) {
-            return real.getStore(storeId);
+            return real.getStore(sessionId, storeId);
         }
         else {
             return false;
@@ -47,9 +47,9 @@ public class ProxyBridge implements Bridge{
     }
 
     @Override
-    public boolean getProduct(int productID, int storeID) {
+    public boolean getProduct(String sessionId, int productID, int storeID) {
         if (real != null) {
-            return real.getProduct(productID, storeID);
+            return real.getProduct(sessionId, productID, storeID);
         }
         else {
             return false;
@@ -57,18 +57,18 @@ public class ProxyBridge implements Bridge{
     }
 
     @Override
-    public boolean closeStore(int storeID) {
+    public boolean closeStore(String sessionId, int storeID) {
         if (real != null) {
-            return real.closeStore(storeID);
+            return real.closeStore(sessionId, storeID);
         }
         else {
             return false;
         }
     }
 
-    public String getStoresInform(String storeSubString){
+    public String getStoresInform(String sessionId, String storeSubString){
         if (real != null) {
-            return real.getStoresInform(storeSubString);
+            return real.getStoresInform(sessionId, storeSubString);
         }
         else {
             return null;
@@ -77,9 +77,9 @@ public class ProxyBridge implements Bridge{
     }
 
 
-    public String searchProductsByName(String productName) {
+    public String searchProductsByName(String sessionId, String productName) {
         if (real != null) {
-            return real.searchProductsByName(productName);
+            return real.searchProductsByName(sessionId, productName);
         }
         else {
             return null;
@@ -87,9 +87,9 @@ public class ProxyBridge implements Bridge{
         }
     }
 
-    public String searchProductsByCategory(String productCategory) {
+    public String searchProductsByCategory(String sessionId, String productCategory) {
         if (real != null) {
-            return real.searchProductsByCategory(productCategory);
+            return real.searchProductsByCategory(sessionId, productCategory);
         }
         else {
             return null;
@@ -97,9 +97,9 @@ public class ProxyBridge implements Bridge{
         }
     }
 
-    public String searchProductsBySubString(String productSubString) {
+    public String searchProductsBySubString(String sessionId, String productSubString) {
         if (real != null) {
-            return real.searchProductsBySubString(productSubString);
+            return real.searchProductsBySubString(sessionId, productSubString);
         }
         else {
             return null;
@@ -107,9 +107,9 @@ public class ProxyBridge implements Bridge{
         }
     }
 
-    public String filterSearchResultsByCategory(String category) {
+    public String filterSearchResultsByCategory(String sessionId, String category) {
         if (real != null) {
-            return real.filterSearchResultsByCategory(category);
+            return real.filterSearchResultsByCategory(sessionId, category);
         }
         else {
             return null;
@@ -117,9 +117,9 @@ public class ProxyBridge implements Bridge{
         }
     }
 
-    public String filterSearchResultsByPrice(double minPrice, double maxPrice) {
+    public String filterSearchResultsByPrice(String sessionId, double minPrice, double maxPrice) {
         if (real != null) {
-            return real.filterSearchResultsByPrice(minPrice, maxPrice);
+            return real.filterSearchResultsByPrice(sessionId, minPrice, maxPrice);
         }
         else {
             return null;
@@ -127,9 +127,9 @@ public class ProxyBridge implements Bridge{
         }
     }
 
-    public boolean addToCart(int storeId, int productId, int amount) {
+    public boolean addToCart(String sessionId, int storeId, int productId, int amount) {
         if (real != null) {
-            return real.addToCart(storeId, productId, amount);
+            return real.addToCart(sessionId, storeId, productId, amount);
         }
         else {
             return false;
@@ -137,9 +137,9 @@ public class ProxyBridge implements Bridge{
         }
     }
 
-    public boolean updateAmount(int storeId, int productId, int amount) {
+    public boolean updateAmount(String sessionId, int storeId, int productId, int amount) {
         if (real != null) {
-            return real.updateAmount(storeId, productId, amount);
+            return real.updateAmount(sessionId, storeId, productId, amount);
         }
         else {
             return false;
@@ -147,9 +147,9 @@ public class ProxyBridge implements Bridge{
     }
 
 
-    public String showCart(){
+    public String showCart(String sessionId){
         if (real != null) {
-            return real.showCart();
+            return real.showCart(sessionId);
         }
         else {
             return null;
@@ -175,9 +175,9 @@ public class ProxyBridge implements Bridge{
     }
 
 
-    public boolean deleteItemInCart(int storeId, int productId) {
+    public boolean deleteItemInCart(String sessionId, int storeId, int productId) {
         if (real != null) {
-            return real.deleteItemInCart(storeId, productId);
+            return real.deleteItemInCart(sessionId, storeId, productId);
         }
         else {
             return false;
@@ -193,7 +193,7 @@ public class ProxyBridge implements Bridge{
 //        }
 //    }
 
-    public boolean buyCart(int sessionId, String cardNumber, String cardMonth, String cardYear, String cardHolder,
+    public boolean buyCart(String sessionId, String cardNumber, String cardMonth, String cardYear, String cardHolder,
                            String cardCcv, String cardId, String buyerName, String address, String city, String country, String zip) {
         if (real != null) {
             return real.buyCart(sessionId, cardNumber, cardMonth, cardYear, cardHolder, cardCcv, cardId, buyerName, address, city, country, zip);
@@ -206,9 +206,9 @@ public class ProxyBridge implements Bridge{
 
 
 
-    public Integer openStore(String storeNames){
+    public Integer openStore(String sessionId, String storeNames){
         if (real != null){
-            return real.openStore(storeNames);
+            return real.openStore(sessionId, storeNames);
         }
         else{
             return -1;
@@ -216,25 +216,16 @@ public class ProxyBridge implements Bridge{
     }
 
 
-    public String viewPurchaseHistory(int storeID) {
+    public String viewPurchaseHistory(String sessionId, int storeID) {
         if (real != null) {
-            return real.viewPurchaseHistory(storeID);
+            return real.viewPurchaseHistory(sessionId, storeID);
         }
         else {
             return null;
         }
     }
 
-    public String viewPurchaseHistory(int sessionId, int storeID){
-        if(real != null){
-            return real.viewPurchaseHistory(storeID);
-        }
-        else{
-            return null;
-        }
-    }
-
-    public boolean addProductToStore(int sessionId, int productId, int storeId, int amount){
+    public boolean addProductToStore(String sessionId, int productId, int storeId, int amount){
         if(real != null){
             return real.addProductToStore(sessionId, productId, storeId, amount);
         }
@@ -244,7 +235,7 @@ public class ProxyBridge implements Bridge{
     }
 
 
-    public boolean deleteProduct(int sessionId, int storeId, int productId){
+    public boolean deleteProduct(String sessionId, int storeId, int productId){
         if(real != null){
             return real.deleteProduct(sessionId, storeId, productId);
         }
@@ -275,7 +266,7 @@ public class ProxyBridge implements Bridge{
 //    }
 
 
-    public boolean appointManager(int sessionId, int storeId, String userName){
+    public boolean appointManager(String sessionId, int storeId, String userName){
         if(real != null){
             return real.appointManager(sessionId, storeId, userName);
         }
@@ -285,9 +276,9 @@ public class ProxyBridge implements Bridge{
     }
 
 
-    public Integer addProduct(int storeId, String productName, double price, String category, int quantity, String description) {
+    public Integer addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description) {
         if (real != null) {
-            return real.addProduct(storeId, productName, price, category, quantity,description);
+            return real.addProduct(sessionId, storeId, productName, price, category, quantity,description);
         }
         else {
             return -1;
@@ -295,9 +286,9 @@ public class ProxyBridge implements Bridge{
     }
 
 
-    public boolean setProductName(int storeId, int productId, String newName) {
+    public boolean setProductName(String sessionId, int storeId, int productId, String newName) {
         if (real != null) {
-            return real.setProductName(storeId, productId, newName);
+            return real.setProductName(sessionId, storeId, productId, newName);
         }
         else {
             return false;
@@ -305,9 +296,9 @@ public class ProxyBridge implements Bridge{
     }
 
 
-    public boolean setProductPrice(int storeId, int productId, int newPrice) {
+    public boolean setProductPrice(String sessionId, int storeId, int productId, int newPrice) {
         if (real != null) {
-            return real.setProductPrice(storeId, productId, newPrice);
+            return real.setProductPrice(sessionId, storeId, productId, newPrice);
         }
         else {
             return false;
@@ -315,9 +306,9 @@ public class ProxyBridge implements Bridge{
     }
 
 
-    public boolean setProductCategory(int storeId, int productId, String newCategory) {
+    public boolean setProductCategory(String sessionId, int storeId, int productId, String newCategory) {
         if (real != null) {
-            return real.setProductCategory(storeId, productId, newCategory);
+            return real.setProductCategory(sessionId, storeId, productId, newCategory);
         }
         else {
             return false;
@@ -325,12 +316,12 @@ public class ProxyBridge implements Bridge{
     }
 
 
-    public boolean setProductName(String newName) {
+    public boolean setProductName(String sessionId, String newName) {
         return false;
     }
 
 
-    public boolean editManagerOptions(int sessionId, String userName, int storeId, int option){
+    public boolean editManagerOptions(String sessionId, String userName, int storeId, int option){
         if(real != null){
             return real.editManagerOptions(sessionId, userName, storeId, option);
         }
@@ -340,9 +331,9 @@ public class ProxyBridge implements Bridge{
     }
 
     @Override
-    public boolean getStoresPurchases() {
+    public boolean getStoresPurchases(String sessionId) {
         if(real != null){
-            return real.getStoresPurchases();
+            return real.getStoresPurchases(sessionId);
         }
         else{
             return false;
@@ -350,7 +341,7 @@ public class ProxyBridge implements Bridge{
     }
 
 
-    public String showStorePositions(int sessionId, int storeId){
+    public String showStorePositions(String sessionId, int storeId){
         if(real != null){
             return real.showStorePositions(sessionId, storeId);
         }
@@ -360,9 +351,9 @@ public class ProxyBridge implements Bridge{
     }
 
     @Override
-    public boolean editProductPrice(int storeId, int productId, int newPrice) {
+    public boolean editProductPrice(String sessionId, int storeId, int productId, int newPrice) {
         if(real != null){
-            return real.editProductPrice(storeId, productId, newPrice);
+            return real.editProductPrice(sessionId, storeId, productId, newPrice);
         }
         else{
             return false;
@@ -370,9 +361,9 @@ public class ProxyBridge implements Bridge{
     }
 
     @Override
-    public boolean editProductCategory(int storeId, int productId, String newCategory) {
+    public boolean editProductCategory(String sessionId, int storeId, int productId, String newCategory) {
         if(real != null){
-            return real.editProductCategory(storeId, productId, newCategory);
+            return real.editProductCategory(sessionId, storeId, productId, newCategory);
         }
         else{
             return false;
@@ -380,9 +371,9 @@ public class ProxyBridge implements Bridge{
     }
 
     @Override
-    public boolean editProductName(int storeId, int productId, String newName) {
+    public boolean editProductName(String sessionId, int storeId, int productId, String newName) {
         if(real != null){
-            return real.editProductName(storeId, productId, newName);
+            return real.editProductName(sessionId, storeId, productId, newName);
         }
         else{
             return false;
@@ -407,9 +398,9 @@ public class ProxyBridge implements Bridge{
 //        }
 //    }
 
-    public boolean removeStore(int storeId){
+    public boolean removeStore(String sessionId, int storeId){
         if(real != null){
-            return real.removeStore(storeId);
+            return real.removeStore(sessionId, storeId);
         }
         else{
             return false;

@@ -25,7 +25,7 @@ public class SessionManager {
         Guest g = sessions.get(sessionId);
         if (g == null)
             throw new Exception("user session doesnt exist");
-        return sessions.get(sessionId);
+        return g;
     }
 
     public void deleteSession(String sessionId) throws Exception {
@@ -49,5 +49,12 @@ public class SessionManager {
         SystemManager sm = systemManagerSessions.remove(sessionId);
         if (sm == null)
             throw new Exception("user session doesnt exist");
+    }
+
+    public SystemManager getSessionForSystemManager(String sessionId) throws Exception {
+        SystemManager sm = systemManagerSessions.get(sessionId);
+        if (sm == null)
+            throw new Exception("system manager session doesnt exist");
+        return sm;
     }
 }
