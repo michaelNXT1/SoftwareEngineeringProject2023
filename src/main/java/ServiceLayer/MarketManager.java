@@ -51,12 +51,12 @@ public class MarketManager implements IMarketManager {
     }
 
     //use case 2.3
-    public Response login(String username, String password) {
+    public ResponseT<String> login(String username, String password) {
         try {
-            market.login(username, password);
-            return new Response();
+            String ret = market.login(username, password);
+            return ResponseT.fromValue(ret);
         } catch (Exception e) {
-            return new Response(e.getMessage());
+            return ResponseT.fromError(e.getMessage());
         }
     }
 

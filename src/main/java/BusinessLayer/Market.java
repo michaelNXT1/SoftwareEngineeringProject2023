@@ -103,7 +103,7 @@ public class Market {
         // If the Member doesn't exist or the password is incorrect, throw exception
         if (member == null || !passwordEncoder.matches(password, member.getPassword())) {
             logger.error(String.format("%s have Invalid username or password", username));
-            throw new Error("Invalid username or password");
+            throw new Exception("Invalid username or password");
         }
 
         // If the credentials are correct, authenticate the user and return true
