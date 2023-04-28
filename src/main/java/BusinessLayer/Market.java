@@ -309,7 +309,7 @@ public class Market {
         sessionManager.getSession(sessionId);
         logger.info("trying adding new product");
         checkStoreExists(storeId);
-        logger.info(String.format("adding product to store %s new product name %s price %d category %s quantity %d description %s",getStore(storeId),productName,price,category,quantity,description));
+        logger.info(String.format("adding product to store %s new product name %s price %d category %s quantity %d description %s",getStore(sessionId, storeId),productName,price,category,quantity,description));
         Position p = checkPositionLegal(sessionId, storeId);
         return p.addProduct(stores.get(storeId), productName, price, category, quantity,description);
     }
@@ -320,7 +320,7 @@ public class Market {
         sessionManager.getSession(sessionId);
         logger.info("trying to edit product name");
         checkStoreExists(storeId);
-        logger.info(String.format("edit product name %d to %s in store %s",productId,newName, getStore(storeId)));
+        logger.info(String.format("edit product name %d to %s in store %s",productId,newName, getStore(sessionId, storeId)));
         Position p = checkPositionLegal(sessionId, storeId);
         p.editProductName(productId, newName);
     }
@@ -331,7 +331,7 @@ public class Market {
         sessionManager.getSession(sessionId);
         logger.info("trying to edit product price");
         checkStoreExists(storeId);
-        logger.info(String.format("edit product price %d to %d in store %s",productId,newPrice,getStore(storeId)));
+        logger.info(String.format("edit product price %d to %d in store %s",productId,newPrice,getStore(sessionId, storeId)));
         Position p = checkPositionLegal(sessionId, storeId);
         p.editProductPrice(productId, newPrice);
     }
@@ -342,7 +342,7 @@ public class Market {
         sessionManager.getSession(sessionId);
         logger.info("trying to edit product category");
         checkStoreExists(storeId);
-        logger.info(String.format("edit product category %d to %s in store %d",productId,newCategory,getStore(storeId)));
+        logger.info(String.format("edit product category %d to %s in store %d",productId,newCategory,getStore(sessionId, storeId)));
         Position p = checkPositionLegal(sessionId, storeId);
         p.editProductCategory(productId, newCategory);
     }
@@ -360,7 +360,7 @@ public class Market {
         sessionManager.getSession(sessionId);
         logger.info("trying to remove product from store");
         checkStoreExists(storeId);
-        logger.info(String.format("removing product %d from %s",productId,getStore(storeId)));
+        logger.info(String.format("removing product %d from %s",productId,getStore(sessionId, storeId)));
         Position p = checkPositionLegal(sessionId, storeId);
         p.removeProductFromStore(productId);
     }
@@ -370,7 +370,7 @@ public class Market {
         sessionManager.getSession(sessionId);
         logger.info(String.format("trying to appoint new owner to the store the member %s",MemberToBecomeOwner));
         checkStoreExists(storeID);
-        logger.info(String.format("promoting %s to be the owner of %s",MemberToBecomeOwner,getStore(storeID)));
+        logger.info(String.format("promoting %s to be the owner of %s",MemberToBecomeOwner,getStore(sessionId, storeID)));
         Position p = checkPositionLegal(sessionId, storeID);
         Member m= users.get(MemberToBecomeOwner);
         if (m == null) {
@@ -386,7 +386,7 @@ public class Market {
         sessionManager.getSession(sessionId);
         logger.info(String.format("trying to appoint new manager to the store the member %s",MemberToBecomeManager));
         checkStoreExists(storeID);
-        logger.info(String.format("promoting %s to be the owner of %s",MemberToBecomeManager,getStore(storeID)));
+        logger.info(String.format("promoting %s to be the owner of %s",MemberToBecomeManager,getStore(sessionId, storeID)));
         Position p = checkPositionLegal(sessionId, storeID);
         Member m= users.get(MemberToBecomeManager);
         if (m == null){
@@ -411,7 +411,7 @@ public class Market {
         else if (storeManagerPosition.getAssigner().equals(m)) {
             throw new Exception("only the systemManager's assigner can edit his permissions");
         } else {
-            logger.info(String.format("%s have new permissions %d to %s",storeManager,newPermission,getStore(storeID)));
+            logger.info(String.format("%s have new permissions %d to %s",storeManager,newPermission,getStore(sessionId, storeID)));
             p.addStoreManagerPermissions(storeManagerPosition, perm);
         }
     }
@@ -431,7 +431,7 @@ public class Market {
         else if (storeManagerPosition.getAssigner().equals(m)) {
             throw new Exception("only the systemManager's assigner can edit his permissions");
         } else {
-            logger.info(String.format("%s have new permissions %d to %s",storeManager,permission,getStore(storeID)));
+            logger.info(String.format("%s have new permissions %d to %s",storeManager,permission,getStore(sessionId, storeID)));
             p.removeStoreManagerPermissions(storeManagerPosition, perm);
         }
     }
@@ -498,7 +498,7 @@ public class Market {
         Guest g = sessionManager.getSession(sessionId);
         Position p = users.get(g.getUsername()).getStorePosition(stores.get(storeId));
         if (p == null){
-            logger.error(String.format("Member not has a position in this store %s",getStore(storeId).getStoreName()));
+            logger.error(String.format("Member not has a position in this store %s",getStore(sessionId, storeId).getStoreName()));
             throw new Exception("Member not has a position in this store");
         }
         return p;
