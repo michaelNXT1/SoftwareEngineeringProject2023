@@ -9,9 +9,9 @@ public class EditPrepositionsTest extends ServiceTests {
     @Before
     public void setUp(){
         super.setUp();
-        register("alon1","alon59311@gmail.com", "alon0601");
-        register("alon12","alon593112@gmail.com", "alon0601");
-        login("alon1","alon59311@gmail.com", "alon0601");
+        register("alon1","alon0601");
+        register("alon12", "alon0601");
+        login("alon1", "alon0601");
 
     }
 

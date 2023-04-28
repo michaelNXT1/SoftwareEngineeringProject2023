@@ -53,4 +53,13 @@ public class Guest {
     public List<Product> filterSearchResultsByPrice(double minPrice, double maxPrice) {
         return searchResults.stream().filter(p -> minPrice <= p.getPrice() && p.getPrice() <= maxPrice).collect(Collectors.toList());
     }
+
+    public Store openStore(String storeName, int storeId) throws Exception {
+        throw new Exception("Cannot perform action when not a member");
+    }
+
+    public String getUsername() throws Exception {
+        throw new Exception("Cannot perform action when not a member");
+    }
+
 }

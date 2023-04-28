@@ -17,7 +17,6 @@ class MarketTest {
     private String email1 = "idanlobel1@gmail.com";
     private String userName2 = "Michael987";
     private String password2 = "uadfadsa1";
-    private String email2 = "Micahel987@gmail.com";
 //    private Member member1;
 //    private Member member2;
 //    private Product product1;
@@ -26,8 +25,8 @@ class MarketTest {
     @org.junit.jupiter.api.BeforeAll
     void startUp() throws Exception {
         market = new Market();
-        market.signUp(userName1, email1, password1);
-        market.signUp(userName2, email2, password2);
+        market.signUp(userName1, password1);
+        market.signUp(userName2, password2);
         market.openStore("Candy Shop");
         market.openStore("Mamtakim");
 //        product1 = new Product(111, "milk", 6.14, "milk");
@@ -39,7 +38,7 @@ class MarketTest {
     @org.junit.jupiter.api.Test
     void signUp() throws Exception {
         try {
-            market.signUp(userName2,  email2, password2);
+            market.signUp(userName2, password2);
         }
         catch (Exception e){
             //Do nothing
@@ -49,7 +48,7 @@ class MarketTest {
     @org.junit.jupiter.api.Test
     void signUpExists() {
         try {
-            market.signUp(userName1,  email1, password1);
+            market.signUp(userName1, password1);
         }
         catch (Exception e){
             assertEquals(e.getMessage(),"Username already exists");

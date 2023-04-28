@@ -9,16 +9,14 @@ import java.util.List;
 public class Member extends Guest {
 
     private String username;
-    private String email;
     private String hashedPassword;
 
     private SystemLogger logger;
     private List<Position> positions = new LinkedList<>(); //all the positions of this member, note that position act as a state
 
-    public Member(String username, String email, String hashedPassword) {
+    public Member(String username, String hashedPassword) {
         super();
         this.username = username;
-        this.email = email;
         this.hashedPassword = hashedPassword;
         this.logger = new SystemLogger();
     }
