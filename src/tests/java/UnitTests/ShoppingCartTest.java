@@ -1,6 +1,6 @@
 package UnitTests;
 
-import org.example.BusinessLayer.*;
+import BusinessLayer.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -21,8 +21,8 @@ class ShoppingCartTest {
     static void beforeAll() throws Exception {
         shoppingCart = new ShoppingCart();
         market = new Market();
-        market.signUpSystemManager("sysAdmin", "sys@admin.com", "YoImTheBaws");
-        market.signUp("idan123", "idanlobel2@gmail.com", "wswsad32");
+        market.signUpSystemManager("sysAdmin", "YoImTheBaws");
+        market.signUp("idan123", "wswsad32");
         store1 = new Store(1, "Shufersal", member);
         product1 = store1.addProduct("wine", 60.0, "alcohol", 20, "aa");
         product2 = store1.addProduct("cheese", 9.5, "milk", 4, "bb");

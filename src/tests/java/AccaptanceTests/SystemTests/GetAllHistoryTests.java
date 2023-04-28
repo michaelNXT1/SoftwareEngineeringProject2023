@@ -21,7 +21,7 @@ public class GetAllHistoryTests extends ServiceTests {
 
     @Test
     public void getHistoryFail(){
-        logout(1);
+        logout("1");
         login("alon12","alon593112@gmail.com", "alon0601");
         assertFalse(getStoresPurchases());
     }
