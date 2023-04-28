@@ -1,5 +1,6 @@
 package BusinessLayer;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,11 +10,13 @@ public class Guest {
     private ShoppingCart shoppingCart;
     private List<Product> searchResults;
     private List<Purchase> purchaseHistory;
+    private PaymentDetails paymentDetails;
 
     public Guest() {
         shoppingCart = new ShoppingCart();
         searchResults = new ArrayList<>();
         purchaseHistory = new ArrayList<>();
+        paymentDetails = null;
     }
 
     public void addProductToShoppingCart(Store s, int productId, int itemsAmount) throws Exception { //2.10
@@ -29,6 +32,8 @@ public class Guest {
     }
 
     public Purchase purchaseShoppingCart() throws Exception {    //2.14
+        if (paymentDetails == null)
+            throw new Exception("no payment details exist");
         Purchase p = shoppingCart.purchaseShoppingCart();
         purchaseHistory.add(p);
         return p;
@@ -54,6 +59,10 @@ public class Guest {
         return searchResults.stream().filter(p -> minPrice <= p.getPrice() && p.getPrice() <= maxPrice).collect(Collectors.toList());
     }
 
+    public void addPaymentMethod(String creditCardNumber, int cvv, LocalDate expirationDate) {
+        paymentDetails = new PaymentDetails(creditCardNumber, cvv, expirationDate);
+    }
+
     public Store openStore(String storeName, int storeId) throws Exception {
         throw new Exception("Cannot perform action when not a member");
     }
@@ -62,4 +71,11 @@ public class Guest {
         throw new Exception("Cannot perform action when not a member");
     }
 
+    public PaymentDetails getPaymentDetails() {
+        return paymentDetails;
+    }
+
+    public void revertPurchase(Purchase purchase) {
+        purchaseHistory.remove(purchase);
+    }
 }

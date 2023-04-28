@@ -1,4 +1,6 @@
-package org.example.BusinessLayer;
+package BusinessLayer;
+
+import BusinessLayer.Logger.SystemLogger;
 
 import java.util.*;
 
@@ -35,14 +37,19 @@ public class Store {
     }
 
     //Use case 2.14
-    public boolean addToProductQuantity(Product p, int amountToAdd) {
-        if (products.containsKey(p)) {
-            if (products.get(p) + amountToAdd >= 0) {
+    public void addToProductQuantity(int productId, int amountToAdd) throws Exception {
+        Product p = getProduct(productId);
+        if (products.containsKey(p))
+            if (products.get(p) + amountToAdd >= 0)
                 products.put(p, products.get(p) + amountToAdd);
-                return true;
-            }
-        }
-        return false;
+    }
+
+    public PurchaseProduct subtractForPurchase(int productId, int quantity) throws Exception {
+        Product p = getProduct(productId);
+        if (products.containsKey(p))
+            if (products.get(p) - quantity >= 0)
+                products.put(p, products.get(p) - quantity);
+        return new PurchaseProduct(p, quantity, storeId);
     }
 
     //Use case 2.14
@@ -58,7 +65,7 @@ public class Store {
     //use case 5.1
     public Product addProduct(String productName, double price, String category, int quantity, String description) throws Exception {
         if (products.keySet().stream().anyMatch(p -> p.getProductName().equals(productName))) {
-            logger.error(String.format("%s already exist",productName));
+            logger.error(String.format("%s already exist", productName));
             throw new Exception("Product name already exists");
         }
         if (quantity < 0)
@@ -76,7 +83,7 @@ public class Store {
         try {
             p = getProduct(productId);
         } catch (Exception e) {
-            logger.error(String.format("%d product doesnt exist",productId));
+            logger.error(String.format("%d product doesnt exist", productId));
             throw new RuntimeException(e);
         }
         if (products.containsKey(p))
@@ -101,7 +108,7 @@ public class Store {
     public Product getProduct(int productId) throws Exception {
         Product ret = products.keySet().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null);
         if (ret == null) {
-            logger.error(String.format("%d product doesnt exist",productId));
+            logger.error(String.format("%d product doesnt exist", productId));
             throw new Exception("Product doesn't exist");
         }
         return ret;
@@ -109,8 +116,8 @@ public class Store {
 
     public void editProductName(int productId, String newName) throws Exception {
         checkProductExists(productId);
-        if (products.keySet().stream().anyMatch(p -> p.getProductName().equals(newName))){
-            logger.error(String.format("%s already exist",newName));
+        if (products.keySet().stream().anyMatch(p -> p.getProductName().equals(newName))) {
+            logger.error(String.format("%s already exist", newName));
             throw new Exception("Product name already exists");
         }
         getProduct(productId).setProductName(newName);
@@ -151,7 +158,7 @@ public class Store {
 
     private void checkProductExists(int productId) throws Exception {
         if (products.keySet().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null) == null) {
-            logger.error(String.format("%d product doesnt exist",productId));
+            logger.error(String.format("%d product doesnt exist", productId));
             throw new Exception("product id doesn't exist");
         }
     }
