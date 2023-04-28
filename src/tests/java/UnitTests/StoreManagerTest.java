@@ -1,7 +1,8 @@
 package UnitTests;
 
+import BusinessLayer.*;
 import junit.framework.TestCase;
-import org.example.BusinessLayer.*;
+
 import org.junit.After;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;

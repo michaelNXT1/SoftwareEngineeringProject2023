@@ -1,10 +1,9 @@
 package UnitTests;
 
-import org.example.BusinessLayer.Market;
-import org.example.BusinessLayer.Product;
-import org.example.BusinessLayer.Store;
-import org.example.BusinessLayer.StoreManager;
-import org.junit.Assert;
+import BusinessLayer.Market;
+import BusinessLayer.Product;
+import BusinessLayer.Store;
+import BusinessLayer.StoreManager;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
