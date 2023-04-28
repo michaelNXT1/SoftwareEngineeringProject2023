@@ -3,7 +3,6 @@ package AccaptanceTests.GuestTest;
 
 import AccaptanceTests.ServiceTests;
 
-import org.example.BusinessLayer.Member;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +20,7 @@ public class SearchProductTests extends ServiceTests {
         int storeID = openStore("newStore");
         int productID1 = addProduct(storeID,"test",4.5,"milk",9,"1");
         int productID2 = addProduct(storeID,"test2",3.9,"milk",9,"1");
-        logout(1);
+        logout("1");
 
     }
 

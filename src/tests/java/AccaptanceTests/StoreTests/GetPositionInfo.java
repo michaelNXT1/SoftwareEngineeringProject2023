@@ -23,7 +23,7 @@ public class GetPositionInfo extends ServiceTests {
     @Test
     public void addProductAsStoreOwnerFail(){
         int storeID = openStore("newStore");
-        logout(1);
+        logout("1");
         login("alon12","alon593112@gmail.com", "alon0601");
         assertNull(showStorePositions(1,storeID));
     }

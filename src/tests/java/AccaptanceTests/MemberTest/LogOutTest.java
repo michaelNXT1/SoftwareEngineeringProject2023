@@ -19,13 +19,13 @@ public class LogOutTest extends ServiceTests {
 
     @Test
     public void testLogoutSuccessful(){
-        assertTrue(logout(1));
+        assertTrue(logout("1"));
     }
 
     @Test
     public void testLogoutFailedNotLoggedIn(){
-        logout(1);
-        assertFalse(logout(1));
+        logout("1");
+        assertFalse(logout("1"));
     }
 
 

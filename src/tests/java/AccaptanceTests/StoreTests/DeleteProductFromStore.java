@@ -30,7 +30,7 @@ public class DeleteProductFromStore extends ServiceTests {
     @Test
     public void DeleteExistingProductNotHisStoreFail(){
         int storeID = openStore("newStore3");
-        logout(1);
+        logout("1");
         login("alon12","alon593112@gmail.com", "alon0601");
         int productID1 = addProduct(storeID,"test",3.9,"milk",9,"10");
         assertTrue(editProductCategory(storeID, productID1, "test11"));

@@ -38,7 +38,7 @@ public class viewHist extends ServiceTests {
         addToCart(storeID, productID2,2);
         buyCart(1, "12345678", "04", "2021", "me", "777",
                 "12123123", "me", "1428 Elm Street", "Springwood", "Ohio, United States", "12345");
-        logout(1);
+        logout("1");
         login("alon12","alon593112@gmail.com", "alon0601");
         assertNotNull(viewPurchaseHistory(1,storeID));
     }
