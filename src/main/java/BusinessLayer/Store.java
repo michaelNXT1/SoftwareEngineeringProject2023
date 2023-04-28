@@ -63,6 +63,8 @@ public class Store {
             logger.error(String.format("%s already exist",productName));
             throw new Exception("Product name already exists");
         }
+        if (quantity < 0)
+            throw new Exception("cannot set quantity to less then 0");
         Product p = new Product(productIdCounter++, productName, price, category, description);
         products.put(p, quantity);
         return p;
