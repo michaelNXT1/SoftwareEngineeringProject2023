@@ -35,20 +35,15 @@ public class ShoppingBag {
 
     //Use case 2.14
     public Pair<PurchaseProduct, Boolean> purchaseProduct(int productId) {
-        PurchaseProduct pp;
-        //TODO: lock store
-        Product p;
         try {
-            p = store.getProduct(productId);
+            //TODO: lock store
+            PurchaseProduct pp = store.subtractForPurchase(productId, productList.get(productId));
+            //TODO: release store
+            productList.remove(productId);
+            return new Pair<>(pp, true);
         } catch (Exception e) {
             return new Pair<>(null, false);
         }
-        if (!store.addToProductQuantity(p, -1 * productList.get(productId)))
-            return new Pair<>(null, false);
-        pp = new PurchaseProduct(p, productList.get(productId));
-        //TODO: release store
-        productList.remove(productId);
-        return new Pair<>(pp, true);
     }
 
     public Pair<List<PurchaseProduct>, Boolean> purchaseShoppingBag() throws Exception {
@@ -72,7 +67,7 @@ public class ShoppingBag {
 
     public void revertPurchase(List<PurchaseProduct> retList) throws Exception {
         for (PurchaseProduct p : retList)
-            store.addToProductQuantity(store.getProduct(p.getProductId()), p.getQuantity());
+            store.addToProductQuantity(p.getProductId(), p.getQuantity());
     }
 
     public Store getStore() {
