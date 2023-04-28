@@ -9,16 +9,16 @@ public class AppointManager extends ServiceTests {
     @Before
     public void setUp(){
         super.setUp();
-        register("alon1","alon59311@gmail.com", "alon0601");
-        register("alon12","alon593112@gmail.com", "alon0601");
-        login("alon1","alon59311@gmail.com", "alon0601");
+        register("alon1", "alon0601");
+        register("alon12", "alon0601");
+        login("alon1","alon0601");
 
     }
 
     @Test
     public void appointingExistingUserToManagerSuccess(){
-        int storeID = openStore("newStore");
-        assertTrue(appointManager(1, storeID, "alon12"));
+        int storeID = openStore("123","newStore");
+        assertTrue(appointManager("213", storeID, "alon12"));
     }
 
     @Test
