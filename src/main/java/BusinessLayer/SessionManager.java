@@ -16,7 +16,9 @@ public class SessionManager {
         this.sessions = new HashMap<>();
     }
 
-    public String createSession(Guest user) {
+    public String createSession(Guest user) throws Exception {
+        if (sessions.containsValue(user))
+            throw new Exception("this user is already logged in");
         String sessionId = generateSessionId();
         sessions.put(sessionId, user);
         return sessionId;
@@ -40,7 +42,9 @@ public class SessionManager {
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
 
-    public String createSessionForSystemManager(SystemManager sm) {
+    public String createSessionForSystemManager(SystemManager sm) throws Exception {
+        if (systemManagerSessions.containsValue(sm))
+            throw new Exception("this user is already logged in");
         String sessionId = generateSessionId();
         systemManagerSessions.put(sessionId, sm);
         return sessionId;
