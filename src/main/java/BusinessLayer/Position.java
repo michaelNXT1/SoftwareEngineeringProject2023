@@ -15,7 +15,7 @@ public interface Position {
 
     void setPositionOfMemberToStoreOwner(Store store, Member member) throws Exception;   //5.8
 
-    void removeProductFromStore(int productID) throws IllegalAccessException;    //5.3
+    void removeProductFromStore(int productID) throws Exception;    //5.3
 
     void editProductName(int productId, String newName) throws Exception;   //5.2
 

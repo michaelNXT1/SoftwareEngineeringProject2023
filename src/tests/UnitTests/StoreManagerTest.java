@@ -54,8 +54,9 @@ public class StoreManagerTest extends TestCase {
 
     @Test
     @After
-    public void cleanup() throws IllegalAccessException {
-        storeManager.removeProductFromStore(p.getProductId());    }
+    public void cleanup() throws Exception {
+        storeManager.removeProductFromStore(p.getProductId());
+    }
     public void testAddProductToStoreWithPermission() throws Exception {
         // arrange
 
