@@ -13,6 +13,8 @@ public class StoreManager implements Position {
 
     private Set<permissionType> permissions;
 
+    private  Object permissionLock = new Object();
+
     public StoreManager(Store store, Member assigner) {
         this.store = store;
         this.assigner = assigner;
@@ -35,50 +37,58 @@ public class StoreManager implements Position {
     @Override
     public void addStoreManagerPermissions(Position storeManagerPosition, permissionType newPermission) throws IllegalAccessException {
         //TODO: Check if he has appropriate access permission
-        if (permissions.contains(permissionType.setPermissions))
-            storeManagerPosition.addPermission(newPermission);
-        else {
-            throw new IllegalAccessException("This member hasn't permission to set storeManager's permissions");
+        synchronized (permissionLock) {
+            if (permissions.contains(permissionType.setPermissions))
+                storeManagerPosition.addPermission(newPermission);
+            else {
+                throw new IllegalAccessException("This member hasn't permission to set storeManager's permissions");
+            }
         }
     }
 
     @Override
     public void removeStoreManagerPermissions(Position storeManagerPosition, StoreManager.permissionType Permission) throws IllegalAccessException {
         //TODO: Check if he has appropriate access permission
-        if (permissions.contains(permissionType.setPermissions))
-            storeManagerPosition.removePermission(Permission);
-        else {
-            throw new IllegalAccessException("This member hasn't permission to set storeManager's permissions");
+        synchronized (permissionLock) {
+            if (permissions.contains(permissionType.setPermissions))
+                storeManagerPosition.removePermission(Permission);
+            else {
+                throw new IllegalAccessException("This member hasn't permission to set storeManager's permissions");
+            }
         }
     }
 
     @Override
     public void setPositionOfMemberToStoreManager(Store store, Member member) throws Exception {
         //TODO: Check if he has appropriate access permission
-        if (permissions.contains(permissionType.setNewPosition))
-            member.setToStoreManager(store);
-        else {
-            throw new IllegalAccessException("This member hasn't permission to set new position");
+        synchronized (permissionLock) {
+            if (permissions.contains(permissionType.setNewPosition))
+                member.setToStoreManager(store);
+            else {
+                throw new IllegalAccessException("This member hasn't permission to set new position");
+            }
         }
     }
 
     @Override
     public void setPositionOfMemberToStoreOwner(Store store, Member member) throws Exception {
         //TODO: Check if he has appropriate access permission
-        if (permissions.contains(permissionType.setNewPosition))
-            member.setToStoreManager(store);
-        else {
-            throw new IllegalAccessException("This member hasn't permission to set new position");
+        synchronized (permissionLock) {
+            if (permissions.contains(permissionType.setNewPosition))
+                member.setToStoreManager(store);
+            else {
+                throw new IllegalAccessException("This member hasn't permission to set new position");
+            }
         }
     }
 
     @Override
-    public void removeProductFromStore(int productID) throws IllegalAccessException {
+    public void removeProductFromStore(int productID) throws Exception {
         //TODO: Check if he has appropriate access permission
         if (permissions.contains(permissionType.Inventory))
             store.removeProduct(productID);
         else {
-            throw new IllegalAccessException("This member hasn't permission to remove product from the store");
+            throw new Exception("This member hasn't permission to remove product from the store");
         }
     }
 

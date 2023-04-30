@@ -39,7 +39,7 @@ public class StoreFounder implements Position {
     }
 
     @Override
-    public void removeProductFromStore(int productID) {
+    public void removeProductFromStore(int productID) throws Exception{
         store.removeProduct(productID);
     }
 

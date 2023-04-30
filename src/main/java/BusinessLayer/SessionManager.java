@@ -4,23 +4,28 @@ import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class SessionManager {
 
+    private Object sessionLock = new Object();
     private final Map<String, Guest> sessions;
     private final Map<String, SystemManager> systemManagerSessions;
     private static final int SESSION_ID_LENGTH = 16;
 
     public SessionManager() {
-        this.systemManagerSessions = new HashMap<>();
-        this.sessions = new HashMap<>();
+        this.systemManagerSessions = new ConcurrentHashMap<>();
+        this.sessions = new ConcurrentHashMap<>();
     }
 
     public String createSession(Guest user) throws Exception {
         if (sessions.containsValue(user))
             throw new Exception("this user is already logged in");
-        String sessionId = generateSessionId();
-        sessions.put(sessionId, user);
+        String sessionId;
+        synchronized (this.sessionLock) {
+            sessionId = generateSessionId();
+            sessions.put(sessionId, user);
+        }
         return sessionId;
     }
     public Guest getSession(String sessionId) throws Exception {
@@ -45,8 +50,11 @@ public class SessionManager {
     public String createSessionForSystemManager(SystemManager sm) throws Exception {
         if (systemManagerSessions.containsValue(sm))
             throw new Exception("this user is already logged in");
-        String sessionId = generateSessionId();
-        systemManagerSessions.put(sessionId, sm);
+        String sessionId;
+        synchronized (this.sessionLock) {
+            sessionId = generateSessionId();
+            systemManagerSessions.put(sessionId, sm);
+        }
         return sessionId;
     }
     public void deleteSessionForSystemManager(String sessionId) throws Exception {
