@@ -63,7 +63,7 @@ public class Market {
     }
 
     //use case 1.1
-    public String enterMarket() {
+    public String enterMarket() throws Exception {
         Guest guest = new Guest();
         String sessionId = sessionManager.createSession(guest);
         logger.info(String.format("new guest entered the system with sessionID: %s", sessionId));
