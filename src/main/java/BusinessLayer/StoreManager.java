@@ -1,11 +1,14 @@
 package BusinessLayer;
 
+import BusinessLayer.Logger.SystemLogger;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class StoreManager implements Position {
 
+    private SystemLogger logger = new SystemLogger();
     public enum permissionType {setPermissions, setNewPosition, Inventory, Purchases, EmployeeList}
 
     private Store store;
@@ -104,6 +107,10 @@ public class StoreManager implements Position {
 
     @Override
     public void editProductPrice(int productId, double newPrice) throws Exception {
+        if(newPrice <= 0){
+            logger.error(String.format("the price %.02f is negative",newPrice));
+            throw new Exception("the price of a product has to be negative");
+        }
         //TODO: Check if he has appropriate access permission
         if (permissions.contains(permissionType.Inventory))
             store.editProductPrice(productId, newPrice);
