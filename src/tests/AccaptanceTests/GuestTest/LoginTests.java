@@ -1,22 +1,22 @@
 package AccaptanceTests.GuestTest;
 
 import AccaptanceTests.ServiceTests;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 
 public class LoginTests extends ServiceTests {
     /*
      * USE CASES 2.3
      *
      * */
-    @Before
+    @BeforeAll
     public void setUp(){
         super.setUp();
-        register("hanamaru", "abc@gmail.com","12345");
-        register("chika", "abcd@gmail.com","12345");
+        register("hanamaru", "12345");
+        register("chika", "12345");
     }
 
     @AfterAll
@@ -24,27 +24,31 @@ public class LoginTests extends ServiceTests {
         clearDB();
     }
 
+    @AfterEach
+    public void tearD(){
+        logout("1");
+    }
 
     @Test
     public void testLoginSuccessful(){
-        assertTrue(login("hanamaru", "abc@gmail.com","12345"));
+        assertNotNull(login("hanamaru", "12345"));
     }
 
     @Test
     public void testLoginFailureWrongPassword(){
-        assertFalse(login("hanamaru", "abc@gmail.com","12345657"));
+        assertNull(login("hanamaru", "12345657"));
     }
 
     @Test
     public void testLoginFailureNonExistingUser(){
-        assertFalse(login("yohariko","abcd@gmail.com", "1234"));
+        assertNull(login("yohariko", "1234"));
     }
 
 
     @Test
     public void testLoginFailureAlreadyLoggedin(){
-        login( "chika", "abcd@gmail.com","12345");
-        assertFalse(login( "chika", "abcd@gmail.com","12345"));
+        String sessionID = login( "chika", "12345");
+        assertNull(login( "chika", "12345"));
     }
 
 }

@@ -1,7 +1,6 @@
 package AccaptanceTests.GuestTest;
 
 import AccaptanceTests.ServiceTests;
-import org.example.BusinessLayer.Member;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,14 +10,17 @@ public class PurchaseTests extends ServiceTests {
      * USE CASES 2.8.1-2.8.4
      *
      * */
+    int storeID2;
+    int productID2;
+    String sessionID1;
     @Before
     public void setUp(){
         super.setUp();
-        register("alon1","alon59311@gmail.com", "alon0601");
-        login("alon1","alon59311@gmail.com", "alon0601");
-        int storeID2 = openStore("newStore3");
-        int productID2 = addProduct(storeID2,"test2",3.9,"milk",9,1);
-        addToCart(storeID2, productID2, 5);
+        register("alon1", "alon0601");
+        sessionID1 = login("alon1","alon0601");
+        storeID2 = openStore(sessionID1, "newStore3");
+        productID2 = addProduct(sessionID1, storeID2,"test2",3.9,"milk",9,"1");
+        addToCart(sessionID1, storeID2, productID2, 5);
 
 
     }
@@ -32,14 +34,14 @@ public class PurchaseTests extends ServiceTests {
 
     @Test
     public void testPurchaseSuccessful(){
-        assertTrue(buyCart(1, "12345678", "04", "2021", "me", "777",
+        assertTrue(buyCart(sessionID1, "12345678", "04", "2021", "me", "777",
                 "12123123", "me", "1428 Elm Street", "Springwood", "Ohio, United States", "12345"));
     }
 
     @Test
     public void testNothingInCartSuccessful(){
-        deleteItemInCart(1,1);
-        assertFalse(buyCart(1, "12345678", "04", "2021", "me", "777",
+        deleteItemInCart(sessionID1,storeID2,productID2);
+        assertFalse(buyCart(sessionID1, "12345678", "04", "2021", "me", "777",
                 "12123123", "me", "1428 Elm Street", "Springwood", "Ohio, United States", "12345"));
     }
 

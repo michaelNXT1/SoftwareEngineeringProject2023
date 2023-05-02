@@ -1,7 +1,8 @@
 package UnitTests;
 
+import BusinessLayer.*;
 import junit.framework.TestCase;
-import org.example.BusinessLayer.*;
+
 import org.junit.After;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +19,7 @@ public class StoreManagerTest extends TestCase {
     @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
-        member = new Member("member","member@post.bgu.ac.il","012");
+        member = new Member("member","012");
         store = new Store(0,"store",member);
         storeManager = new StoreManager(store,member);
         //storeFounder = new StoreFounder(store);
@@ -53,15 +54,16 @@ public class StoreManagerTest extends TestCase {
 
     @Test
     @After
-    public void cleanup() throws IllegalAccessException {
-        storeManager.removeProductFromStore(p.getProductId());    }
+    public void cleanup() throws Exception {
+        storeManager.removeProductFromStore(p.getProductId());
+    }
     public void testAddProductToStoreWithPermission() throws Exception {
         // arrange
 
             StoreFounder storeFounder = new StoreFounder(store);
             storeFounder.addStoreManagerPermissions(storeManager, StoreManager.permissionType.Inventory);
             // act
-            p = storeManager.addProduct(store,"Product 1", 10.0, "proxyProduct", 100);
+            p = storeManager.addProduct(store,"Product 1", 10.0, "proxyProduct", 100,"aa");
             // assert
             assertEquals(p,store.getProduct(p.getProductId()));
 
@@ -70,7 +72,7 @@ public class StoreManagerTest extends TestCase {
     @Test
     public void testAddProductToStoreWithoutPermission() {
         try {
-            storeManager.addProduct(store,"Product 1", 10.0, "proxyProduct", 100);
+            storeManager.addProduct(store,"Product 1", 10.0, "proxyProduct", 100,"aa");
             fail("Expected IllegalAccessException was not thrown");
         } catch (IllegalAccessException e) {
             assertEquals("This member hasn't permission to add product to the store", e.getMessage());
@@ -86,7 +88,7 @@ public class StoreManagerTest extends TestCase {
             StoreFounder storeFounder = new StoreFounder(store);
             storeFounder.addStoreManagerPermissions(storeManager, StoreManager.permissionType.Inventory);
             // act
-            Product p = storeManager.addProduct(store,"Product 1", 10.0, "proxyProduct", 100);
+            Product p = storeManager.addProduct(store,"Product 1", 10.0, "proxyProduct", 100,"aa");
             int productId = p.getProductId();
             // assert
             storeManager.removeProductFromStore(p.getProductId());
@@ -99,7 +101,7 @@ public class StoreManagerTest extends TestCase {
     @Test(expected = IllegalAccessException.class)
     public void testRemoveProductFromStoreWithoutPermission() {
         try {
-            Product p = store.addProduct("Product 1", 10.0, "proxyProduct", 100);
+            p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"aa");
             // act
             storeManager.removeProductFromStore(p.getProductId());
             fail("Expected IllegalAccessException was not thrown");
@@ -115,7 +117,7 @@ public class StoreManagerTest extends TestCase {
     public void testEditProductNameWithPermission() throws Exception {
         StoreFounder storeFounder = new StoreFounder(store);
         storeFounder.addStoreManagerPermissions(storeManager, StoreManager.permissionType.Inventory);
-        p = store.addProduct("Product 1", 10.0, "proxyProduct", 100);
+        p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"aa");
         storeManager.editProductName(p.getProductId(), "Product 2");
         assertEquals(p.getProductName(),"Product 2");
     }
@@ -123,7 +125,7 @@ public class StoreManagerTest extends TestCase {
     @Test
     public void testEditProductNameWithOutPermission() {
         try {
-            p = store.addProduct("Product 1", 10.0, "proxyProduct", 100);
+            p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"aa");
             storeManager.editProductName(p.getProductId(), "Product 2");
             fail("Expected IllegalAccessException was not thrown");
         } catch (IllegalAccessException e) {
@@ -138,13 +140,13 @@ public class StoreManagerTest extends TestCase {
     public void testEditProductPriceWithPermission() throws Exception {
         StoreFounder storeFounder = new StoreFounder(store);
         storeFounder.addStoreManagerPermissions(storeManager, StoreManager.permissionType.Inventory);
-        p = store.addProduct("Product 1", 10.0, "proxyProduct", 100);
+        p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"aa");
         storeManager.editProductPrice(p.getProductId(), 60.0);
         assertEquals(p.getProductPrice(),60.0);
     }
     public void testEditProductPriceWithOutPermission() {
         try {
-            p = store.addProduct("Product 1", 10.0, "proxyProduct", 100);
+            p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"aa");
             storeManager.editProductPrice(p.getProductId(), 60.0);
             fail("Expected IllegalAccessException was not thrown");
         } catch (IllegalAccessException e) {
@@ -157,13 +159,13 @@ public class StoreManagerTest extends TestCase {
     public void testEditProductCategoryWithPermission() throws Exception {
         StoreFounder storeFounder = new StoreFounder(store);
         storeFounder.addStoreManagerPermissions(storeManager, StoreManager.permissionType.Inventory);
-        p = store.addProduct("Product 1", 10.0, "proxyProduct", 100);
+        p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"aa");
         storeManager.editProductCategory(p.getProductId(), "new category");
         assertEquals(p.getCategory(),"new category");
     }
     public void testEditProductCategoryWithOutPermission() {
         try {
-            p = store.addProduct("Product 1", 10.0, "proxyProduct", 100);
+            p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"aa");
             storeManager.editProductCategory(p.getProductId(), "new category");
             fail("Expected IllegalAccessException was not thrown");
         } catch (IllegalAccessException e) {
@@ -177,15 +179,15 @@ public class StoreManagerTest extends TestCase {
     public void testEditProductDescriptionWithPermission() throws Exception {
         StoreFounder storeFounder = new StoreFounder(store);
         storeFounder.addStoreManagerPermissions(storeManager, StoreManager.permissionType.Inventory);
-        p = store.addProduct("Product 1", 10.0, "proxyProduct", 100);
-        storeManager.editProductDescription(p.getProductId(), Long.parseLong("new description"));
+        p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"aa");
+        storeManager.editProductDescription(p.getProductId(), "new description");
         assertEquals(p.getDescription(),Long.parseLong("new description"));
 
     }
     public void testEditProductDescriptionWithOutPermission() {
         try {
-            p = store.addProduct("Product 1", 10.0, "proxyProduct", 100);
-            storeManager.editProductDescription(p.getProductId(), Long.parseLong("new description"));
+            p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"aa");
+            storeManager.editProductDescription(p.getProductId(), "new description");
             fail("Expected IllegalAccessException was not thrown");
         } catch (IllegalAccessException e) {
             assertEquals("This member hasn't permission to edit product in the store", e.getMessage());

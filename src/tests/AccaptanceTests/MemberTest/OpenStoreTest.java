@@ -1,35 +1,33 @@
 package AccaptanceTests.MemberTest;
 
-import org.example.BusinessLayer.Member;
 import org.junit.Before;
 import AccaptanceTests.ServiceTests;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
-import org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class OpenStoreTest extends ServiceTests{
 
+    String sessionID1;
 
     @Before
     public void setUp(){
         super.setUp();
-        register("alon1","alon59311@gmail.com", "alon0601");
-        login("alon1","alon59311@gmail.com", "alon0601");
+        register("alon1", "alon0601");
+        sessionID1 = login("alon1","alon0601");
     }
 
     @Test
     public void testOpenStoreSuccessful(){
-        assertTrue(openStore("newee") > -1);
-        assertTrue(openStore("newwwww") > -1);
+        assertTrue(openStore(sessionID1, "newee") > -1);
+        assertTrue(openStore(sessionID1, "newwwww") > -1);
     }
 
     @Test
     public void testOpenStoreFailureNotLoggedIn(){
-        logout(1);
-        assertNull(openStore("newee"));
-        assertNull(openStore("newee"));
+        logout(sessionID1);
+        assertNull(openStore(sessionID1, "newee"));
+        assertNull(openStore(sessionID1, "newee"));
     }
 }

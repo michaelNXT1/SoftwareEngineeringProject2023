@@ -5,81 +5,82 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class EditExistingProduct extends ServiceTests {
+    String sessionID1;
     @Before
     public void setUp(){
         super.setUp();
-        register("alon1","alon59311@gmail.com", "alon0601");
-        register("alon12","alon593112@gmail.com", "alon0601");
-        login("alon1","alon59311@gmail.com", "alon0601");
+        register("alon1", "alon0601");
+        register("alon12","alon0601");
+        sessionID1 = login("alon1","alon0601");
 
     }
 
     @Test
-    public void editNameExistingProductSuccess(){
-        int storeID = openStore("newStore");
-        int productID1 = addProduct(storeID,"test",3.9,"milk",9,10);
-        assertTrue(editProductName(storeID, productID1, "test11"));
+    public void testEditNameExistingProductSuccess(){
+        int storeID = openStore(sessionID1, "newStore");
+        int productID1 = addProduct(sessionID1, storeID,"test",3.9,"milk",9,"10");
+        assertTrue(editProductName(sessionID1, storeID, productID1, "test11"));
     }
 
     @Test
-    public void editCategoryExistingProductSuccess(){
-        int storeID = openStore("newStore");
-        int productID1 = addProduct(storeID,"test",3.9,"milk",9,10);
-        assertTrue(editProductCategory(storeID, productID1, "test11"));
+    public void testEditCategoryExistingProductSuccess(){
+        int storeID = openStore(sessionID1, "newStore");
+        int productID1 = addProduct(sessionID1, storeID,"test",3.9,"milk",9,"10");
+        assertTrue(editProductCategory(sessionID1, storeID, productID1, "test11"));
     }
 
     @Test
-    public void editPriceExistingProductSuccess(){
-        int storeID = openStore("newStore");
-        int productID1 = addProduct(storeID,"test",3.9,"milk",9,10);
-        assertTrue(editProductPrice(storeID, productID1, 1));
+    public void testEditPriceExistingProductSuccess(){
+        int storeID = openStore(sessionID1, "newStore");
+        int productID1 = addProduct(sessionID1 ,storeID,"test",3.9,"milk",9,"10");
+        assertTrue(editProductPrice(sessionID1, storeID, productID1, 1));
     }
 
     @Test
-    public void editNameExistingProductFail(){
-        int storeID = openStore("newStore");
-        assertTrue(editProductName(storeID, 1, "test11"));
+    public void testEditNameExistingProductFail(){
+        int storeID = openStore(sessionID1, "newStore");
+        assertFalse(editProductName(sessionID1, storeID, 1, "test11"));
     }
 
     @Test
-    public void editCategoryExistingProductFail(){
-        int storeID = openStore("newStore");
-        assertTrue(editProductCategory(storeID, 1, "test11"));
+    public void testEditCategoryExistingProductFail(){
+        int storeID = openStore(sessionID1, "newStore");
+        assertFalse(editProductCategory(sessionID1, storeID, 1, "test11"));
     }
 
     @Test
-    public void editPriceExistingProductFail(){
-        int storeID = openStore("newStore");
-        assertTrue(editProductPrice(storeID, 1, 1));
+    public void testEditPriceExistingProductFail(){
+        int storeID = openStore(sessionID1, "newStore");
+        assertFalse(editProductPrice(sessionID1, storeID, 1, 1));
     }
 
     @Test
-    public void editNameExistingProductNotPremitionFAil(){
-        logout(1);
-        login("alon1","alon59311@gmail.com", "alon0601");
-        int storeID = openStore("newStore");
-        int productID1 = addProduct(storeID,"test",3.9,"milk",9,10);
-        assertTrue(editProductName(storeID, productID1, "test11"));
+    public void testEditNameExistingProductNotPremitionFAil(){
+        int storeID = openStore(sessionID1, "newStore");
+        int productID1 = addProduct(sessionID1,storeID,"test",3.9,"milk",9,"10");
+        logout(sessionID1);
+        String sessionID2 = login("alon12", "alon0601");
+        assertFalse(editProductName(sessionID2, storeID, productID1, "test11"));
     }
 
     @Test
-    public void editCategoryExistingProductNotPremitionFAil(){
-        int storeID = openStore("newStore");
-        int productID1 = addProduct(storeID,"test",3.9,"milk",9,10);
-        assertTrue(editProductCategory(storeID, productID1, "test11"));
+    public void testEditCategoryExistingProductNotPremitionFAil(){
+        int storeID = openStore(sessionID1,"newStore");
+        int productID1 = addProduct(sessionID1, storeID,"test",3.9,"milk",9,"10");
+        assertTrue(editProductCategory(sessionID1, storeID, productID1, "test11"));
     }
 
     @Test
-    public void editPriceExistingProductNotPremitionFAil(){
-        int storeID = openStore("newStore");
-        int productID1 = addProduct(storeID,"test",3.9,"milk",9,10);
-        assertTrue(editProductPrice(storeID, productID1, 1));
+    public void testEditPriceExistingProductNotPremitionFAil(){
+        int storeID = openStore(sessionID1, "newStore");
+        int productID1 = addProduct(sessionID1, storeID,"test",3.9,"milk",9,"10");
+        assertTrue(editProductPrice(sessionID1, storeID, productID1, 1));
     }
 
     @Test
-    public void editPriceExistingProductNegativeFAil(){
-        int storeID = openStore("newStore");
-        int productID1 = addProduct(storeID,"test",3.9,"milk",9,10);
-        assertTrue(editProductPrice(storeID, productID1, -5));
+    public void testEditPriceExistingProductNegativeFAil(){
+        int storeID = openStore(sessionID1, "newStore");
+        int productID1 = addProduct(sessionID1, storeID,"test",3.9,"milk",9,"10");
+        assertFalse(editProductPrice(sessionID1, storeID, productID1, -5));
     }
 }

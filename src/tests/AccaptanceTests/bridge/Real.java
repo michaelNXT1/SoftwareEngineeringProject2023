@@ -1,7 +1,12 @@
 package AccaptanceTests.bridge;
 
 
-import org.example.ServiceLayer.MarketManager;
+import BusinessLayer.Member;
+import BusinessLayer.Position;
+import BusinessLayer.Product;
+import BusinessLayer.Purchase;
+import ServiceLayer.MarketManager;
+import java.util.*;
 
 public class Real implements Bridge {
 
@@ -11,91 +16,91 @@ public class Real implements Bridge {
          this.manager = new MarketManager();
     }
 
-    public boolean setupSystem(String managerUName, String managerEmail, String managerPass){
-        return !this.manager.signUpSystemManager(managerUName, managerEmail, managerPass).getError_occurred();
+    public boolean setupSystem(String managerUName, String managerPass){
+        return !this.manager.signUpSystemManager(managerUName, managerPass).getError_occurred();
     }
 
-    public boolean login(String username,String email,String password) {
-        return !manager.login(username, email, password).getError_occurred();
+    public String login(String username,String password) {
+        return manager.login(username, password).value;
     }
 
-    public boolean register(String username,String email,String password) {
-        return !manager.signUp(username, email,password).getError_occurred();
-    }
-
-    @Override
-    public boolean getStore(int storeId) {
-        return !manager.getStore(storeId).getError_occurred();
+    public boolean register(String username,String password) {
+        return !manager.signUp(username, password).getError_occurred();
     }
 
     @Override
-    public boolean getProduct(int productID, int storeID) {
-        return !manager.getProduct(productID, storeID).getError_occurred();
+    public boolean getStore(String sessionId, int storeId) {
+        return !manager.getStore(sessionId, storeId).getError_occurred();
     }
 
     @Override
-    public boolean closeStore(int storeID) {
-        return !this.manager.closeStore(storeID).getError_occurred();
-    }
-
-    public String getStoresInform(String storeSubString) {
-        return manager.getStores(storeSubString).value.toString();
-    }
-
-    public String searchProductsByName(String productName) {
-        return manager.getProductsByName(productName).value.toString();
-    }
-
-    public String searchProductsByCategory(String productCategory) {
-        return manager.getProductsByCategory(productCategory).value.toString();
-    }
-
-    public String searchProductsBySubString(String productSubString) {
-        return manager.getProductsBySubstring(productSubString).value.toString();
-    }
-
-
-    public String filterSearchResultsByCategory(String filterParams){
-        return manager.filterSearchResultsByCategory(filterParams).value.toString();
+    public boolean getProduct(String sessionId, int productID, int storeID) {
+        return !manager.getProduct(sessionId, storeID, productID).getError_occurred();
     }
 
     @Override
-    public String filterSearchResultsByPrice(double minPrice, double maxPrice) {
-        return manager.filterSearchResultsByPrice(minPrice, maxPrice).value.toString();
+    public boolean closeStore(String sessionId, int storeID) {
+        return !this.manager.closeStore(sessionId, storeID).getError_occurred();
+    }
+
+    public Integer getStoresInform(String sessionId, String storeSubString) {
+        return manager.getStores(sessionId, storeSubString).value.size();
+    }
+
+    public Integer searchProductsByName(String sessionId, String productName) {
+        return manager.getProductsByName(sessionId, productName).value.size();
+
+    }
+
+    public Integer searchProductsByCategory(String sessionId, String productCategory) {
+        return manager.getProductsByCategory(sessionId, productCategory).value.size();
+    }
+
+    public Integer searchProductsBySubString(String sessionId, String productSubString) {
+        return manager.getProductsBySubstring(sessionId, productSubString).value.size();
     }
 
 
-    public boolean addToCart(int storeId, int productId, int amount) {
-        return !manager.addProductToCart(storeId, productId, amount).getError_occurred();
+    public Integer filterSearchResultsByCategory(String sessionId, String filterParams){
+        return manager.filterSearchResultsByCategory(sessionId, filterParams).value.size();
+    }
+
+    @Override
+    public Integer filterSearchResultsByPrice(String sessionId, double minPrice, double maxPrice) {
+        return manager.filterSearchResultsByPrice(sessionId, minPrice,maxPrice).value.size();
+
     }
 
 
-    public String showCart(){
-        return manager.getShoppingCart().value.toString();
+    public boolean addToCart(String sessionId, int storeId, int productId, int amount) {
+        return !manager.addProductToCart(sessionId, storeId, productId, amount).getError_occurred();
     }
 
 
-    public boolean updateAmount(int storeId,int productId, int amount) {
-        return !manager.changeProductQuantity(storeId, productId, amount).getError_occurred();
+    public String showCart(String sessionId){
+        return manager.getShoppingCart(sessionId).value.toString();
     }
 
-    public boolean deleteItemInCart(int storeId, int productId) {
-        return !manager.removeProductFromCart(storeId, productId).getError_occurred();
+    public boolean updateAmount(String sessionId, int storeId,int productId, int amount) {
+        return !manager.changeProductQuantity(sessionId, storeId, productId, amount).getError_occurred();
+    }
+
+    public boolean deleteItemInCart(String sessionId, int storeId, int productId) {
+        return !manager.removeProductFromCart(sessionId, storeId, productId).getError_occurred();
     }
 
 //    public boolean clearCart(int sessionId) {
 //        return manager.clearCart(sessionId).getError_occurred();
 //    }
 
-    public boolean buyCart(int sessionId, String cardNumber, String cardMonth, String cardYear, String cardHolder,
+    public boolean buyCart(String sessionId, String cardNumber, String cardMonth, String cardYear, String cardHolder,
                            String cardCcv, String cardId, String buyerName, String address, String city, String country, String zip) {
-        return !manager.purchaseShoppingCart().getError_occurred();
+        return !manager.purchaseShoppingCart(sessionId).getError_occurred();
     }
 
 
-    public boolean logout(){
-        return !manager.logout().getError_occurred();
-
+    public boolean logout(String sessionId){
+        return !manager.logout(sessionId).getError_occurred();
     }
 
     @Override
@@ -104,53 +109,55 @@ public class Real implements Bridge {
     }
 
 
-    public Integer openStore(String storeName) {
-        return manager.openStore(storeName).value;
+    public Integer openStore(String sessionId, String storeName) {
+        return manager.openStore(sessionId, storeName).value;
     }
 
-    public String viewPurchaseHistory(int storeID){
-        return manager.getPurchaseHistory(storeID).value.toString();
-    }
-
-
-    public boolean addProductToStore(int sessionId, int productId, int storeId, int amount) {
-        return !manager.addProductToCart(productId,storeId,amount).getError_occurred();
-    }
-
-
-    public boolean deleteProduct(int sessionId, int storeId, int productId) {
-        return !manager.removeProductFromStore(storeId, productId).getError_occurred();
+    public String viewPurchaseHistory(String sessionId, int storeID){
+        List<Purchase> purch =  manager.getPurchaseHistory(sessionId, storeID).value;
+        if(purch != null)
+            return purch.toString();
+        return null;
     }
 
 
 
-
-    public boolean appointManager(int sessionId, int storeId, String userName) {
-        return !manager.setPositionOfMemberToStoreManager(storeId, userName).getError_occurred();
+    public boolean deleteProduct(String sessionId, int storeId, int productId) {
+        return !manager.removeProductFromStore(sessionId, storeId, productId).getError_occurred();
     }
 
 
-    public Integer addProduct(int storeId, String productName, double price, String category, double rating, int quantity) {
-        return manager.addProduct(storeId, productName, price, category, rating, quantity).value.getProductId();
+
+
+    public boolean appointManager(String sessionId, int storeId, String userName) {
+        return !manager.setPositionOfMemberToStoreManager(sessionId, storeId, userName).getError_occurred();
     }
 
 
-    public boolean setProductName(int storeId, int productId, String newName) {
-        return !manager.editProductName(storeId, productId, newName).getError_occurred();
+    public Integer addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description) {
+        Product p = manager.addProduct(sessionId, storeId, productName, price, category, quantity,description).value;
+        if(p!=null)
+            return p.getProductId();
+        return null;
     }
 
 
-    public boolean setProductPrice(int storeId, int productId, int newPrice) {
-        return !manager.editProductPrice(storeId, productId, newPrice).getError_occurred();
+    public boolean setProductName(String sessionId, int storeId, int productId, String newName) {
+        return !manager.editProductName(sessionId, storeId, productId, newName).getError_occurred();
     }
 
 
-    public boolean setProductCategory(int storeId, int productId, String newCategory) {
-        return !manager.editProductCategory(storeId, productId, newCategory).getError_occurred();
+    public boolean setProductPrice(String sessionId, int storeId, int productId, int newPrice) {
+        return !manager.editProductPrice(sessionId, storeId, productId, newPrice).getError_occurred();
     }
 
 
-    public boolean setProductName(String newName) {
+    public boolean setProductCategory(String sessionId, int storeId, int productId, String newCategory) {
+        return !manager.editProductCategory(sessionId, storeId, productId, newCategory).getError_occurred();
+    }
+
+
+    public boolean setProductName(String sessionId, String newName) {
         return false;
     }
 
@@ -158,38 +165,42 @@ public class Real implements Bridge {
 //        return manager.deleteManager(storeId, userId).getError_occurred();
 //    }
 
-    public boolean editManagerOptions(int sessionId, String userName, int storeId, int option){
-        return !manager.addStoreManagerPermissions(userName, storeId, option).getError_occurred();
+    public boolean editManagerOptions(String sessionId, String userName, int storeId, int option){
+        return !manager.addStoreManagerPermissions(sessionId, userName, storeId, option).getError_occurred();
     }
 
     @Override
-    public boolean getStoresPurchases() {
-        return !this.manager.getStoresPurchases().getError_occurred();
+    public boolean getStoresPurchases(String sessionId) {
+        return !this.manager.getStoresPurchases(sessionId).getError_occurred();
     }
 
-    public String showStorePositions(int sessionId, int storeId) {
-        return manager.getStoreEmployees(storeId).value.toString();
+    public Integer showStorePositions(String sessionId, int storeId) {
+        List<Member> emp = manager.getStoreEmployees(sessionId, storeId).value;
+        if(emp != null){
+            return emp.size();
+        }
+        return null;
     }
 
     @Override
-    public boolean editProductPrice(int storeId, int productId, int newPrice) {
-        return !manager.editProductPrice(storeId, productId, newPrice).getError_occurred();
+    public boolean editProductPrice(String sessionId, int storeId, int productId, int newPrice) {
+        return !manager.editProductPrice(sessionId, storeId, productId, newPrice).getError_occurred();
     }
 
     @Override
-    public boolean editProductCategory(int storeId, int productId, String newCategory) {
-        return !manager.editProductCategory(storeId, productId, newCategory).getError_occurred();    }
+    public boolean editProductCategory(String sessionId, int storeId, int productId, String newCategory) {
+        return !manager.editProductCategory(sessionId, storeId, productId, newCategory).getError_occurred();    }
 
     @Override
-    public boolean editProductName(int storeId, int productId, String newName) {
-        return !manager.editProductName(storeId, productId, newName).getError_occurred();    }
+    public boolean editProductName(String sessionId, int storeId, int productId, String newName) {
+        return !manager.editProductName(sessionId, storeId, productId, newName).getError_occurred();    }
 
 //    public boolean appointOwner(int sessionId, int storeId, int userId) {
 //        return manager.addStoreOwner(storeId, userId).getError_occurred();
 //    }
 
-    public boolean removeStore(int storeID){
-        return manager.closeStore(storeID).getError_occurred();
+    public boolean removeStore(String sessionId, int storeID){
+        return manager.closeStore(sessionId, storeID).getError_occurred();
     }
 
 

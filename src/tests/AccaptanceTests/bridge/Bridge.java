@@ -2,86 +2,85 @@ package AccaptanceTests.bridge;
 
 
 public interface Bridge {
-    boolean setupSystem(String managerUName, String managerEmail, String managerPass);
+    boolean setupSystem(String managerUName, String managerPass);
 
-    boolean login(String username, String email,String password);
+    String login(String username, String password);
 
-    boolean register(String username, String email,String password);
-    boolean getStore(int storeId);
+    boolean register(String username, String password);
+    boolean getStore(String sessionId, int storeId);
 
-    boolean getProduct(int productID, int storeID);
+    boolean getProduct(String sessionId, int productID, int storeID);
 
 
-    boolean closeStore(int storeID);
+    boolean closeStore(String sessionId, int storeID);
 
-    String getStoresInform(String storeSubString);
+    Integer getStoresInform(String sessionId, String storeSubString);
 
-    String searchProductsByName(String productName);
+    Integer searchProductsByName(String sessionId, String productName);
 
-    String searchProductsByCategory(String productCategory);
+    Integer searchProductsByCategory(String sessionId, String productCategory);
 
-    String searchProductsBySubString(String productSubString);
+    Integer searchProductsBySubString(String sessionId, String productSubString);
 
-    String filterSearchResultsByCategory(String category);
+    Integer filterSearchResultsByCategory(String sessionId, String category);
 
-    String filterSearchResultsByPrice(double minPrice, double maxPrice);
+    Integer filterSearchResultsByPrice(String sessionId, double minPrice, double maxPrice);
 
-    boolean addToCart(int storeId, int productId, int amount);
+    boolean addToCart(String sessionId, int storeId, int productId, int amount);
 
-    boolean updateAmount(int storeId, int productId, int amount);
+    boolean updateAmount(String sessionId, int storeId, int productId, int amount);
 
-    boolean deleteItemInCart(int storeId, int productId);
+    boolean deleteItemInCart(String sessionId, int storeId, int productId);
 
 //    boolean clearCart(int sessionId);
 
-    boolean buyCart(int sessionId, String cardNumber, String cardMonth, String cardYear, String cardHolder, String cardCcv, String cardId, String buyerName, String address, String city, String country, String zip);
+    boolean buyCart(String sessionId, String cardNumber, String cardMonth, String cardYear, String cardHolder, String cardCcv, String cardId, String buyerName, String address, String city, String country, String zip);
 
-    String showCart();
+    String showCart(String sessionId);
 
-    boolean logout();
+    boolean logout(String sessionId);
 
     boolean openMarket();
 
-    Integer openStore(String storeName);
+    Integer openStore(String sessionId, String storeName);
 
-    String viewPurchaseHistory(int storeID);
-
-    boolean addProductToStore(int sessionId, int productId, int storeId, int amount);
+    String viewPurchaseHistory(String sessionId, int storeID);
 
 
-    boolean deleteProduct(int sessionId, int storeId, int productId);
+
+    boolean deleteProduct(String sessionId, int storeId, int productId);
 
 
  //   boolean editStorePurchaseType(int sessionId, int storeId, String newType);
 
-    boolean appointManager(int sessionId, int storeId, String userName);
+    boolean appointManager(String sessionId, int storeId, String userName);
 
-    Integer addProduct(int storeId, String productName, double price, String category, double rating, int quantity);
+    Integer addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description);
 
-    boolean setProductName(int storeId, int productId, String newName);
+    boolean setProductName(String sessionId, int storeId, int productId, String newName);
 
-    boolean setProductPrice(int storeId, int productId, int newPrice);
+    boolean setProductPrice(String sessionId, int storeId, int productId, int newPrice);
 
-    boolean setProductCategory(int storeId, int productId, String newCategory);
+    boolean setProductCategory(String sessionId, int storeId, int productId, String newCategory);
 
-    boolean editManagerOptions(int sessionId, String userName, int storeId, int option);
+    boolean editManagerOptions(String sessionId, String userName, int storeId, int option);
 
-    boolean getStoresPurchases();
+    boolean getStoresPurchases(String sessionId);
 
-    String showStorePositions(int sessionId, int storeId);
+    Integer showStorePositions(String sessionId, int storeId);
 
-    boolean editProductPrice(int storeId, int productId, int newPrice);
+    boolean editProductPrice(String sessionId, int storeId, int productId, int newPrice);
 
-    boolean editProductCategory(int storeId, int productId, String newCategory);
+    boolean editProductCategory(String sessionId, int storeId, int productId, String newCategory);
 
-    boolean editProductName(int storeId, int productId, String newName);
+    boolean editProductName(String sessionId, int storeId, int productId, String newName);
 
  //   boolean appointOwner(int sessionId, int storeId, String userName);
 
 
 //    boolean removeManager(int sessionId, int storeId, int userId);
 
-    boolean removeStore(int storeId);
+    boolean removeStore(String sessionId, int storeId);
 
     void clearDatabase();
 }

@@ -3,7 +3,6 @@ package AccaptanceTests.GuestTest;
 
 
 import AccaptanceTests.ServiceTests;
-import org.apache.commons.lang3.ObjectUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,24 +28,16 @@ public class RegistrationTest extends ServiceTests {
 
     @Test
     public void testRegisterSuccessful() {
-        assertTrue(register("yohane","alon@gmail.com", "1234"));
-        assertTrue(register( "sarah", "alon123@gmail.com","12345"));
+        assertTrue(register("yohane", "1234"));
+        assertTrue(register( "sarah", "12345"));
     }
 
     @Test
     public void testRegisterFailureExistingUsername() {
-        register( "sarah", "alon123@gmail.com","12345");
-        register("yohane","alon@gmail.com", "1234");
-        assertFalse(register("yohane","alon@gmail.com", "1234"));
-        assertFalse(register( "sarah", "alon123@gmail.com","12345"));
+        register( "sarah", "12345");
+        register("yohane","1234");
+        assertFalse(register("yohane", "1234"));
+        assertFalse(register( "sarah", "12345"));
     }
-
-    @Test
-    public void testIllegalEmail(){
-        assertFalse(register("aaa", "", "avbdsv"));
-        assertFalse(register("aaa", "aaaaa", "avbdsv"));
-        assertFalse(register("aaa", "aaa@ccc", "avbdsv"));
-    }
-
 }
 
