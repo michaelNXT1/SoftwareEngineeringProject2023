@@ -1,6 +1,8 @@
 package BusinessLayer;
 
 import BusinessLayer.Logger.SystemLogger;
+import Security.ProxyScurity;
+import Security.SecurityAdapter;
 import Security.SecurityUtils;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,14 +15,14 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import static Security.SecurityUtils.authenticate;
+
 
 public class Market {
     private Map<Integer, Store> stores;
     private Map<String, SystemManager> systemManagers;
     private Map<String, Member> users;
     private PasswordEncoder passwordEncoder;
-
+    private SecurityAdapter securityUtils = new ProxyScurity(null);
     Object userLock = new Object();
 
 
@@ -29,7 +31,6 @@ public class Market {
 
     public static Object purchaseLock = new Object();
     FundDemander fd;
-    SecurityUtils securityUtils = new SecurityUtils();
     SessionManager sessionManager = new SessionManager();
 
 
@@ -146,7 +147,7 @@ public class Market {
         }
 
         // If the credentials are correct, authenticate the user and return true
-        boolean res = authenticate(username, password);
+        boolean res = securityUtils.authenticate(username, password);
         if (res) {
             logger.info(String.format("%s the user passed authenticate check and logged in to the systemManager", username));
             String sessionId = sessionManager.createSessionForSystemManager(sm);
@@ -244,7 +245,7 @@ public class Market {
     //use case 2.9 - by price range
     public List<Product> filterSearchResultsByPrice(String sessionId, double minPrice, double maxPrice) throws Exception {
         isMarketOpen();
-        logger.info(String.format("filtering product by min price : %d  to max price : %d", minPrice, maxPrice));
+        logger.info(String.format("filtering product by min price : %02f  to max price : %02f", minPrice, maxPrice));
         Guest g = sessionManager.getSession(sessionId);
         return g.filterSearchResultsByPrice(minPrice, maxPrice);
     }
@@ -337,7 +338,7 @@ public class Market {
         sessionManager.getSession(sessionId);
         logger.info("trying adding new product");
         checkStoreExists(storeId);
-        logger.info(String.format("adding product to store %s new product name %s price %d category %s quantity %d description %s", getStore(sessionId, storeId), productName, price, category, quantity, description));
+        logger.info(String.format("adding product to store %s new product name %s price %.02f category %s quantity %d description %s", getStore(sessionId, storeId).getStoreName(), productName, price, category, quantity, description));
         Position p = checkPositionLegal(sessionId, storeId);
         return p.addProduct(stores.get(storeId), productName, price, category, quantity, description);
     }
@@ -348,7 +349,7 @@ public class Market {
         sessionManager.getSession(sessionId);
         logger.info("trying to edit product name");
         checkStoreExists(storeId);
-        logger.info(String.format("edit product name %d to %s in store %s", productId, newName, getStore(sessionId, storeId)));
+        logger.info(String.format("edit product name %d to %s in store %s", productId, newName, getStore(sessionId, storeId).getStoreName()));
         Position p = checkPositionLegal(sessionId, storeId);
         p.editProductName(productId, newName);
     }
@@ -359,7 +360,7 @@ public class Market {
         sessionManager.getSession(sessionId);
         logger.info("trying to edit product price");
         checkStoreExists(storeId);
-        logger.info(String.format("edit product price %d to %d in store %s", productId, newPrice, getStore(sessionId, storeId)));
+        logger.info(String.format("edit product price %d to %d in store %s", productId, newPrice, getStore(sessionId, storeId).getStoreName()));
         Position p = checkPositionLegal(sessionId, storeId);
         p.editProductPrice(productId, newPrice);
     }
@@ -370,7 +371,7 @@ public class Market {
         sessionManager.getSession(sessionId);
         logger.info("trying to edit product category");
         checkStoreExists(storeId);
-        logger.info(String.format("edit product category %d to %s in store %d", productId, newCategory, getStore(sessionId, storeId)));
+        logger.info(String.format("edit product category %d to %s in store %s", productId, newCategory, getStore(sessionId, storeId).getStoreName()));
         Position p = checkPositionLegal(sessionId, storeId);
         p.editProductCategory(productId, newCategory);
     }

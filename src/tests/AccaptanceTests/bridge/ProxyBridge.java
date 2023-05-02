@@ -66,7 +66,7 @@ public class ProxyBridge implements Bridge{
         }
     }
 
-    public String getStoresInform(String sessionId, String storeSubString){
+    public Integer getStoresInform(String sessionId, String storeSubString){
         if (real != null) {
             return real.getStoresInform(sessionId, storeSubString);
         }
@@ -77,7 +77,7 @@ public class ProxyBridge implements Bridge{
     }
 
 
-    public String searchProductsByName(String sessionId, String productName) {
+    public Integer searchProductsByName(String sessionId, String productName) {
         if (real != null) {
             return real.searchProductsByName(sessionId, productName);
         }
@@ -87,7 +87,7 @@ public class ProxyBridge implements Bridge{
         }
     }
 
-    public String searchProductsByCategory(String sessionId, String productCategory) {
+    public Integer searchProductsByCategory(String sessionId, String productCategory) {
         if (real != null) {
             return real.searchProductsByCategory(sessionId, productCategory);
         }
@@ -97,7 +97,7 @@ public class ProxyBridge implements Bridge{
         }
     }
 
-    public String searchProductsBySubString(String sessionId, String productSubString) {
+    public Integer searchProductsBySubString(String sessionId, String productSubString) {
         if (real != null) {
             return real.searchProductsBySubString(sessionId, productSubString);
         }
@@ -107,7 +107,7 @@ public class ProxyBridge implements Bridge{
         }
     }
 
-    public String filterSearchResultsByCategory(String sessionId, String category) {
+    public Integer filterSearchResultsByCategory(String sessionId, String category) {
         if (real != null) {
             return real.filterSearchResultsByCategory(sessionId, category);
         }
@@ -117,7 +117,7 @@ public class ProxyBridge implements Bridge{
         }
     }
 
-    public String filterSearchResultsByPrice(String sessionId, double minPrice, double maxPrice) {
+    public Integer filterSearchResultsByPrice(String sessionId, double minPrice, double maxPrice) {
         if (real != null) {
             return real.filterSearchResultsByPrice(sessionId, minPrice, maxPrice);
         }
@@ -225,14 +225,6 @@ public class ProxyBridge implements Bridge{
         }
     }
 
-    public boolean addProductToStore(String sessionId, int productId, int storeId, int amount){
-        if(real != null){
-            return real.addProductToStore(sessionId, productId, storeId, amount);
-        }
-        else{
-            return false;
-        }
-    }
 
 
     public boolean deleteProduct(String sessionId, int storeId, int productId){
@@ -341,7 +333,7 @@ public class ProxyBridge implements Bridge{
     }
 
 
-    public String showStorePositions(String sessionId, int storeId){
+    public Integer showStorePositions(String sessionId, int storeId){
         if(real != null){
             return real.showStorePositions(sessionId, storeId);
         }

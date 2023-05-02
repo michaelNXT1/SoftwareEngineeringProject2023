@@ -15,12 +15,12 @@ public class GetAllHistoryTests extends ServiceTests {
     }
 
     @Test
-    public void getHistorySuccess(){
+    public void testGetHistorySuccess(){
         assertTrue(getStoresPurchases(sessionID));
     }
 
     @Test
-    public void getHistoryFail(){
+    public void testGetHistoryFail(){
         logout(sessionID);
         String sessionID2 = login("alon12", "alon0601");
         assertFalse(getStoresPurchases(sessionID2));

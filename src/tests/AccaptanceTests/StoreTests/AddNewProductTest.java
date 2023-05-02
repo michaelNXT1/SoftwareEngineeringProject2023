@@ -14,35 +14,34 @@ public class AddNewProductTest extends ServiceTests {
         sessionID1 = login("alon1","alon0601");
 
     }
-
     @Test
-    public void addProductAsStoreOwnerSuccess(){
+    public void testAddProductAsStoreOwnerSuccess(){
         int storeID = openStore(sessionID1,"newStore");
         int productID1 = addProduct(sessionID1,storeID,"test",3.9,"milk",9,"10");
-        assertTrue(addProductToStore(sessionID1,productID1,storeID,5));
+        assertTrue(productID1 > 0);
+    }
+
+
+
+    @Test
+    public void testAddProductAsStoreOwnerExistFail(){
+        int storeID = openStore(sessionID1,"newStore");
+        int productID1 = addProduct(sessionID1,storeID,"test",3.9,"milk",9,"10");
+        assertNull(addProduct(sessionID1,storeID,"test",3.9,"milk",9,"10"));
     }
 
     @Test
-    public void addProductAsStoreOwnerExistFail(){
+    public void testAddProductAsStoreOwnerNotHisStoreFail(){
         int storeID = openStore(sessionID1,"newStore");
-        int productID1 = addProduct(sessionID1,storeID,"test",3.9,"milk",9,"10");
-        addProductToStore(sessionID1,productID1,storeID,5);
-        assertFalse(addProductToStore(sessionID1,productID1,storeID,5));
-    }
-
-    @Test
-    public void addProductAsStoreOwnerNotHisStoreFail(){
-        int storeID = openStore(sessionID1,"newStore");
-        int productID1 = addProduct(sessionID1,storeID,"test",3.9,"milk",9,"10");
+        addProduct(sessionID1,storeID,"test",3.9,"milk",9,"10");
         logout(sessionID1);
         String sessionID2 = login("alon12", "alon0601");
-        assertFalse(addProductToStore(sessionID2,productID1,storeID,5));
+        assertNull(addProduct(sessionID2,storeID,"test",3.9,"milk",9,"10"));
     }
 
     @Test
-    public void addProductAsStoreOwnerNegativeAmountFail(){
+    public void testAddProductAsStoreOwnerNegativeAmountFail(){
         int storeID = openStore(sessionID1,"newStore");
-        int productID1 = addProduct(sessionID1, storeID,"test",3.9,"milk",9,"10");
-        assertFalse(addProductToStore(sessionID1,productID1,storeID,-3));
+        assertNull(addProduct(sessionID1, storeID,"test",3.9,"milk",-6,"10"));
     }
 }

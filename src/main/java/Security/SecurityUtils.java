@@ -6,7 +6,7 @@ import com.vaadin.flow.server.VaadinServletRequest;
 import com.vaadin.flow.server.VaadinSession;
 import jakarta.servlet.http.HttpServletRequest;
 
-public class SecurityUtils {
+public class SecurityUtils implements SecurityAdapter {
 
     private static final String LOGOUT_SUCCESS_URL = "/";
 
@@ -15,7 +15,7 @@ public class SecurityUtils {
         return request != null && request.getUserPrincipal() != null;
     }
 
-    public static boolean authenticate(String username, String password) {
+    public boolean authenticate(String username, String password) {
         VaadinServletRequest request = VaadinServletRequest.getCurrent();
         if (request == null) {
             // This is in a background thread and we can't access the request to
