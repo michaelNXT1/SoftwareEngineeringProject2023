@@ -1,35 +1,29 @@
-package org.example.BusinessLayer;
+package org.example.ServiceLayer.DTOs;
 
-public class Product {
-        private int productId;
-        private String productName;
-        private double price;
-        private String category;
-        private double rating;
-        private int amount;
-        private long description;
 
-        private  Discount discount;
+import org.example.BusinessLayer.Product;
 
-        private PurchaseType purchaseType;
+public class ProductDTO {
+    private int productId;
+    private String productName;
+    private double price;
+    private String category;
+    private double rating;
+    private int amount;
+    private long description;
 
-    public Product(int productId, String productName, double price, String category) {
-        this.discount = new VisibleDiscount(this);
-        this.purchaseType = new BuyItNow(this);
+    public ProductDTO(int productId, String productName, double price, String category, double rating, int amount, long description) {
         this.productId = productId;
         this.productName = productName;
         this.price = price;
         this.category = category;
-        this.rating = 0;
-        this.description = Long.parseLong("1");
+        this.rating = rating;
+        this.amount = amount;
+        this.description = description;
     }
 
-    public void setDiscount(Discount discount) {
-        this.discount = discount;
-    }
-
-    public void setPurchaseType(PurchaseType purchaseType) {
-        this.purchaseType = purchaseType;
+    public static ProductDTO FromProductToProductDTO(Product p){
+        return new ProductDTO(p.getProductId(),p.getProductName(),p.getProductPrice(),p.getCategory(),p.getRating(),p.getAmount(),p.getDescription());
     }
 
     public int getProductId() {
@@ -92,5 +86,3 @@ public class Product {
         this.description = newDescription;
     }
 }
-
-

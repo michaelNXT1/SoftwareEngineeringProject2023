@@ -1,7 +1,13 @@
 package org.example.ServiceLayer;
 
 import org.example.BusinessLayer.*;
+import org.example.ServiceLayer.DTOs.MemberDTO;
+import org.example.ServiceLayer.DTOs.ProductDTO;
+import org.example.ServiceLayer.DTOs.PurchaseDTO;
+import org.example.ServiceLayer.DTOs.StoreDTO;
 
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -80,10 +86,11 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public ResponseT<Product> getProduct(int storeId, int productId) {
+    public ResponseT<ProductDTO> getProduct(int storeId, int productId) {
         try {
             Product ret = market.getProduct(storeId, productId);
-            return ResponseT.fromValue(ret);
+            ProductDTO productDTO = ProductDTO.FromProductToProductDTO(ret);
+            return ResponseT.fromValue(productDTO);
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }
@@ -100,47 +107,67 @@ public class MarketManager implements IMarketManager {
     }
 
     //use case 2.7
-    public ResponseT<List<Product>> getProductsByCategory(String productCategory) {
+    public ResponseT<List<ProductDTO>> getProductsByCategory(String productCategory) {
         try {
             List<Product> ret = market.getProductsByCategory(productCategory);
-            return ResponseT.fromValue(ret);
+            List<ProductDTO> productDTOS = new LinkedList<>();
+            for(Product p:ret){
+                productDTOS.add(ProductDTO.FromProductToProductDTO(p));
+            }
+            return ResponseT.fromValue(productDTOS);
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }
     }
 
     //use case 2.8
-    public ResponseT<List<Product>> getProductsBySubstring(String productSubstring) {
+    public ResponseT<List<ProductDTO>> getProductsBySubstring(String productSubstring) {
         try {
             List<Product> ret = market.getProductsBySubstring(productSubstring);
-            return ResponseT.fromValue(ret);
+            List<ProductDTO> productDTOS = new LinkedList<>();
+            for(Product p:ret){
+                productDTOS.add(ProductDTO.FromProductToProductDTO(p));
+            }
+            return ResponseT.fromValue(productDTOS);
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }
     }
 
-    public ResponseT<List<Product>> getSearchResults() {
+    public ResponseT<List<ProductDTO>> getSearchResults() {
         try {
             List<Product> ret = market.getSearchResults();
-            return ResponseT.fromValue(ret);
+            List<ProductDTO> productDTOS = new LinkedList<>();
+            for(Product p:ret){
+                productDTOS.add(ProductDTO.FromProductToProductDTO(p));
+            }
+            return ResponseT.fromValue(productDTOS);
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }
     }
 
-    public ResponseT<List<Product>> filterSearchResultsByCategory(String category) {
+    public ResponseT<List<ProductDTO>> filterSearchResultsByCategory(String category) {
         try {
             List<Product> ret = market.filterSearchResultsByCategory(category);
-            return ResponseT.fromValue(ret);
+            List<ProductDTO> productDTOS = new LinkedList<>();
+            for(Product p:ret){
+                productDTOS.add(ProductDTO.FromProductToProductDTO(p));
+            }
+            return ResponseT.fromValue(productDTOS);
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }
     }
 
-    public ResponseT<List<Product>> filterSearchResultsByPrice(double minPrice, double maxPrice) {
+    public ResponseT<List<ProductDTO>> filterSearchResultsByPrice(double minPrice, double maxPrice) {
         try {
             List<Product> ret = market.filterSearchResultsByPrice(minPrice, maxPrice);
-            return ResponseT.fromValue(ret);
+            List<ProductDTO> productDTOS = new LinkedList<>();
+            for(Product p:ret){
+                productDTOS.add(ProductDTO.FromProductToProductDTO(p));
+            }
+            return ResponseT.fromValue(productDTOS);
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }
@@ -157,7 +184,7 @@ public class MarketManager implements IMarketManager {
 
     public ResponseT<ShoppingCart> getShoppingCart() {
         try {
-            ShoppingCart ret = market.getShoppingCart();
+            ShoppingCart ret = market.getShoppingCart();//change it somehow to shopping cart DTO
             return ResponseT.fromValue(ret);
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
@@ -213,7 +240,12 @@ public class MarketManager implements IMarketManager {
     public ResponseT<List<Purchase>> getPurchaseHistory(int storeId) {
         try {
             List<Purchase> ret = market.getPurchaseHistory(storeId);
-            return ResponseT.fromValue(ret);
+            List<PurchaseDTO> purchaseDTOS = new LinkedList<>();
+            for(Purchase p:ret){
+                PurchaseDTO purchaseDTO = PurchaseDTO.fromPurchaseToPurchaseDTO(p);
+                purchaseDTOS.add(purchaseDTO);
+            }
+            return ResponseT.fromValue(purchaseDTOS);
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }
@@ -222,7 +254,8 @@ public class MarketManager implements IMarketManager {
     public ResponseT<Product> addProduct(int storeId, String productName, double price, String category, double rating, int quantity) {
         try {
             Product ret = market.addProduct(storeId, productName, price, category, rating, quantity);
-            return ResponseT.fromValue(ret);
+            ProductDTO productDTO = ProductDTO.FromProductToProductDTO(ret);
+            return ResponseT.fromValue(productDTO);
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }
@@ -285,7 +318,12 @@ public class MarketManager implements IMarketManager {
     public ResponseT<List<Member>> getStoreEmployees(int storeId) {
         try {
             List<Member> ret = market.getStoreEmployees(storeId);
-            return ResponseT.fromValue(ret);
+            List<MemberDTO> memberDTOS = new LinkedList<>();
+            for(Member member:ret){
+                MemberDTO memberDTO = MemberDTO.fromMemberToMemberDTO(member);
+                memberDTOS.add(memberDTO);
+            }
+            return ResponseT.fromValue(memberDTOS);
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }
@@ -301,10 +339,21 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public ResponseT<Map<Store, List<Purchase>>> getStoresPurchases() {
+    public ResponseT<Map<StoreDTO, List<PurchaseDTO>>> getStoresPurchases() {
         try {
-            Map<Store, List<Purchase>> ret = market.getStoresPurchases();
-            return ResponseT.fromValue(ret);
+            Map<Store, List<Purchase>> ret = market.getStoresPurchases();//add DTOs here
+            Map<StoreDTO, List<PurchaseDTO>> storeDTOListMap = new HashMap<>();
+            for(Store s:ret.keySet().toArray(new Store[0])){
+                StoreDTO storeDTO = StoreDTO.fromStoreToStoreDTO(s);
+                List<Purchase> purchaseList = ret.get(s);
+                List<PurchaseDTO> purchaseDTOS = new LinkedList<>();
+                for(Purchase p:purchaseList){
+                    PurchaseDTO purchaseDTO = PurchaseDTO.fromPurchaseToPurchaseDTO(p);
+                    purchaseDTOS.add(purchaseDTO);
+                }
+                storeDTOListMap.put(storeDTO, purchaseDTOS);
+            }
+            return ResponseT.fromValue(storeDTOListMap);
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }

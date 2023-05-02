@@ -2,11 +2,12 @@ package org.example.ServiceLayer;
 
 import org.example.BusinessLayer.Product;
 import org.example.BusinessLayer.Store;
+import org.example.ServiceLayer.DTOs.ProductDTO;
 
 import java.util.List;
 
 public class ProductManager {
-    private Product product;
+    private ProductDTO product;
 
     public Response setProductId(int productId) {
         try {

@@ -2,6 +2,7 @@ package UnitTests;
 
 import org.example.BusinessLayer.*;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,14 +17,19 @@ class ShoppingCartTest {
     private Product product3;
     private Store store1;
     private Member member;
+    private final String userName1 = "Idan111";
+    private final String password1 = "ie9xzsz4321";
+    private final String email1 = "idanlobel1@gmail.com";
 
-    @BeforeAll
-    void beforeAll() throws Exception {
+    @BeforeEach
+    void beforeEach() throws Exception {
         shoppingCart = new ShoppingCart();
-        product1 = new Product(1, "wine", 60.0, "alcohol");
-        product2 = new Product(2, "cheese", 9.5, "milk");
-        product3 = new Product(3, "steak", 120.0, "meat");
+        product1 = new Product(0, "wine", 60.0, "alcohol");
+        product2 = new Product(1, "cheese", 9.5, "milk");
+        product3 = new Product(2, "steak", 120.0, "meat");
         market = new Market();
+        market.signUp(userName1, email1, password1);
+        market.signUpSystemManager(userName1, email1, password1);
         market.signUp("idan123", "idanlobel2@gmail.com", "wswsad32");
         store1 = new Store(1, "Shufersal" , member);
         //shoppingCart.addProduct(product2, 2, store1);
