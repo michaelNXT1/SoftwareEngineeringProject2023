@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import static Security.SecurityUtils.authenticate;
@@ -19,24 +20,24 @@ public class Market {
     private Map<String, SystemManager> systemManagers;
     private Map<String, Member> users;
     private PasswordEncoder passwordEncoder;
-    private Member activeMember;
-    private Guest activeGuest;
-    private SystemManager activeSystemManager;
+
+    Object userLock = new Object();
+
 
     private SystemLogger logger;
     private boolean marketOpen;
+
+    public static Object purchaseLock = new Object();
     FundDemander fd;
     SecurityUtils securityUtils = new SecurityUtils();
     SessionManager sessionManager = new SessionManager();
 
 
     public Market() {
-        stores = new HashMap<>();
-        systemManagers = new HashMap<>();
-        users = new HashMap<>();
+        stores = new ConcurrentHashMap<>();
+        systemManagers = new ConcurrentHashMap<>();
+        users = new ConcurrentHashMap<>();
         passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        activeGuest = null;
-        activeMember = null;
         marketOpen = false;
         this.logger = new SystemLogger();
         fd = new FundDemander();
@@ -63,7 +64,7 @@ public class Market {
     }
 
     //use case 1.1
-    public String enterMarket() {
+    public String enterMarket() throws Exception {
         Guest guest = new Guest();
         String sessionId = sessionManager.createSession(guest);
         logger.info(String.format("new guest entered the system with sessionID: %s", sessionId));
@@ -79,27 +80,32 @@ public class Market {
     public void signUp(String username, String password) throws Exception {
         logger.info(String.format("%s start his sign up process", username));
         isMarketOpen();
-        if (usernameExists(username)) {
-            logger.error(String.format("Username already exists :%s", username));
-            throw new Exception("Username already exists");
+        synchronized (username.intern()) {
+            if (usernameExists(username)) {
+                logger.error(String.format("Username already exists :%s", username));
+                throw new Exception("Username already exists");
+            }
         }
         // hash password using password encoder
         String hashedPassword = passwordEncoder.encode(password);
 
         // create new Member's object with hashed password
         Member newMember = new Member(username, hashedPassword);
-
-        // store new Member's object in users map
-        logger.info(String.format("%s signed up to the system", username));
-        users.put(username, newMember);
+        synchronized (userLock) {
+            // store new Member's object in users map
+            logger.info(String.format("%s signed up to the system", username));
+            users.put(username, newMember);
+        }
     }
 
     //use case 2.3
     public String login(String username, String password) throws Exception {
         isMarketOpen();
         // Retrieve the stored Member's object for the given username
-        Member member = users.get(username);
-
+        Member member = null;
+        synchronized (username.intern()) {
+            member = users.get(username);
+        }
         // If the Member doesn't exist or the password is incorrect, throw exception
         if (member == null || !passwordEncoder.matches(password, member.getPassword())) {
             logger.error(String.format("%s have Invalid username or password", username));
@@ -113,6 +119,7 @@ public class Market {
             String sessionId = sessionManager.createSession(member);
             return sessionId;
         }
+        logger.error(String.format("%s the user did not passed authenticate check and logged in to the system", username));
         return null;
     }
 
@@ -282,15 +289,18 @@ public class Market {
         isMarketOpen();
         logger.info("trying to buy my cart");
         Guest g = sessionManager.getSession(sessionId);
-        Purchase purchase = g.purchaseShoppingCart();
-        if (!fd.charge(g.getPaymentDetails(), purchase.getTotalPrice())) {
-            logger.info("Purchase failed, fund demander charge failed, reverting purchase.");
-            g.revertPurchase(purchase);
-            for (PurchaseProduct pp : purchase.getProductList())
-                stores.get(pp.getStoreId()).addToProductQuantity(pp.getProductId(), pp.getQuantity());
-            throw new Exception("Purchase failed, fund demander hasn't managed to charge.");
+        Purchase purchase;
+        synchronized (purchaseLock) {
+            purchase = g.purchaseShoppingCart();
+            if (!fd.charge(g.getPaymentDetails(), purchase.getTotalPrice())) {
+                logger.info("Purchase failed, fund demander charge failed, reverting purchase.");
+                g.revertPurchase(purchase);
+                for (PurchaseProduct pp : purchase.getProductList())
+                    stores.get(pp.getStoreId()).addToProductQuantity(pp.getProductId(), pp.getQuantity());
+                throw new Exception("Purchase failed, fund demander hasn't managed to charge.");
+            }
         }
-        return g.purchaseShoppingCart();
+        return purchase;
     }
 
     //use case 3.2
@@ -299,8 +309,11 @@ public class Market {
         Guest g = sessionManager.getSession(sessionId);
         logger.info(String.format("open new store with this name: %s", storeName));
         //TODO: lock stores variable
-        int storeId = stores.keySet().stream().mapToInt(v -> v).max().orElse(0);
-        stores.put(storeId, g.openStore(storeName, storeId));
+        int storeId;
+        synchronized (stores) {
+            storeId = stores.keySet().stream().mapToInt(v -> v).max().orElse(0);
+            stores.put(storeId, g.openStore(storeName, storeId));
+        }
         return storeId;
         //TODO: release stores variable
     }
