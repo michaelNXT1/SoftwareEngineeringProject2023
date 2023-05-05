@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="SoftwareEngineeringProject2023" target="15" />
+      <module name="flowcrmtutorial" target="15" />
       <module name="SoftwareEngineeringProject2023 (1)" target="15" />
     </bytecodeTargetLevel>
   </component>
