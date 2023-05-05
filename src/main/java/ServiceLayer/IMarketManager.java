@@ -9,12 +9,9 @@ public interface IMarketManager {
     Response signUpSystemManager(String username, String password);
     Response enterMarket();
     Response exitMarket(String sessionId);
-
     Response signUp(String username, String password);
     ResponseT<String> login(String username, String password);
-
     ResponseT<String> loginSystemManager(String username, String password);
-
     Response logout(String sessionId);
     Response logoutSystemManager(String sessionId);
     ResponseT<List<Store>> getStores(String sessionId, String storeSubString);
