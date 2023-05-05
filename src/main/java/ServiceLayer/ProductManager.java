@@ -2,7 +2,7 @@ package ServiceLayer;
 
 import BusinessLayer.Product;
 
-public class ProductManager {
+public class ProductManager implements IProductManager{
     private Product product;
 
     public Response setProductId(int productId) {
