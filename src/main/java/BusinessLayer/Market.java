@@ -1,7 +1,7 @@
 package BusinessLayer;
 
 import BusinessLayer.Logger.SystemLogger;
-import BusinessLayer.Policies.PurchasePolicyExpression;
+import BusinessLayer.Policies.PurchasePolicies.PurchasePolicyExpression;
 import Security.SecurityUtils;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;

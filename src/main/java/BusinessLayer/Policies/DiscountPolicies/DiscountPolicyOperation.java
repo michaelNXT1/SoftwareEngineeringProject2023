@@ -1,17 +1,16 @@
-package BusinessLayer.Policies;
+package BusinessLayer.Policies.DiscountPolicies;
 
-import BusinessLayer.Policies.PurchasePolicies.BasePolicy;
-import BusinessLayer.Policies.PurchasePolicies.PurchasePolicyExpression;
 import BusinessLayer.Product;
 
 import java.util.Map;
 
-public class Operation extends BasePolicy {
-    private PurchasePolicyExpression left;
-    private PurchasePolicyExpression.JoinOperator joinOperator;
-    private PurchasePolicyExpression right;
+public class DiscountPolicyOperation extends BaseDiscountPolicy {
+    private final BaseDiscountPolicy left;
+    private final JoinOperator joinOperator;
+    private final BaseDiscountPolicy right;
 
-    public Operation(int policyId, PurchasePolicyExpression left,JoinOperator joinOperator,  PurchasePolicyExpression right) {
+    public DiscountPolicyOperation(int policyId, BaseDiscountPolicy left, JoinOperator joinOperator, BaseDiscountPolicy right) {
+        super(policyId);
         this.policyId = policyId;
         this.left = left;
         this.joinOperator = joinOperator;
@@ -23,8 +22,9 @@ public class Operation extends BasePolicy {
         boolean rightValue = right.evaluate(productList);
 
         return switch (joinOperator) {
+            case AND -> leftValue && rightValue;
             case OR -> leftValue || rightValue;
-            case COND -> !leftValue || rightValue;
+//            case XOR-> //TODO figure it out.
             default -> throw new IllegalArgumentException("Invalid operator: " + joinOperator);
         };
     }

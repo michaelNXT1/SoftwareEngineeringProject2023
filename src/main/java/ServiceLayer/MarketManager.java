@@ -1,7 +1,7 @@
 package ServiceLayer;
 
 import BusinessLayer.*;
-import BusinessLayer.Policies.PurchasePolicyExpression;
+import BusinessLayer.Policies.PurchasePolicies.PurchasePolicyExpression;
 
 
 import java.time.LocalTime;

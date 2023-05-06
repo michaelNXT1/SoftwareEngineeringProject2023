@@ -1,14 +1,15 @@
-package BusinessLayer.Policies;
+package BusinessLayer.Policies.DiscountPolicies;
 
 import BusinessLayer.Product;
 
 import java.util.Map;
 
-public interface PurchasePolicyExpression {
+public interface DiscountPolicyExpression {
 
     enum JoinOperator{
+        AND,
         OR,
-        COND
+        XOR
     }
 
     enum PolicyType {

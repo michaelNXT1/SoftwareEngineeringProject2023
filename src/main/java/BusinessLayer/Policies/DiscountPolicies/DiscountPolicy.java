@@ -1,4 +1,6 @@
-package BusinessLayer;
+package BusinessLayer.Policies.DiscountPolicies;
+
+import BusinessLayer.Product;
 
 import java.util.Map;
 

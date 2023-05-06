@@ -1,9 +1,11 @@
 package BusinessLayer;
 
+import BusinessLayer.Discounts.Discount;
 import BusinessLayer.Logger.SystemLogger;
+import BusinessLayer.Policies.DiscountPolicies.DiscountPolicy;
 import BusinessLayer.Policies.Operation;
 import BusinessLayer.Policies.PurchasePolicies.*;
-import BusinessLayer.Policies.PurchasePolicyExpression;
+import BusinessLayer.Policies.PurchasePolicies.PurchasePolicyExpression;
 
 import java.time.LocalTime;
 import java.util.*;
@@ -16,7 +18,8 @@ public class Store {
     private final Map<Product, Integer> products;
     private final List<Purchase> purchaseList;
     private final List<Member> employees;
-    private List<BasePolicy> purchasePolicies;
+    private final List<BasePolicy> purchasePolicies;
+    private Map<Discount, DiscountPolicy> productDiscountPolicyMap;
     private int purchasePolicyCounter;
     private List<DiscountPolicy> discountPolicies;
     private boolean isOpen;
@@ -29,11 +32,12 @@ public class Store {
         this.storeName = storeName;
         this.products = new ConcurrentHashMap<>();
         this.purchaseList = new ArrayList<>();
-        purchasePolicyCounter = 0;
         this.employees = new ArrayList<>();
         employees.add(m);
         this.logger = new SystemLogger();
         this.productIdCounter = new AtomicInteger(0);
+        purchasePolicies = new ArrayList<>();
+        purchasePolicyCounter = 0;
     }
 
     public String getStoreName() {
@@ -202,6 +206,13 @@ public class Store {
         return purchasePolicies.stream().allMatch(policy -> policy.evaluate(productList));
     }
 
+//    public double getProductDiscountPercentage(int productId) throws Exception {
+//        Product product = checkProductExists(productId);
+//        for (Discount d : productDiscountPolicyMap.keySet()) {
+//
+//        }
+//    }
+
     public boolean calculateDiscounts(Map<Integer, Integer> productIdList) throws Exception {
         Map<Product, Integer> productList = getProductIntegerMap(productIdList);
         return discountPolicies.stream().allMatch(policy -> policy.checkPolicyFulfilled(productList));
@@ -215,11 +226,13 @@ public class Store {
     }
 
 
-    private void checkProductExists(int productId) throws Exception {
-        if (products.keySet().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null) == null) {
+    private Product checkProductExists(int productId) throws Exception {
+        Product product = products.keySet().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null);
+        if (product == null) {
             logger.error(String.format("%d product doesnt exist", productId));
             throw new Exception("product id doesn't exist");
         }
+        return product;
     }
 
     public void addEmployee(Member member) {
