@@ -1,14 +1,20 @@
 package CommunicationLayer;
 import ServiceLayer.MarketManager;
 import ServiceLayer.Response;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 
 @CrossOrigin()
 @RestController
+@Component
 public class MarketController {
 
     private MarketManager marketManager;
+
+    public MarketController(){
+        this.marketManager = new MarketManager();
+    }
 
     @GetMapping("/login")
     @ResponseBody
