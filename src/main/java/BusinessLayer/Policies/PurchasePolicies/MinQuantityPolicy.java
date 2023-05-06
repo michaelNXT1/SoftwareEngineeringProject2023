@@ -9,8 +9,10 @@ public class MinQuantityPolicy extends PurchasePolicy {
     private final int minQuantity;
     private final boolean allowNone;
 
-    public MinQuantityPolicy(int policyId, int productId, int minQuantity, boolean allowNone) {
+    public MinQuantityPolicy(int policyId, int productId, int minQuantity, boolean allowNone) throws Exception {
         super(policyId);
+        if (minQuantity <= 0)
+            throw new Exception("Min quantity must be larger than 0");
         this.productId = productId;
         this.minQuantity = minQuantity;
         this.allowNone = allowNone;

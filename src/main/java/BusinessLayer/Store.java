@@ -2,10 +2,10 @@ package BusinessLayer;
 
 import BusinessLayer.Logger.SystemLogger;
 import BusinessLayer.Policies.Operation;
-import BusinessLayer.Policies.PurchasePolicies.BasePolicy;
-import BusinessLayer.Policies.PurchasePolicies.MinQuantityPolicy;
+import BusinessLayer.Policies.PurchasePolicies.*;
 import BusinessLayer.Policies.PurchasePolicyExpression;
 
+import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -161,17 +161,29 @@ public class Store {
 
     public void addMinQuantityPolicy(int productId, int minQuantity, boolean allowNone) throws Exception {
         checkProductExists(productId);
-        if (minQuantity <= 0)
-            throw new Exception("Min quantity must be larger than 0");
         purchasePolicies.add(new MinQuantityPolicy(purchasePolicyCounter++, productId, minQuantity, allowNone));
+    }
+
+    public void addMaxQuantityPolicy(int productId, int maxQuantity, boolean allowNone) throws Exception {
+        checkProductExists(productId);
+        purchasePolicies.add(new MaxQuantityPolicy(purchasePolicyCounter++, productId, maxQuantity, allowNone));
+    }
+
+    public void addProductTimeRestrictionPolicy(int productId, LocalTime startTime, LocalTime endTime) throws Exception {
+        checkProductExists(productId);
+        purchasePolicies.add(new ProductTimeRestrictionPolicy(purchasePolicyCounter++, productId, startTime, endTime));
+    }
+
+    public void addCategoryTimeRestrictionPolicy(String category, LocalTime startTime, LocalTime endTime) throws Exception {
+        purchasePolicies.add(new CategoryTimeRestrictionPolicy(purchasePolicyCounter++, category, startTime, endTime));
     }
 
     public void joinPolicies(int policyId1, int policyId2, PurchasePolicyExpression.JoinOperator operator) throws Exception {
         BasePolicy bp1 = findPolicy(policyId1);
         BasePolicy bp2 = findPolicy(policyId2);
+        purchasePolicies.add(new Operation(purchasePolicyCounter++, findPolicy(policyId1), operator, findPolicy(policyId2)));
         purchasePolicies.remove(bp1);
         purchasePolicies.remove(bp2);
-        purchasePolicies.add(new Operation(purchasePolicyCounter++, bp1, operator, bp2));
     }
 
     public void removePolicy(int policyId) throws Exception {

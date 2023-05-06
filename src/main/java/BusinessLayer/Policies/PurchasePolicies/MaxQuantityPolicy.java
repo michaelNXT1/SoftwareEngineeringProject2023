@@ -9,8 +9,10 @@ public class MaxQuantityPolicy extends PurchasePolicy {
     private final int maxQuantity;
     private final boolean allowNone;
 
-    public MaxQuantityPolicy(int policyId, int productId, int maxQuantity, boolean allowNone) {
+    public MaxQuantityPolicy(int policyId, int productId, int maxQuantity, boolean allowNone) throws Exception {
         super(policyId);
+        if (maxQuantity <= 0)
+            throw new Exception("Max quantity must be larger than 0");
         this.productId = productId;
         this.maxQuantity = maxQuantity;
         this.allowNone = allowNone;

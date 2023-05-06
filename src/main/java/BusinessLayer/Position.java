@@ -1,5 +1,8 @@
 package BusinessLayer;
 
+import BusinessLayer.Policies.PurchasePolicyExpression;
+
+import java.time.LocalTime;
 import java.util.List;
 
 public interface Position {
@@ -28,6 +31,18 @@ public interface Position {
     Product addProduct(Store store, String productName, double price, String category, int quantity,String description) throws Exception; //5.1
 
     List<Purchase> getPurchaseHistory(Store store) throws IllegalAccessException;   //4.1
+
+    void addMinQuantityPolicy(int productId, int minQuantity, boolean allowNone) throws Exception;
+
+    void addMaxQuantityPolicy(int productId, int maxQuantity, boolean allowNone) throws Exception;
+
+    void addProductTimeRestrictionPolicy(int productId, LocalTime startTime, LocalTime endTime) throws Exception;
+
+    void addCategoryTimeRestrictionPolicy(String category, LocalTime startTime, LocalTime endTime) throws Exception;
+
+    void joinPolicies(int policyId1, int policyId2, PurchasePolicyExpression.JoinOperator operator) throws Exception;
+
+    void removePolicy(int policyId) throws Exception;
 
 
     default void addPermission(StoreManager.permissionType newPermission) {
