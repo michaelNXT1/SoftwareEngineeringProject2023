@@ -1,11 +1,11 @@
-import com.vaadin.flow.spring.annotation.EnableVaadin;
+package UI;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
-@EnableVaadin
 @SpringBootApplication
-@ComponentScan("market")
+@ComponentScan("UI.Market")
 public class MarketApplication {
     public static void main(String[] args) {
         SpringApplication.run(MarketApplication.class, args);

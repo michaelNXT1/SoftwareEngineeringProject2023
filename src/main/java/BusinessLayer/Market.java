@@ -57,7 +57,7 @@ public class Market {
         systemManagers.put(username, sm);
         logger.info(String.format("new manager added to the system: %s", username));
         if (!marketOpen) {
-            logger.info(String.format("The market now open"));
+            logger.info(String.format("The Market now open"));
             marketOpen = true;
         }
 
@@ -498,7 +498,7 @@ public class Market {
     private void isMarketOpen() throws Exception {
         if (!checkMarketOpen()) {
             logger.error("marker is not open yet");
-            throw new Exception("market is not open yet");
+            throw new Exception("Market is not open yet");
         }
     }
 
