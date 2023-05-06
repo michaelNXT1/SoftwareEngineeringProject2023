@@ -1,5 +1,8 @@
 package BusinessLayer;
 
+import BusinessLayer.Policies.PurchasePolicyExpression;
+
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -168,5 +171,35 @@ public class StoreManager implements Position {
         if (permissions.contains(permissionType.EmployeeList))
             return store.getEmployees();
         throw new IllegalAccessException("This member hasn't permission to get the purchase's History");
+    }
+
+    @Override
+    public void addMinQuantityPolicy(int productId, int minQuantity, boolean allowNone) throws Exception {
+        throw new IllegalAccessException("This member hasn't permission to perform this action");
+    }
+
+    @Override
+    public void addMaxQuantityPolicy(int productId, int maxQuantity, boolean allowNone) throws Exception {
+        throw new IllegalAccessException("This member hasn't permission to perform this action");
+    }
+
+    @Override
+    public void addProductTimeRestrictionPolicy(int productId, LocalTime startTime, LocalTime endTime) throws Exception {
+        throw new IllegalAccessException("This member hasn't permission to perform this action");
+    }
+
+    @Override
+    public void addCategoryTimeRestrictionPolicy(String category, LocalTime startTime, LocalTime endTime) throws Exception {
+        throw new IllegalAccessException("This member hasn't permission to perform this action");
+    }
+
+    @Override
+    public void joinPolicies(int policyId1, int policyId2, PurchasePolicyExpression.JoinOperator operator) throws Exception {
+        throw new IllegalAccessException("This member hasn't permission to perform this action");
+    }
+
+    @Override
+    public void removePolicy(int policyId) throws Exception {
+        throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 }

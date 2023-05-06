@@ -1,7 +1,11 @@
 package BusinessLayer;
 
 import BusinessLayer.Logger.SystemLogger;
+import BusinessLayer.Policies.Operation;
+import BusinessLayer.Policies.PurchasePolicies.*;
+import BusinessLayer.Policies.PurchasePolicyExpression;
 
+import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -12,7 +16,8 @@ public class Store {
     private final Map<Product, Integer> products;
     private final List<Purchase> purchaseList;
     private final List<Member> employees;
-    private List<PurchasePolicy> purchasePolicies;
+    private List<BasePolicy> purchasePolicies;
+    private int purchasePolicyCounter;
     private List<DiscountPolicy> discountPolicies;
     private boolean isOpen;
     private AtomicInteger productIdCounter;
@@ -24,6 +29,7 @@ public class Store {
         this.storeName = storeName;
         this.products = new ConcurrentHashMap<>();
         this.purchaseList = new ArrayList<>();
+        purchasePolicyCounter = 0;
         this.employees = new ArrayList<>();
         employees.add(m);
         this.logger = new SystemLogger();
@@ -89,7 +95,7 @@ public class Store {
     //use case 5.2
 
     //use case 5.3
-    public void removeProduct(int productId) throws Exception{
+    public void removeProduct(int productId) throws Exception {
         synchronized (Market.purchaseLock) {
             Product p = getProduct(productId);
             products.remove(p);
@@ -153,9 +159,47 @@ public class Store {
         }
     }
 
+    public void addMinQuantityPolicy(int productId, int minQuantity, boolean allowNone) throws Exception {
+        checkProductExists(productId);
+        purchasePolicies.add(new MinQuantityPolicy(purchasePolicyCounter++, productId, minQuantity, allowNone));
+    }
+
+    public void addMaxQuantityPolicy(int productId, int maxQuantity, boolean allowNone) throws Exception {
+        checkProductExists(productId);
+        purchasePolicies.add(new MaxQuantityPolicy(purchasePolicyCounter++, productId, maxQuantity, allowNone));
+    }
+
+    public void addProductTimeRestrictionPolicy(int productId, LocalTime startTime, LocalTime endTime) throws Exception {
+        checkProductExists(productId);
+        purchasePolicies.add(new ProductTimeRestrictionPolicy(purchasePolicyCounter++, productId, startTime, endTime));
+    }
+
+    public void addCategoryTimeRestrictionPolicy(String category, LocalTime startTime, LocalTime endTime) throws Exception {
+        purchasePolicies.add(new CategoryTimeRestrictionPolicy(purchasePolicyCounter++, category, startTime, endTime));
+    }
+
+    public void joinPolicies(int policyId1, int policyId2, PurchasePolicyExpression.JoinOperator operator) throws Exception {
+        BasePolicy bp1 = findPolicy(policyId1);
+        BasePolicy bp2 = findPolicy(policyId2);
+        purchasePolicies.add(new Operation(purchasePolicyCounter++, findPolicy(policyId1), operator, findPolicy(policyId2)));
+        purchasePolicies.remove(bp1);
+        purchasePolicies.remove(bp2);
+    }
+
+    public void removePolicy(int policyId) throws Exception {
+        purchasePolicies.remove(findPolicy(policyId));
+    }
+
+    private BasePolicy findPolicy(int policyId) throws Exception {
+        BasePolicy bp = purchasePolicies.stream().filter(p -> p.getPolicyId() == policyId).findFirst().orElse(null);
+        if (bp == null)
+            throw new Exception("couldn't find purchase policy of id" + policyId);
+        return bp;
+    }
+
     public boolean checkPoliciesFulfilled(Map<Integer, Integer> productIdList) throws Exception {
         Map<Product, Integer> productList = getProductIntegerMap(productIdList);
-        return purchasePolicies.stream().allMatch(policy -> policy.checkPolicyFulfilled(productList));
+        return purchasePolicies.stream().allMatch(policy -> policy.evaluate(productList));
     }
 
     public boolean calculateDiscounts(Map<Integer, Integer> productIdList) throws Exception {

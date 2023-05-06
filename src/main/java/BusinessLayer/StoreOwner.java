@@ -1,5 +1,8 @@
 package BusinessLayer;
 
+import BusinessLayer.Policies.PurchasePolicyExpression;
+
+import java.time.LocalTime;
 import java.util.List;
 
 public class StoreOwner implements Position {
@@ -86,6 +89,36 @@ public class StoreOwner implements Position {
     @Override
     public List<Member> getStoreEmployees() {
         return store.getEmployees();
+    }
+
+    @Override
+    public void addMinQuantityPolicy(int productId, int minQuantity, boolean allowNone) throws Exception {
+        store.addMinQuantityPolicy(productId, minQuantity, allowNone);
+    }
+
+    @Override
+    public void addMaxQuantityPolicy(int productId, int maxQuantity, boolean allowNone) throws Exception {
+        store.addMaxQuantityPolicy(productId, maxQuantity, allowNone);
+    }
+
+    @Override
+    public void addProductTimeRestrictionPolicy(int productId, LocalTime startTime, LocalTime endTime) throws Exception {
+        store.addProductTimeRestrictionPolicy(productId, startTime, endTime);
+    }
+
+    @Override
+    public void addCategoryTimeRestrictionPolicy(String category, LocalTime startTime, LocalTime endTime) throws Exception {
+        store.addCategoryTimeRestrictionPolicy(category, startTime, endTime);
+    }
+
+    @Override
+    public void joinPolicies(int policyId1, int policyId2, PurchasePolicyExpression.JoinOperator operator) throws Exception {
+        store.joinPolicies(policyId1, policyId2, operator);
+    }
+
+    @Override
+    public void removePolicy(int policyId) throws Exception {
+        store.removePolicy(policyId);
     }
 
 }

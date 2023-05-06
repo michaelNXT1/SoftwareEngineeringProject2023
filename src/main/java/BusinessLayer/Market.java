@@ -1,11 +1,13 @@
 package BusinessLayer;
 
 import BusinessLayer.Logger.SystemLogger;
+import BusinessLayer.Policies.PurchasePolicyExpression;
 import Security.SecurityUtils;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -495,6 +497,56 @@ public class Market {
         return ret;
     }
 
+
+    public void addMinQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone) throws Exception {
+        isMarketOpen();
+        sessionManager.getSession(sessionId);
+        checkStoreExists(storeId);
+        Position p = checkPositionLegal(sessionId, storeId);
+        p.addMinQuantityPolicy(productId, minQuantity, allowNone);
+    }
+
+    public void addMaxQuantityPolicy(String sessionId, int storeId, int productId, int maxQuantity, boolean allowNone) throws Exception {
+        isMarketOpen();
+        sessionManager.getSession(sessionId);
+        checkStoreExists(storeId);
+        Position p = checkPositionLegal(sessionId, storeId);
+        p.addMaxQuantityPolicy(productId, maxQuantity, allowNone);
+    }
+
+    public void addProductTimeRestrictionPolicy(String sessionId, int storeId, int productId, LocalTime startTime, LocalTime endTime) throws Exception {
+        isMarketOpen();
+        sessionManager.getSession(sessionId);
+        checkStoreExists(storeId);
+        Position p = checkPositionLegal(sessionId, storeId);
+        p.addProductTimeRestrictionPolicy(productId, startTime, endTime);
+    }
+
+    public void addCategoryTimeRestrictionPolicy(String sessionId, int storeId, String category, LocalTime startTime, LocalTime endTime) throws Exception {
+        isMarketOpen();
+        sessionManager.getSession(sessionId);
+        checkStoreExists(storeId);
+        Position p = checkPositionLegal(sessionId, storeId);
+        p.addCategoryTimeRestrictionPolicy(category, startTime, endTime);
+    }
+
+    public void joinPolicies(String sessionId, int storeId, int policyId1, int policyId2, PurchasePolicyExpression.JoinOperator operator) throws Exception {
+        isMarketOpen();
+        sessionManager.getSession(sessionId);
+        checkStoreExists(storeId);
+        Position p = checkPositionLegal(sessionId, storeId);
+        p.joinPolicies(policyId1, policyId2, operator);
+    }
+
+    public void removePolicy(String sessionId, int storeId, int policyId) throws Exception {
+        isMarketOpen();
+        sessionManager.getSession(sessionId);
+        checkStoreExists(storeId);
+        Position p = checkPositionLegal(sessionId, storeId);
+        p.removePolicy(policyId);
+    }
+
+    //PRIVATE METHODS
     private void isMarketOpen() throws Exception {
         if (!checkMarketOpen()) {
             logger.error("marker is not open yet");
