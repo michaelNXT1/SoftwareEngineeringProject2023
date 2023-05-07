@@ -1,11 +1,16 @@
 package AccaptanceTests.bridge;
 
 
+import ServiceLayer.DTOs.MemberDTO;
+import ServiceLayer.DTOs.ProductDTO;
+import ServiceLayer.DTOs.PurchaseDTO;
+import ServiceLayer.IMarketManager;
 import ServiceLayer.MarketManager;
+import java.util.*;
 
 public class Real implements Bridge {
 
-    private MarketManager manager;
+    private IMarketManager manager;
 
     public Real (){
          this.manager = new MarketManager();
@@ -38,30 +43,32 @@ public class Real implements Bridge {
         return !this.manager.closeStore(sessionId, storeID).getError_occurred();
     }
 
-    public String getStoresInform(String sessionId, String storeSubString) {
-        return manager.getStores(sessionId, storeSubString).value.toString();
+    public Integer getStoresInform(String sessionId, String storeSubString) {
+        return manager.getStores(sessionId, storeSubString).value.size();
     }
 
-    public String searchProductsByName(String sessionId, String productName) {
-        return manager.getProductsByName(sessionId, productName).value.toString();
+    public Integer searchProductsByName(String sessionId, String productName) {
+        return manager.getProductsByName(sessionId, productName).value.size();
+
     }
 
-    public String searchProductsByCategory(String sessionId, String productCategory) {
-        return manager.getProductsByCategory(sessionId, productCategory).value.toString();
+    public Integer searchProductsByCategory(String sessionId, String productCategory) {
+        return manager.getProductsByCategory(sessionId, productCategory).value.size();
     }
 
-    public String searchProductsBySubString(String sessionId, String productSubString) {
-        return manager.getProductsBySubstring(sessionId, productSubString).value.toString();
+    public Integer searchProductsBySubString(String sessionId, String productSubString) {
+        return manager.getProductsBySubstring(sessionId, productSubString).value.size();
     }
 
 
-    public String filterSearchResultsByCategory(String sessionId, String filterParams){
-        return manager.filterSearchResultsByCategory(sessionId, filterParams).value.toString();
+    public Integer filterSearchResultsByCategory(String sessionId, String filterParams){
+        return manager.filterSearchResultsByCategory(sessionId, filterParams).value.size();
     }
 
     @Override
-    public String filterSearchResultsByPrice(String sessionId, double minPrice, double maxPrice) {
-        return manager.filterSearchResultsByPrice(sessionId, minPrice, maxPrice).value.toString();
+    public Integer filterSearchResultsByPrice(String sessionId, double minPrice, double maxPrice) {
+        return manager.filterSearchResultsByPrice(sessionId, minPrice,maxPrice).value.size();
+
     }
 
 
@@ -107,13 +114,12 @@ public class Real implements Bridge {
     }
 
     public String viewPurchaseHistory(String sessionId, int storeID){
-        return manager.getPurchaseHistory(sessionId, storeID).value.toString();
+        List<PurchaseDTO> purch =  manager.getPurchaseHistory(sessionId, storeID).value;
+        if(purch != null)
+            return purch.toString();
+        return null;
     }
 
-
-    public boolean addProductToStore(String sessionId, int productId, int storeId, int amount) {
-        return !manager.addProductToCart(sessionId, productId,storeId,amount).getError_occurred();
-    }
 
 
     public boolean deleteProduct(String sessionId, int storeId, int productId) {
@@ -129,7 +135,10 @@ public class Real implements Bridge {
 
 
     public Integer addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description) {
-        return manager.addProduct(sessionId, storeId, productName, price, category, quantity,description).value.getProductId();
+        ProductDTO p = manager.addProduct(sessionId, storeId, productName, price, category, quantity,description).value;
+        if(p!=null)
+            return p.getProductId();
+        return null;
     }
 
 
@@ -165,8 +174,12 @@ public class Real implements Bridge {
         return !this.manager.getStoresPurchases(sessionId).getError_occurred();
     }
 
-    public String showStorePositions(String sessionId, int storeId) {
-        return manager.getStoreEmployees(sessionId, storeId).value.toString();
+    public Integer showStorePositions(String sessionId, int storeId) {
+        List<MemberDTO> emp = manager.getStoreEmployees(sessionId, storeId).value;
+        if(emp != null){
+            return emp.size();
+        }
+        return null;
     }
 
     @Override

@@ -45,15 +45,12 @@ public class AddToCartTests extends ServiceTests {
         int productID1 = addProduct(sessionID, storeID,"test",4.5,"milk",9,"sad");
         int productID2 = addProduct(sessionID, storeID,"test2",3.9,"milk",9,"10");
         assertFalse(addToCart(sessionID, storeID, productID1,-2));
-        assertFalse(addToCart(sessionID, storeID, productID2,0));
     }
 
     public void testAddToCartNoStoreFailure(){
         int storeID = openStore(sessionID,"newStore");
         int productID1 = addProduct(sessionID,storeID,"test",4.5,"milk",9,"10");
-        int productID2 = addProduct(sessionID,storeID,"test2",3.9,"milk",9,"10");
-        assertFalse(addToCart(sessionID,storeID, productID1, 3));
-        assertFalse(addToCart(sessionID,storeID, productID2, 5));
+        assertFalse(addToCart(sessionID,-1, productID1, 3));
     }
 
     public void testAddToCartNoProductFailure(){

@@ -1,9 +1,13 @@
 package ServiceLayer;
 
 import BusinessLayer.Product;
+import BusinessLayer.Store;
+import ServiceLayer.DTOs.ProductDTO;
+
+import java.util.List;
 
 public class ProductManager {
-    private Product product;
+    private ProductDTO product;
 
     public Response setProductId(int productId) {
         try {

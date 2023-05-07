@@ -3,6 +3,10 @@ package BusinessLayer;
 import BusinessLayer.Logger.SystemLogger;
 import BusinessLayer.Policies.PurchasePolicyExpression;
 import Security.SecurityUtils;
+import Security.ProxyScurity;
+import Security.SecurityAdapter;
+
+
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -16,7 +20,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import static Security.SecurityUtils.authenticate;
+
 
 public class Market {
     private Map<Integer, Store> stores;
@@ -24,6 +28,7 @@ public class Market {
     private Map<String, Member> users;
     private MessageDigest passwordEncoder;
 
+    private SecurityAdapter securityUtils = new ProxyScurity(null);
     Object userLock = new Object();
 
 
@@ -36,7 +41,7 @@ public class Market {
     SessionManager sessionManager = new SessionManager();
 
 
-    public Market()  {
+    public Market() {
         stores = new ConcurrentHashMap<>();
         systemManagers = new ConcurrentHashMap<>();
         users = new ConcurrentHashMap<>();
@@ -48,6 +53,14 @@ public class Market {
         marketOpen = false;
         this.logger = new SystemLogger();
         fd = new FundDemander();
+    }
+
+    public Map<String, Member> getUsers() {
+        return users;
+    }
+
+    public Map<Integer, Store> getStores() {
+        return stores;
     }
 
     public void signUpSystemManager(String username, String password) throws Exception {
@@ -156,7 +169,7 @@ public class Market {
         }
 
         // If the credentials are correct, authenticate the user and return true
-        boolean res = authenticate(username, password);
+        boolean res = securityUtils.authenticate(username, password);
         if (res) {
             logger.info(String.format("%s the user passed authenticate check and logged in to the systemManager", username));
             String sessionId = sessionManager.createSessionForSystemManager(sm);
@@ -254,7 +267,7 @@ public class Market {
     //use case 2.9 - by price range
     public List<Product> filterSearchResultsByPrice(String sessionId, double minPrice, double maxPrice) throws Exception {
         isMarketOpen();
-        logger.info(String.format("filtering product by min price : %d  to max price : %d", minPrice, maxPrice));
+        logger.info(String.format("filtering product by min price : %02f  to max price : %02f", minPrice, maxPrice));
         Guest g = sessionManager.getSession(sessionId);
         return g.filterSearchResultsByPrice(minPrice, maxPrice);
     }
@@ -347,7 +360,7 @@ public class Market {
         sessionManager.getSession(sessionId);
         logger.info("trying adding new product");
         checkStoreExists(storeId);
-        logger.info(String.format("adding product to store %s new product name %s price %d category %s quantity %d description %s", getStore(sessionId, storeId), productName, price, category, quantity, description));
+        logger.info(String.format("adding product to store %s new product name %s price %.02f category %s quantity %d description %s", getStore(sessionId, storeId).getStoreName(), productName, price, category, quantity, description));
         Position p = checkPositionLegal(sessionId, storeId);
         return p.addProduct(stores.get(storeId), productName, price, category, quantity, description);
     }
@@ -358,7 +371,7 @@ public class Market {
         sessionManager.getSession(sessionId);
         logger.info("trying to edit product name");
         checkStoreExists(storeId);
-        logger.info(String.format("edit product name %d to %s in store %s", productId, newName, getStore(sessionId, storeId)));
+        logger.info(String.format("edit product name %d to %s in store %s", productId, newName, getStore(sessionId, storeId).getStoreName()));
         Position p = checkPositionLegal(sessionId, storeId);
         p.editProductName(productId, newName);
     }
@@ -369,7 +382,7 @@ public class Market {
         sessionManager.getSession(sessionId);
         logger.info("trying to edit product price");
         checkStoreExists(storeId);
-        logger.info(String.format("edit product price %d to %d in store %s", productId, newPrice, getStore(sessionId, storeId)));
+        logger.info(String.format("edit product price %d to %d in store %s", productId, newPrice, getStore(sessionId, storeId).getStoreName()));
         Position p = checkPositionLegal(sessionId, storeId);
         p.editProductPrice(productId, newPrice);
     }
@@ -380,7 +393,7 @@ public class Market {
         sessionManager.getSession(sessionId);
         logger.info("trying to edit product category");
         checkStoreExists(storeId);
-        logger.info(String.format("edit product category %d to %s in store %d", productId, newCategory, getStore(sessionId, storeId)));
+        logger.info(String.format("edit product category %d to %s in store %s", productId, newCategory, getStore(sessionId, storeId).getStoreName()));
         Position p = checkPositionLegal(sessionId, storeId);
         p.editProductCategory(productId, newCategory);
     }
@@ -391,6 +404,12 @@ public class Market {
 //        Position p = checkPositionLegal(storeId);
 //        p.editProductDescription(productId, newDescription);
 //    }
+
+    public String getSessionID(String name) throws Exception {
+        isMarketOpen();
+        logger.info("getting session ID for user "+name);
+        return sessionManager.getSessionIdByGuestName(name);
+    }
 
     //use case 5.3
     public void removeProductFromStore(String sessionId, int storeId, int productId) throws Exception {
@@ -425,7 +444,7 @@ public class Market {
         sessionManager.getSession(sessionId);
         logger.info(String.format("trying to appoint new manager to the store the member %s", MemberToBecomeManager));
         checkStoreExists(storeID);
-        logger.info(String.format("promoting %s to be the owner of %s", MemberToBecomeManager, getStore(sessionId, storeID)));
+        logger.info(String.format("promoting %s to be the manager of %s", MemberToBecomeManager, getStore(sessionId, storeID)));
         Position p = checkPositionLegal(sessionId, storeID);
         Member m = users.get(MemberToBecomeManager);
         if (m == null) {
