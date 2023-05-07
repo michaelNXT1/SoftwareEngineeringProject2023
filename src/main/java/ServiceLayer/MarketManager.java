@@ -1,8 +1,10 @@
 package ServiceLayer;
 
 import BusinessLayer.*;
+import BusinessLayer.Policies.PurchasePolicyExpression;
 
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 
@@ -344,5 +346,57 @@ public class MarketManager implements IMarketManager {
         }
     }
 
+    public Response addMinQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone) {
+        try {
+            market.addMinQuantityPolicy(sessionId, storeId, productId, minQuantity, allowNone);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
 
+    public Response addMaxQuantityPolicy(String sessionId, int storeId, int productId, int maxQuantity, boolean allowNone) {
+        try {
+            market.addMaxQuantityPolicy(sessionId, storeId, productId, maxQuantity, allowNone);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
+    public Response addProductTimeRestrictionPolicy(String sessionId, int storeId, int productId, LocalTime startTime, LocalTime endTime) {
+        try {
+            market.addProductTimeRestrictionPolicy(sessionId, storeId, productId, startTime, endTime);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
+    public Response addCategoryTimeRestrictionPolicy(String sessionId, int storeId, String category, LocalTime startTime, LocalTime endTime) {
+        try {
+            market.addCategoryTimeRestrictionPolicy(sessionId, storeId, category, startTime, endTime);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
+    public Response joinPolicies(String sessionId, int storeId, int policyId1, int policyId2, PurchasePolicyExpression.JoinOperator operator) {
+        try {
+            market.joinPolicies(sessionId, storeId, policyId1, policyId2, operator);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
+    public Response removePolicy(String sessionId, int storeId, int policyId) {
+        try {
+            market.removePolicy(sessionId, storeId, policyId);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
 }
