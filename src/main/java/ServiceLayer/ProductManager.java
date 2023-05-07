@@ -1,9 +1,13 @@
 package ServiceLayer;
 
 import BusinessLayer.Product;
+import BusinessLayer.Store;
+import ServiceLayer.DTOs.ProductDTO;
 
-public class ProductManager implements IProductManager{
-    private Product product;
+import java.util.List;
+
+public class ProductManager {
+    private ProductDTO product;
 
     public Response setProductId(int productId) {
         try {
