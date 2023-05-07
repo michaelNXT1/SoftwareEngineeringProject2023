@@ -1,8 +1,8 @@
-package org.example.ServiceLayer;
+package ServiceLayer;
 
-import org.example.BusinessLayer.Product;
-import org.example.BusinessLayer.Store;
-import org.example.ServiceLayer.DTOs.ProductDTO;
+import BusinessLayer.Product;
+import BusinessLayer.Store;
+import ServiceLayer.DTOs.ProductDTO;
 
 import java.util.List;
 

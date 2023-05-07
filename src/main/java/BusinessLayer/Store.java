@@ -178,6 +178,16 @@ public class Store {
         }
     }
 
+    public List<Member> getManagers(){
+        List<Member> manager = new ArrayList<>();
+        for(Member m:this.employees){
+            if(m.getStorePosition(this) instanceof StoreManager){
+                manager.add(m);
+            }
+        }
+        return manager;
+    }
+
     public void addEmployee(Member member) {
         employees.add(member);
     }

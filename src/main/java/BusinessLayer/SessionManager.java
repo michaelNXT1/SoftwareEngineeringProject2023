@@ -2,8 +2,9 @@ package BusinessLayer;
 
 import java.security.SecureRandom;
 import java.util.Base64;
-import java.util.HashMap;
+import java.util.*;
 import java.util.Map;
+import java.util.Map.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SessionManager {
@@ -68,5 +69,15 @@ public class SessionManager {
         if (sm == null)
             throw new Exception("system manager session doesnt exist");
         return sm;
+    }
+
+    public String getSessionIdByGuestName(String name) throws Exception {
+        String session = null;
+        for(Entry<String,Guest> ent: sessions.entrySet()){
+            if(ent.getValue().getUsername().equals(name)){
+                session = ent.getKey();
+            }
+        }
+        return session;
     }
 }

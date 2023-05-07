@@ -2,15 +2,15 @@ package AccaptanceTests.bridge;
 
 
 import BusinessLayer.Member;
-import BusinessLayer.Position;
 import BusinessLayer.Product;
 import BusinessLayer.Purchase;
+import ServiceLayer.IMarketManager;
 import ServiceLayer.MarketManager;
 import java.util.*;
 
 public class Real implements Bridge {
 
-    private MarketManager manager;
+    private IMarketManager manager;
 
     public Real (){
          this.manager = new MarketManager();
