@@ -14,17 +14,17 @@ public interface Bridge {
 
     boolean closeStore(String sessionId, int storeID);
 
-    String getStoresInform(String sessionId, String storeSubString);
+    Integer getStoresInform(String sessionId, String storeSubString);
 
-    String searchProductsByName(String sessionId, String productName);
+    Integer searchProductsByName(String sessionId, String productName);
 
-    String searchProductsByCategory(String sessionId, String productCategory);
+    Integer searchProductsByCategory(String sessionId, String productCategory);
 
-    String searchProductsBySubString(String sessionId, String productSubString);
+    Integer searchProductsBySubString(String sessionId, String productSubString);
 
-    String filterSearchResultsByCategory(String sessionId, String category);
+    Integer filterSearchResultsByCategory(String sessionId, String category);
 
-    String filterSearchResultsByPrice(String sessionId, double minPrice, double maxPrice);
+    Integer filterSearchResultsByPrice(String sessionId, double minPrice, double maxPrice);
 
     boolean addToCart(String sessionId, int storeId, int productId, int amount);
 
@@ -46,7 +46,6 @@ public interface Bridge {
 
     String viewPurchaseHistory(String sessionId, int storeID);
 
-    boolean addProductToStore(String sessionId, int productId, int storeId, int amount);
 
 
     boolean deleteProduct(String sessionId, int storeId, int productId);
@@ -68,7 +67,7 @@ public interface Bridge {
 
     boolean getStoresPurchases(String sessionId);
 
-    String showStorePositions(String sessionId, int storeId);
+    Integer showStorePositions(String sessionId, int storeId);
 
     boolean editProductPrice(String sessionId, int storeId, int productId, int newPrice);
 

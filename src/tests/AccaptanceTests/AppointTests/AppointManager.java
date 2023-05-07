@@ -17,13 +17,13 @@ public class AppointManager extends ServiceTests {
     }
 
     @Test
-    public void appointingExistingUserToManagerSuccess(){
+    public void testAppointingExistingUserToManagerSuccess(){
         int storeID = openStore(sessionID1,"newStore");
         assertTrue(appointManager(sessionID1, storeID, "alon12"));
     }
 
     @Test
-    public void appointManagerWithoutPremToFail(){
+    public void testAppointManagerWithoutPremToFail(){
         int storeID = openStore(sessionID1,"newStore");
         logout(sessionID1);
         String sessionID2 = login("alon12", "alon0601");
@@ -32,14 +32,13 @@ public class AppointManager extends ServiceTests {
     }
 
     @Test
-    public void appointingNotExistingUserToManagerFail(){
-        sessionID1 = login("alon1","alon0601");
+    public void testAppointingNotExistingUserToManagerFail(){
         int storeID = openStore(sessionID1,"newStore2");
         assertFalse(appointManager(sessionID1, storeID, "alon123"));
     }
 
     @Test
-    public void appointingAllReadyAManagerToManagerFail(){
+    public void testAppointingAllReadyAManagerToManagerFail(){
         int storeID = openStore(sessionID1, "newStore2");
         assertFalse(appointManager(sessionID1, storeID, "alon1"));
     }

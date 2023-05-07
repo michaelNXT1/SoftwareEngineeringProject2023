@@ -16,13 +16,13 @@ public class GetPositionInfo extends ServiceTests {
     }
 
     @Test
-    public void addProductAsStoreOwnerSuccess(){
+    public void testShowPositionsAsStoreOwnerSuccess(){
         int storeID = openStore(sessionID1, "newStore");
-        assertNotNull(showStorePositions(sessionID1,storeID));
+        assertTrue(showStorePositions(sessionID1,storeID) > 0);
     }
 
     @Test
-    public void addProductAsStoreOwnerFail(){
+    public void testShowPositionsNotAsStoreOwnerFail(){
         int storeID = openStore(sessionID1, "newStore");
         logout(sessionID1);
         String sessionID2 = login("alon12","alon0601");
@@ -30,7 +30,7 @@ public class GetPositionInfo extends ServiceTests {
     }
 
     @Test
-    public void addProductAsStoreOwnerFail2(){
+    public void testShowPositionsNotLogInFail(){
         assertNull(showStorePositions(sessionID1,3));
     }
 

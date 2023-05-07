@@ -32,25 +32,27 @@ public class SearchProductTests extends ServiceTests {
 
     @Test
     public void testSearchProductByNameSuccessful(){
-        String products = searchProductsByName(sessionID1,"test");
-        assertNotNull(products);
+        int products = searchProductsByName(sessionID1,"test");
+        assertTrue(products>0);
     }
 
     @Test
     public void testSearchProductsByCategorySuccessful(){
-        String products = searchProductsByCategory(sessionID1, "milk");
-        assertNotNull(products);
+        int products = searchProductsByCategory(sessionID1, "milk");
+        assertTrue(products>0);
     }
 
     @Test
     public void testSearchProductsBySubStringSuccessful(){
-        String products = searchProductsBySubString(sessionID1 ,"fo");
-        assertNotNull(products);
+        searchProductsByName(sessionID1,"test");
+        int products = searchProductsBySubString(sessionID1 ,"te");
+        assertTrue(products>0);
     }
 
     @Test
     public void testSearchProductsFilterCategorySuccessful(){
-        assertNotNull(filterSearchResultsByCategory(sessionID1, "milk"));
+        searchProductsByCategory(sessionID1, "milk");
+        assertTrue(filterSearchResultsByCategory(sessionID1, "milk")>0);
     }
 
     @Test
@@ -59,32 +61,32 @@ public class SearchProductTests extends ServiceTests {
     }
     @Test
     public void testSearchProductByNameFail(){
-        String products = searchProductsByName(sessionID1 ,"missslk");
-        assertNull(products);
+        int products = searchProductsByName(sessionID1 ,"missslk");
+        assertTrue(products == 0);
     }
 
     @Test
     public void testSearchProductsByCategoryFail(){
-        String products = searchProductsByCategory(sessionID1, "frozensss");
-        assertNull(products);
+        int products = searchProductsByCategory(sessionID1, "frozensss");
+        assertTrue(products == 0);
     }
 
     @Test
     public void testSearchProductsBySubStringFail(){
-        String products = searchProductsBySubString(sessionID1 ,"milksss");
-        assertNull(products);
+        int products = searchProductsBySubString(sessionID1 ,"milksss");
+        assertTrue(products == 0);
     }
 
     @Test
     public void testFilterByCategoryNoResults(){
-        String prodcuts = filterSearchResultsByCategory(sessionID1 ,"Foodsss");
-        assertNull(prodcuts);
+        int prodcuts = filterSearchResultsByCategory(sessionID1 ,"Foodsss");
+        assertTrue(prodcuts == 0);
     }
 
     @Test
     public void testFilterByPriceNoResults(){
-        String prodcuts = filterSearchResultsByPrice(sessionID1, 1,3);
-        assertNull(prodcuts);
+        int prodcuts = filterSearchResultsByPrice(sessionID1, 1,3);
+        assertTrue(prodcuts == 0);
     }
 
 

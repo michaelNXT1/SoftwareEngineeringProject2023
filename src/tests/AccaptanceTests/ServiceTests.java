@@ -30,24 +30,24 @@ public abstract class ServiceTests extends TestCase {
         return this.bridge.openMarket();
     }
 
-    public String searchProductsByName(String sessionId, String productName) {
+    public Integer searchProductsByName(String sessionId, String productName) {
         return this.bridge.searchProductsByName(sessionId, productName);
     }
 
 
-    public String searchProductsByCategory(String sessionId, String productCategory) {
+    public Integer searchProductsByCategory(String sessionId, String productCategory) {
         return this.bridge.searchProductsByCategory(sessionId, productCategory);
     }
 
-    public String searchProductsBySubString(String sessionId, String productSubString) {
+    public Integer searchProductsBySubString(String sessionId, String productSubString) {
         return this.bridge.searchProductsBySubString(sessionId, productSubString);
     }
 
-    public String filterSearchResultsByCategory(String sessionId, String category){
+    public Integer filterSearchResultsByCategory(String sessionId, String category){
         return this.bridge.filterSearchResultsByCategory(sessionId, category);
     }
 
-    public String filterSearchResultsByPrice(String sessionId, double minPrice, double maxPrice){
+    public Integer filterSearchResultsByPrice(String sessionId, double minPrice, double maxPrice){
         return this.bridge.filterSearchResultsByPrice(sessionId, minPrice, maxPrice);
     }
 
@@ -110,8 +110,6 @@ public abstract class ServiceTests extends TestCase {
 
     public Integer openStore(String sessionId, String storeName){ return bridge.openStore(sessionId, storeName); }
 
-    public boolean addProductToStore(String sessionId, int productId, int storeId, int amount) { return bridge.addProductToStore(sessionId, productId, storeId, amount); }
-
 
     public Integer addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity,String description){return this.bridge.addProduct(sessionId, storeId, productName, price, category, quantity,description );}
 
@@ -135,14 +133,14 @@ public abstract class ServiceTests extends TestCase {
         return this.bridge.showCart(sessionId);
     }
 
-    public String getAllInfo(String sessionId, String storeSub){
+    public Integer getAllInfo(String sessionId, String storeSub){
         return this.bridge.getStoresInform(sessionId, storeSub);
     }
 
-    public String showStorePositions(String sessionId, int storeId){return this.bridge.showStorePositions(sessionId, storeId);}
+    public Integer showStorePositions(String sessionId, int storeId){return this.bridge.showStorePositions(sessionId, storeId);}
 
     public boolean closeStore(String sessionId, int storeID){
-        return this.bridge.getStore(sessionId, storeID);
+        return this.bridge.closeStore(sessionId, storeID);
     }
 
     public boolean getStoresPurchases(String sessionId){

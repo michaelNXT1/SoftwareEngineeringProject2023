@@ -40,6 +40,6 @@ public class viewHist extends ServiceTests {
                 "12123123", "me", "1428 Elm Street", "Springwood", "Ohio, United States", "12345");
         logout(sessionID1);
         String sessionID2 = login("alon12", "alon0601");
-        assertNotNull(viewPurchaseHistory(sessionID2,storeID));
+        assertNull(viewPurchaseHistory(sessionID2,storeID));
     }
 }
