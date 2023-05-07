@@ -44,6 +44,14 @@ public class Market {
         fd = new FundDemander();
     }
 
+    public Map<String, Member> getUsers() {
+        return users;
+    }
+
+    public Map<Integer, Store> getStores() {
+        return stores;
+    }
+
     public void signUpSystemManager(String username, String password) throws Exception {
         logger.info(String.format("Sign Up new System Manager: %s", username));
         if (usernameExists(username)) {
@@ -383,6 +391,12 @@ public class Market {
 //        p.editProductDescription(productId, newDescription);
 //    }
 
+    public String getSessionID(String name) throws Exception {
+        isMarketOpen();
+        logger.info("getting session ID for user "+name);
+        return sessionManager.getSessionIdByGuestName(name);
+    }
+
     //use case 5.3
     public void removeProductFromStore(String sessionId, int storeId, int productId) throws Exception {
         isMarketOpen();
@@ -416,7 +430,7 @@ public class Market {
         sessionManager.getSession(sessionId);
         logger.info(String.format("trying to appoint new manager to the store the member %s", MemberToBecomeManager));
         checkStoreExists(storeID);
-        logger.info(String.format("promoting %s to be the owner of %s", MemberToBecomeManager, getStore(sessionId, storeID)));
+        logger.info(String.format("promoting %s to be the manager of %s", MemberToBecomeManager, getStore(sessionId, storeID)));
         Position p = checkPositionLegal(sessionId, storeID);
         Member m = users.get(MemberToBecomeManager);
         if (m == null) {
