@@ -1,6 +1,6 @@
 package UnitTests;
 
-import org.example.BusinessLayer.*;
+import BusinessLayer.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,13 +24,13 @@ class ShoppingCartTest {
     @BeforeEach
     void beforeEach() throws Exception {
         shoppingCart = new ShoppingCart();
-        product1 = new Product(0, "wine", 60.0, "alcohol");
-        product2 = new Product(1, "cheese", 9.5, "milk");
-        product3 = new Product(2, "steak", 120.0, "meat");
+        product1 = new Product(1,"wine", 3, "60.0", "alcohol");
+        product2 = new Product(2, "cheese", 9.5, "milk","fads");
+        product3 = new Product(3, "steak", 120.0, "meat","asd");
         market = new Market();
-        market.signUp(userName1, email1, password1);
-        market.signUpSystemManager(userName1, email1, password1);
-        market.signUp("idan123", "idanlobel2@gmail.com", "wswsad32");
+        market.signUp(userName1, password1);
+        market.signUpSystemManager(userName1, password1);
+        market.signUp("idan123",  "wswsad32");
         store1 = new Store(1, "Shufersal" , member);
         //shoppingCart.addProduct(product2, 2, store1);
     }
@@ -55,7 +55,7 @@ class ShoppingCartTest {
     }
 
     @Test
-    void purchaseShoppingCart() {
+    void purchaseShoppingCart() throws Exception {
         Purchase purchase = shoppingCart.purchaseShoppingCart();
         assertTrue(purchase.getProductList().contains(product2));
     }

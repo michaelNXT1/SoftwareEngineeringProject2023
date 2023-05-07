@@ -1,7 +1,7 @@
-package org.example.ServiceLayer.DTOs;
+package ServiceLayer.DTOs;
 
 
-import org.example.BusinessLayer.Product;
+import BusinessLayer.Product;
 
 public class ProductDTO {
     private int productId;
@@ -10,9 +10,9 @@ public class ProductDTO {
     private String category;
     private double rating;
     private int amount;
-    private long description;
+    private String description;
 
-    public ProductDTO(int productId, String productName, double price, String category, double rating, int amount, long description) {
+    public ProductDTO(int productId, String productName, double price, String category, double rating, int amount, String description) {
         this.productId = productId;
         this.productName = productName;
         this.price = price;
@@ -78,11 +78,11 @@ public class ProductDTO {
         return price;
     }
 
-    public long getDescription() {
+    public String getDescription() {
         return description;
     }
 
-    public void setDescription(long newDescription) {
+    public void setDescription(String newDescription) {
         this.description = newDescription;
     }
 }

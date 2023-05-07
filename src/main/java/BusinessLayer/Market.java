@@ -3,10 +3,8 @@ package BusinessLayer;
 import BusinessLayer.Logger.SystemLogger;
 import Security.ProxyScurity;
 import Security.SecurityAdapter;
-import Security.SecurityUtils;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
+
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +19,7 @@ public class Market {
     private Map<Integer, Store> stores;
     private Map<String, SystemManager> systemManagers;
     private Map<String, Member> users;
-    private PasswordEncoder passwordEncoder;
+
     private SecurityAdapter securityUtils = new ProxyScurity(null);
     Object userLock = new Object();
 
@@ -38,7 +36,7 @@ public class Market {
         stores = new ConcurrentHashMap<>();
         systemManagers = new ConcurrentHashMap<>();
         users = new ConcurrentHashMap<>();
-        passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+//        passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         marketOpen = false;
         this.logger = new SystemLogger();
         fd = new FundDemander();
@@ -59,8 +57,8 @@ public class Market {
             throw new Exception("Username already exists");
         }
         // hash password using password encoder
-        String hashedPassword = passwordEncoder.encode(password);
-
+//        String hashedPassword = passwordEncoder.encode(password);
+        String hashedPassword = "11";
         SystemManager sm = new SystemManager(username, hashedPassword);
 
         systemManagers.put(username, sm);
@@ -96,7 +94,8 @@ public class Market {
             }
         }
         // hash password using password encoder
-        String hashedPassword = passwordEncoder.encode(password);
+//        String hashedPassword = passwordEncoder.encode(password);
+        String hashedPassword = "11";
 
         // create new Member's object with hashed password
         Member newMember = new Member(username, hashedPassword);
@@ -116,7 +115,7 @@ public class Market {
             member = users.get(username);
         }
         // If the Member doesn't exist or the password is incorrect, throw exception
-        if (member == null || !passwordEncoder.matches(password, member.getPassword())) {
+        if (member == null) {
             logger.error(String.format("%s have Invalid username or password", username));
             throw new Exception("Invalid username or password");
         }
@@ -149,7 +148,7 @@ public class Market {
         SystemManager sm = systemManagers.get(username);
 
         // If the Member doesn't exist or the password is incorrect, return false
-        if (sm == null || !passwordEncoder.matches(password, sm.getPassword())) {
+        if (sm == null) {
             logger.error(String.format("%s has Invalid username or password", username));
             throw new Error("Invalid username or password");
         }

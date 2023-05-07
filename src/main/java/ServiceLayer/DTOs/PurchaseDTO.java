@@ -1,8 +1,8 @@
-package org.example.ServiceLayer.DTOs;
+package ServiceLayer.DTOs;
 
-import org.example.BusinessLayer.Product;
-import org.example.BusinessLayer.Purchase;
-import org.example.BusinessLayer.PurchaseProduct;
+import BusinessLayer.Product;
+import BusinessLayer.Purchase;
+import BusinessLayer.PurchaseProduct;
 
 import java.util.LinkedList;
 import java.util.List;

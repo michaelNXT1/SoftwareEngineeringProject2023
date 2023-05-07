@@ -1,6 +1,6 @@
-package org.example.ServiceLayer.DTOs;
+package ServiceLayer.DTOs;
 
-import org.example.BusinessLayer.Member;
+import BusinessLayer.Member;
 
 public class MemberDTO {
     private String username;

@@ -65,7 +65,8 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public ResponseT<String> loginSystemManager(String username, String email, String password) {
+
+    public ResponseT<String> loginSystemManager(String username, String password) {
         try {
             String ret = market.loginSystemManager(username, password);
             return ResponseT.fromValue(ret);
@@ -111,7 +112,7 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public ResponseT<ProductDTO> getProduct(String sessionId,int storeId, int productId) {
+    public ResponseT<ProductDTO> getProduct(String sessionId, int storeId, int productId) {
         try {
             Product ret = market.getProduct(sessionId, storeId, productId);
             ProductDTO productDTO = ProductDTO.FromProductToProductDTO(ret);
@@ -132,7 +133,7 @@ public class MarketManager implements IMarketManager {
     }
 
     //use case 2.7
-    public ResponseT<List<ProductDTO>> getProductsByCategory(String sessionId,String productCategory) {
+    public ResponseT<List<ProductDTO>> getProductsByCategory(String sessionId, String productCategory) {
         try {
             List<Product> ret = market.getProductsByCategory(sessionId, productCategory);
             List<ProductDTO> productDTOS = new LinkedList<>();
@@ -172,7 +173,7 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public ResponseT<List<ProductDTO>> filterSearchResultsByCategory(String sessionId,String category) {
+    public ResponseT<List<ProductDTO>> filterSearchResultsByCategory(String sessionId, String category) {
         try {
             List<Product> ret = market.filterSearchResultsByCategory(sessionId,category);
             List<ProductDTO> productDTOS = new LinkedList<>();
@@ -185,7 +186,7 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public ResponseT<List<ProductDTO>> filterSearchResultsByPrice(String sessionId,double minPrice, double maxPrice) {
+    public ResponseT<List<ProductDTO>> filterSearchResultsByPrice(String sessionId, double minPrice, double maxPrice) {
         try {
             List<Product> ret = market.filterSearchResultsByPrice(sessionId, minPrice, maxPrice);
             List<ProductDTO> productDTOS = new LinkedList<>();
@@ -268,9 +269,9 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public ResponseT<ProductDTO> addProduct(String sessionId, int storeId, String productName, double price, String category, double rating, int quantity) {
+    public ResponseT<ProductDTO> addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description) {
         try {
-            Product ret = market.addProduct(sessionId, storeId, productName, price, category, rating, quantity);
+            Product ret = market.addProduct(sessionId, storeId, productName, price, category, quantity,description);
             ProductDTO productDTO = ProductDTO.FromProductToProductDTO(ret);
             return ResponseT.fromValue(productDTO);
         } catch (Exception e) {
@@ -331,12 +332,23 @@ public class MarketManager implements IMarketManager {
         }
     }
 
+
+    public Response addStoreManagerPermissions(String sessionId, String storeManager, int storeID, int newPermission) {
+        try {
+            market.addStoreManagerPermissions(sessionId, storeManager, storeID, newPermission);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
+
     public ResponseT<List<MemberDTO>> getStoreEmployees(String sessionId, int storeId) {
         try {
             List<Member> ret = market.getStoreEmployees(sessionId, storeId);
             List<MemberDTO> memberDTOS = new LinkedList<>();
             for(Member member:ret){
-                MemberDTO memberDTO = org.example.ServiceLayer.DTOs.MemberDTO.fromMemberToMemberDTO(member);
+                MemberDTO memberDTO = MemberDTO.fromMemberToMemberDTO(member);
                 memberDTOS.add(memberDTO);
             }
             return ResponseT.fromValue(memberDTOS);
@@ -355,14 +367,6 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public ResponseT<List<Member>> getStoreEmployees(String sessionId, int storeId) {
-        try {
-            List<Member> ret = market.getStoreEmployees(sessionId, storeId);
-            return ResponseT.fromValue(ret);
-        } catch (Exception e) {
-            return ResponseT.fromError(e.getMessage());
-        }
-    }
 
     //use case 3.2
     public Response closeStore(String sessionId, int storeId) {

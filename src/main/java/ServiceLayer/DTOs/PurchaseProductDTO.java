@@ -1,7 +1,7 @@
-package org.example.ServiceLayer.DTOs;
+package ServiceLayer.DTOs;
 
-import org.example.BusinessLayer.Purchase;
-import org.example.BusinessLayer.PurchaseProduct;
+import BusinessLayer.Purchase;
+import BusinessLayer.PurchaseProduct;
 
 public class PurchaseProductDTO {
     private String productName;

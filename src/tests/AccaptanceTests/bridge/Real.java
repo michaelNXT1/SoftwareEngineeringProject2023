@@ -1,9 +1,9 @@
 package AccaptanceTests.bridge;
 
 
-import BusinessLayer.Member;
-import BusinessLayer.Product;
-import BusinessLayer.Purchase;
+import ServiceLayer.DTOs.MemberDTO;
+import ServiceLayer.DTOs.ProductDTO;
+import ServiceLayer.DTOs.PurchaseDTO;
 import ServiceLayer.IMarketManager;
 import ServiceLayer.MarketManager;
 import java.util.*;
@@ -114,7 +114,7 @@ public class Real implements Bridge {
     }
 
     public String viewPurchaseHistory(String sessionId, int storeID){
-        List<Purchase> purch =  manager.getPurchaseHistory(sessionId, storeID).value;
+        List<PurchaseDTO> purch =  manager.getPurchaseHistory(sessionId, storeID).value;
         if(purch != null)
             return purch.toString();
         return null;
@@ -135,7 +135,7 @@ public class Real implements Bridge {
 
 
     public Integer addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description) {
-        Product p = manager.addProduct(sessionId, storeId, productName, price, category, quantity,description).value;
+        ProductDTO p = manager.addProduct(sessionId, storeId, productName, price, category, quantity,description).value;
         if(p!=null)
             return p.getProductId();
         return null;
@@ -175,7 +175,7 @@ public class Real implements Bridge {
     }
 
     public Integer showStorePositions(String sessionId, int storeId) {
-        List<Member> emp = manager.getStoreEmployees(sessionId, storeId).value;
+        List<MemberDTO> emp = manager.getStoreEmployees(sessionId, storeId).value;
         if(emp != null){
             return emp.size();
         }

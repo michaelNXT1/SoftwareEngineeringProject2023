@@ -1,6 +1,6 @@
-package org.example.ServiceLayer.DTOs;
+package ServiceLayer.DTOs;
 
-import org.example.BusinessLayer.Store;
+import BusinessLayer.Store;
 
 public class StoreDTO {
     private final int storeId;
