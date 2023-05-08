@@ -1,17 +1,22 @@
-package ServiceLayer;
+package CommunicationLayer;
 
-import BusinessLayer.*;
 import BusinessLayer.Policies.PurchasePolicyExpression;
+import BusinessLayer.Product;
+import BusinessLayer.Purchase;
+import BusinessLayer.ShoppingCart;
+import BusinessLayer.Store;
 import ServiceLayer.DTOs.MemberDTO;
 import ServiceLayer.DTOs.ProductDTO;
 import ServiceLayer.DTOs.PurchaseDTO;
 import ServiceLayer.DTOs.StoreDTO;
+import ServiceLayer.Response;
+import ServiceLayer.ResponseT;
 
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 
-public interface IMarketManager {
+public interface IMarketController {
     Response signUpSystemManager(String username, String password);
     Response enterMarket();
     Response exitMarket(String sessionId);
@@ -52,7 +57,7 @@ public interface IMarketManager {
     Response addCategoryTimeRestrictionPolicy(String sessionId, int storeId, String category, LocalTime startTime, LocalTime endTime);
     Response joinPolicies(String sessionId, int storeId, int policyId1, int policyId2, PurchasePolicyExpression.JoinOperator operator);
     Response removePolicy(String sessionId, int storeId, int policyId);
-    Response addMaxQuantityPolicy(String sessionId, int storeId, int productId, int maxQuantity, boolean allowNone);
     Response addMinQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone);
+    Response addMaxQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone);
 
 }
