@@ -26,12 +26,12 @@ public class MarketManager implements IMarketManager {
     }
 
 
-    public Response enterMarket() {
+    public ResponseT<String> enterMarket() {
         try {
-            market.enterMarket();
-            return new Response();
+            String ret = market.enterMarket();
+            return ResponseT.fromValue(ret);
         } catch (Exception e) {
-            return new Response(e.getMessage());
+            return ResponseT.fromError(e.getMessage());
         }
     }
 

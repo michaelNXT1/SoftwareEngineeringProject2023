@@ -37,39 +37,26 @@ public class PurchaseTests extends ServiceTests {
         assertTrue(buyCart(sessionID1, "12345678", "04", "2021", "me", "777",
                 "12123123", "me", "1428 Elm Street", "Springwood", "Ohio, United States", "12345"));
     }
+    @Test
+    public void testNotEngItemsQuantityFail(){
+        int productID1 = addProduct(sessionID1, storeID2,"test4",3.9,"milk",9,"1");
+        addToCart(sessionID1, storeID2, productID1, 40);
+        assertFalse(buyCart(sessionID1, "12345678", "04", "2021", "me", "777",
+                "12123123", "me", "1428 Elm Street", "Springwood", "Ohio, United States", "12345"));
+    }
+    @Test
+    public void testBuyingPolicy(){
+        int productID1 = addProduct(sessionID1, storeID2,"test4",3.9,"milk",9,"1");
+        addToCart(sessionID1, storeID2, productID1, 40);
+        assertFalse(buyCart(sessionID1, "12345678", "04", "2021", "me", "777",
+                "12123123", "me", "1428 Elm Street", "Springwood", "Ohio, United States", "12345"));
+    }
 
     @Test
-    public void testNothingInCartSuccessful(){
+    public void testNothingInCartFail(){
         deleteItemInCart(sessionID1,storeID2,productID2);
         assertFalse(buyCart(sessionID1, "12345678", "04", "2021", "me", "777",
                 "12123123", "me", "1428 Elm Street", "Springwood", "Ohio, United States", "12345"));
     }
 
-//
-//    @Test
-//    public void testPurchaseFailedSupplySystem(){
-//
-//        setupSystem("No supplies", "Mock Config","");
-//        Database.sessionId = startSession();
-//
-//        addToCart(Database.sessionId, Database.userToStore.get("chika"),1, 5);
-//        addToCart(Database.sessionId, Database.userToStore.get("chika"),2, 5);
-//        assertFalse(buyCart(Database.sessionId, "12345678", "04", "2021", "me", "777",
-//                "12123123", "me", "1428 Elm Street", "Springwood", "Ohio, United States", "12345"));
-//    }
-//
-//    @Test
-//    public void testPurchaseFailedPaymentSystem(){
-//
-//        setupSystem("Mock Config", "No payments","");
-//        Database.sessionId = startSession();
-//
-//        PaymentSystemProxy.testing = true;
-//        addToCart(Database.sessionId, Database.userToStore.get("chika"),1, 5);
-//        addToCart(Database.sessionId, Database.userToStore.get("chika"),2, 5);
-//        assertFalse(buyCart(Database.sessionId, "12345678", "04", "2021", "me", "777",
-//                "12123123", "me", "1428 Elm Street", "Springwood", "Ohio, United States", "12345"));
-//    }
-//
-//
 }

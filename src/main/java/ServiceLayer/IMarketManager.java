@@ -12,7 +12,7 @@ import java.util.Map;
 public interface IMarketManager {
         Response signUpSystemManager(String username, String password);
 
-        Response enterMarket();
+        ResponseT<String> enterMarket();
 
         Response exitMarket(String sessionId);
 
