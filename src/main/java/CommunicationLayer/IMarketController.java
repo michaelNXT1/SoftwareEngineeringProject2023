@@ -12,9 +12,9 @@ public interface IMarketController {
     boolean exitMarket(String sessionId);
     boolean signUp(String username, String password);
     String login(String username, String password);
-    String loginSystemManager(String username, String password);
+//    String loginSystemManager(String username, String password);
     boolean logout(String sessionId);
-    boolean logoutSystemManager(String sessionId);
+//    boolean logoutSystemManager(String sessionId);
     List<StoreDTO> getStores(String sessionId, String storeSubString);
     StoreDTO getStore(String sessionId, int storeId);
     ProductDTO getProduct(String sessionId, int storeId, int productId);

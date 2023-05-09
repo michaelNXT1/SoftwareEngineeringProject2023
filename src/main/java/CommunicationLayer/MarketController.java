@@ -35,25 +35,25 @@ public class MarketController implements IMarketController{
         return marketManager.login(username,password).value;
     }
 
-    @GetMapping("/loginSystemManager")
-    @ResponseBody
-    @Override
-    public String loginSystemManager(@RequestParam(value = "username", defaultValue = "") String username,
-                                     @RequestParam(value = "password", defaultValue = "") String password) {
-        return this.marketManager.loginSystemManager(username, password).value;
-    }
+//    @GetMapping("/loginSystemManager")
+//    @ResponseBody
+//    @Override
+//    public String loginSystemManager(@RequestParam(value = "username", defaultValue = "") String username,
+//                                     @RequestParam(value = "password", defaultValue = "") String password) {
+//        return this.marketManager.loginSystemManager(username, password).value;
+//    }
     @GetMapping("/logout")
     @ResponseBody
     @Override
     public boolean logout(@RequestParam(value = "sessionId", defaultValue = "") String sessionId) {
         return !this.marketManager.logout(sessionId).getError_occurred();
     }
-    @GetMapping("/logoutSystemManager")
-    @ResponseBody
-    @Override
-    public boolean logoutSystemManager(@RequestParam(value = "sessionId", defaultValue = "") String sessionId) {
-        return !this.marketManager.logoutSystemManager(sessionId).getError_occurred();
-    }
+//    @GetMapping("/logoutSystemManager")
+//    @ResponseBody
+//    @Override
+//    public boolean logoutSystemManager(@RequestParam(value = "sessionId", defaultValue = "") String sessionId) {
+//        return !this.marketManager.logoutSystemManager(sessionId).getError_occurred();
+//    }
     @GetMapping("/getStores")
     @ResponseBody
     @Override

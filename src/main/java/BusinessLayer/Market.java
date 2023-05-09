@@ -41,14 +41,15 @@ public class Market {
     public Market() {
         stores = new ConcurrentHashMap<>();
         systemManagers = new ConcurrentHashMap<>();
-        SystemManager sm = new SystemManager("admin", new String(passwordEncoder.digest("admin".getBytes())));
-        systemManagers.put(sm.getUsername(), sm);
-        users = new ConcurrentHashMap<>();
         try {
             passwordEncoder = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
+        SystemManager sm = new SystemManager("admin", new String(passwordEncoder.digest("admin".getBytes())));
+        systemManagers.put(sm.getUsername(), sm);
+        users = new ConcurrentHashMap<>();
+
         marketOpen = false;
         this.logger = new SystemLogger();
         fd = new FundDemander();
@@ -719,6 +720,7 @@ public class Market {
                     allCat.add(p.getCategory());
             }
         }
+        allCat.add("test");
         return allCat;
     }
 }

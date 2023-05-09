@@ -9,14 +9,10 @@ import application.views.about.AboutView;
 import application.views.helloworld.HelloWorldView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.Header;
-import com.vaadin.flow.component.html.ListItem;
-import com.vaadin.flow.component.html.Nav;
-import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.html.UnorderedList;
+import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.theme.lumo.LumoUtility;
 import com.vaadin.flow.theme.lumo.LumoUtility.AlignItems;
 import com.vaadin.flow.theme.lumo.LumoUtility.BoxSizing;
 import com.vaadin.flow.theme.lumo.LumoUtility.Display;
@@ -42,7 +38,7 @@ import java.util.List;
 public class MainLayout extends AppLayout {
 
 
-    MarketController marketController = new MarketController();
+    MarketController marketController = MarketController.getInstance();
     /**
      * A simple navigation item component, based on ListItem element.
      */
@@ -77,7 +73,19 @@ public class MainLayout extends AppLayout {
 
     public MainLayout() {
         addToNavbar(createHeaderContent());
+        addDrawerContent();
     }
+
+    private void addDrawerContent() {
+        H1 appName = new H1("Categories");
+        appName.addClassNames(FontSize.SMALL, LumoUtility.Margin.NONE);
+        Header header = new Header(appName);
+
+        Scroller scroller = new Scroller(createCategoryNev());
+
+        addToDrawer(header, scroller, createFooter());
+    }
+
 
     private Component createHeaderContent() {
         Header header = new Header();
@@ -86,12 +94,12 @@ public class MainLayout extends AppLayout {
         Div layout = new Div();
         layout.addClassNames(Display.FLEX, AlignItems.CENTER, Padding.Horizontal.LARGE);
 
-        H1 appName = new H1("My App");
+        H1 appName = new H1("Eb2");
         appName.addClassNames(Margin.Vertical.MEDIUM, Margin.End.AUTO, FontSize.LARGE);
         layout.add(appName);
 
         Nav nav = new Nav();
-        nav.addClassNames(Display.FLEX, Overflow.AUTO, Padding.Horizontal.MEDIUM, Padding.Vertical.XSMALL);
+        nav.addClassNames(Display.FLEX, Overflow.AUTO, Padding.Top.MEDIUM, Padding.Vertical.XSMALL,Margin.Vertical.MEDIUM);
 
         // Wrap the links in a list; improves accessibility
         UnorderedList list = new UnorderedList();
@@ -105,6 +113,12 @@ public class MainLayout extends AppLayout {
 
         header.add(layout, nav);
         return header;
+    }
+
+    private Footer createFooter() {
+        Footer layout = new Footer();
+
+        return layout;
     }
 
     private AppNav createCategoryNev(){
