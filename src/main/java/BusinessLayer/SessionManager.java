@@ -58,7 +58,7 @@ public class SessionManager {
 
     public String createSessionForSystemManager(SystemManager sm) throws Exception {
         if (systemManagerSessions.containsValue(sm)) {
-            logger.error(String.format("%s is already logged in", sm.getUserName()));
+            logger.error(String.format("%s is already logged in", sm.getUsername()));
             throw new Exception("this user is already logged in");
         }
         String sessionId;
