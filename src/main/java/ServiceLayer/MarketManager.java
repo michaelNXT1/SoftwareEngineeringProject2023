@@ -1,6 +1,9 @@
 package ServiceLayer;
 
 import BusinessLayer.*;
+import BusinessLayer.Discounts.Discount;
+import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
+import BusinessLayer.Policies.PurchasePolicies.BasePolicy;
 import BusinessLayer.Policies.PurchasePolicyExpression;
 import ServiceLayer.DTOs.MemberDTO;
 import ServiceLayer.DTOs.ProductDTO;
@@ -17,13 +20,13 @@ import java.util.Map;
 public class MarketManager implements IMarketManager {
     private Market market;
 
-    public MarketManager(){
+    public MarketManager() {
         this.market = new Market();
     }
 
-    public Response signUpSystemManager(String username, String password){
+    public Response signUpSystemManager(String username, String password) {
         try {
-            market.signUpSystemManager(username,password);
+            market.signUpSystemManager(username, password);
             return new Response();
         } catch (Exception e) {
             return new Response(e.getMessage());
@@ -39,7 +42,8 @@ public class MarketManager implements IMarketManager {
             return new Response(e.getMessage());
         }
     }
-    public Response exitMarket(String sessionId){
+
+    public Response exitMarket(String sessionId) {
         try {
             market.exitMarket(sessionId);
             return new Response();
@@ -76,6 +80,7 @@ public class MarketManager implements IMarketManager {
             return ResponseT.fromError(e.getMessage());
         }
     }
+
     public Response logout(String sessionId) {
         try {
             market.logout(sessionId);
@@ -273,7 +278,7 @@ public class MarketManager implements IMarketManager {
 
     public ResponseT<ProductDTO> addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description) {
         try {
-            Product ret = market.addProduct(sessionId, storeId, productName, price, category, quantity,description);
+            Product ret = market.addProduct(sessionId, storeId, productName, price, category, quantity, description);
             ProductDTO productDTO = ProductDTO.FromProductToProductDTO(ret);
             return ResponseT.fromValue(productDTO);
         } catch (Exception e) {
@@ -325,7 +330,8 @@ public class MarketManager implements IMarketManager {
             return new Response(e.getMessage());
         }
     }
-    public Response setPositionOfMemberToStoreOwner(String sessionId, int storeID, String MemberToBecomeOwner){
+
+    public Response setPositionOfMemberToStoreOwner(String sessionId, int storeID, String MemberToBecomeOwner) {
         try {
             market.setPositionOfMemberToStoreOwner(sessionId, storeID, MemberToBecomeOwner);
             return new Response();
@@ -342,8 +348,6 @@ public class MarketManager implements IMarketManager {
             return new Response(e.getMessage());
         }
     }
-
-
     public ResponseT<List<MemberDTO>> getStoreEmployees(String sessionId, int storeId) {
         try {
             List<Member> ret = market.getStoreEmployees(sessionId, storeId);
@@ -359,7 +363,7 @@ public class MarketManager implements IMarketManager {
     }
 
 
-    public Response removeStoreManagerPermissions(String sessionId, String storeManager, int storeID, int newPermission){
+    public Response removeStoreManagerPermissions(String sessionId, String storeManager, int storeID, int newPermission) {
         try {
             market.removeStoreManagerPermissions(sessionId, storeManager, storeID, newPermission);
             return new Response();
@@ -435,7 +439,7 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public Response joinPolicies(String sessionId, int storeId, int policyId1, int policyId2, PurchasePolicyExpression.JoinOperator operator) {
+    public Response joinPolicies(String sessionId, int storeId, int policyId1, int policyId2, BasePolicy.JoinOperator operator) {
         try {
             market.joinPolicies(sessionId, storeId, policyId1, policyId2, operator);
             return new Response();
@@ -447,6 +451,86 @@ public class MarketManager implements IMarketManager {
     public Response removePolicy(String sessionId, int storeId, int policyId) {
         try {
             market.removePolicy(sessionId, storeId, policyId);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
+
+    public Response addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, Discount.CompositionType compositionType) throws Exception {
+        try {
+            market.addProductDiscount(sessionId, storeId, productId, discountPercentage, compositionType);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
+
+    public Response addCategoryDiscount(String sessionId, int storeId, String category, double discountPercentage, Discount.CompositionType compositionType) throws Exception {
+        try {
+            market.addCategoryDiscount(sessionId, storeId, category, discountPercentage, compositionType);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
+
+    public Response addStoreDiscount(String sessionId, int storeId, double discountPercentage, Discount.CompositionType compositionType) throws Exception {
+        try {
+            market.addStoreDiscount(sessionId, storeId, discountPercentage, compositionType);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
+
+    public Response addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone) throws Exception {
+        try {
+            market.addMinQuantityDiscountPolicy(sessionId, storeId, discountId, productId, minQuantity, allowNone);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
+
+    public Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity, boolean allowNone) throws Exception {
+        try {
+            market.addMaxQuantityDiscountPolicy(sessionId, storeId, discountId, productId, maxQuantity, allowNone);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
+
+    public Response addMinBagTotalDiscountPolicy(String sessionId, int storeId, int discountId, double minTotal) throws Exception {
+        try {
+            market.addMinBagTotalDiscountPolicy(sessionId, storeId, discountId, minTotal);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
+
+    public Response joinDiscountPolicies(String sessionId, int storeId, int policyId1, int policyId2, BaseDiscountPolicy.JoinOperator operator) throws Exception {
+        try {
+            market.joinDiscountPolicies(sessionId, storeId, policyId1, policyId2, operator);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
+
+    public Response removeDiscountPolicy(String sessionId, int storeId, int policyId) throws Exception {
+        try {
+            market.removeDiscountPolicy(sessionId, storeId, policyId);
             return new Response();
         } catch (Exception e) {
             return new Response(e.getMessage());

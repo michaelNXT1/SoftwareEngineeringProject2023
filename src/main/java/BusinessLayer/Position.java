@@ -1,8 +1,17 @@
 package BusinessLayer;
 
-import BusinessLayer.Policies.PurchasePolicyExpression;
+import BusinessLayer.Discounts.CategoryDiscount;
+import BusinessLayer.Discounts.Discount;
+import BusinessLayer.Discounts.ProductDiscount;
+import BusinessLayer.Discounts.StoreDiscount;
+import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
+import BusinessLayer.Policies.DiscountPolicies.DiscountPolicyOperation;
+import BusinessLayer.Policies.DiscountPolicies.PolicyTypes.MinBagTotalDiscountPolicy;
+import BusinessLayer.Policies.DiscountPolicies.PolicyTypes.MinQuantityDiscountPolicy;
+import BusinessLayer.Policies.PurchasePolicies.BasePolicy;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public interface Position {
@@ -40,9 +49,27 @@ public interface Position {
 
     void addCategoryTimeRestrictionPolicy(String category, LocalTime startTime, LocalTime endTime) throws Exception;
 
-    void joinPolicies(int policyId1, int policyId2, PurchasePolicyExpression.JoinOperator operator) throws Exception;
+    void joinPolicies(int policyId1, int policyId2, BasePolicy.JoinOperator operator) throws Exception;
 
     void removePolicy(int policyId) throws Exception;
+
+
+    public void addProductDiscount(int productId, double discountPercentage, Discount.CompositionType compositionType) throws Exception ;
+
+    public void addCategoryDiscount(String category, double discountPercentage, Discount.CompositionType compositionType) throws Exception ;
+
+    public void addStoreDiscount(double discountPercentage, Discount.CompositionType compositionType) throws Exception ;
+
+    //Discount policies
+    public void addMinQuantityDiscountPolicy(int discountId, int productId, int minQuantity, boolean allowNone) throws Exception ;
+
+    public void addMaxQuantityDiscountPolicy(int discountId, int productId, int maxQuantity, boolean allowNone) throws Exception ;
+
+    public void addMinBagTotalDiscountPolicy(int discountId, double minTotal) throws Exception ;
+
+    public void joinDiscountPolicies(int policyId1, int policyId2, BaseDiscountPolicy.JoinOperator operator) throws Exception ;
+
+    public void removeDiscountPolicy(int policyId) throws Exception ;
 
 
     default void addPermission(StoreManager.permissionType newPermission) {

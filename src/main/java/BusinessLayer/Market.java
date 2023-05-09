@@ -1,7 +1,9 @@
 package BusinessLayer;
 
+import BusinessLayer.Discounts.Discount;
 import BusinessLayer.Logger.SystemLogger;
-import BusinessLayer.Policies.PurchasePolicyExpression;
+import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
+import BusinessLayer.Policies.PurchasePolicies.BasePolicy;
 import Security.SecurityUtils;
 import Security.ProxyScurity;
 import Security.SecurityAdapter;
@@ -556,7 +558,7 @@ public class Market {
         p.addCategoryTimeRestrictionPolicy(category, startTime, endTime);
     }
 
-    public void joinPolicies(String sessionId, int storeId, int policyId1, int policyId2, PurchasePolicyExpression.JoinOperator operator) throws Exception {
+    public void joinPolicies(String sessionId, int storeId, int policyId1, int policyId2, BasePolicy.JoinOperator operator) throws Exception {
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
@@ -570,6 +572,70 @@ public class Market {
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
         p.removePolicy(policyId);
+    }
+
+    public void addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, Discount.CompositionType compositionType) throws Exception {
+        isMarketOpen();
+        sessionManager.getSession(sessionId);
+        checkStoreExists(storeId);
+        Position p = checkPositionLegal(sessionId, storeId);
+        p.addProductDiscount(productId, discountPercentage, compositionType);
+    }
+
+    public void addCategoryDiscount(String sessionId, int storeId, String category, double discountPercentage, Discount.CompositionType compositionType) throws Exception {
+        isMarketOpen();
+        sessionManager.getSession(sessionId);
+        checkStoreExists(storeId);
+        Position p = checkPositionLegal(sessionId, storeId);
+        p.addCategoryDiscount(category, discountPercentage, compositionType);
+    }
+
+    public void addStoreDiscount(String sessionId, int storeId, double discountPercentage, Discount.CompositionType compositionType) throws Exception {
+        isMarketOpen();
+        sessionManager.getSession(sessionId);
+        checkStoreExists(storeId);
+        Position p = checkPositionLegal(sessionId, storeId);
+        p.addStoreDiscount(discountPercentage, compositionType);
+    }
+
+    public void addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone) throws Exception {
+        isMarketOpen();
+        sessionManager.getSession(sessionId);
+        checkStoreExists(storeId);
+        Position p = checkPositionLegal(sessionId, storeId);
+        p.addMinQuantityDiscountPolicy(discountId, productId, minQuantity, allowNone);
+    }
+
+    public void addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity, boolean allowNone) throws Exception {
+        isMarketOpen();
+        sessionManager.getSession(sessionId);
+        checkStoreExists(storeId);
+        Position p = checkPositionLegal(sessionId, storeId);
+        p.addMaxQuantityDiscountPolicy(discountId, productId, maxQuantity, allowNone);
+    }
+
+    public void addMinBagTotalDiscountPolicy(String sessionId, int storeId, int discountId, double minTotal) throws Exception {
+        isMarketOpen();
+        sessionManager.getSession(sessionId);
+        checkStoreExists(storeId);
+        Position p = checkPositionLegal(sessionId, storeId);
+        p.addMinBagTotalDiscountPolicy(discountId, minTotal);
+    }
+
+    public void joinDiscountPolicies(String sessionId, int storeId, int policyId1, int policyId2, BaseDiscountPolicy.JoinOperator operator) throws Exception {
+        isMarketOpen();
+        sessionManager.getSession(sessionId);
+        checkStoreExists(storeId);
+        Position p = checkPositionLegal(sessionId, storeId);
+        p.joinDiscountPolicies(policyId1, policyId2, operator);
+    }
+
+    public void removeDiscountPolicy(String sessionId, int storeId, int policyId) throws Exception {
+        isMarketOpen();
+        sessionManager.getSession(sessionId);
+        checkStoreExists(storeId);
+        Position p = checkPositionLegal(sessionId, storeId);
+        p.removeDiscountPolicy(policyId);
     }
 
     //PRIVATE METHODS

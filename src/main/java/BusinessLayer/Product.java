@@ -9,8 +9,6 @@ public class Product {
         private int amount;
         private String description;
 
-        private  Discount discount;
-
         private PurchaseType purchaseType;
 
     public Product(int productId, String productName, double price, String category,String description) throws Exception{
@@ -20,7 +18,6 @@ public class Product {
             throw new Exception("product name is empty");
         if(stringIsEmpty(category))
             throw new Exception("product category is empty");
-        this.discount = new VisibleDiscount(this);
         this.purchaseType = new BuyItNow(this);
         this.productId = productId;
         this.productName = productName;
@@ -28,10 +25,6 @@ public class Product {
         this.category = category;
         this.rating = 0;
         this.description = description;
-    }
-
-    public void setDiscount(Discount discount) {
-        this.discount = discount;
     }
 
     public void setPurchaseType(PurchaseType purchaseType) {

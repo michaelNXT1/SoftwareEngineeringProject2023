@@ -1,5 +1,6 @@
-package BusinessLayer.Policies.PurchasePolicies;
+package BusinessLayer.Policies.PurchasePolicies.PolicyTypes;
 
+import BusinessLayer.Policies.PurchasePolicies.PurchasePolicy;
 import BusinessLayer.Product;
 
 import java.time.LocalTime;
