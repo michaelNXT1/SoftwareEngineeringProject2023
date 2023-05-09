@@ -83,4 +83,8 @@ public interface Bridge {
     boolean removeStore(String sessionId, int storeId);
 
     void clearDatabase();
+
+    String enterMarket();
+
+    boolean exitMarket(String sessionId);
 }

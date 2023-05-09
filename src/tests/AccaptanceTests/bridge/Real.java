@@ -207,4 +207,14 @@ public class Real implements Bridge {
     public void clearDatabase() {
 
     }
+
+    @Override
+    public String enterMarket() {
+        return this.manager.enterMarket().value;
+    }
+
+    @Override
+    public boolean exitMarket(String sessionId) {
+        return !this.manager.exitMarket(sessionId).getError_occurred();
+    }
 }

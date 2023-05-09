@@ -151,6 +151,13 @@ public abstract class ServiceTests extends TestCase {
         return bridge.viewPurchaseHistory(sessionId, storeID);
     }
 
+    public String enterMarket(){
+        return this.bridge.enterMarket();
+    }
+
+    public boolean exitMarket(String sessionId){
+        return this.bridge.exitMarket(sessionId);
+    }
 
 //    public int startSession() { return this.bridge.startSession(); }
 
