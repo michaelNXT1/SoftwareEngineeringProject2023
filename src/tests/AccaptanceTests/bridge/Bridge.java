@@ -81,6 +81,19 @@ public interface Bridge {
 //    boolean removeManager(int sessionId, int storeId, int userId);
 
     boolean removeStore(String sessionId, int storeId);
+    boolean removeMember(String sessionId, String memberName);
 
     void clearDatabase();
+
+    String enterMarket();
+
+    boolean exitMarket(String sessionId);
+
+    boolean removeMember(String sessionId, String memberName);
+
+    String loginSystemManager(String username, String password);
+
+    boolean logoutSystemManager(String sessionId);
+
+    boolean signUpSystemManager(String username, String password);
 }

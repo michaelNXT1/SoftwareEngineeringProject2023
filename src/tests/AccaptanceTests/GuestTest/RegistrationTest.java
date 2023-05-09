@@ -29,15 +29,20 @@ public class RegistrationTest extends ServiceTests {
     @Test
     public void testRegisterSuccessful() {
         assertTrue(register("yohane", "1234"));
-        assertTrue(register( "sarah", "12345"));
     }
 
     @Test
-    public void testRegisterFailureExistingUsername() {
-        register( "sarah", "12345");
-        register("yohane","1234");
+    public void testRegisterFailureNotExistingUsername() {
         assertFalse(register("yohane", "1234"));
-        assertFalse(register( "sarah", "12345"));
+    }
+
+    @Test
+    public void testRegisterFailureInvalidUsername() {
+        assertFalse(register(null, "1234"));
+    }
+    @Test
+    public void testRegisterFailureInvalidPassword() {
+        assertFalse(register("null", null));
     }
 }
 

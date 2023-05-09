@@ -62,7 +62,7 @@ public class Market {
 
     public void signUpSystemManager(String username, String password) throws Exception {
         logger.info(String.format("Sign Up new System Manager: %s", username));
-        if (usernameExists(username)) {
+        if (systemManagerUsernameExists(username)) {
             logger.error(String.format("Username already exists :%s", username));
             throw new Exception("Username already exists");
         }
@@ -78,6 +78,10 @@ public class Market {
             marketOpen = true;
         }
 
+    }
+
+    private boolean systemManagerUsernameExists(String username) {
+        return systemManagers.values().stream().anyMatch(m -> m.getUserName().equals(username));
     }
 
     //use case 1.1
@@ -157,7 +161,6 @@ public class Market {
         logger.info(String.format("%s trying to log in to the systemMnager", username));
         // Retrieve the stored Member's object for the given username
         SystemManager sm = systemManagers.get(username);
-
         String hashedPassword = new String(passwordEncoder.digest(password.getBytes()));
         // If the Member doesn't exist or the password is incorrect, return false
         if (sm == null || !hashedPassword.equals(sm.getPassword())) {
@@ -281,8 +284,8 @@ public class Market {
     //use case 2.11
     public ShoppingCartDTO getShoppingCart(String sessionId) throws Exception {
         isMarketOpen();
-        logger.info(String.format("%s asking for his shopping cart"));
         Guest g = sessionManager.getSession(sessionId);
+        logger.info(String.format("%s asking for his shopping cart",g.getUsername()));
         return new ShoppingCartDTO(g.displayShoppingCart());
     }
 
@@ -689,4 +692,24 @@ public class Market {
         return marketOpen;
     }
 
+    public void removeMember(String sessionId, String memberName) throws Exception {
+        checkMarketOpen();
+        sessionManager.getSessionForSystemManager(sessionId);
+        Member mToRemove = users.get(memberName);
+        if (mToRemove == null) {
+            logger.error(String.format("%s is not a member", memberName));
+            throw new Exception("The member's name is not a name of a member");
+        }
+        if (mToRemove.hasPositions()) { //partial implantation - remove in full one
+            logger.error(String.format("cannot remove member with positions in the market"));
+            throw new Exception("cannot remove member with positions in the market");
+        }
+        if (systemManagers.get(mToRemove.getUsername()) != null) { //partial implantation - remove in full one
+            logger.error(String.format("cannot remove member with positions in the market"));
+            throw new Exception("cannot remove member with positions in the market");
+        }
+        users.remove(memberName);
+        logger.error(String.format("Success to remove %s from market", memberName));
+
+    }
 }

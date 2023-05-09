@@ -26,12 +26,12 @@ public class MarketManager implements IMarketManager {
     }
 
 
-    public Response enterMarket() {
+    public ResponseT<String> enterMarket() {
         try {
-            market.enterMarket();
-            return new Response();
+            String ret = market.enterMarket();
+            return ResponseT.fromValue(ret);
         } catch (Exception e) {
-            return new Response(e.getMessage());
+            return ResponseT.fromError(e.getMessage());
         }
     }
 
@@ -479,6 +479,14 @@ public class MarketManager implements IMarketManager {
     public Response addPaymentMethod(String sessionId, String creditCardNumber, int cvv, LocalDate expirationDate) throws Exception {
         try {
             market.addPaymentMethod(sessionId, creditCardNumber, cvv, expirationDate);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+    public Response removeMember(String sessionId, String memberName){
+        try {
+            market.removeMember(sessionId, memberName);
             return new Response();
         } catch (Exception e) {
             return new Response(e.getMessage());

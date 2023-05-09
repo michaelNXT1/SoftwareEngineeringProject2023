@@ -161,4 +161,10 @@ class MarketTest {
         market.closeStore(sessionID1,1);//TODO: check if the member has permissions to close this store and if it closed it or not
         assertTrue(closed);
     }
+    @org.junit.jupiter.api.Test
+    void removeMember() throws Exception {
+        market.removeMember(sessionID1,userName2);
+        assertTrue(market.getUsers().get(userName2) == null);
+    }
+
 }

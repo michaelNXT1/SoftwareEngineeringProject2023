@@ -409,4 +409,64 @@ public class ProxyBridge implements Bridge{
         }
     }
 
+    @Override
+    public String enterMarket() {
+        if(real != null){
+            return real.enterMarket();
+        }
+        else{
+            return null;
+        }
+    }
+
+    @Override
+    public boolean exitMarket(String sessionId) {
+        if(real != null){
+            return real.exitMarket(sessionId);
+        }
+        else{
+            return false;
+        }
+    }
+
+    @Override
+    public boolean removeMember(String sessionId, String memberName) {
+        if(real != null){
+            return real.removeMember(sessionId, memberName);
+        }
+        else{
+            return false;
+        }
+    }
+
+    @Override
+    public String loginSystemManager(String username, String password) {
+        if(real != null){
+            return real.loginSystemManager(username, password);
+        }
+        else{
+            return null;
+        }
+    }
+
+    @Override
+    public boolean logoutSystemManager(String sessionId) {
+        if(real != null){
+            return real.logoutSystemManager(sessionId);
+        }
+        else{
+            return false;
+        }
+    }
+
+    @Override
+    public boolean signUpSystemManager(String username, String password) {
+        if(real != null){
+            return real.signUpSystemManager(username, password);
+        }
+        else{
+            return false;
+        }
+    }
+
 }
