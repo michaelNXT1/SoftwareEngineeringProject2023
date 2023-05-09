@@ -81,4 +81,8 @@ public class ProductDTO {
     public void setDescription(String newDescription) {
         this.description = newDescription;
     }
+    @Override
+    public String toString(){
+        return String.format(this.productName);
+    }
 }

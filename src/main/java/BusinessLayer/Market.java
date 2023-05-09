@@ -281,8 +281,8 @@ public class Market {
     //use case 2.11
     public ShoppingCartDTO getShoppingCart(String sessionId) throws Exception {
         isMarketOpen();
-        logger.info(String.format("%s asking for his shopping cart"));
         Guest g = sessionManager.getSession(sessionId);
+        logger.info(String.format("%s asking for his shopping cart",g.getUsername()));
         return new ShoppingCartDTO(g.displayShoppingCart());
     }
 

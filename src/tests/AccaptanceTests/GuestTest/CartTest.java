@@ -29,17 +29,15 @@ public class CartTest extends ServiceTests {
 
 
 
-//    @Test
-//    public void testViewCartSuccessful(){
-//        String cart = viewCart();
-//       // assertEquals(cart, Database.Cart);
-//        logout(Database.sessionId);
-//        login(Database.sessionId, "hanamaru", "123456");
-//        clearCart(Database.sessionId);
-//        addToCart(Database.sessionId, Database.userToStore.get("chika"),1,5);
-//        addToCart(Database.sessionId, Database.userToStore.get("chika"),2,5);
-//        assertEquals(viewCart(Database.sessionId), Database.Cart);
-//    }
+    @Test
+    public void testViewCartSuccessful(){
+        int storeID = openStore(sessionID1, "newStore");
+        int productID1 = addProduct(sessionID1, storeID,"test",4.5,"milk",9,"10");
+        int productID2 = addProduct(sessionID1, storeID,"test2",3.9,"milk",9,"10");
+        addToCart(sessionID1, storeID,productID1,5);
+        addToCart(sessionID1, storeID,productID2,5);
+        assertEquals(viewCart(sessionID1), "test: 5\ntest2: 5\n\n");
+    }
 
 
     @Test
@@ -57,8 +55,6 @@ public class CartTest extends ServiceTests {
         int storeID = openStore(sessionID1, "newStore");
         int productID1 = addProduct(sessionID1, storeID,"test",4.5,"milk",9,"10");
         assertFalse(updateAmount(sessionID1, storeID,productID1,-5));
-
-
     }
 
     @Test

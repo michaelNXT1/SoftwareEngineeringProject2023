@@ -409,4 +409,24 @@ public class ProxyBridge implements Bridge{
         }
     }
 
+    @Override
+    public String enterMarket() {
+        if(real != null){
+            return real.enterMarket();
+        }
+        else{
+            return null;
+        }
+    }
+
+    @Override
+    public boolean exitMarket(String sessionId) {
+        if(real != null){
+            return real.exitMarket(sessionId);
+        }
+        else{
+            return false;
+        }
+    }
+
 }
