@@ -223,11 +223,6 @@ public class Real implements Bridge {
     }
 
     @Override
-    public boolean removeMember(String sessionId, String memberName) {
-        return !manager.removeMember(sessionId, memberName).getError_occurred();
-    }
-
-    @Override
     public String loginSystemManager(String username, String password) {
         return manager.loginSystemManager(username, password).value;
     }

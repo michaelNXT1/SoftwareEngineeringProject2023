@@ -11,7 +11,7 @@ public class MemberTest extends ServiceTests{
         suite.addTest(new TestSuite(LogOutTest.class));
         suite.addTest(new TestSuite(OpenStoreTest.class));
         suite.addTest(new TestSuite(viewHist.class));
-        suite.addTest(new TestSuite(removeMember.class));
+        suite.addTest(new TestSuite(RemoveMemberTest.class));
         return suite;
     }
 }

@@ -89,8 +89,6 @@ public interface Bridge {
 
     boolean exitMarket(String sessionId);
 
-    boolean removeMember(String sessionId, String memberName);
-
     String loginSystemManager(String username, String password);
 
     boolean logoutSystemManager(String sessionId);
