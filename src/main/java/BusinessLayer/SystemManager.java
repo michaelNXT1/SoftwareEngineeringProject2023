@@ -13,4 +13,8 @@ public class SystemManager {
     public String getPassword() {
         return hashedPassword;
     }
+
+    public String getUsername() {
+        return username;
+    }
 }
