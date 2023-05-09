@@ -6,6 +6,8 @@ import ServiceLayer.DTOs.ProductDTO;
 import ServiceLayer.DTOs.PurchaseDTO;
 import ServiceLayer.IMarketManager;
 import ServiceLayer.MarketManager;
+
+import java.time.LocalTime;
 import java.util.*;
 
 public class Real implements Bridge {
@@ -216,5 +218,35 @@ public class Real implements Bridge {
     @Override
     public boolean exitMarket(String sessionId) {
         return !this.manager.exitMarket(sessionId).getError_occurred();
+    }
+
+    @Override
+    public boolean addProductTimeRestrictionPolicy(String sessionId, int storeId, int productId, LocalTime startTime, LocalTime endTime) {
+        return !this.manager.addProductTimeRestrictionPolicy(sessionId, storeId, productId, startTime, endTime).getError_occurred();
+    }
+
+    @Override
+    public boolean addCategoryTimeRestrictionPolicy(String sessionId, int storeId, String category, LocalTime startTime, LocalTime endTime) {
+        return !this.manager.addCategoryTimeRestrictionPolicy(sessionId, storeId, category, startTime, endTime).getError_occurred();
+    }
+
+    @Override
+    public boolean joinPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator) {
+        return !this.manager.joinPolicies(sessionId, storeId, policyId1, policyId2, operator).getError_occurred();
+    }
+
+    @Override
+    public boolean removePolicy(String sessionId, int storeId, int policyId) {
+        return !this.manager.removePolicy(sessionId, storeId, policyId).getError_occurred();
+    }
+
+    @Override
+    public boolean addMinQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone) {
+        return !this.manager.addMinQuantityPolicy(sessionId, storeId, productId, minQuantity, allowNone).getError_occurred();
+    }
+
+    @Override
+    public boolean addMaxQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone) {
+        return !this.manager.addMaxQuantityPolicy(sessionId, storeId, productId, minQuantity, allowNone).getError_occurred();
     }
 }

@@ -1,6 +1,8 @@
 package AccaptanceTests.bridge;
 
 
+import java.time.LocalTime;
+
 public interface Bridge {
     boolean setupSystem(String managerUName, String managerPass);
 
@@ -87,4 +89,11 @@ public interface Bridge {
     String enterMarket();
 
     boolean exitMarket(String sessionId);
+
+    boolean addProductTimeRestrictionPolicy(String sessionId, int storeId, int productId, LocalTime startTime, LocalTime endTime);
+    boolean addCategoryTimeRestrictionPolicy(String sessionId, int storeId, String category, LocalTime startTime, LocalTime endTime);
+    boolean joinPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator);
+    boolean removePolicy(String sessionId, int storeId, int policyId);
+    boolean addMinQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone);
+    boolean addMaxQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone);
 }
