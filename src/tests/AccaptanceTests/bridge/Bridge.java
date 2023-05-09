@@ -87,4 +87,12 @@ public interface Bridge {
     String enterMarket();
 
     boolean exitMarket(String sessionId);
+
+    boolean removeMember(String sessionId, String memberName);
+
+    String loginSystemManager(String username, String password);
+
+    boolean logoutSystemManager(String sessionId);
+
+    boolean signUpSystemManager(String username, String password);
 }
