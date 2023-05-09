@@ -41,8 +41,6 @@ public class Market {
     public Market() {
         stores = new ConcurrentHashMap<>();
         systemManagers = new ConcurrentHashMap<>();
-        SystemManager sm = new SystemManager("admin", new String(passwordEncoder.digest("admin".getBytes())));
-        systemManagers.put(sm.getUsername(), sm);
         users = new ConcurrentHashMap<>();
         try {
             passwordEncoder = MessageDigest.getInstance("MD5");
@@ -52,6 +50,8 @@ public class Market {
         marketOpen = false;
         this.logger = new SystemLogger();
         fd = new FundDemander();
+        SystemManager sm = new SystemManager("admin", new String(passwordEncoder.digest("admin".getBytes())));
+        systemManagers.put(sm.getUsername(), sm);
     }
 
     public Map<String, Member> getUsers() {

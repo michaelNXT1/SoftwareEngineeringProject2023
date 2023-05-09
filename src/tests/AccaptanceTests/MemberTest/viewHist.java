@@ -23,8 +23,7 @@ public class viewHist extends ServiceTests {
         int productID2 = addProduct(sessionID1,storeID,"test2",3.9,"milk",9,"10");
         addToCart(sessionID1,storeID, productID1,1);
         addToCart(sessionID1,storeID, productID2,2);
-        buyCart(sessionID1, "12345678", "04", "2021", "me", "777",
-                "12123123", "me", "1428 Elm Street", "Springwood", "Ohio, United States", "12345");
+        buyCart(sessionID1);
         assertNotNull(viewPurchaseHistory(sessionID1,storeID));
     }
 
@@ -36,8 +35,7 @@ public class viewHist extends ServiceTests {
         int productID2 = addProduct(sessionID1,storeID,"test2",3.9,"milk",9,"10");
         addToCart(sessionID1,storeID, productID1,1);
         addToCart(sessionID1,storeID, productID2,2);
-        buyCart(sessionID1, "12345678", "04", "2021", "me", "777",
-                "12123123", "me", "1428 Elm Street", "Springwood", "Ohio, United States", "12345");
+        buyCart(sessionID1);
         logout(sessionID1);
         String sessionID2 = login("alon12", "alon0601");
         assertNull(viewPurchaseHistory(sessionID2,storeID));

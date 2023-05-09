@@ -190,7 +190,6 @@ public class MarketManager implements IMarketManager {
 
     public ResponseT<PurchaseDTO> purchaseShoppingCart(String sessionId) {
         try {
-            PurchaseDTO ret = market.purchaseShoppingCart(sessionId);
             return ResponseT.fromValue(market.purchaseShoppingCart(sessionId));
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
@@ -379,7 +378,7 @@ public class MarketManager implements IMarketManager {
     }
 
 
-    public Response addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType) throws Exception {
+    public Response addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType) {
         try {
             market.addProductDiscount(sessionId, storeId, productId, discountPercentage, compositionType);
             return new Response();
@@ -389,7 +388,7 @@ public class MarketManager implements IMarketManager {
     }
 
 
-    public Response addCategoryDiscount(String sessionId, int storeId, String category, double discountPercentage, int compositionType) throws Exception {
+    public Response addCategoryDiscount(String sessionId, int storeId, String category, double discountPercentage, int compositionType) {
         try {
             market.addCategoryDiscount(sessionId, storeId, category, discountPercentage, compositionType);
             return new Response();
@@ -399,7 +398,7 @@ public class MarketManager implements IMarketManager {
     }
 
 
-    public Response addStoreDiscount(String sessionId, int storeId, double discountPercentage, int compositionType) throws Exception {
+    public Response addStoreDiscount(String sessionId, int storeId, double discountPercentage, int compositionType) {
         try {
             market.addStoreDiscount(sessionId, storeId, discountPercentage, compositionType);
             return new Response();
@@ -409,7 +408,7 @@ public class MarketManager implements IMarketManager {
     }
 
 
-    public Response addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone) throws Exception {
+    public Response addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone) {
         try {
             market.addMinQuantityDiscountPolicy(sessionId, storeId, discountId, productId, minQuantity, allowNone);
             return new Response();
@@ -419,7 +418,7 @@ public class MarketManager implements IMarketManager {
     }
 
 
-    public Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity, boolean allowNone) throws Exception {
+    public Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity, boolean allowNone) {
         try {
             market.addMaxQuantityDiscountPolicy(sessionId, storeId, discountId, productId, maxQuantity, allowNone);
             return new Response();
@@ -429,7 +428,7 @@ public class MarketManager implements IMarketManager {
     }
 
 
-    public Response addMinBagTotalDiscountPolicy(String sessionId, int storeId, int discountId, double minTotal) throws Exception {
+    public Response addMinBagTotalDiscountPolicy(String sessionId, int storeId, int discountId, double minTotal) {
         try {
             market.addMinBagTotalDiscountPolicy(sessionId, storeId, discountId, minTotal);
             return new Response();
@@ -439,7 +438,7 @@ public class MarketManager implements IMarketManager {
     }
 
 
-    public Response joinDiscountPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator) throws Exception {
+    public Response joinDiscountPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator) {
         try {
             market.joinDiscountPolicies(sessionId, storeId, policyId1, policyId2, operator);
             return new Response();
@@ -449,7 +448,7 @@ public class MarketManager implements IMarketManager {
     }
 
 
-    public Response removeDiscountPolicy(String sessionId, int storeId, int policyId) throws Exception {
+    public Response removeDiscountPolicy(String sessionId, int storeId, int policyId) {
         try {
             market.removeDiscountPolicy(sessionId, storeId, policyId);
             return new Response();
@@ -458,7 +457,7 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public Response addPaymentMethod(String sessionId, String creditCardNumber, int cvv, LocalDate expirationDate) throws Exception {
+    public Response addPaymentMethod(String sessionId, String creditCardNumber, int cvv, LocalDate expirationDate) {
         try {
             market.addPaymentMethod(sessionId, creditCardNumber, cvv, expirationDate);
             return new Response();

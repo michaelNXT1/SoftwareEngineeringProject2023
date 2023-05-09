@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 public class Store {
     private final int storeId;
     private final String storeName;
+    private final Set<String> categories;
     private final Map<Product, Integer> products;
     private final List<Purchase> purchaseList;
     private final List<Member> employees;
@@ -41,6 +42,7 @@ public class Store {
     public Store(int storeId, String storeName, Member m) {
         this.storeId = storeId;
         this.storeName = storeName;
+        this.categories = new HashSet<>();
         this.products = new ConcurrentHashMap<>();
         this.purchaseList = new ArrayList<>();
         this.employees = new ArrayList<>();
@@ -105,6 +107,7 @@ public class Store {
             if (quantity < 0)
                 throw new Exception("cannot set quantity to less then 0");
             p = new Product(this.productIdCounter.incrementAndGet(), productName, price, category, description);
+            categories.add(category);
             products.put(p, quantity);
         }
         return p;
@@ -229,6 +232,8 @@ public class Store {
     }
 
     public void addCategoryDiscount(String category, double discountPercentage, int compositionType) throws Exception {
+        if (!categories.contains(category))
+            throw new Exception("Category doesn't exist");
         Discount discount = new CategoryDiscount(discountCounter++, discountPercentage, category, compositionType);
         productDiscountPolicyMap.put(discount, new ArrayList<>());
     }
@@ -307,14 +312,14 @@ public class Store {
         Product product = checkProductExists(productId);
         for (Discount d : productDiscountPolicyMap.keySet())
             if (d.checkApplies(product))
-                if (productDiscountPolicyMap.get(d).stream().allMatch(pdp->pdp.evaluate(productList))) {
+                if (productDiscountPolicyMap.get(d).stream().allMatch(pdp -> pdp.evaluate(productList))) {
                     double percentage = d.getDiscountPercentage();
                     if (d.getCompositionType() == Discount.CompositionType.ADDITION)
                         discountPercentage += percentage;
                     else if (d.getCompositionType() == Discount.CompositionType.MAX)
                         discountPercentage = Math.max(discountPercentage, percentage);
                 }
-        return 0.0;
+        return discountPercentage;
     }
 
     private Map<Product, Integer> getProductIntegerMap(Map<Integer, Integer> productIdList) throws Exception {
@@ -334,10 +339,10 @@ public class Store {
         return product;
     }
 
-    public List<Member> getManagers(){
+    public List<Member> getManagers() {
         List<Member> manager = new ArrayList<>();
-        for(Member m:this.employees){
-            if(m.getStorePosition(this) instanceof StoreManager){
+        for (Member m : this.employees) {
+            if (m.getStorePosition(this) instanceof StoreManager) {
                 manager.add(m);
             }
         }
