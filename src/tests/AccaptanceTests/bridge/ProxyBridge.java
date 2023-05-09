@@ -355,6 +355,16 @@ public class ProxyBridge implements Bridge{
         }
     }
 
+    @Override
+    public boolean appointOwner(String sessionId, int storeId, String userName) {
+        if(real != null){
+            return real.appointOwner(sessionId, storeId, userName);
+        }
+        else{
+            return false;
+        }
+    }
+
 //    public boolean appointOwner(int sessionId, int storeId, String userName){
 //        if(real != null){
 //            return real.appointOwner(sessionId, storeId, userName);

@@ -21,13 +21,16 @@ public class OpenStoreTest extends ServiceTests{
     @Test
     public void testOpenStoreSuccessful(){
         assertTrue(openStore(sessionID1, "newee") > -1);
-        assertTrue(openStore(sessionID1, "newwwww") > -1);
     }
 
     @Test
     public void testOpenStoreFailureNotLoggedIn(){
         logout(sessionID1);
         assertNull(openStore(sessionID1, "newee"));
+    }
+    @Test
+    public void testOpenStoreFailureExistingName(){
+        openStore(sessionID1,"newee");
         assertNull(openStore(sessionID1, "newee"));
     }
 }

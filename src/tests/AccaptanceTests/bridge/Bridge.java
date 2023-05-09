@@ -76,11 +76,10 @@ public interface Bridge {
     boolean editProductCategory(String sessionId, int storeId, int productId, String newCategory);
 
     boolean editProductName(String sessionId, int storeId, int productId, String newName);
+    boolean appointOwner(String sessionId, int storeId, String userName);
 
- //   boolean appointOwner(int sessionId, int storeId, String userName);
 
-
-//    boolean removeManager(int sessionId, int storeId, int userId);
+//    boolean removeManager(String sessionId, int storeId, int userId);
 
     boolean removeStore(String sessionId, int storeId);
 

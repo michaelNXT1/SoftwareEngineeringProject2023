@@ -179,4 +179,8 @@ public abstract class ServiceTests extends TestCase {
     public boolean addMaxQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone){
         return this.bridge.addMaxQuantityPolicy(sessionId, storeId, productId, minQuantity, allowNone);
     }
+
+    public boolean appointOwner(String sessionId, int storeId, String userName){
+        return this.bridge.appointOwner(sessionId, storeId,userName);
+    }
 }
