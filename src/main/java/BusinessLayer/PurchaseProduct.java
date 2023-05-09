@@ -40,4 +40,8 @@ public class PurchaseProduct {
     public int getQuantity() {
         return quantity;
     }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
 }

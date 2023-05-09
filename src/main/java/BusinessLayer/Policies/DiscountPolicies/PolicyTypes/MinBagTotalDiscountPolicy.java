@@ -1,14 +1,15 @@
-package BusinessLayer.Policies.DiscountPolicies;
+package BusinessLayer.Policies.DiscountPolicies.PolicyTypes;
 
+import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
 import BusinessLayer.Product;
 
 import java.util.Map;
 
 public class MinBagTotalDiscountPolicy extends BaseDiscountPolicy {
-    private final int minTotal;
+    private final double minTotal;
 
-    public MinBagTotalDiscountPolicy(int policyId, int minTotal) throws Exception {
-        super(policyId);;
+    public MinBagTotalDiscountPolicy(int policyId, double minTotal) throws Exception {
+        super(policyId);
         if (minTotal <= 0)
             throw new Exception("minimum total must be larger than 0");
         this.minTotal = minTotal;

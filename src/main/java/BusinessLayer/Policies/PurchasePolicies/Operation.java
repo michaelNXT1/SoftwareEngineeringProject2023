@@ -1,17 +1,15 @@
-package BusinessLayer.Policies;
+package BusinessLayer.Policies.PurchasePolicies;
 
-import BusinessLayer.Policies.PurchasePolicies.BasePolicy;
-import BusinessLayer.Policies.PurchasePolicies.PurchasePolicyExpression;
 import BusinessLayer.Product;
 
 import java.util.Map;
 
 public class Operation extends BasePolicy {
-    private PurchasePolicyExpression left;
-    private PurchasePolicyExpression.JoinOperator joinOperator;
-    private PurchasePolicyExpression right;
+    private BasePolicy left;
+    private BasePolicy.JoinOperator joinOperator;
+    private BasePolicy right;
 
-    public Operation(int policyId, PurchasePolicyExpression left,JoinOperator joinOperator,  PurchasePolicyExpression right) {
+    public Operation(int policyId, BasePolicy left,JoinOperator joinOperator,  BasePolicy right) {
         this.policyId = policyId;
         this.left = left;
         this.joinOperator = joinOperator;

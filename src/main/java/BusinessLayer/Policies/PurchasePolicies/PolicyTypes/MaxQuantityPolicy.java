@@ -1,20 +1,21 @@
-package BusinessLayer.Policies.DiscountPolicies;
+package BusinessLayer.Policies.PurchasePolicies.PolicyTypes;
 
+import BusinessLayer.Policies.PurchasePolicies.PurchasePolicy;
 import BusinessLayer.Product;
 
 import java.util.Map;
 
-public class MaxQuantityDiscountPolicy extends BaseDiscountPolicy {
+public class MaxQuantityPolicy extends PurchasePolicy {
     private final int productId;
-    private final int minQuantity;
+    private final int maxQuantity;
     private final boolean allowNone;
 
-    public MaxQuantityDiscountPolicy(int policyId, int productId, int minQuantity, boolean allowNone) throws Exception {
+    public MaxQuantityPolicy(int policyId, int productId, int maxQuantity, boolean allowNone) throws Exception {
         super(policyId);
-        if (minQuantity <= 0)
+        if (maxQuantity <= 0)
             throw new Exception("Max quantity must be larger than 0");
         this.productId = productId;
-        this.minQuantity = minQuantity;
+        this.maxQuantity = maxQuantity;
         this.allowNone = allowNone;
     }
 
@@ -22,7 +23,7 @@ public class MaxQuantityDiscountPolicy extends BaseDiscountPolicy {
     public boolean evaluate(Map<Product, Integer> productList) {
         for (Product p : productList.keySet())
             if (p.getProductId() == productId)
-                return productList.get(p) <= minQuantity;
+                return productList.get(p) <= maxQuantity;
         return allowNone;
     }
 }

@@ -1,5 +1,6 @@
-package BusinessLayer.Policies.DiscountPolicies;
+package BusinessLayer.Policies.DiscountPolicies.PolicyTypes;
 
+import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
 import BusinessLayer.Product;
 
 import java.util.Map;

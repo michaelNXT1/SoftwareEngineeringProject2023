@@ -38,8 +38,10 @@ public class ShoppingBag {
         try {
             //TODO: lock store
             PurchaseProduct pp = store.subtractForPurchase(productId, productList.get(productId));
+            double discountPercentage = store.getProductDiscountPercentage(productId, productList);
+            pp.setPrice(pp.getProductId() * (1 - discountPercentage));
             //TODO: release store
-            productList.remove(productId);
+            this.productList.remove(productId);
             return new Pair<>(pp, true);
         } catch (Exception e) {
             return new Pair<>(null, false);

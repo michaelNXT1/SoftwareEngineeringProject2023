@@ -7,16 +7,10 @@ import java.util.Map;
 public abstract class BaseDiscountPolicy {
     protected int policyId;
 
-    enum JoinOperator {
+    public enum JoinOperator {
         AND,
         OR,
         XOR
-    }
-
-    enum PolicyType {
-        MIN_QUANTITY,
-        MAX_QUANTITY,
-        MIN_BAG_TOTAL
     }
 
     public BaseDiscountPolicy(int policyId) {

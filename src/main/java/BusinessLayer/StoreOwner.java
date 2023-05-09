@@ -1,6 +1,8 @@
 package BusinessLayer;
 
-import BusinessLayer.Policies.PurchasePolicies.PurchasePolicyExpression;
+import BusinessLayer.Discounts.Discount;
+import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
+import BusinessLayer.Policies.PurchasePolicies.BasePolicy;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -112,13 +114,53 @@ public class StoreOwner implements Position {
     }
 
     @Override
-    public void joinPolicies(int policyId1, int policyId2, PurchasePolicyExpression.JoinOperator operator) throws Exception {
+    public void joinPolicies(int policyId1, int policyId2, BasePolicy.JoinOperator operator) throws Exception {
         store.joinPolicies(policyId1, policyId2, operator);
     }
 
     @Override
     public void removePolicy(int policyId) throws Exception {
         store.removePolicy(policyId);
+    }
+
+    @Override
+    public void addProductDiscount(int productId, double discountPercentage, Discount.CompositionType compositionType) throws Exception {
+        store.addProductDiscount(productId, discountPercentage, compositionType);
+    }
+
+    @Override
+    public void addCategoryDiscount(String category, double discountPercentage, Discount.CompositionType compositionType) throws Exception {
+        store.addCategoryDiscount(category,discountPercentage,compositionType);
+    }
+
+    @Override
+    public void addStoreDiscount(double discountPercentage, Discount.CompositionType compositionType) throws Exception {
+        store.addStoreDiscount(discountPercentage,compositionType);
+    }
+
+    @Override
+    public void addMinQuantityDiscountPolicy(int discountId, int productId, int minQuantity, boolean allowNone) throws Exception {
+        store.addMinQuantityDiscountPolicy(discountId,productId,minQuantity,allowNone);
+    }
+
+    @Override
+    public void addMaxQuantityDiscountPolicy(int discountId, int productId, int maxQuantity, boolean allowNone) throws Exception {
+        store.addMaxQuantityDiscountPolicy(discountId,productId,maxQuantity,allowNone);
+    }
+
+    @Override
+    public void addMinBagTotalDiscountPolicy(int discountId, double minTotal) throws Exception {
+        store.addMinBagTotalDiscountPolicy(discountId,minTotal);
+    }
+
+    @Override
+    public void joinDiscountPolicies(int policyId1, int policyId2, BaseDiscountPolicy.JoinOperator operator) throws Exception {
+        store.joinDiscountPolicies(policyId1,policyId2,operator);
+    }
+
+    @Override
+    public void removeDiscountPolicy(int policyId) throws Exception {
+        store.removeDiscountPolicy(policyId);
     }
 
 }

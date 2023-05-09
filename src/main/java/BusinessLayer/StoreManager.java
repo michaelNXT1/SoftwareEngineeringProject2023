@@ -1,6 +1,8 @@
 package BusinessLayer;
 
-import BusinessLayer.Policies.PurchasePolicies.PurchasePolicyExpression;
+import BusinessLayer.Discounts.Discount;
+import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
+import BusinessLayer.Policies.PurchasePolicies.BasePolicy;
 
 import java.time.LocalTime;
 import java.util.HashSet;
@@ -16,7 +18,7 @@ public class StoreManager implements Position {
 
     private Set<permissionType> permissions;
 
-    private  Object permissionLock = new Object();
+    private Object permissionLock = new Object();
 
     public StoreManager(Store store, Member assigner) {
         this.store = store;
@@ -28,6 +30,7 @@ public class StoreManager implements Position {
     public Store getStore() {
         return store;
     }
+
     @Override
     public Member getAssigner() {
         return assigner;
@@ -194,12 +197,52 @@ public class StoreManager implements Position {
     }
 
     @Override
-    public void joinPolicies(int policyId1, int policyId2, PurchasePolicyExpression.JoinOperator operator) throws Exception {
+    public void joinPolicies(int policyId1, int policyId2, BasePolicy.JoinOperator operator) throws Exception {
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 
     @Override
     public void removePolicy(int policyId) throws Exception {
+        throw new IllegalAccessException("This member hasn't permission to perform this action");
+    }
+
+    @Override
+    public void addProductDiscount(int productId, double discountPercentage, Discount.CompositionType compositionType) throws Exception {
+        throw new IllegalAccessException("This member hasn't permission to perform this action");
+    }
+
+    @Override
+    public void addCategoryDiscount(String category, double discountPercentage, Discount.CompositionType compositionType) throws Exception {
+        throw new IllegalAccessException("This member hasn't permission to perform this action");
+    }
+
+    @Override
+    public void addStoreDiscount(double discountPercentage, Discount.CompositionType compositionType) throws Exception {
+        throw new IllegalAccessException("This member hasn't permission to perform this action");
+    }
+
+    @Override
+    public void addMinQuantityDiscountPolicy(int discountId, int productId, int minQuantity, boolean allowNone) throws Exception {
+        throw new IllegalAccessException("This member hasn't permission to perform this action");
+    }
+
+    @Override
+    public void addMaxQuantityDiscountPolicy(int discountId, int productId, int maxQuantity, boolean allowNone) throws Exception {
+        throw new IllegalAccessException("This member hasn't permission to perform this action");
+    }
+
+    @Override
+    public void addMinBagTotalDiscountPolicy(int discountId, double minTotal) throws Exception {
+        throw new IllegalAccessException("This member hasn't permission to perform this action");
+    }
+
+    @Override
+    public void joinDiscountPolicies(int policyId1, int policyId2, BaseDiscountPolicy.JoinOperator operator) throws Exception {
+        throw new IllegalAccessException("This member hasn't permission to perform this action");
+    }
+
+    @Override
+    public void removeDiscountPolicy(int policyId) throws Exception {
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 }
