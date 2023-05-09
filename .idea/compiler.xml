@@ -6,17 +6,16 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="SoftwareEngineeringProject2023" />
+        <module name="my-app" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="flowcrmtutorial" target="15" />
-      <module name="SoftwareEngineeringProject2023 (1)" target="15" />
+      <module name="my-app" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="SoftwareEngineeringProject2023" options="" />
+      <module name="my-app" options="-parameters" />
     </option>
   </component>
 </project>

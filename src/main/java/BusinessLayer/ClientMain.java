@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 public class ClientMain {
     public static void main(String[] args) {
-        System.out.println("Welcome to our market! would you like to come in? (Y/N)");
+        System.out.println("Welcome to our Market! would you like to come in? (Y/N)");
         Scanner scanner = new Scanner(System.in);
         String initInput = scanner.nextLine();
         String[] inputs = new String[]{"y", "n"};

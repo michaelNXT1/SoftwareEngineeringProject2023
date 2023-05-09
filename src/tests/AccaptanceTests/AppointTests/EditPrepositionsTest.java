@@ -16,29 +16,29 @@ public class EditPrepositionsTest extends ServiceTests {
     }
 
     @Test
-    public void editingManagerPremSuccess(){
+    public void testEditingManagerPremSuccess(){
         int storeID = openStore(sessionID1,"newStore");
         appointManager(sessionID1,storeID,"alon12");
         assertTrue(editManagerOptions(sessionID1,storeID,"alon12",1));
     }
 
     @Test
-    public void editingManagerPremFail(){
+    public void testEditingManagerPremFail(){
         int storeID = openStore(sessionID1,"newStore");
         logout(sessionID1);
         String sessionID2 = login("alon12", "alon0601");
         assertFalse(editManagerOptions(sessionID2, storeID, "alon1",2));
     }
     @Test
-    public void editingManagerPremFail2(){
+    public void testEditingManagerPremFail2(){
         String sessionID2 = login("alon12","alon0601");
         int storeID = openStore(sessionID2, "newStore");
         assertFalse(editManagerOptions(sessionID2, storeID, "alon143",2));
     }
 
     @Test
-    public void appointingAllReadyAManagerToManagerFail(){
+    public void testAppointingAllReadyAManagerToManagerFail(){
         int storeID = openStore(sessionID1, "newStore2");
-        assertTrue(appointManager(sessionID1, storeID, "alon1"));
+        assertFalse(appointManager(sessionID1, storeID, "alon1"));
     }
 }
