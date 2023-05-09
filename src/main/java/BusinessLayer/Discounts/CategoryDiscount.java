@@ -5,7 +5,7 @@ import BusinessLayer.Product;
 public class CategoryDiscount extends Discount {
     private final String category;
 
-    public CategoryDiscount(int discountId, double discountPercentage, String category, CompositionType compositionType) throws Exception {
+    public CategoryDiscount(int discountId, double discountPercentage, String category, int compositionType) throws Exception {
         super(discountId, discountPercentage, compositionType);
         this.category = category;
     }

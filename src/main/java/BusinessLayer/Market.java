@@ -1,19 +1,16 @@
 package BusinessLayer;
 
-import BusinessLayer.Discounts.Discount;
 import BusinessLayer.Logger.SystemLogger;
-import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
-import BusinessLayer.Policies.PurchasePolicies.BasePolicy;
-import Security.SecurityUtils;
 import Security.ProxyScurity;
 import Security.SecurityAdapter;
-
+import ServiceLayer.DTOs.*;
 
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-
 
 
 public class Market {
@@ -187,35 +183,35 @@ public class Market {
 
 
     //use case 2.4 - store name
-    public List<Store> getStores(String sessionId, String storeSubString) throws Exception {
+    public List<StoreDTO> getStores(String sessionId, String storeSubString) throws Exception {
         isMarketOpen();
         logger.info(String.format("get all stores including this sub string %s", storeSubString));
         sessionManager.getSession(sessionId);
         if (stringIsEmpty(storeSubString))
             return new ArrayList<>();
-        return stores.values().stream().filter(s -> s.getStoreName().contains(storeSubString)).collect(Collectors.toList());
+        return stores.values().stream().filter(s -> s.getStoreName().contains(storeSubString)).toList().stream().map(StoreDTO::new).toList();
     }
 
     //use case 2.4 - store id
-    public Store getStore(String sessionId, int storeId) throws Exception {
+    public StoreDTO getStoreDTO(String sessionId, int storeId) throws Exception {
         isMarketOpen();
         logger.info(String.format("get the store with specific storeID : %d", storeId));
         Guest g = sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
-        return stores.get(storeId);
+        return new StoreDTO(stores.get(storeId));
     }
 
     //use case 2.5
-    public Product getProduct(String sessionId, int storeId, int productId) throws Exception {
+    public ProductDTO getProduct(String sessionId, int storeId, int productId) throws Exception {
         sessionManager.getSession(sessionId);
         isMarketOpen();
-        logger.info(String.format("gettig product by product id : %d and store id : %d", productId, storeId));
+        logger.info(String.format("getting product by product id : %d and store id : %d", productId, storeId));
         checkStoreExists(storeId);
-        return stores.get(storeId).getProduct(productId);
+        return new ProductDTO(stores.get(storeId).getProduct(productId));
     }
 
     //use case 2.6
-    public List<Product> getProductsByName(String sessionId, String productName) throws Exception {
+    public List<ProductDTO> getProductsByName(String sessionId, String productName) throws Exception {
         isMarketOpen();
         Guest g = sessionManager.getSession(sessionId);
         List<Product> list = new ArrayList<>();
@@ -223,23 +219,23 @@ public class Market {
         if (!stringIsEmpty(productName))
             stores.values().forEach(s -> list.addAll(s.getProducts().keySet().stream().filter(p -> p.getProductName().equals(productName)).collect(Collectors.toList())));
         g.setSearchResults(list);
-        return list;
+        return list.stream().map(ProductDTO::new).toList();
     }
 
     //use case 2.7
-    public List<Product> getProductsByCategory(String sessionId, String productCategory) throws Exception {
+    public List<ProductDTO> getProductsByCategory(String sessionId, String productCategory) throws Exception {
         isMarketOpen();
-        logger.info(String.format("gettig product by category : %s", productCategory));
+        logger.info(String.format("getting product by category : %s", productCategory));
         Guest g = sessionManager.getSession(sessionId);
         List<Product> list = new ArrayList<>();
         if (!stringIsEmpty(productCategory))
             stores.values().forEach(s -> list.addAll(s.getProducts().keySet().stream().filter(p -> p.getCategory().equals(productCategory)).collect(Collectors.toList())));
         g.setSearchResults(list);
-        return list;
+        return list.stream().map(ProductDTO::new).toList();
     }
 
     //use case 2.8
-    public List<Product> getProductsBySubstring(String sessionId, String productSubstring) throws Exception {
+    public List<ProductDTO> getProductsBySubstring(String sessionId, String productSubstring) throws Exception {
         isMarketOpen();
         logger.info(String.format("gettig products by sub string : %s", productSubstring));
         Guest g = sessionManager.getSession(sessionId);
@@ -247,30 +243,30 @@ public class Market {
         if (!stringIsEmpty(productSubstring))
             stores.values().forEach(s -> list.addAll(s.getProducts().keySet().stream().filter(p -> p.getProductName().contains(productSubstring)).collect(Collectors.toList())));
         g.setSearchResults(list);
-        return list;
+        return list.stream().map(ProductDTO::new).toList();
     }
 
     //use case __.__
-    public List<Product> getSearchResults(String sessionId) throws Exception {
+    public List<ProductDTO> getSearchResults(String sessionId) throws Exception {
         isMarketOpen();
         Guest g = sessionManager.getSession(sessionId);
-        return g.getSearchResults();
+        return g.getSearchResults().stream().map(ProductDTO::new).toList();
     }
 
     //use case 2.9 - by category
-    public List<Product> filterSearchResultsByCategory(String sessionId, String category) throws Exception {
+    public List<ProductDTO> filterSearchResultsByCategory(String sessionId, String category) throws Exception {
         isMarketOpen();
         logger.info(String.format("filtering product by category : %s", category));
         Guest g = sessionManager.getSession(sessionId);
-        return g.filterSearchResultsByCategory(category);
+        return g.filterSearchResultsByCategory(category).stream().map(ProductDTO::new).toList();
     }
 
     //use case 2.9 - by price range
-    public List<Product> filterSearchResultsByPrice(String sessionId, double minPrice, double maxPrice) throws Exception {
+    public List<ProductDTO> filterSearchResultsByPrice(String sessionId, double minPrice, double maxPrice) throws Exception {
         isMarketOpen();
         logger.info(String.format("filtering product by min price : %02f  to max price : %02f", minPrice, maxPrice));
         Guest g = sessionManager.getSession(sessionId);
-        return g.filterSearchResultsByPrice(minPrice, maxPrice);
+        return g.filterSearchResultsByPrice(minPrice, maxPrice).stream().map(ProductDTO::new).toList();
     }
 
     //use case 2.10
@@ -283,11 +279,11 @@ public class Market {
     }
 
     //use case 2.11
-    public ShoppingCart getShoppingCart(String sessionId) throws Exception {
+    public ShoppingCartDTO getShoppingCart(String sessionId) throws Exception {
         isMarketOpen();
         logger.info(String.format("%s asking for his shopping cart"));
         Guest g = sessionManager.getSession(sessionId);
-        return g.displayShoppingCart();
+        return new ShoppingCartDTO(g.displayShoppingCart());
     }
 
     //use case 2.12
@@ -309,7 +305,7 @@ public class Market {
     }
 
     //use case 2.14
-    public Purchase purchaseShoppingCart(String sessionId) throws Exception {
+    public PurchaseDTO purchaseShoppingCart(String sessionId) throws Exception {
         isMarketOpen();
         logger.info("trying to buy my cart");
         Guest g = sessionManager.getSession(sessionId);
@@ -324,7 +320,7 @@ public class Market {
                 throw new Exception("Purchase failed, fund demander hasn't managed to charge.");
             }
         }
-        return purchase;
+        return new PurchaseDTO(purchase);
     }
 
     //use case 3.2
@@ -343,7 +339,7 @@ public class Market {
     }
 
     //use case 4.1
-    public List<Purchase> getPurchaseHistory(String sessionId, int storeId) throws Exception {
+    public List<PurchaseDTO> getPurchaseHistory(String sessionId, int storeId) throws Exception {
         isMarketOpen();
         sessionManager.getSession(sessionId);
         logger.info(String.format("trying to get all purchase history of store : %d", storeId));
@@ -352,18 +348,18 @@ public class Market {
             throw new Exception("Store id doesn't exist");
         }
         Position p = checkPositionLegal(sessionId, storeId);
-        return p.getPurchaseHistory(stores.get(storeId));
+        return p.getPurchaseHistory(stores.get(storeId)).stream().map(PurchaseDTO::new).toList();
     }
 
     //use case 5.1
-    public Product addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description) throws Exception {
+    public ProductDTO addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description) throws Exception {
         isMarketOpen();
         sessionManager.getSession(sessionId);
         logger.info("trying adding new product");
         checkStoreExists(storeId);
         logger.info(String.format("adding product to store %s new product name %s price %.02f category %s quantity %d description %s", getStore(sessionId, storeId).getStoreName(), productName, price, category, quantity, description));
         Position p = checkPositionLegal(sessionId, storeId);
-        return p.addProduct(stores.get(storeId), productName, price, category, quantity, description);
+        return new ProductDTO(p.addProduct(stores.get(storeId), productName, price, category, quantity, description));
     }
 
     //use case 5.2 - by product name
@@ -408,7 +404,7 @@ public class Market {
 
     public String getSessionID(String name) throws Exception {
         isMarketOpen();
-        logger.info("getting session ID for user "+name);
+        logger.info("getting session ID for user " + name);
         return sessionManager.getSessionIdByGuestName(name);
     }
 
@@ -495,11 +491,11 @@ public class Market {
 
 
     //use case 5.11
-    public List<Member> getStoreEmployees(String sessionId, int storeId) throws Exception {
+    public List<MemberDTO> getStoreEmployees(String sessionId, int storeId) throws Exception {
         isMarketOpen();
         sessionManager.getSession(sessionId);
         Position p = checkPositionLegal(sessionId, storeId);
-        return p.getStoreEmployees();
+        return p.getStoreEmployees().stream().map(MemberDTO::new).toList();
     }
 
     //use case 6.1
@@ -512,14 +508,14 @@ public class Market {
     }
 
     //use case 7.1
-    public Map<Store, List<Purchase>> getStoresPurchases(String sessionId) throws Exception {
+    public Map<StoreDTO, List<PurchaseDTO>> getStoresPurchases(String sessionId) throws Exception {
         checkMarketOpen();
         sessionManager.getSessionForSystemManager(sessionId);
-        Map<Store, List<Purchase>> ret = new HashMap<>();
+        Map<StoreDTO, List<PurchaseDTO>> ret = new HashMap<>();
         for (Store s : stores.values()) {
-            ret.put(s, new ArrayList<>());
+            ret.put(new StoreDTO(s), new ArrayList<>());
             for (Purchase p : s.getPurchaseList()) {
-                ret.get(s).add(p);
+                ret.get(s).add(new PurchaseDTO(p));
             }
         }
         return ret;
@@ -558,7 +554,7 @@ public class Market {
         p.addCategoryTimeRestrictionPolicy(category, startTime, endTime);
     }
 
-    public void joinPolicies(String sessionId, int storeId, int policyId1, int policyId2, BasePolicy.JoinOperator operator) throws Exception {
+    public void joinPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator) throws Exception {
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
@@ -574,7 +570,7 @@ public class Market {
         p.removePolicy(policyId);
     }
 
-    public void addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, Discount.CompositionType compositionType) throws Exception {
+    public void addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType) throws Exception {
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
@@ -582,7 +578,7 @@ public class Market {
         p.addProductDiscount(productId, discountPercentage, compositionType);
     }
 
-    public void addCategoryDiscount(String sessionId, int storeId, String category, double discountPercentage, Discount.CompositionType compositionType) throws Exception {
+    public void addCategoryDiscount(String sessionId, int storeId, String category, double discountPercentage, int compositionType) throws Exception {
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
@@ -590,7 +586,7 @@ public class Market {
         p.addCategoryDiscount(category, discountPercentage, compositionType);
     }
 
-    public void addStoreDiscount(String sessionId, int storeId, double discountPercentage, Discount.CompositionType compositionType) throws Exception {
+    public void addStoreDiscount(String sessionId, int storeId, double discountPercentage, int compositionType) throws Exception {
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
@@ -622,7 +618,7 @@ public class Market {
         p.addMinBagTotalDiscountPolicy(discountId, minTotal);
     }
 
-    public void joinDiscountPolicies(String sessionId, int storeId, int policyId1, int policyId2, BaseDiscountPolicy.JoinOperator operator) throws Exception {
+    public void joinDiscountPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator) throws Exception {
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
@@ -638,7 +634,21 @@ public class Market {
         p.removeDiscountPolicy(policyId);
     }
 
+    public void addPaymentMethod(String sessionId, String creditCardNumber, int cvv, LocalDate expirationDate) throws Exception {
+        isMarketOpen();
+        Guest g = sessionManager.getSession(sessionId);
+        g.addPaymentMethod(creditCardNumber, cvv, expirationDate);
+    }
+
     //PRIVATE METHODS
+    public Store getStore(String sessionId, int storeId) throws Exception {
+        isMarketOpen();
+        logger.info(String.format("get the store with specific storeID : %d", storeId));
+        Guest g = sessionManager.getSession(sessionId);
+        checkStoreExists(storeId);
+        return stores.get(storeId);
+    }
+
     private void isMarketOpen() throws Exception {
         if (!checkMarketOpen()) {
             logger.error("marker is not open yet");

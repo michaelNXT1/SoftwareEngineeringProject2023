@@ -49,16 +49,16 @@ public interface Position {
 
     void addCategoryTimeRestrictionPolicy(String category, LocalTime startTime, LocalTime endTime) throws Exception;
 
-    void joinPolicies(int policyId1, int policyId2, BasePolicy.JoinOperator operator) throws Exception;
+    void joinPolicies(int policyId1, int policyId2, int operator) throws Exception;
 
     void removePolicy(int policyId) throws Exception;
 
 
-    public void addProductDiscount(int productId, double discountPercentage, Discount.CompositionType compositionType) throws Exception ;
+    public void addProductDiscount(int productId, double discountPercentage, int compositionType) throws Exception ;
 
-    public void addCategoryDiscount(String category, double discountPercentage, Discount.CompositionType compositionType) throws Exception ;
+    public void addCategoryDiscount(String category, double discountPercentage, int compositionType) throws Exception ;
 
-    public void addStoreDiscount(double discountPercentage, Discount.CompositionType compositionType) throws Exception ;
+    public void addStoreDiscount(double discountPercentage, int compositionType) throws Exception ;
 
     //Discount policies
     public void addMinQuantityDiscountPolicy(int discountId, int productId, int minQuantity, boolean allowNone) throws Exception ;
@@ -67,7 +67,7 @@ public interface Position {
 
     public void addMinBagTotalDiscountPolicy(int discountId, double minTotal) throws Exception ;
 
-    public void joinDiscountPolicies(int policyId1, int policyId2, BaseDiscountPolicy.JoinOperator operator) throws Exception ;
+    public void joinDiscountPolicies(int policyId1, int policyId2, int operator) throws Exception ;
 
     public void removeDiscountPolicy(int policyId) throws Exception ;
 

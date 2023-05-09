@@ -12,12 +12,12 @@ abstract public class Discount {
     protected final double discountPercentage;
     protected final CompositionType compositionType;
 
-    public Discount(int discountId, double discountPercentage, CompositionType compositionType) throws Exception {
+    public Discount(int discountId, double discountPercentage, int compositionType) throws Exception {
         this.discountId = discountId;
         if (discountPercentage <= 0.0 || 1.0 < discountPercentage)
             throw new Exception("discount percentage illegal");
         this.discountPercentage = discountPercentage;
-        this.compositionType = compositionType;
+        this.compositionType = CompositionType.values()[compositionType];
     }
 
     public int getDiscountId() {

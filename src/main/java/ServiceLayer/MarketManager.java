@@ -1,17 +1,9 @@
 package ServiceLayer;
 
-import BusinessLayer.*;
-import BusinessLayer.Discounts.Discount;
-import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
-import BusinessLayer.Policies.PurchasePolicies.BasePolicy;
-import BusinessLayer.Policies.PurchasePolicyExpression;
-import ServiceLayer.DTOs.MemberDTO;
-import ServiceLayer.DTOs.ProductDTO;
-import ServiceLayer.DTOs.PurchaseDTO;
-import ServiceLayer.DTOs.StoreDTO;
+import BusinessLayer.Market;
+import ServiceLayer.DTOs.*;
 
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.time.LocalDate;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -100,9 +92,9 @@ public class MarketManager implements IMarketManager {
     }
 
     //use case 2.4
-    public ResponseT<List<Store>> getStores(String sessionId, String storeSubString) {
+    public ResponseT<List<StoreDTO>> getStores(String sessionId, String storeSubString) {
         try {
-            List<Store> ret = market.getStores(sessionId, storeSubString);
+            List<StoreDTO> ret = market.getStores(sessionId, storeSubString);
             return ResponseT.fromValue(ret);
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
@@ -110,9 +102,9 @@ public class MarketManager implements IMarketManager {
     }
 
     //use case 2.4
-    public ResponseT<Store> getStore(String sessionId, int storeId) {
+    public ResponseT<StoreDTO> getStore(String sessionId, int storeId) {
         try {
-            Store ret = market.getStore(sessionId, storeId);
+            StoreDTO ret = market.getStoreDTO(sessionId, storeId);
             return ResponseT.fromValue(ret);
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
@@ -121,18 +113,16 @@ public class MarketManager implements IMarketManager {
 
     public ResponseT<ProductDTO> getProduct(String sessionId, int storeId, int productId) {
         try {
-            Product ret = market.getProduct(sessionId, storeId, productId);
-            ProductDTO productDTO = ProductDTO.FromProductToProductDTO(ret);
-            return ResponseT.fromValue(productDTO);
+            return ResponseT.fromValue(market.getProduct(sessionId, storeId, productId));
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }
     }
 
     //use case 2.6
-    public ResponseT<List<Product>> getProductsByName(String sessionId, String productName) {
+    public ResponseT<List<ProductDTO>> getProductsByName(String sessionId, String productName) {
         try {
-            List<Product> ret = market.getProductsByName(sessionId, productName);
+            List<ProductDTO> ret = market.getProductsByName(sessionId, productName);
             return ResponseT.fromValue(ret);
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
@@ -142,12 +132,7 @@ public class MarketManager implements IMarketManager {
     //use case 2.7
     public ResponseT<List<ProductDTO>> getProductsByCategory(String sessionId, String productCategory) {
         try {
-            List<Product> ret = market.getProductsByCategory(sessionId, productCategory);
-            List<ProductDTO> productDTOS = new LinkedList<>();
-            for(Product p:ret){
-                productDTOS.add(ProductDTO.FromProductToProductDTO(p));
-            }
-            return ResponseT.fromValue(productDTOS);
+            return ResponseT.fromValue(market.getProductsByCategory(sessionId, productCategory));
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }
@@ -156,12 +141,7 @@ public class MarketManager implements IMarketManager {
     //use case 2.8
     public ResponseT<List<ProductDTO>> getProductsBySubstring(String sessionId, String productSubstring) {
         try {
-            List<Product> ret = market.getProductsBySubstring(sessionId, productSubstring);
-            List<ProductDTO> productDTOS = new LinkedList<>();
-            for(Product p:ret){
-                productDTOS.add(ProductDTO.FromProductToProductDTO(p));
-            }
-            return ResponseT.fromValue(productDTOS);
+            return ResponseT.fromValue(market.getProductsBySubstring(sessionId, productSubstring));
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }
@@ -169,12 +149,7 @@ public class MarketManager implements IMarketManager {
 
     public ResponseT<List<ProductDTO>> getSearchResults(String sessionId) {
         try {
-            List<Product> ret = market.getSearchResults(sessionId);
-            List<ProductDTO> productDTOS = new LinkedList<>();
-            for(Product p:ret){
-                productDTOS.add(ProductDTO.FromProductToProductDTO(p));
-            }
-            return ResponseT.fromValue(productDTOS);
+            return ResponseT.fromValue(market.getSearchResults(sessionId));
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }
@@ -182,12 +157,7 @@ public class MarketManager implements IMarketManager {
 
     public ResponseT<List<ProductDTO>> filterSearchResultsByCategory(String sessionId, String category) {
         try {
-            List<Product> ret = market.filterSearchResultsByCategory(sessionId,category);
-            List<ProductDTO> productDTOS = new LinkedList<>();
-            for(Product p:ret){
-                productDTOS.add(ProductDTO.FromProductToProductDTO(p));
-            }
-            return ResponseT.fromValue(productDTOS);
+            return ResponseT.fromValue(market.filterSearchResultsByCategory(sessionId, category));
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }
@@ -195,12 +165,7 @@ public class MarketManager implements IMarketManager {
 
     public ResponseT<List<ProductDTO>> filterSearchResultsByPrice(String sessionId, double minPrice, double maxPrice) {
         try {
-            List<Product> ret = market.filterSearchResultsByPrice(sessionId, minPrice, maxPrice);
-            List<ProductDTO> productDTOS = new LinkedList<>();
-            for(Product p:ret){
-                productDTOS.add(ProductDTO.FromProductToProductDTO(p));
-            }
-            return ResponseT.fromValue(productDTOS);
+            return ResponseT.fromValue(market.filterSearchResultsByPrice(sessionId, minPrice, maxPrice));
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }
@@ -215,10 +180,9 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public ResponseT<ShoppingCart> getShoppingCart(String sessionId) {
+    public ResponseT<ShoppingCartDTO> getShoppingCart(String sessionId) {
         try {
-            ShoppingCart ret = market.getShoppingCart(sessionId);
-            return ResponseT.fromValue(ret);
+            return ResponseT.fromValue(market.getShoppingCart(sessionId));
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }
@@ -242,10 +206,10 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public ResponseT<Purchase> purchaseShoppingCart(String sessionId) {
+    public ResponseT<PurchaseDTO> purchaseShoppingCart(String sessionId) {
         try {
-            Purchase ret = market.purchaseShoppingCart(sessionId);
-            return ResponseT.fromValue(ret);
+            PurchaseDTO ret = market.purchaseShoppingCart(sessionId);
+            return ResponseT.fromValue(market.purchaseShoppingCart(sessionId));
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }
@@ -264,13 +228,7 @@ public class MarketManager implements IMarketManager {
 
     public ResponseT<List<PurchaseDTO>> getPurchaseHistory(String sessionId, int storeId) {
         try {
-            List<Purchase> ret = market.getPurchaseHistory(sessionId, storeId);
-            List<PurchaseDTO> purchaseDTOS = new LinkedList<>();
-            for(Purchase p:ret){
-                PurchaseDTO purchaseDTO = PurchaseDTO.fromPurchaseToPurchaseDTO(p);
-                purchaseDTOS.add(purchaseDTO);
-            }
-            return ResponseT.fromValue(purchaseDTOS);
+            return ResponseT.fromValue(market.getPurchaseHistory(sessionId, storeId));
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }
@@ -278,9 +236,7 @@ public class MarketManager implements IMarketManager {
 
     public ResponseT<ProductDTO> addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description) {
         try {
-            Product ret = market.addProduct(sessionId, storeId, productName, price, category, quantity, description);
-            ProductDTO productDTO = ProductDTO.FromProductToProductDTO(ret);
-            return ResponseT.fromValue(productDTO);
+            return ResponseT.fromValue(market.addProduct(sessionId, storeId, productName, price, category, quantity, description));
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }
@@ -348,15 +304,10 @@ public class MarketManager implements IMarketManager {
             return new Response(e.getMessage());
         }
     }
+
     public ResponseT<List<MemberDTO>> getStoreEmployees(String sessionId, int storeId) {
         try {
-            List<Member> ret = market.getStoreEmployees(sessionId, storeId);
-            List<MemberDTO> memberDTOS = new LinkedList<>();
-            for(Member member:ret){
-                MemberDTO memberDTO = MemberDTO.fromMemberToMemberDTO(member);
-                memberDTOS.add(memberDTO);
-            }
-            return ResponseT.fromValue(memberDTOS);
+            return ResponseT.fromValue(market.getStoreEmployees(sessionId, storeId));
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }
@@ -385,19 +336,7 @@ public class MarketManager implements IMarketManager {
 
     public ResponseT<Map<StoreDTO, List<PurchaseDTO>>> getStoresPurchases(String sessionId) {
         try {
-            Map<Store, List<Purchase>> ret = market.getStoresPurchases(sessionId);//add DTOs here
-            Map<StoreDTO, List<PurchaseDTO>> storeDTOListMap = new HashMap<>();
-            for(Store s:ret.keySet().toArray(new Store[0])){
-                StoreDTO storeDTO = StoreDTO.fromStoreToStoreDTO(s);
-                List<Purchase> purchaseList = ret.get(s);
-                List<PurchaseDTO> purchaseDTOS = new LinkedList<>();
-                for(Purchase p:purchaseList){
-                    PurchaseDTO purchaseDTO = PurchaseDTO.fromPurchaseToPurchaseDTO(p);
-                    purchaseDTOS.add(purchaseDTO);
-                }
-                storeDTOListMap.put(storeDTO, purchaseDTOS);
-            }
-            return ResponseT.fromValue(storeDTOListMap);
+            return ResponseT.fromValue(market.getStoresPurchases(sessionId));
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }
@@ -439,7 +378,7 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public Response joinPolicies(String sessionId, int storeId, int policyId1, int policyId2, BasePolicy.JoinOperator operator) {
+    public Response joinPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator) {
         try {
             market.joinPolicies(sessionId, storeId, policyId1, policyId2, operator);
             return new Response();
@@ -458,7 +397,7 @@ public class MarketManager implements IMarketManager {
     }
 
 
-    public Response addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, Discount.CompositionType compositionType) throws Exception {
+    public Response addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType) throws Exception {
         try {
             market.addProductDiscount(sessionId, storeId, productId, discountPercentage, compositionType);
             return new Response();
@@ -468,7 +407,7 @@ public class MarketManager implements IMarketManager {
     }
 
 
-    public Response addCategoryDiscount(String sessionId, int storeId, String category, double discountPercentage, Discount.CompositionType compositionType) throws Exception {
+    public Response addCategoryDiscount(String sessionId, int storeId, String category, double discountPercentage, int compositionType) throws Exception {
         try {
             market.addCategoryDiscount(sessionId, storeId, category, discountPercentage, compositionType);
             return new Response();
@@ -478,7 +417,7 @@ public class MarketManager implements IMarketManager {
     }
 
 
-    public Response addStoreDiscount(String sessionId, int storeId, double discountPercentage, Discount.CompositionType compositionType) throws Exception {
+    public Response addStoreDiscount(String sessionId, int storeId, double discountPercentage, int compositionType) throws Exception {
         try {
             market.addStoreDiscount(sessionId, storeId, discountPercentage, compositionType);
             return new Response();
@@ -518,7 +457,7 @@ public class MarketManager implements IMarketManager {
     }
 
 
-    public Response joinDiscountPolicies(String sessionId, int storeId, int policyId1, int policyId2, BaseDiscountPolicy.JoinOperator operator) throws Exception {
+    public Response joinDiscountPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator) throws Exception {
         try {
             market.joinDiscountPolicies(sessionId, storeId, policyId1, policyId2, operator);
             return new Response();
@@ -531,6 +470,15 @@ public class MarketManager implements IMarketManager {
     public Response removeDiscountPolicy(String sessionId, int storeId, int policyId) throws Exception {
         try {
             market.removeDiscountPolicy(sessionId, storeId, policyId);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
+    public Response addPaymentMethod(String sessionId, String creditCardNumber, int cvv, LocalDate expirationDate) throws Exception {
+        try {
+            market.addPaymentMethod(sessionId, creditCardNumber, cvv, expirationDate);
             return new Response();
         } catch (Exception e) {
             return new Response(e.getMessage());

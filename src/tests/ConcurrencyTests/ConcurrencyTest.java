@@ -3,6 +3,7 @@ package ConcurrencyTests;
 
 import BusinessLayer.Market;
 import BusinessLayer.Purchase;
+import ServiceLayer.DTOs.PurchaseDTO;
 import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.Before;
@@ -109,7 +110,7 @@ public class ConcurrencyTest extends TestCase {
 
 
     private void confirmPurchase(String sessionId) throws Exception {
-        Purchase result = market.purchaseShoppingCart(sessionId);
+        PurchaseDTO result = market.purchaseShoppingCart(sessionId);
     }
 
 
