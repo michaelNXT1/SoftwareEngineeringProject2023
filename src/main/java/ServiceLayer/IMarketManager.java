@@ -20,11 +20,7 @@ public interface IMarketManager {
 
         ResponseT<String> login(String username, String password);
 
-        ResponseT<String> loginSystemManager(String username, String password);
-
         Response logout(String sessionId);
-
-        Response logoutSystemManager(String sessionId);
 
         ResponseT<List<StoreDTO>> getStores(String sessionId, String storeSubString);
 
@@ -111,5 +107,8 @@ public interface IMarketManager {
         Response removeDiscountPolicy(String sessionId, int storeId, int policyId) throws Exception;
 
         Response addPaymentMethod(String sessionId, String creditCardNumber, int cvv, LocalDate expirationDate) throws Exception;
+
+        ResponseT<List<String>> getAllCategories();
+}
         Response removeMember(String sessionId, String memberName);
     }

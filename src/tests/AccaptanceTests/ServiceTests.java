@@ -7,6 +7,8 @@ import AccaptanceTests.bridge.*;
 import junit.framework.TestCase;
 import org.junit.After;
 
+import java.time.LocalTime;
+
 
 public abstract class ServiceTests extends TestCase {
 
@@ -168,9 +170,30 @@ public abstract class ServiceTests extends TestCase {
         return this.bridge.exitMarket(sessionId);
     }
 
+    public boolean addProductTimeRestrictionPolicy(String sessionId, int storeId, int productId, LocalTime startTime, LocalTime endTime){
+        return this.bridge.addProductTimeRestrictionPolicy(sessionId, storeId, productId, startTime, endTime);
+    }
+    public boolean addCategoryTimeRestrictionPolicy(String sessionId, int storeId, String category, LocalTime startTime, LocalTime endTime){
+        return this.bridge.addCategoryTimeRestrictionPolicy(sessionId, storeId, category, startTime, endTime);
+    }
+    public boolean joinPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator){
+        return this.bridge.joinPolicies(sessionId, storeId, policyId1, policyId2, operator);
+    }
+    public boolean removePolicy(String sessionId, int storeId, int policyId){
+        return this.bridge.removePolicy(sessionId, storeId, policyId);
+    }
+    public boolean addMinQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone){
+        return this.bridge.addMinQuantityPolicy(sessionId, storeId, productId, minQuantity, allowNone);
+    }
+    public boolean addMaxQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone){
+        return this.bridge.addMaxQuantityPolicy(sessionId, storeId, productId, minQuantity, allowNone);
+    }
 //    public int startSession() { return this.bridge.startSession(); }
     public boolean removeMember(String sessionId, String memberName){
         return bridge.removeMember(sessionId, memberName);
     }
 
+    public boolean appointOwner(String sessionId, int storeId, String userName){
+        return this.bridge.appointOwner(sessionId, storeId,userName);
+    }
 }

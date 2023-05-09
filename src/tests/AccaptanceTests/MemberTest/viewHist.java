@@ -42,4 +42,9 @@ public class viewHist extends ServiceTests {
         String sessionID2 = login("alon12", "alon0601");
         assertNull(viewPurchaseHistory(sessionID2,storeID));
     }
+
+    @Test
+    public void testViewPurchaseStoreNotExist(){
+        assertNull(viewPurchaseHistory(sessionID1,-1));
+    }
 }

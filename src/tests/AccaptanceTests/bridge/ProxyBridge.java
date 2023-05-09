@@ -1,5 +1,7 @@
 package AccaptanceTests.bridge;
 
+import java.time.LocalTime;
+
 public class ProxyBridge implements Bridge{
     private Bridge real = null;
 
@@ -238,25 +240,6 @@ public class ProxyBridge implements Bridge{
 
 
 
-//    public boolean editStorePurchaseType(int sessionId, int storeId, String newType) {
-//        if(real != null){
-//            return real.editStorePurchaseType(sessionId, storeId, newType);
-//        }
-//        else return false;
-//    }
-
-
-
-
-//    public String searchUserHistory(int sessionId, int userId){
-//        if(real != null){
-//            return real.searchUserHistory(sessionId, userId);
-//        }
-//        else{
-//            return null;
-//        }
-//    }
-
 
     public boolean appointManager(String sessionId, int storeId, String userName){
         if(real != null){
@@ -372,6 +355,16 @@ public class ProxyBridge implements Bridge{
         }
     }
 
+    @Override
+    public boolean appointOwner(String sessionId, int storeId, String userName) {
+        if(real != null){
+            return real.appointOwner(sessionId, storeId, userName);
+        }
+        else{
+            return false;
+        }
+    }
+
 //    public boolean appointOwner(int sessionId, int storeId, String userName){
 //        if(real != null){
 //            return real.appointOwner(sessionId, storeId, userName);
@@ -423,6 +416,66 @@ public class ProxyBridge implements Bridge{
     public boolean exitMarket(String sessionId) {
         if(real != null){
             return real.exitMarket(sessionId);
+        }
+        else{
+            return false;
+        }
+    }
+
+    @Override
+    public boolean addProductTimeRestrictionPolicy(String sessionId, int storeId, int productId, LocalTime startTime, LocalTime endTime) {
+        if(real != null){
+            return real.addProductTimeRestrictionPolicy(sessionId, storeId, productId, startTime, endTime);
+        }
+        else{
+            return false;
+        }
+    }
+
+    @Override
+    public boolean addCategoryTimeRestrictionPolicy(String sessionId, int storeId, String category, LocalTime startTime, LocalTime endTime) {
+        if(real != null){
+            return real.addCategoryTimeRestrictionPolicy(sessionId, storeId, category, startTime, endTime);
+        }
+        else{
+            return false;
+        }
+    }
+
+    @Override
+    public boolean joinPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator) {
+        if(real != null){
+            return real.joinPolicies(sessionId, storeId, policyId1, policyId2, operator);
+        }
+        else{
+            return false;
+        }
+    }
+
+    @Override
+    public boolean removePolicy(String sessionId, int storeId, int policyId) {
+        if(real != null){
+            return real.removePolicy(sessionId, storeId, policyId);
+        }
+        else{
+            return false;
+        }
+    }
+
+    @Override
+    public boolean addMinQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone) {
+        if(real != null){
+            return real.addMinQuantityPolicy(sessionId, storeId, productId, minQuantity, allowNone);
+        }
+        else{
+            return false;
+        }
+    }
+
+    @Override
+    public boolean addMaxQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone) {
+        if(real != null){
+            return real.addMaxQuantityPolicy(sessionId, storeId, productId, minQuantity, allowNone);
         }
         else{
             return false;
