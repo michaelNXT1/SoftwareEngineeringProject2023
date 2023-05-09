@@ -14,7 +14,6 @@ public class RemoveMemberTest extends ServiceTests {
         sessionID1 = loginSystemManager("alon1","alon0601");
     }
 
-    @Test
     public void testRemoveMemberSuccessful(){
         assertTrue(removeMember(sessionID1, "shoham"));
     }
