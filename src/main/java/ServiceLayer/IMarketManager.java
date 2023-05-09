@@ -20,11 +20,7 @@ public interface IMarketManager {
 
         ResponseT<String> login(String username, String password);
 
-//        ResponseT<String> loginSystemManager(String username, String password);
-
         Response logout(String sessionId);
-
-//        Response logoutSystemManager(String sessionId);
 
         ResponseT<List<StoreDTO>> getStores(String sessionId, String storeSubString);
 
