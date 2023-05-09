@@ -15,8 +15,15 @@ import java.util.Map;
 public class MarketController implements IMarketController{
 
     private MarketManager marketManager;
+    private static MarketController instance = null;
 
-    public MarketController(){
+    public static MarketController getInstance() {
+        if (instance == null) {
+            instance = new MarketController();
+        }
+        return instance;
+    }
+    private MarketController(){
         this.marketManager = new MarketManager();
     }
 
