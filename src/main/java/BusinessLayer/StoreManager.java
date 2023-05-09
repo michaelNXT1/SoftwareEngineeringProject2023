@@ -204,7 +204,7 @@ public class StoreManager implements Position {
     }
 
     @Override
-    public void joinPolicies(int policyId1, int policyId2, BasePolicy.JoinOperator operator) throws Exception {
+    public void joinPolicies(int policyId1, int policyId2, int operator) throws Exception {
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 
@@ -214,17 +214,17 @@ public class StoreManager implements Position {
     }
 
     @Override
-    public void addProductDiscount(int productId, double discountPercentage, Discount.CompositionType compositionType) throws Exception {
+    public void addProductDiscount(int productId, double discountPercentage, int compositionType) throws Exception {
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 
     @Override
-    public void addCategoryDiscount(String category, double discountPercentage, Discount.CompositionType compositionType) throws Exception {
+    public void addCategoryDiscount(String category, double discountPercentage, int compositionType) throws Exception {
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 
     @Override
-    public void addStoreDiscount(double discountPercentage, Discount.CompositionType compositionType) throws Exception {
+    public void addStoreDiscount(double discountPercentage, int compositionType) throws Exception {
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 
@@ -244,7 +244,7 @@ public class StoreManager implements Position {
     }
 
     @Override
-    public void joinDiscountPolicies(int policyId1, int policyId2, BaseDiscountPolicy.JoinOperator operator) throws Exception {
+    public void joinDiscountPolicies(int policyId1, int policyId2, int operator) throws Exception {
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 

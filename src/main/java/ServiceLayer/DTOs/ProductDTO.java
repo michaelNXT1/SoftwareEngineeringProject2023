@@ -12,18 +12,14 @@ public class ProductDTO {
     private int amount;
     private String description;
 
-    public ProductDTO(int productId, String productName, double price, String category, double rating, int amount, String description) {
-        this.productId = productId;
-        this.productName = productName;
-        this.price = price;
-        this.category = category;
-        this.rating = rating;
-        this.amount = amount;
-        this.description = description;
-    }
-
-    public static ProductDTO FromProductToProductDTO(Product p){
-        return new ProductDTO(p.getProductId(),p.getProductName(),p.getProductPrice(),p.getCategory(),p.getRating(),p.getAmount(),p.getDescription());
+    public ProductDTO(Product p) {
+        this.productId = p.getProductId();
+        this.productName =  p.getProductName();
+        this.price = p.getProductPrice();
+        this.category = p.getCategory();
+        this.rating = p.getRating();
+        this.amount = p.getAmount();
+        this.description = p.getDescription();
     }
 
     public int getProductId() {

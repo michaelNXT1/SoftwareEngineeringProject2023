@@ -4,16 +4,24 @@ import BusinessLayer.Store;
 
 public class StoreDTO {
     private final int storeId;
-    private String storeName;
-    private boolean isOpen;
+    private final String storeName;
+    private final boolean isOpen;
 
-    public StoreDTO(int storeId, String storeName, boolean isOpen) {
-        this.storeId = storeId;
-        this.storeName = storeName;
-        this.isOpen = isOpen;
+    public StoreDTO(Store s) {
+        this.storeId = s.getStoreId();
+        this.storeName = s.getStoreName();
+        this.isOpen = s.isOpen();
     }
 
-    public static StoreDTO fromStoreToStoreDTO(Store s){
-        return new StoreDTO(s.getStoreId(),s.getStoreName(),s.isOpen());
+    public int getStoreId() {
+        return storeId;
+    }
+
+    public String getStoreName() {
+        return storeName;
+    }
+
+    public boolean isOpen() {
+        return isOpen;
     }
 }

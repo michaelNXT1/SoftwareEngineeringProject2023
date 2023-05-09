@@ -6,13 +6,14 @@ import BusinessLayer.PurchaseProduct;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PurchaseDTO {
 
     private List<PurchaseProductDTO> productDTOList;
 
-    public PurchaseDTO(List<PurchaseProductDTO> productDTOList) {
-        this.productDTOList = productDTOList;
+    public PurchaseDTO(Purchase p) {
+        productDTOList = p.getProductList().stream().map(PurchaseProductDTO::new).collect(Collectors.toList());
     }
 
     public List<PurchaseProductDTO> getProductDTOList() {
@@ -25,16 +26,6 @@ public class PurchaseDTO {
 
     public PurchaseDTO() {
         this.productDTOList = new LinkedList<>();
-    }
-
-    public static PurchaseDTO fromPurchaseToPurchaseDTO(Purchase p){
-        List<PurchaseProduct> productsList = p.getProductList();
-        List<PurchaseProductDTO> productDTOList = new LinkedList<>();
-        for(PurchaseProduct product:productsList){
-            PurchaseProductDTO purchaseProductDTO = PurchaseProductDTO.fromPurchaseToPurchaseDTO(product);
-            productDTOList.add(purchaseProductDTO);
-        }
-        return new PurchaseDTO(productDTOList);
     }
 
 }

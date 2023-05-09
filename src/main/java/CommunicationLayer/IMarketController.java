@@ -1,14 +1,6 @@
 package CommunicationLayer;
 
-import BusinessLayer.Policies.PurchasePolicyExpression;
-import BusinessLayer.Product;
-import BusinessLayer.Purchase;
-import BusinessLayer.ShoppingCart;
-import BusinessLayer.Store;
-import ServiceLayer.DTOs.MemberDTO;
-import ServiceLayer.DTOs.ProductDTO;
-import ServiceLayer.DTOs.PurchaseDTO;
-import ServiceLayer.DTOs.StoreDTO;
+import ServiceLayer.DTOs.*;
 import ServiceLayer.Response;
 import ServiceLayer.ResponseT;
 
@@ -25,20 +17,20 @@ public interface IMarketController {
     ResponseT<String> loginSystemManager(String username, String password);
     Response logout(String sessionId);
     Response logoutSystemManager(String sessionId);
-    ResponseT<List<Store>> getStores(String sessionId, String storeSubString);
-    ResponseT<Store> getStore(String sessionId, int storeId);
+    ResponseT<List<StoreDTO>> getStores(String sessionId, String storeSubString);
+    ResponseT<StoreDTO> getStore(String sessionId, int storeId);
     ResponseT<ProductDTO> getProduct(String sessionId, int storeId, int productId);
-    ResponseT<List<Product>> getProductsByName(String sessionId, String productName);
+    ResponseT<List<ProductDTO>> getProductsByName(String sessionId, String productName);
     ResponseT<List<ProductDTO>> getProductsByCategory(String sessionId, String productCategory);
     ResponseT<List<ProductDTO>> getProductsBySubstring(String sessionId, String productSubstring);
     ResponseT<List<ProductDTO>> getSearchResults(String sessionId);
     ResponseT<List<ProductDTO>> filterSearchResultsByCategory(String sessionId, String category);
     ResponseT<List<ProductDTO>> filterSearchResultsByPrice(String sessionId, double minPrice, double maxPrice);
     Response addProductToCart(String sessionId, int storeId, int productId, int quantity);
-    ResponseT<ShoppingCart> getShoppingCart(String sessionId);
+    ResponseT<ShoppingCartDTO> getShoppingCart(String sessionId);
     Response changeProductQuantity(String sessionId, int storeId, int productId, int quantity);
     Response removeProductFromCart(String sessionId, int storeId, int productId);
-    ResponseT<Purchase> purchaseShoppingCart(String sessionId);
+    ResponseT<PurchaseDTO> purchaseShoppingCart(String sessionId);
     ResponseT<Integer> openStore(String sessionId, String storeName);
     ResponseT<List<PurchaseDTO>> getPurchaseHistory(String sessionId, int storeId);
     ResponseT<ProductDTO> addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description);
@@ -55,7 +47,7 @@ public interface IMarketController {
     ResponseT<Map<StoreDTO, List<PurchaseDTO>>> getStoresPurchases(String sessionId);
     Response addProductTimeRestrictionPolicy(String sessionId, int storeId, int productId, LocalTime startTime, LocalTime endTime);
     Response addCategoryTimeRestrictionPolicy(String sessionId, int storeId, String category, LocalTime startTime, LocalTime endTime);
-    Response joinPolicies(String sessionId, int storeId, int policyId1, int policyId2, PurchasePolicyExpression.JoinOperator operator);
+    Response joinPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator);
     Response removePolicy(String sessionId, int storeId, int policyId);
     Response addMinQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone);
     Response addMaxQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone);

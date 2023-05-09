@@ -7,13 +7,9 @@ public class MemberDTO {
     private String email;
     private String hashedPassword;
 
-    public MemberDTO(String username, String email, String hashedPassword) {
-        this.username = username;
-        this.email = email;
-        this.hashedPassword = hashedPassword;
-    }
-
-    public static MemberDTO fromMemberToMemberDTO(Member member){
-        return new MemberDTO(member.getUsername(),member.getEmail(), member.getPassword());
+    public MemberDTO(Member member) {
+        this.username = member.getUsername();
+        this.email = member.getEmail();
+        this.hashedPassword = member.getPassword();
     }
 }

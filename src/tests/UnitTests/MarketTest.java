@@ -4,6 +4,7 @@ import BusinessLayer.Market;
 import BusinessLayer.Product;
 import BusinessLayer.Store;
 import BusinessLayer.StoreManager;
+import ServiceLayer.DTOs.ProductDTO;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -92,25 +93,25 @@ class MarketTest {
 
     @org.junit.jupiter.api.Test
     void getProductsByName() throws Exception {
-        List<Product> productsList1 = market.getProductsByName(sessionID1,"milk");
+        List<ProductDTO> productsList1 = market.getProductsByName(sessionID1,"milk");
         assertEquals("milk", productsList1.get(0).getProductName());
-        List<Product> productsList2 = market.getProductsByName(sessionID1,"beer");
+        List<ProductDTO> productsList2 = market.getProductsByName(sessionID1,"beer");
         assertEquals("beer", productsList2.get(0).getProductName());
     }
 
     @org.junit.jupiter.api.Test
     void getProductsByCategory() throws Exception {
-        List<Product> productsList1 = market.getProductsByCategory(sessionID1,"milk");
+        List<ProductDTO> productsList1 = market.getProductsByCategory(sessionID1,"milk");
         assertEquals("milk", productsList1.get(0).getProductName());
-        List<Product> productsList2 = market.getProductsByCategory(sessionID1,"alcohol");
+        List<ProductDTO> productsList2 = market.getProductsByCategory(sessionID1,"alcohol");
         assertEquals("beer", productsList2.get(0).getProductName());
     }
 
     @org.junit.jupiter.api.Test
     void getProductsBySubstring() throws Exception {
-        List<Product> productsList1 = market.getProductsBySubstring(sessionID1,"il");
+        List<ProductDTO> productsList1 = market.getProductsBySubstring(sessionID1,"il");
         assertEquals("milk", productsList1.get(0).getProductName());
-        List<Product> productsList2 = market.getProductsBySubstring(sessionID1,"bee");
+        List<ProductDTO> productsList2 = market.getProductsBySubstring(sessionID1,"bee");
         assertEquals("beer", productsList2.get(0).getProductName());
     }
 

@@ -9,10 +9,10 @@ public class Operation extends BasePolicy {
     private BasePolicy.JoinOperator joinOperator;
     private BasePolicy right;
 
-    public Operation(int policyId, BasePolicy left,JoinOperator joinOperator,  BasePolicy right) {
+    public Operation(int policyId, BasePolicy left,int joinOperator,  BasePolicy right) {
         this.policyId = policyId;
         this.left = left;
-        this.joinOperator = joinOperator;
+        this.joinOperator = JoinOperator.values()[joinOperator];
         this.right = right;
     }
 

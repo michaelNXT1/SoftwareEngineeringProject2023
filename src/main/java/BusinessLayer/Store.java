@@ -197,7 +197,7 @@ public class Store {
         purchasePolicies.add(new CategoryTimeRestrictionPolicy(purchasePolicyCounter++, category, startTime, endTime));
     }
 
-    public void joinPolicies(int policyId1, int policyId2, BasePolicy.JoinOperator operator) throws Exception {
+    public void joinPolicies(int policyId1, int policyId2, int operator) throws Exception {
         BasePolicy bp1 = findPolicy(policyId1);
         BasePolicy bp2 = findPolicy(policyId2);
         purchasePolicies.add(new Operation(purchasePolicyCounter++, findPolicy(policyId1), operator, findPolicy(policyId2)));
@@ -222,18 +222,18 @@ public class Store {
     }
 
     //Discounts
-    public void addProductDiscount(int productId, double discountPercentage, Discount.CompositionType compositionType) throws Exception {
+    public void addProductDiscount(int productId, double discountPercentage, int compositionType) throws Exception {
         checkProductExists(productId);
         Discount discount = new ProductDiscount(discountCounter++, discountPercentage, productId, compositionType);
         productDiscountPolicyMap.put(discount, new ArrayList<>());
     }
 
-    public void addCategoryDiscount(String category, double discountPercentage, Discount.CompositionType compositionType) throws Exception {
+    public void addCategoryDiscount(String category, double discountPercentage, int compositionType) throws Exception {
         Discount discount = new CategoryDiscount(discountCounter++, discountPercentage, category, compositionType);
         productDiscountPolicyMap.put(discount, new ArrayList<>());
     }
 
-    public void addStoreDiscount(double discountPercentage, Discount.CompositionType compositionType) throws Exception {
+    public void addStoreDiscount(double discountPercentage, int compositionType) throws Exception {
         Discount discount = new StoreDiscount(discountCounter++, discountPercentage, this, compositionType);
         productDiscountPolicyMap.put(discount, new ArrayList<>());
     }
@@ -263,7 +263,7 @@ public class Store {
         productDiscountPolicyMap.get(d).add(new MinBagTotalDiscountPolicy(purchasePolicyCounter++, minTotal));
     }
 
-    public void joinDiscountPolicies(int policyId1, int policyId2, BaseDiscountPolicy.JoinOperator operator) throws Exception {
+    public void joinDiscountPolicies(int policyId1, int policyId2, int operator) throws Exception {
         BaseDiscountPolicy found_1 = null, found_2 = null;
         for (Discount discount : productDiscountPolicyMap.keySet()) {
             List<BaseDiscountPolicy> baseDiscountPolicies = productDiscountPolicyMap.get(discount);

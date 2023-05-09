@@ -9,14 +9,10 @@ public class PurchaseProductDTO {
     private double price;
     private int quantity;
 
-    public PurchaseProductDTO(String productName, String productCategory, double price, int quantity) {
-        this.productName = productName;
-        this.productCategory = productCategory;
-        this.price = price;
-        this.quantity = quantity;
-    }
-
-    public static PurchaseProductDTO fromPurchaseToPurchaseDTO(PurchaseProduct p){
-        return new PurchaseProductDTO(p.getProductName(),p.getProductCategory(),p.getPrice(),p.getQuantity());
+    public PurchaseProductDTO(PurchaseProduct p) {
+        this.productName = p.getProductName();
+        this.productCategory = p.getProductCategory();
+        this.price = p.getPrice();
+        this.quantity = p.getQuantity();
     }
 }

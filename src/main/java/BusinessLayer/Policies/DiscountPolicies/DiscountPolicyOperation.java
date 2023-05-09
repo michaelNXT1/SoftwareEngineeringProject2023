@@ -9,11 +9,11 @@ public class DiscountPolicyOperation extends BaseDiscountPolicy {
     private final JoinOperator joinOperator;
     private final BaseDiscountPolicy right;
 
-    public DiscountPolicyOperation(int policyId, BaseDiscountPolicy left, JoinOperator joinOperator, BaseDiscountPolicy right) {
+    public DiscountPolicyOperation(int policyId, BaseDiscountPolicy left, int joinOperator, BaseDiscountPolicy right) {
         super(policyId);
         this.policyId = policyId;
         this.left = left;
-        this.joinOperator = joinOperator;
+        this.joinOperator = JoinOperator.values()[joinOperator];
         this.right = right;
     }
 

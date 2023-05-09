@@ -1,13 +1,5 @@
 package CommunicationLayer;
-import BusinessLayer.Policies.PurchasePolicyExpression;
-import BusinessLayer.Product;
-import BusinessLayer.Purchase;
-import BusinessLayer.ShoppingCart;
-import BusinessLayer.Store;
-import ServiceLayer.DTOs.MemberDTO;
-import ServiceLayer.DTOs.ProductDTO;
-import ServiceLayer.DTOs.PurchaseDTO;
-import ServiceLayer.DTOs.StoreDTO;
+import ServiceLayer.DTOs.*;
 import ServiceLayer.MarketManager;
 import ServiceLayer.Response;
 import ServiceLayer.ResponseT;
@@ -60,14 +52,14 @@ public class MarketController implements IMarketController{
     @GetMapping("/getStores")
     @ResponseBody
     @Override
-    public ResponseT<List<Store>> getStores(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+    public ResponseT<List<StoreDTO>> getStores(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
                                             @RequestParam(value = "storeSubString", defaultValue = "") String storeSubString) {
         return this.marketManager.getStores(sessionId, storeSubString);
     }
     @GetMapping("/getStore")
     @ResponseBody
     @Override
-    public ResponseT<Store> getStore(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+    public ResponseT<StoreDTO> getStore(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
                                      @RequestParam(value = "storeId", defaultValue = "-1") int storeId) {
         return this.marketManager.getStore(sessionId, storeId);
     }
@@ -155,7 +147,7 @@ public class MarketController implements IMarketController{
 
     @GetMapping("/purchaseShoppingCart")
     @ResponseBody
-    public ResponseT<Purchase> purchaseShoppingCart(@RequestParam(value = "sessionId", defaultValue = "") String sessionId) {
+    public ResponseT<PurchaseDTO> purchaseShoppingCart(@RequestParam(value = "sessionId", defaultValue = "") String sessionId) {
         return marketManager.purchaseShoppingCart(sessionId);
     }
     @GetMapping("/openStore")
@@ -300,7 +292,7 @@ public class MarketController implements IMarketController{
                                  @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
                                  @RequestParam(value = "policyId1", defaultValue = "-1") int policyId1,
                                  @RequestParam(value = "policyId2", defaultValue = "-1") int policyId2,
-                                 @RequestParam(value = "operator", defaultValue = "0") PurchasePolicyExpression.JoinOperator operator) {
+                                 @RequestParam(value = "operator", defaultValue = "0") int operator) {
         return this.marketManager.joinPolicies(sessionId, storeId, policyId1, policyId2, operator);
     }
     @GetMapping("/removePolicy")
@@ -343,7 +335,7 @@ public class MarketController implements IMarketController{
 
     @GetMapping("/getProductsByName")
     @ResponseBody
-    public ResponseT<List<Product>> getProductsByName(
+    public ResponseT<List<ProductDTO>> getProductsByName(
             @RequestParam(value = "sessionId", defaultValue = "") String sessionId,
             @RequestParam(value = "categoryName", defaultValue = "") String Name) {
         return marketManager.getProductsByName(sessionId,Name);
@@ -381,7 +373,7 @@ public class MarketController implements IMarketController{
 
     @GetMapping("/getShoppingCart")
     @ResponseBody
-    public ResponseT<ShoppingCart> getShoppingCart(@RequestParam(value = "sessionId", defaultValue = "") String sessionId) {
+    public ResponseT<ShoppingCartDTO> getShoppingCart(@RequestParam(value = "sessionId", defaultValue = "") String sessionId) {
         return marketManager.getShoppingCart(sessionId);
     }
     @GetMapping("/changeProductQuantity")
