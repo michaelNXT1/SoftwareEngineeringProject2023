@@ -1,14 +1,28 @@
 package CommunicationLayer;
+import BusinessLayer.Policies.PurchasePolicyExpression;
+import BusinessLayer.Product;
+import BusinessLayer.Purchase;
+import BusinessLayer.ShoppingCart;
+import BusinessLayer.Store;
+import ServiceLayer.DTOs.MemberDTO;
+import ServiceLayer.DTOs.ProductDTO;
+import ServiceLayer.DTOs.PurchaseDTO;
+import ServiceLayer.DTOs.StoreDTO;
 import ServiceLayer.MarketManager;
 import ServiceLayer.Response;
+import ServiceLayer.ResponseT;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalTime;
+import java.util.List;
+import java.util.Map;
 
 
 @CrossOrigin()
 @RestController
 @Component
-public class MarketController {
+public class MarketController implements IMarketController{
 
     private MarketManager marketManager;
 
@@ -18,10 +32,71 @@ public class MarketController {
 
     @GetMapping("/login")
     @ResponseBody
-    public Response login(
+    public ResponseT<String> login(
             @RequestParam(value = "username", defaultValue = "") String username,
             @RequestParam(value = "password", defaultValue = "") String password) {
         return marketManager.login(username,password);
+    }
+
+    @GetMapping("/loginSystemManager")
+    @ResponseBody
+    @Override
+    public ResponseT<String> loginSystemManager(@RequestParam(value = "username", defaultValue = "") String username,
+                                                @RequestParam(value = "password", defaultValue = "") String password) {
+        return this.marketManager.loginSystemManager(username, password);
+    }
+    @GetMapping("/logout")
+    @ResponseBody
+    @Override
+    public Response logout(@RequestParam(value = "sessionId", defaultValue = "") String sessionId) {
+        return this.marketManager.logout(sessionId);
+    }
+    @GetMapping("/logoutSystemManager")
+    @ResponseBody
+    @Override
+    public Response logoutSystemManager(@RequestParam(value = "sessionId", defaultValue = "") String sessionId) {
+        return this.marketManager.logoutSystemManager(sessionId);
+    }
+    @GetMapping("/getStores")
+    @ResponseBody
+    @Override
+    public ResponseT<List<Store>> getStores(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                            @RequestParam(value = "storeSubString", defaultValue = "") String storeSubString) {
+        return this.marketManager.getStores(sessionId, storeSubString);
+    }
+    @GetMapping("/getStore")
+    @ResponseBody
+    @Override
+    public ResponseT<Store> getStore(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                     @RequestParam(value = "storeId", defaultValue = "-1") int storeId) {
+        return this.marketManager.getStore(sessionId, storeId);
+    }
+    @GetMapping("/getProduct")
+    @ResponseBody
+    @Override
+    public ResponseT<ProductDTO> getProduct(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                            @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
+                                            @RequestParam(value = "productId", defaultValue = "-1") int productId) {
+        return this.marketManager.getProduct(sessionId, storeId, productId);
+    }
+    @GetMapping("/signUpSystemManager")
+    @ResponseBody
+    @Override
+    public Response signUpSystemManager(@RequestParam(value = "username", defaultValue = "")  String username,
+                                        @RequestParam(value = "password", defaultValue = "")  String password) {
+        return this.marketManager.signUpSystemManager(username, password);
+    }
+    @GetMapping("/enterMarket")
+    @ResponseBody
+    @Override
+    public Response enterMarket() {
+        return this.marketManager.enterMarket();
+    }
+    @GetMapping("/exitMarket")
+    @ResponseBody
+    @Override
+    public Response exitMarket(@RequestParam(value = "username", defaultValue = "") String sessionId) {
+        return this.marketManager.exitMarket(sessionId);
     }
 
     @GetMapping("/signUp")
@@ -80,32 +155,187 @@ public class MarketController {
 
     @GetMapping("/purchaseShoppingCart")
     @ResponseBody
-    public Response purchaseShoppingCart(@RequestParam(value = "sessionId", defaultValue = "") String sessionId) {
+    public ResponseT<Purchase> purchaseShoppingCart(@RequestParam(value = "sessionId", defaultValue = "") String sessionId) {
         return marketManager.purchaseShoppingCart(sessionId);
     }
-
-//    @GetMapping("/confirmPurchase")
-//    @ResponseBody
-//    public ActionResultDTO confirmPurchase(@RequestParam(value = "sessionId", defaultValue = "-1") int sessionId,
-//                                           @RequestParam(value = "cardNumber", defaultValue = "") String cardNumber,
-//                                           @RequestParam(value = "cardMonth", defaultValue = "") String cardMonth,
-//                                           @RequestParam(value = "cardYear", defaultValue = "") String cardYear,
-//                                           @RequestParam(value = "cardHolder", defaultValue = "") String cardHolder,
-//                                           @RequestParam(value = "cardCcv", defaultValue = "") String cardCcv,
-//                                           @RequestParam(value = "cardId", defaultValue = "") String cardId,
-//                                           @RequestParam(value = "buyerName", defaultValue = "") String buyerName,
-//                                           @RequestParam(value = "address", defaultValue = "") String address,
-//                                           @RequestParam(value = "city", defaultValue = "") String city,
-//                                           @RequestParam(value = "country", defaultValue = "") String country,
-//                                           @RequestParam(value = "zip", defaultValue = "") String zip
-//    ) {
-//        return guestUserHandler.confirmPurchase(sessionId, cardNumber, cardMonth, cardYear, cardHolder, cardCcv, cardId, buyerName, address, city, country, zip);
-//    }
+    @GetMapping("/openStore")
+    @ResponseBody
+    @Override
+    public ResponseT<Integer> openStore(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                        @RequestParam(value = "storeName", defaultValue = "") String storeName) {
+        return this.marketManager.openStore(sessionId, storeName);
+    }
+    @GetMapping("/getPurchaseHistory")
+    @ResponseBody
+    @Override
+    public ResponseT<List<PurchaseDTO>> getPurchaseHistory(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                                           @RequestParam(value = "storeId", defaultValue = "-1") int storeId) {
+        return this.marketManager.getPurchaseHistory(sessionId, storeId);
+    }
+    @GetMapping("/addProduct")
+    @ResponseBody
+    @Override
+    public ResponseT<ProductDTO> addProduct(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                            @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
+                                            @RequestParam(value = "productName", defaultValue = "") String productName,
+                                            @RequestParam(value = "price", defaultValue = "-1") double price,
+                                            @RequestParam(value = "category", defaultValue = "")String category,
+                                            @RequestParam(value = "quantity", defaultValue = "-1")int quantity,
+                                            @RequestParam(value = "description", defaultValue = "") String description) {
+        return this.marketManager.addProduct(sessionId, storeId, productName, price, category, quantity, description);
+    }
+    @GetMapping("/editProductName")
+    @ResponseBody
+    @Override
+    public Response editProductName(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                    @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
+                                    @RequestParam(value = "productId", defaultValue = "-1") int productId,
+                                    @RequestParam(value = "newName", defaultValue = "") String newName) {
+        return this.marketManager.editProductName(sessionId, storeId, productId, newName);
+    }
+    @GetMapping("/editProductPrice")
+    @ResponseBody
+    @Override
+    public Response editProductPrice(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                     @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
+                                     @RequestParam(value = "productId", defaultValue = "-1") int productId,
+                                     @RequestParam(value = "newPrice", defaultValue = "-1") int newPrice) {
+        return this.editProductPrice(sessionId, storeId, productId, newPrice);
+    }
+    @GetMapping("/editProductCategory")
+    @ResponseBody
+    @Override
+    public Response editProductCategory(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                        @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
+                                        @RequestParam(value = "productId", defaultValue = "-1") int productId,
+                                        @RequestParam(value = "newCategory", defaultValue = "") String newCategory) {
+        return this.marketManager.editProductCategory(sessionId, storeId, productId, newCategory);
+    }
+    @GetMapping("/removeProductFromStore")
+    @ResponseBody
+    @Override
+    public Response removeProductFromStore(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                           @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
+                                           @RequestParam(value = "productId", defaultValue = "-1") int productId) {
+        return this.marketManager.removeProductFromStore(sessionId, storeId, productId);
+    }
+    @GetMapping("/setPositionOfMemberToStoreManager")
+    @ResponseBody
+    @Override
+    public Response setPositionOfMemberToStoreManager(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                                      @RequestParam(value = "storeID", defaultValue = "-1") int storeID,
+                                                      @RequestParam(value = "MemberToBecomeManager", defaultValue = "") String MemberToBecomeManager) {
+        return this.setPositionOfMemberToStoreManager(sessionId, storeID, MemberToBecomeManager);
+    }
+    @GetMapping("/setPositionOfMemberToStoreOwner")
+    @ResponseBody
+    @Override
+    public Response setPositionOfMemberToStoreOwner(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                                    @RequestParam(value = "storeID", defaultValue = "-1") int storeID,
+                                                    @RequestParam(value = "MemberToBecomeOwner", defaultValue = "") String MemberToBecomeOwner) {
+        return this.marketManager.setPositionOfMemberToStoreOwner(sessionId, storeID, MemberToBecomeOwner);
+    }
+    @GetMapping("/addStoreManagerPermissions")
+    @ResponseBody
+    @Override
+    public Response addStoreManagerPermissions(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                               @RequestParam(value = "storeManager", defaultValue = "") String storeManager,
+                                               @RequestParam(value = "storeID", defaultValue = "-1") int storeID,
+                                               @RequestParam(value = "newPermission", defaultValue = "-1") int newPermission) {
+        return this.marketManager.addStoreManagerPermissions(sessionId, storeManager, storeID, newPermission);
+    }
+    @GetMapping("/removeStoreManagerPermissions")
+    @ResponseBody
+    @Override
+    public Response removeStoreManagerPermissions(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                                  @RequestParam(value = "storeManager", defaultValue = "") String storeManager,
+                                                  @RequestParam(value = "storeID", defaultValue = "-1") int storeID,
+                                                  @RequestParam(value = "newPermission", defaultValue = "-1") int newPermission) {
+        return this.marketManager.removeStoreManagerPermissions(sessionId, storeManager, storeID, newPermission);
+    }
+    @GetMapping("/getStoreEmployees")
+    @ResponseBody
+    @Override
+    public ResponseT<List<MemberDTO>> getStoreEmployees(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                                        @RequestParam(value = "storeId", defaultValue = "-1") int storeId) {
+        return this.marketManager.getStoreEmployees(sessionId, storeId);
+    }
+    @GetMapping("/closeStore")
+    @ResponseBody
+    @Override
+    public Response closeStore(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                               @RequestParam(value = "storeId", defaultValue = "-1") int storeId) {
+        return this.marketManager.closeStore(sessionId, storeId);
+    }
+    @GetMapping("/getStoresPurchases")
+    @ResponseBody
+    @Override
+    public ResponseT<Map<StoreDTO, List<PurchaseDTO>>> getStoresPurchases(@RequestParam(value = "sessionId", defaultValue = "") String sessionId) {
+        return this.marketManager.getStoresPurchases(sessionId);
+    }
+    @GetMapping("/addProductTimeRestrictionPolicy")
+    @ResponseBody
+    @Override
+    public Response addProductTimeRestrictionPolicy(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                                    @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
+                                                    @RequestParam(value = "productId", defaultValue = "-1") int productId,
+                                                    @RequestParam(value = "startTime", defaultValue = "") LocalTime startTime,
+                                                    @RequestParam(value = "endTime", defaultValue = "") LocalTime endTime) {
+        return this.marketManager.addProductTimeRestrictionPolicy(sessionId, storeId, productId, startTime, endTime);
+    }
+    @GetMapping("/addCategoryTimeRestrictionPolicy")
+    @ResponseBody
+    @Override
+    public Response addCategoryTimeRestrictionPolicy(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                                     @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
+                                                     @RequestParam(value = "category", defaultValue = "") String category,
+                                                     @RequestParam(value = "startTime", defaultValue = "") LocalTime startTime,
+                                                     @RequestParam(value = "endTime", defaultValue = "") LocalTime endTime) {
+        return this.marketManager.addCategoryTimeRestrictionPolicy(sessionId, storeId, category, startTime, endTime);
+    }
+    @GetMapping("/joinPolicies")
+    @ResponseBody
+    @Override
+    public Response joinPolicies(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                 @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
+                                 @RequestParam(value = "policyId1", defaultValue = "-1") int policyId1,
+                                 @RequestParam(value = "policyId2", defaultValue = "-1") int policyId2,
+                                 @RequestParam(value = "operator", defaultValue = "0") PurchasePolicyExpression.JoinOperator operator) {
+        return this.marketManager.joinPolicies(sessionId, storeId, policyId1, policyId2, operator);
+    }
+    @GetMapping("/removePolicy")
+    @ResponseBody
+    @Override
+    public Response removePolicy(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                 @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
+                                 @RequestParam(value = "policyId", defaultValue = "-1") int policyId) {
+        return this.marketManager.removePolicy(sessionId, storeId, policyId);
+    }
+    @GetMapping("/addMinQuantityPolicy")
+    @ResponseBody
+    @Override
+    public Response addMinQuantityPolicy(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                         @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
+                                         @RequestParam(value = "productId", defaultValue = "-1") int productId,
+                                         @RequestParam(value = "minQuantity", defaultValue = "-1") int minQuantity,
+                                         @RequestParam(value = "allowNone", defaultValue = "false") boolean allowNone) {
+        return this.marketManager.addMinQuantityPolicy(sessionId, storeId, productId, minQuantity, allowNone);
+    }
+    @GetMapping("/addMaxQuantityPolicy")
+    @ResponseBody
+    @Override
+    public Response addMaxQuantityPolicy(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                         @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
+                                         @RequestParam(value = "productId", defaultValue = "-1") int productId,
+                                         @RequestParam(value = "minQuantity", defaultValue = "-1") int minQuantity,
+                                         @RequestParam(value = "allowNone", defaultValue = "false") boolean allowNone) {
+        return this.marketManager.addMaxQuantityPolicy(sessionId, storeId, productId, minQuantity, allowNone);
+    }
 
 
     @GetMapping("/getProductsByCategory")
     @ResponseBody
-    public Response getProductsByCategory(
+    public ResponseT<List<ProductDTO>> getProductsByCategory(
             @RequestParam(value = "sessionId", defaultValue = "") String sessionId,
             @RequestParam(value = "categoryName", defaultValue = "") String categoryName) {
         return marketManager.getProductsByCategory(sessionId,categoryName);
@@ -113,7 +343,7 @@ public class MarketController {
 
     @GetMapping("/getProductsByName")
     @ResponseBody
-    public Response getProductsByName(
+    public ResponseT<List<Product>> getProductsByName(
             @RequestParam(value = "sessionId", defaultValue = "") String sessionId,
             @RequestParam(value = "categoryName", defaultValue = "") String Name) {
         return marketManager.getProductsByName(sessionId,Name);
@@ -121,25 +351,47 @@ public class MarketController {
 
     @GetMapping("/getProductsBySubstring")
     @ResponseBody
-    public Response getProductsBySubstring(
+    public ResponseT<List<ProductDTO>> getProductsBySubstring(
             @RequestParam(value = "sessionId", defaultValue = "") String sessionId,
             @RequestParam(value = "categoryName", defaultValue = "") String subName) {
         return marketManager.getProductsBySubstring(sessionId,subName);
+    }
+    @GetMapping("/getSearchResults")
+    @ResponseBody
+    @Override
+    public ResponseT<List<ProductDTO>> getSearchResults(@RequestParam(value = "sessionId", defaultValue = "") String sessionId) {
+        return this.marketManager.getSearchResults(sessionId);
+    }
+    @GetMapping("/filterSearchResultsByCategory")
+    @ResponseBody
+    @Override
+    public ResponseT<List<ProductDTO>> filterSearchResultsByCategory(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                                                     @RequestParam(value = "category", defaultValue = "") String category) {
+        return this.marketManager.filterSearchResultsByCategory(sessionId, category);
+    }
+    @GetMapping("/filterSearchResultsByPrice")
+    @ResponseBody
+    @Override
+    public ResponseT<List<ProductDTO>> filterSearchResultsByPrice(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                                                  @RequestParam(value = "minPrice", defaultValue = "-1") double minPrice,
+                                                                  @RequestParam(value = "maxPrice", defaultValue = "-1") double maxPrice) {
+        return this.marketManager.filterSearchResultsByPrice(sessionId, minPrice, maxPrice);
     }
 
 
     @GetMapping("/getShoppingCart")
     @ResponseBody
-    public Response getShoppingCart(@RequestParam(value = "sessionId", defaultValue = "") String sessionId) {
+    public ResponseT<ShoppingCart> getShoppingCart(@RequestParam(value = "sessionId", defaultValue = "") String sessionId) {
         return marketManager.getShoppingCart(sessionId);
     }
+    @GetMapping("/changeProductQuantity")
+    @ResponseBody
+    @Override
+    public Response changeProductQuantity(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                          @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
+                                          @RequestParam(value = "productId", defaultValue = "-1") int productId,
+                                          @RequestParam(value = "quantity", defaultValue = "-1") int quantity) {
+        return this.marketManager.changeProductQuantity(sessionId, storeId, productId, quantity);
+    }
 
-//    @GetMapping("/viewBuyingPolicies")
-//    @ResponseBody
-//    public BuyingPolicyActionResultDTO viewBuyingPolicies(
-//            @RequestParam(value = "sessionId", defaultValue = "") int sessionId,
-//            @RequestParam(value = "storeId", defaultValue = "") int storeId
-//    ) {
-//        return marketManager.(sessionId, storeId);
-//    }
 }

@@ -37,7 +37,6 @@ public class Market {
 
     public static Object purchaseLock = new Object();
     FundDemander fd;
-    SecurityUtils securityUtils = new SecurityUtils();
     SessionManager sessionManager = new SessionManager();
 
 

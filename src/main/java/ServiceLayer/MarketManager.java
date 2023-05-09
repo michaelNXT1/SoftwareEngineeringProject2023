@@ -68,7 +68,7 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public ResponseT<String> loginSystemManager(String username, String email, String password) {
+    public ResponseT<String> loginSystemManager(String username, String password) {
         try {
             String ret = market.loginSystemManager(username, password);
             return ResponseT.fromValue(ret);
