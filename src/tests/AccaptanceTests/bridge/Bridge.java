@@ -104,4 +104,5 @@ public interface Bridge {
     boolean logoutSystemManager(String sessionId);
 
     boolean signUpSystemManager(String username, String password);
+
 }
