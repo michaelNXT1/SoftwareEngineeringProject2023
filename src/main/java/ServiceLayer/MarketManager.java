@@ -466,4 +466,14 @@ public class MarketManager implements IMarketManager {
             return new Response(e.getMessage());
         }
     }
+
+    @Override
+    public ResponseT<List<String>> getAllCategories() {
+        try {
+            List<String> ret = market.getAllCategories();
+            return ResponseT.fromValue(ret);
+        } catch (Exception e) {
+            return ResponseT.fromError(e.getMessage());
+        }
+    }
 }

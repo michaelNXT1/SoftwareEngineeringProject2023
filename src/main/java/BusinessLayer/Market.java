@@ -40,6 +40,7 @@ public class Market {
 
     public Market() {
         stores = new ConcurrentHashMap<>();
+        systemManagers = new ConcurrentHashMap<>();
 
         users = new ConcurrentHashMap<>();
         try {
@@ -711,4 +712,16 @@ public class Market {
         return marketOpen;
     }
 
+    public List<String> getAllCategories() {
+        logger.info("getting all categories");
+        List<String> allCat = new ArrayList<>();
+        for(Store store: this.stores.values()){
+            for(Product p :store.getProducts().keySet()){
+                if(!allCat.contains(p.getCategory()))
+                    allCat.add(p.getCategory());
+            }
+        }
+        allCat.add("test");
+        return allCat;
+    }
 }
