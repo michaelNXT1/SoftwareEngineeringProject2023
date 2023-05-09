@@ -64,14 +64,14 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public ResponseT<String> loginSystemManager(String username, String password) {
-        try {
-            String ret = market.loginSystemManager(username, password);
-            return ResponseT.fromValue(ret);
-        } catch (Exception e) {
-            return ResponseT.fromError(e.getMessage());
-        }
-    }
+//    public ResponseT<String> loginSystemManager(String username, String password) {
+//        try {
+//            String ret = market.loginSystemManager(username, password);
+//            return ResponseT.fromValue(ret);
+//        } catch (Exception e) {
+//            return ResponseT.fromError(e.getMessage());
+//        }
+//    }
 
     public Response logout(String sessionId) {
         try {
@@ -82,14 +82,14 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public Response logoutSystemManager(String sessionId) {
-        try {
-            market.logoutSystemManager(sessionId);
-            return new Response();
-        } catch (Exception e) {
-            return new Response(e.getMessage());
-        }
-    }
+//    public Response logoutSystemManager(String sessionId) {
+//        try {
+//            market.logoutSystemManager(sessionId);
+//            return new Response();
+//        } catch (Exception e) {
+//            return new Response(e.getMessage());
+//        }
+//    }
 
     //use case 2.4
     public ResponseT<List<StoreDTO>> getStores(String sessionId, String storeSubString) {

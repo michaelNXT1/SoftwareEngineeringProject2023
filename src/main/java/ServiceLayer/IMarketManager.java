@@ -112,7 +112,7 @@ public interface IMarketManager {
 
         Response removeMember(String sessionId, String memberName);
 
-        Response logoutSystemManager(String sessionId);
+//        Response logoutSystemManager(String sessionId);
 
-        ResponseT<String> loginSystemManager(String username, String password);
+//        ResponseT<String> loginSystemManager(String username, String password);
 }

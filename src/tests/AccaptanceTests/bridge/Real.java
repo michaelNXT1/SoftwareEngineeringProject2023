@@ -1,7 +1,5 @@
 package AccaptanceTests.bridge;
 
-
-import AccaptanceTests.GuestTest.PurchaseTests;
 import ServiceLayer.DTOs.MemberDTO;
 import ServiceLayer.DTOs.ProductDTO;
 import ServiceLayer.DTOs.PurchaseDTO;
@@ -313,15 +311,15 @@ public class Real implements Bridge {
         return !manager.removeMember(sessionId, memberName).getError_occurred();
     }
 
-    @Override
-    public String loginSystemManager(String username, String password) {
-        return manager.loginSystemManager(username, password).value;
-    }
+//    @Override
+//    public String loginSystemManager(String username, String password) {
+//        return manager.loginSystemManager(username, password).value;
+//    }
 
-    @Override
-    public boolean logoutSystemManager(String sessionId) {
-        return !manager.logoutSystemManager(sessionId).getError_occurred();
-    }
+//    @Override
+//    public boolean logoutSystemManager(String sessionId) {
+//        return !manager.logoutSystemManager(sessionId).getError_occurred();
+//    }
 
     @Override
     public boolean signUpSystemManager(String username, String password) {

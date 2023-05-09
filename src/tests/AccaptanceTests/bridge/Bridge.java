@@ -126,9 +126,9 @@ public interface Bridge {
 
     boolean removeMember(String sessionId, String memberName);
 
-    String loginSystemManager(String username, String password);
+//    String loginSystemManager(String username, String password);
 
-    boolean logoutSystemManager(String sessionId);
+//    boolean logoutSystemManager(String sessionId);
 
     boolean signUpSystemManager(String username, String password);
 
