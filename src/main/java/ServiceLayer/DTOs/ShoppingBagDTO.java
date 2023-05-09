@@ -20,4 +20,12 @@ public class ShoppingBagDTO {
             productList.put(productDTO, shoppingBag.getProductList().get(productId));
         }
     }
+    @Override
+    public String toString(){
+        StringBuilder shopping = new StringBuilder();
+        for(Map.Entry<ProductDTO,Integer> ent:this.productList.entrySet()){
+            shopping.append(ent.getKey().toString() + ": " + ent.getValue().toString()+"\n");
+        }
+        return shopping.toString();
+    }
 }

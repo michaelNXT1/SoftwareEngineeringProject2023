@@ -17,4 +17,12 @@ public class ShoppingCartDTO {
         }
         this.shoppingBags = list;
     }
+    @Override
+    public String toString(){
+        StringBuilder cart = new StringBuilder();
+        for(ShoppingBagDTO s:this.shoppingBags){
+            cart.append(s.toString()+"\n");
+        }
+        return cart.toString();
+    }
 }

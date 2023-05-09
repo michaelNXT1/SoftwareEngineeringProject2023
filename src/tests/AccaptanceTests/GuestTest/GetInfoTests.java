@@ -37,4 +37,5 @@ public class GetInfoTests extends ServiceTests {
         int storeID2 = openStore(sessionID,"newStore5");
         assertFalse(getProduct(sessionID,4,storeID2));
     }
+
 }
