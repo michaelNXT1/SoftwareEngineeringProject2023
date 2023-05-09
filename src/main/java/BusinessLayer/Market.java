@@ -689,4 +689,24 @@ public class Market {
         return marketOpen;
     }
 
+    public void removeMember(String sessionId, String memberName) throws Exception {
+        checkMarketOpen();
+        sessionManager.getSessionForSystemManager(sessionId);
+        Member mToRemove = users.get(memberName);
+        if (mToRemove == null) {
+            logger.error(String.format("The %s is not a member", memberName));
+            throw new Exception("The member's name is not a name of a member");
+        }
+        if (mToRemove.hasPositions()) { //partial implantation - remove in full one
+            logger.error(String.format("cannot remove member with positions in the market"));
+            throw new Exception("cannot remove member with positions in the market");
+        }
+        if (systemManagers.get(mToRemove.getUsername()) == null) { //partial implantation - remove in full one
+            logger.error(String.format("cannot remove member with positions in the market"));
+            throw new Exception("cannot remove member with positions in the market");
+        }
+        securityUtils.removeMember(mToRemove.getUsername(), mToRemove.getPassword());
+        users.remove(memberName);
+
+    }
 }

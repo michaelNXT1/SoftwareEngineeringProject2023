@@ -111,4 +111,5 @@ public interface IMarketManager {
         Response removeDiscountPolicy(String sessionId, int storeId, int policyId) throws Exception;
 
         Response addPaymentMethod(String sessionId, String creditCardNumber, int cvv, LocalDate expirationDate) throws Exception;
+        Response removeMember(String sessionId, String memberName) throws Exception;
     }

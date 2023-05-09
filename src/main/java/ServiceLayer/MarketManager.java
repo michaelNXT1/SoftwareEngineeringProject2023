@@ -484,4 +484,12 @@ public class MarketManager implements IMarketManager {
             return new Response(e.getMessage());
         }
     }
+    public Response removeMember(String sessionId, String memberName){
+        try {
+            market.removeMember(sessionId, memberName);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
 }
