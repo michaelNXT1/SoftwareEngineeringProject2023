@@ -41,12 +41,16 @@ public class Market {
     public Market() {
         stores = new ConcurrentHashMap<>();
         systemManagers = new ConcurrentHashMap<>();
+
         users = new ConcurrentHashMap<>();
         try {
             passwordEncoder = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
+        systemManagers = new ConcurrentHashMap<>();
+        SystemManager sm = new SystemManager("admin", new String(passwordEncoder.digest("admin".getBytes())));
+        systemManagers.put(sm.getUsername(), sm);
         marketOpen = false;
         this.logger = new SystemLogger();
         fd = new FundDemander();
@@ -81,7 +85,7 @@ public class Market {
     }
 
     private boolean systemManagerUsernameExists(String username) {
-        return systemManagers.values().stream().anyMatch(m -> m.getUserName().equals(username));
+        return systemManagers.values().stream().anyMatch(m -> m.getUsername().equals(username));
     }
 
     //use case 1.1
@@ -121,6 +125,23 @@ public class Market {
 
     //use case 2.3
     public String login(String username, String password) throws Exception {
+        SystemManager sm = systemManagers.get(username);
+        if (sm != null) {
+            String hashedPassword = new String(passwordEncoder.digest(password.getBytes()));
+            // If the Member doesn't exist or the password is incorrect, return false
+            if (!hashedPassword.equals(sm.getPassword())) {
+                logger.error(String.format("%s has Invalid username or password", username));
+                throw new Error("Invalid username or password");
+            }
+            // If the credentials are correct, authenticate the user and return true
+            boolean res = securityUtils.authenticate(username, password);
+            if (res) {
+                logger.info(String.format("%s the user passed authenticate check and logged in to the systemManager", username));
+                String sessionId = sessionManager.createSessionForSystemManager(sm);
+                return sessionId;
+            }
+            return null;
+        }
         isMarketOpen();
         // Retrieve the stored Member's object for the given username
         Member member = null;
@@ -149,18 +170,21 @@ public class Market {
 
     //use case 3.1
     public void logout(String sessionId) throws Exception {
-        isMarketOpen();
         logger.info(String.format("%s trying to log out of the system", sessionId));
-        sessionManager.deleteSession(sessionId);
+        try {
+            sessionManager.deleteSessionForSystemManager(sessionId);
+        } catch (Exception e) {
+            isMarketOpen();
+            sessionManager.deleteSession(sessionId);
+        }
     }
 
-
-    //use case 2.3
+//    //use case 2.3
     public String loginSystemManager(String username, String password) throws Exception {
-        isMarketOpen();
         logger.info(String.format("%s trying to log in to the systemMnager", username));
-        // Retrieve the stored Member's object for the given username
+       // Retrieve the stored Member's object for the given username
         SystemManager sm = systemManagers.get(username);
+
         String hashedPassword = new String(passwordEncoder.digest(password.getBytes()));
         // If the Member doesn't exist or the password is incorrect, return false
         if (sm == null || !hashedPassword.equals(sm.getPassword())) {
@@ -179,9 +203,8 @@ public class Market {
     }
 
     public void logoutSystemManager(String sessionId) throws Exception {
-        isMarketOpen();
-        logger.info(String.format("%s trying to log out of the system", sessionId));
-        sessionManager.deleteSessionForSystemManager(sessionId);
+       logger.info(String.format("%s trying to log out of the system", sessionId));
+       sessionManager.deleteSessionForSystemManager(sessionId);
     }
 
 
@@ -285,7 +308,7 @@ public class Market {
     public ShoppingCartDTO getShoppingCart(String sessionId) throws Exception {
         isMarketOpen();
         Guest g = sessionManager.getSession(sessionId);
-        logger.info(String.format("%s asking for his shopping cart",g.getUsername()));
+        logger.info(String.format("%s asking for his shopping cart", g.getUsername()));
         return new ShoppingCartDTO(g.displayShoppingCart());
     }
 
@@ -712,4 +735,17 @@ public class Market {
         logger.error(String.format("Success to remove %s from market", memberName));
 
     }
+    public List<String> getAllCategories() {
+        logger.info("getting all categories");
+        List<String> allCat = new ArrayList<>();
+        for(Store store: this.stores.values()){
+            for(Product p :store.getProducts().keySet()){
+                if(!allCat.contains(p.getCategory()))
+                    allCat.add(p.getCategory());
+            }
+        }
+        allCat.add("test");
+        return allCat;
+    }
+
 }

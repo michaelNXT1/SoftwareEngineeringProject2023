@@ -23,22 +23,22 @@ public class EditPrepositionsTest extends ServiceTests {
     }
 
     @Test
-    public void testEditingManagerPremFail(){
+    public void testEditingManagerPremNotHavePremFail(){
         int storeID = openStore(sessionID1,"newStore");
         logout(sessionID1);
         String sessionID2 = login("alon12", "alon0601");
         assertFalse(editManagerOptions(sessionID2, storeID, "alon1",2));
     }
     @Test
-    public void testEditingManagerPremFail2(){
+    public void testEditingManagerPremUserNotManagerFail(){
         String sessionID2 = login("alon12","alon0601");
         int storeID = openStore(sessionID2, "newStore");
         assertFalse(editManagerOptions(sessionID2, storeID, "alon143",2));
     }
 
-    @Test
-    public void testAppointingAllReadyAManagerToManagerFail(){
-        int storeID = openStore(sessionID1, "newStore2");
-        assertFalse(appointManager(sessionID1, storeID, "alon1"));
+    public void testEditingManagerPremInvalidPremFail(){
+        String sessionID2 = login("alon12","alon0601");
+        int storeID = openStore(sessionID2, "newStore");
+        assertFalse(editManagerOptions(sessionID2, storeID, "alon143",-1));
     }
 }

@@ -1,6 +1,8 @@
 package AccaptanceTests.bridge;
 
 
+import java.time.LocalTime;
+
 public interface Bridge {
     boolean setupSystem(String managerUName, String managerPass);
 
@@ -74,14 +76,12 @@ public interface Bridge {
     boolean editProductCategory(String sessionId, int storeId, int productId, String newCategory);
 
     boolean editProductName(String sessionId, int storeId, int productId, String newName);
+    boolean appointOwner(String sessionId, int storeId, String userName);
 
- //   boolean appointOwner(int sessionId, int storeId, String userName);
 
-
-//    boolean removeManager(int sessionId, int storeId, int userId);
+//    boolean removeManager(String sessionId, int storeId, int userId);
 
     boolean removeStore(String sessionId, int storeId);
-    boolean removeMember(String sessionId, String memberName);
 
     void clearDatabase();
 
@@ -89,6 +89,15 @@ public interface Bridge {
     String enterMarket();
 
     boolean exitMarket(String sessionId);
+
+    boolean addProductTimeRestrictionPolicy(String sessionId, int storeId, int productId, LocalTime startTime, LocalTime endTime);
+    boolean addCategoryTimeRestrictionPolicy(String sessionId, int storeId, String category, LocalTime startTime, LocalTime endTime);
+    boolean joinPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator);
+    boolean removePolicy(String sessionId, int storeId, int policyId);
+    boolean addMinQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone);
+    boolean addMaxQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone);
+
+    boolean removeMember(String sessionId, String memberName);
 
     String loginSystemManager(String username, String password);
 

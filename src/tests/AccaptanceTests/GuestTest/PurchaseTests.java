@@ -45,9 +45,9 @@ public class PurchaseTests extends ServiceTests {
                 "12123123", "me", "1428 Elm Street", "Springwood", "Ohio, United States", "12345"));
     }
     @Test
-    public void testBuyingPolicy(){
-        int productID1 = addProduct(sessionID1, storeID2,"test4",3.9,"milk",9,"1");
-        addToCart(sessionID1, storeID2, productID1, 40);
+    public void testBuyingPolicyFail(){
+        addMinQuantityPolicy(sessionID1,storeID2,productID2,3,false);
+        addToCart(sessionID1, storeID2, productID2, 2);
         assertFalse(buyCart(sessionID1, "12345678", "04", "2021", "me", "777",
                 "12123123", "me", "1428 Elm Street", "Springwood", "Ohio, United States", "12345"));
     }
