@@ -64,7 +64,7 @@ public class Market {
 
     public void signUpSystemManager(String username, String password) throws Exception {
         logger.info(String.format("Sign Up new System Manager: %s", username));
-        if (usernameExists(username)) {
+        if (systemManagerUsernameExists(username)) {
             logger.error(String.format("Username already exists :%s", username));
             throw new Exception("Username already exists");
         }
@@ -80,6 +80,10 @@ public class Market {
             marketOpen = true;
         }
 
+    }
+
+    private boolean systemManagerUsernameExists(String username) {
+        return systemManagers.values().stream().anyMatch(m -> m.getUsername().equals(username));
     }
 
     //use case 1.1
@@ -172,7 +176,6 @@ public class Market {
             sessionManager.deleteSession(sessionId);
         }
     }
-
 
 //    //use case 2.3
 //    public String loginSystemManager(String username, String password) throws Exception {
@@ -708,6 +711,39 @@ public class Market {
 
     private boolean checkMarketOpen() throws Exception {
         return marketOpen;
+    }
+
+    public void removeMember(String sessionId, String memberName) throws Exception {
+        checkMarketOpen();
+        sessionManager.getSessionForSystemManager(sessionId);
+        Member mToRemove = users.get(memberName);
+        if (mToRemove == null) {
+            logger.error(String.format("%s is not a member", memberName));
+            throw new Exception("The member's name is not a name of a member");
+        }
+        if (mToRemove.hasPositions()) { //partial implantation - remove in full one
+            logger.error(String.format("cannot remove member with positions in the market"));
+            throw new Exception("cannot remove member with positions in the market");
+        }
+        if (systemManagers.get(mToRemove.getUsername()) != null) { //partial implantation - remove in full one
+            logger.error(String.format("cannot remove member with positions in the market"));
+            throw new Exception("cannot remove member with positions in the market");
+        }
+        users.remove(memberName);
+        logger.error(String.format("Success to remove %s from market", memberName));
+
+    }
+    public List<String> getAllCategories() {
+        logger.info("getting all categories");
+        List<String> allCat = new ArrayList<>();
+        for(Store store: this.stores.values()){
+            for(Product p :store.getProducts().keySet()){
+                if(!allCat.contains(p.getCategory()))
+                    allCat.add(p.getCategory());
+            }
+        }
+        allCat.add("test");
+        return allCat;
     }
 
 }

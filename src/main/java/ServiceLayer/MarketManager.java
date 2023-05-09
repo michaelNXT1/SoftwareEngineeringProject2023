@@ -64,9 +64,27 @@ public class MarketManager implements IMarketManager {
         }
     }
 
+    public ResponseT<String> loginSystemManager(String username, String password) {
+        try {
+            String ret = market.loginSystemManager(username, password);
+            return ResponseT.fromValue(ret);
+        } catch (Exception e) {
+            return ResponseT.fromError(e.getMessage());
+        }
+    }
+
     public Response logout(String sessionId) {
         try {
             market.logout(sessionId);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
+    public Response logoutSystemManager(String sessionId) {
+        try {
+            market.logoutSystemManager(sessionId);
             return new Response();
         } catch (Exception e) {
             return new Response(e.getMessage());
@@ -463,6 +481,24 @@ public class MarketManager implements IMarketManager {
             return new Response();
         } catch (Exception e) {
             return new Response(e.getMessage());
+        }
+    }
+    public Response removeMember(String sessionId, String memberName){
+        try {
+            market.removeMember(sessionId, memberName);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseT<List<String>> getAllCategories() {
+        try {
+            List<String> ret = market.getAllCategories();
+            return ResponseT.fromValue(ret);
+        } catch (Exception e) {
+            return ResponseT.fromError(e.getMessage());
         }
     }
 }

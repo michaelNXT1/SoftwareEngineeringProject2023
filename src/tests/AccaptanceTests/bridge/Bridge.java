@@ -89,6 +89,7 @@ public interface Bridge {
 
     void clearDatabase();
 
+
     String enterMarket();
 
     boolean exitMarket(String sessionId);
@@ -122,4 +123,13 @@ public interface Bridge {
     boolean removeDiscountPolicy(String sessionId, int storeId, int policyId);
 
     boolean addPaymentMethod(String sessionId, String creditCardNumber, int cvv, LocalDate expirationDate);
+
+    boolean removeMember(String sessionId, String memberName);
+
+    String loginSystemManager(String username, String password);
+
+    boolean logoutSystemManager(String sessionId);
+
+    boolean signUpSystemManager(String username, String password);
+
 }

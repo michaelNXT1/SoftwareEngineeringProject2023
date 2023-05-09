@@ -50,4 +50,6 @@ public interface IMarketController {
     boolean addMinQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone);
     boolean addMaxQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone);
 
+    List<String> getAllCategories();
+
 }

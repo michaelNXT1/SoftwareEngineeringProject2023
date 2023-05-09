@@ -307,4 +307,24 @@ public class Real implements Bridge {
     public boolean addPaymentMethod(String sessionId, String creditCardNumber, int cvv, LocalDate expirationDate) {
         return !this.manager.addPaymentMethod(sessionId, creditCardNumber, cvv, expirationDate).getError_occurred();
     }
+
+    @Override
+    public boolean removeMember(String sessionId, String memberName) {
+        return !manager.removeMember(sessionId, memberName).getError_occurred();
+    }
+
+    @Override
+    public String loginSystemManager(String username, String password) {
+        return manager.loginSystemManager(username, password).value;
+    }
+
+    @Override
+    public boolean logoutSystemManager(String sessionId) {
+        return !manager.logoutSystemManager(sessionId).getError_occurred();
+    }
+
+    @Override
+    public boolean signUpSystemManager(String username, String password) {
+        return !manager.signUpSystemManager(username, password).getError_occurred();
+    }
 }

@@ -107,4 +107,12 @@ public interface IMarketManager {
         Response removeDiscountPolicy(String sessionId, int storeId, int policyId);
 
         Response addPaymentMethod(String sessionId, String creditCardNumber, int cvv, LocalDate expirationDate);
-    }
+
+        ResponseT<List<String>> getAllCategories();
+
+        Response removeMember(String sessionId, String memberName);
+
+        Response logoutSystemManager(String sessionId);
+
+        ResponseT<String> loginSystemManager(String username, String password);
+}
