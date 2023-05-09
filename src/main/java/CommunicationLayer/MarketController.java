@@ -384,4 +384,13 @@ public class MarketController implements IMarketController{
         return !this.marketManager.changeProductQuantity(sessionId, storeId, productId, quantity).getError_occurred();
     }
 
+    @GetMapping("/getAllCategories")
+    @ResponseBody
+    @Override
+    public List<String> getAllCategories() {
+        return this.marketManager.getAllCategories().value;
+    }
+
+
+
 }

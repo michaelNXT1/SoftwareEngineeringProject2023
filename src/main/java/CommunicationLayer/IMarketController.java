@@ -1,8 +1,6 @@
 package CommunicationLayer;
 
 import ServiceLayer.DTOs.*;
-import ServiceLayer.Response;
-import ServiceLayer.ResponseT;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -51,5 +49,7 @@ public interface IMarketController {
     boolean removePolicy(String sessionId, int storeId, int policyId);
     boolean addMinQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone);
     boolean addMaxQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone);
+
+    List<String> getAllCategories();
 
 }
