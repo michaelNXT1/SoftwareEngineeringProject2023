@@ -259,4 +259,24 @@ public class Real implements Bridge {
     public boolean addMaxQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone) {
         return !this.manager.addMaxQuantityPolicy(sessionId, storeId, productId, minQuantity, allowNone).getError_occurred();
     }
+
+    @Override
+    public boolean removeMember(String sessionId, String memberName) {
+        return !manager.removeMember(sessionId, memberName).getError_occurred();
+    }
+
+    @Override
+    public String loginSystemManager(String username, String password) {
+        return manager.loginSystemManager(username, password).value;
+    }
+
+    @Override
+    public boolean logoutSystemManager(String sessionId) {
+        return !manager.logoutSystemManager(sessionId).getError_occurred();
+    }
+
+    @Override
+    public boolean signUpSystemManager(String username, String password) {
+        return !manager.signUpSystemManager(username, password).getError_occurred();
+    }
 }

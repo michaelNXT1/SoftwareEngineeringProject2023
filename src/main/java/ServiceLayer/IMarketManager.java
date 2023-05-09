@@ -109,4 +109,10 @@ public interface IMarketManager {
         Response addPaymentMethod(String sessionId, String creditCardNumber, int cvv, LocalDate expirationDate) throws Exception;
 
         ResponseT<List<String>> getAllCategories();
+
+        Response removeMember(String sessionId, String memberName);
+
+        Response logoutSystemManager(String sessionId);
+
+        ResponseT<String> loginSystemManager(String username, String password);
 }

@@ -85,6 +85,7 @@ public interface Bridge {
 
     void clearDatabase();
 
+
     String enterMarket();
 
     boolean exitMarket(String sessionId);
@@ -95,4 +96,13 @@ public interface Bridge {
     boolean removePolicy(String sessionId, int storeId, int policyId);
     boolean addMinQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone);
     boolean addMaxQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone);
+
+    boolean removeMember(String sessionId, String memberName);
+
+    String loginSystemManager(String username, String password);
+
+    boolean logoutSystemManager(String sessionId);
+
+    boolean signUpSystemManager(String username, String password);
+
 }

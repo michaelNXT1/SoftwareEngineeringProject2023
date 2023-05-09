@@ -19,7 +19,7 @@ public abstract class ServiceTests extends TestCase {
 
         this.bridge = Driver.getBridge();
 
-        this.bridge.setupSystem("alon", "alon0601");
+        this.bridge.setupSystem("alon1", "alon0601");
 
     }
 
@@ -73,6 +73,15 @@ public abstract class ServiceTests extends TestCase {
 
     public String login (String username, String password){
         return this.bridge.login(username, password);
+    }
+    public String loginSystemManager(String username, String password){
+        return bridge.loginSystemManager(username, password);
+    }
+    public boolean logoutSystemManager(String sessionId){
+        return this.bridge.logoutSystemManager(sessionId);
+    }
+    public boolean signUpSystemManager(String username, String password){
+        return bridge.signUpSystemManager(username, password);
     }
 
     public boolean getStore(String sessionId, int storeID){
@@ -178,6 +187,10 @@ public abstract class ServiceTests extends TestCase {
     }
     public boolean addMaxQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone){
         return this.bridge.addMaxQuantityPolicy(sessionId, storeId, productId, minQuantity, allowNone);
+    }
+//    public int startSession() { return this.bridge.startSession(); }
+    public boolean removeMember(String sessionId, String memberName){
+        return bridge.removeMember(sessionId, memberName);
     }
 
     public boolean appointOwner(String sessionId, int storeId, String userName){
