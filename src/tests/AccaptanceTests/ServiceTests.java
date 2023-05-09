@@ -159,6 +159,9 @@ public abstract class ServiceTests extends TestCase {
     public String viewPurchaseHistory(String sessionId, int storeID){
         return bridge.viewPurchaseHistory(sessionId, storeID);
     }
+    public boolean removeMember(String sessionId, String memberName){
+        return bridge.removeMember(sessionId, memberName);
+    }
 
     public String enterMarket(){
         return this.bridge.enterMarket();

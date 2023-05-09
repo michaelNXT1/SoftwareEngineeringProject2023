@@ -203,6 +203,10 @@ public class Real implements Bridge {
         return manager.closeStore(sessionId, storeID).getError_occurred();
     }
 
+    @Override
+    public boolean removeMember(String sessionId, String memberName) {
+        return manager.removeMember(sessionId, memberName).getError_occurred();
+    }
 
     public void clearDatabase() {
 
