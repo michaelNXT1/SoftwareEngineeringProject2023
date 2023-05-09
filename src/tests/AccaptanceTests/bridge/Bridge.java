@@ -85,6 +85,7 @@ public interface Bridge {
 
     void clearDatabase();
 
+
     String enterMarket();
 
     boolean exitMarket(String sessionId);
