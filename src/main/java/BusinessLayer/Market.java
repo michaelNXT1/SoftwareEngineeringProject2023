@@ -705,7 +705,7 @@ public class Market {
             logger.error(String.format("cannot remove member with positions in the market"));
             throw new Exception("cannot remove member with positions in the market");
         }
-        securityUtils.removeMember(mToRemove.getUsername(), mToRemove.getPassword());
+        //securityUtils.removeMember(mToRemove.getUsername(), mToRemove.getPassword());
         users.remove(memberName);
 
     }

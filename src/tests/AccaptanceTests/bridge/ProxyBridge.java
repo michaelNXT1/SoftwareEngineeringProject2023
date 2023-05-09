@@ -398,6 +398,14 @@ public class ProxyBridge implements Bridge{
             return false;
         }
     }
+    public boolean removeMember(String sessionId, String memberName){
+        if(real != null){
+            return real.removeMember(sessionId, memberName);
+        }
+        else{
+            return false;
+        }
+    }
 
 
     public void clearDatabase() {
@@ -408,5 +416,6 @@ public class ProxyBridge implements Bridge{
 
         }
     }
+
 
 }
