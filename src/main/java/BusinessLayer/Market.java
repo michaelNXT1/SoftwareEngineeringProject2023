@@ -12,10 +12,7 @@ import java.security.NoSuchAlgorithmException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -748,17 +745,19 @@ public class Market {
         logger.error(String.format("Success to remove %s from market", memberName));
 
     }
+
     public List<String> getAllCategories() {
         logger.info("getting all categories");
-        List<String> allCat = new ArrayList<>();
-        for(Store store: this.stores.values()){
-            for(Product p :store.getProducts().keySet()){
-                if(!allCat.contains(p.getCategory()))
-                    allCat.add(p.getCategory());
-            }
-        }
-        allCat.add("test");
-        return allCat;
+        Set<String> allCat = new HashSet<>();
+        for (Store store : this.stores.values())
+            allCat.addAll(store.getCategories());
+        allCat.add("Zebra");
+        allCat.add("Ant");
+        allCat.add("Dog");
+        allCat.add("Cat");
+        List<String> retList = new ArrayList<>(allCat);
+        Collections.sort(retList);
+        return retList;
     }
 
 }
