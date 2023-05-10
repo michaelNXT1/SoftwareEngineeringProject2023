@@ -122,7 +122,7 @@ public interface Bridge {
 
     boolean removeDiscountPolicy(String sessionId, int storeId, int policyId);
 
-    boolean addPaymentMethod(String sessionId, String creditCardNumber, int cvv, LocalDate expirationDate);
+    boolean addPaymentMethod(String sessionId, String cardNumber, String month, String year, String cvv);
 
     boolean removeMember(String sessionId, String memberName);
 

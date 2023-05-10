@@ -12,7 +12,7 @@ public class RemoveMemberTest extends ServiceTests {
     public void setUp(){
         super.setUp();
         register("shoham", "sh20754");
-        sessionID1 = loginSystemManager("alon1","alon0601");
+        sessionID1 = loginSystemManager("shoham", "sh20754");
     }
 
     public void testRemoveMemberSuccessful(){

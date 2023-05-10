@@ -509,9 +509,9 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public boolean addPaymentMethod(String sessionId, String creditCardNumber, int cvv, LocalDate expirationDate) {
+    public boolean addPaymentMethod(String sessionId, String cardNumber, String month, String year, String cvv) {
         if (real != null) {
-            return real.addPaymentMethod(sessionId, creditCardNumber, cvv, expirationDate);
+            return real.addPaymentMethod(sessionId, cardNumber, month, year, cvv);
         } else {
             return false;
         }

@@ -17,7 +17,7 @@ public class DiscountPolicyTest extends ServiceTests {
         register("alon1", "alon0601");
         register("alon12", "alon0601");
         sessionID1 = login("alon1", "alon0601");
-        addPaymentMethod(sessionID1, "Credit", 123, LocalDate.MAX);
+        addPaymentMethod(sessionID1,"124","12","2026","540");
     }
 
     @Test

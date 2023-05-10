@@ -32,7 +32,8 @@ public class RegistrationTest extends ServiceTests {
     }
 
     @Test
-    public void testRegisterFailureNotExistingUsername() {
+    public void testRegisterFailureAlreadyRegisteredUsername() {
+        register("yohane", "1234");
         assertFalse(register("yohane", "1234"));
     }
 
