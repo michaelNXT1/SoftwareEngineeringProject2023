@@ -9,7 +9,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Route(value = "setPositionOfMemberToStoreManager",layout = MainLayout.class)
+@Route(value = "setPositionOfMemberToStoreOwner",layout = MainLayout.class)
 public class AddStoreOwner extends VerticalLayout {
     private TextField usernameField;
     private TextField storeIdField;
