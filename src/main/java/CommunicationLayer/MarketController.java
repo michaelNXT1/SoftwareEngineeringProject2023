@@ -167,6 +167,7 @@ public class MarketController implements IMarketController{
                                  @RequestParam(value = "description", defaultValue = "") String description) {
         return this.marketManager.addProduct(sessionId, storeId, productName, price, category, quantity, description).value;
     }
+
     @GetMapping("/editProductName")
     @ResponseBody
     @Override

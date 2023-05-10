@@ -20,6 +20,7 @@ public class LoginView extends VerticalLayout{
     private MarketController marketController;
     private Header header;
 
+
     @Autowired
     public LoginView(){
         this.header = new Header();
@@ -39,6 +40,6 @@ public class LoginView extends VerticalLayout{
     private void login() {
         String username = usernameField.getValue();
         String password = passwordField.getValue();
-        marketController.login(username,password);
+        MainLayout.setSessionId(marketController.login(username,password));
     }
 }
