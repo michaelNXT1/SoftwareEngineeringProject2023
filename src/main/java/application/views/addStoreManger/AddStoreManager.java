@@ -9,9 +9,13 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
-@Route(value = "AddStoreManager",layout = MainLayout.class)
+
+import java.awt.*;
+
+@Route(value = "setPositionOfMemberToStoreManager",layout = MainLayout.class)
 public class AddStoreManager extends VerticalLayout{
         private TextField usernameField;
+        private TextField storeIdField;
         private Button submitButton;
         private MarketController marketController;
         private Header header;
@@ -21,19 +25,21 @@ public class AddStoreManager extends VerticalLayout{
             this.header = new Header();
             this.header.setText("Add Store Manager");
             this.usernameField = new TextField("Username");
-            this.submitButton = new Button("add", e -> login());
+            this.storeIdField = new TextField("storeId");
+            this.submitButton = new Button("add", e -> setPositionOfMemberToStoreManager());
             this.marketController = MarketController.getInstance();
 
-            add(header,usernameField, submitButton);
+            add(header,usernameField,storeIdField, submitButton);
             setSizeFull();
             setJustifyContentMode(JustifyContentMode.CENTER);
             setDefaultHorizontalComponentAlignment(Alignment.CENTER);
             getStyle().set("text-align", "center");
         }
 
-        private void login() {
+        private void setPositionOfMemberToStoreManager() {
             String username = usernameField.getValue();
-          //  marketController.addStoreManagerPermissions(username,);
+            int storeId = Integer.parseInt(storeIdField.getValue());
+            marketController.setPositionOfMemberToStoreManager( MainLayout.getSessionId(),storeId,username);
         }
 
 
