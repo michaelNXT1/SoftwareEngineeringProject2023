@@ -36,7 +36,7 @@ import java.util.List;
  * The main view is a top-level placeholder for other views.
  */
 public class MainLayout extends AppLayout {
-
+    private static String sessionId;
 
     MarketController marketController = MarketController.getInstance();
     /**
@@ -74,7 +74,9 @@ public class MainLayout extends AppLayout {
     public MainLayout() {
         addToNavbar(createHeaderContent());
         addDrawerContent();
+        sessionId=null;
     }
+
 
     private void addDrawerContent() {
         H1 appName = new H1("Categories");
@@ -86,6 +88,13 @@ public class MainLayout extends AppLayout {
         addToDrawer(header, scroller, createFooter());
     }
 
+    public static void setSessionId(String sessionId) {
+        MainLayout.sessionId = sessionId;
+    }
+
+    public static String getSessionId() {
+        return sessionId;
+    }
 
     private Component createHeaderContent() {
         Header header = new Header();
