@@ -534,13 +534,12 @@ public class Market {
             throw new Exception("The list of employees is null.");
         }
         List<MemberDTO> ret = new ArrayList<>();
-        for (Member e:employees
+        for (Member e : employees
         ) {
             ret.add(new MemberDTO(e));
         }
         return ret;
     }
-
 
 
     //use case 6.1
@@ -806,12 +805,13 @@ public class Market {
         Guest g = sessionManager.getSession(sessionId);
         return g.getSearchKeyword();
     }
+
     public List<MemberDTO> getInformationAboutMembers(String sessionId) throws Exception {
         checkMarketOpen();
         SystemManager sm = sessionManager.getSessionForSystemManager(sessionId);
         logger.info(String.format("%s try to get information about members", sm.getUsername()));
         List<MemberDTO> ret = new ArrayList<>();
-        for (Member u:users.values()
+        for (Member u : users.values()
         ) {
             ret.add(new MemberDTO(u));
         }

@@ -41,5 +41,6 @@ public class LoginView extends VerticalLayout{
         String username = usernameField.getValue();
         String password = passwordField.getValue();
         MainLayout.setSessionId(marketController.login(username,password));
+
     }
 }
