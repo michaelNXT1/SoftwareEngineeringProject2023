@@ -2,7 +2,7 @@ package ServiceLayer;
 
 public class Response {
     public String error_message = "";
-    public boolean error_occurred;
+    private boolean error_occurred;
 
     protected Response() {
     }

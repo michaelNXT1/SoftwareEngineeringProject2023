@@ -2,7 +2,9 @@ package CommunicationLayer;
 
 import ServiceLayer.DTOs.*;
 import ServiceLayer.Response;
-import ServiceLayer.ResponseT;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -19,6 +21,30 @@ public interface IMarketController {
     StoreDTO getStore(String sessionId, int storeId);
     ProductDTO getProduct(String sessionId, int storeId, int productId);
     List<ProductDTO> getProductsByName(String sessionId, String productName);
+
+    @GetMapping("/addProductDiscount")
+    @ResponseBody
+    Response addProductDiscount(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
+                                @RequestParam(value = "productId", defaultValue = "-1") int productId,
+                                @RequestParam(value = "discountPercentage", defaultValue = "-1.0") double discountPercentage,
+                                @RequestParam(value = "compositionType", defaultValue = "-1.0") int compositionType);
+
+    @GetMapping("/addCategoryDiscount")
+    @ResponseBody
+    Response addCategoryDiscount(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                 @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
+                                 @RequestParam(value = "category", defaultValue = "") String category,
+                                 @RequestParam(value = "discountPercentage", defaultValue = "-1.0") double discountPercentage,
+                                 @RequestParam(value = "compositionType", defaultValue = "-1.0") int compositionType);
+
+    @GetMapping("/addStoreDiscount")
+    @ResponseBody
+    Response addStoreDiscount(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                              @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
+                              @RequestParam(value = "discountPercentage", defaultValue = "-1.0") double discountPercentage,
+                              @RequestParam(value = "compositionType", defaultValue = "-1.0") int compositionType);
+
     List<ProductDTO> getProductsByCategory(String sessionId, String productCategory);
     List<ProductDTO> getProductsBySubstring(String sessionId, String productSubstring);
     List<ProductDTO> getSearchResults(String sessionId);
