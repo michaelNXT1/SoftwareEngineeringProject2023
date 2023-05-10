@@ -137,4 +137,6 @@ public interface Bridge {
     boolean removeStoreOwner(String sessionId, String storeOwnerToRemove, int storeId);
 
     boolean setPositionOfMemberToStoreManager(String sessionId, int storeID, String memberToBecomeManager);
+
+    boolean getInformationAboutMembers(String sessionId);
 }

@@ -587,4 +587,14 @@ public class ProxyBridge implements Bridge {
         }
     }
 
+    @Override
+    public boolean getInformationAboutMembers(String sessionId) {
+        if(real != null){
+            return real.getInformationAboutMembers(sessionId);
+        }
+        else{
+            return false;
+        }
+    }
+
 }

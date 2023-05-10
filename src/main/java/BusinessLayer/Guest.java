@@ -2,6 +2,7 @@ package BusinessLayer;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -83,5 +84,13 @@ public class Guest {
 
     public void revertPurchase(Purchase purchase) {
         purchaseHistory.remove(purchase);
+    }
+
+    public Collection<Purchase> getPpurchaseHistory() {
+        return purchaseHistory;
+    }
+
+    public ShoppingCart getShoppingCart() {
+        return shoppingCart;
     }
 }

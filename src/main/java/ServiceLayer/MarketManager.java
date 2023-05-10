@@ -83,6 +83,15 @@ public class MarketManager implements IMarketManager {
         }
     }
 
+    @Override
+    public ResponseT<List<MemberDTO>> getInformationAboutMembers(String sessionId) {
+        try {
+            List<MemberDTO> ret = market.getInformationAboutMembers(sessionId);
+            return ResponseT.fromValue(ret);
+        } catch (Exception e) {
+            return ResponseT.fromError(e.getMessage());
+        }    }
+
     public Response logout(String sessionId) {
         try {
             market.logout(sessionId);

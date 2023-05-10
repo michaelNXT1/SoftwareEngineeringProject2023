@@ -162,20 +162,20 @@ public class Market {
         // If the credentials are correct, authenticate the user and return true
         boolean res = securityUtils.authenticate(username, password);
         if (res) {
-            logger.info(String.format("%s the user passed authenticate check and logged in to the system", username));
+            logger.info(String.format("%s passed authenticate check and logged in to the system", username));
             String sessionId = sessionManager.createSession(member);
             return sessionId;
         }
-        logger.error(String.format("%s the user did not passed authenticate check and logged in to the system", username));
+        logger.error(String.format("%s did not passed authenticate check and logged in to the system", username));
         return null;
     }
 
 
     //use case 3.1
     public void logout(String sessionId) throws Exception {
-        logger.info(String.format("%s trying to log out of the system", sessionId));
         try {
             sessionManager.deleteSessionForSystemManager(sessionId);
+            logger.info(String.format("logged out of the system"));
         } catch (Exception e) {
             isMarketOpen();
             sessionManager.deleteSession(sessionId);
@@ -523,8 +523,21 @@ public class Market {
         isMarketOpen();
         sessionManager.getSession(sessionId);
         Position p = checkPositionLegal(sessionId, storeId);
-        return p.getStoreEmployees().stream().map(MemberDTO::new).toList();
+        List<Member> employees = p.getStoreEmployees();
+        if (employees == null) {
+            // handle the case where the list of employees is null, e.g. throw an exception
+            logger.error("The list of employees is null");
+            throw new Exception("The list of employees is null.");
+        }
+        List<MemberDTO> ret = new ArrayList<>();
+        for (Member e:employees
+        ) {
+            ret.add(new MemberDTO(e));
+        }
+        return ret;
     }
+
+
 
     //use case 6.1
     public void closeStore(String sessionId, int storeId) throws Exception {
@@ -782,5 +795,16 @@ public class Market {
         Position p = checkPositionLegal(sessionId,storeId);
         p.removeStoreOwner(storeOwnerToRemove, m);
 
+    }
+    public List<MemberDTO> getInformationAboutMembers(String sessionId) throws Exception {
+        checkMarketOpen();
+        SystemManager sm = sessionManager.getSessionForSystemManager(sessionId);
+        logger.info(String.format("%s try to get information about members", sm.getUsername()));
+        List<MemberDTO> ret = new ArrayList<>();
+        for (Member u:users.values()
+        ) {
+            ret.add(new MemberDTO(u));
+        }
+        return ret;
     }
 }

@@ -340,4 +340,9 @@ public class Real implements Bridge {
     public boolean setPositionOfMemberToStoreManager(String sessionId, int storeID, String memberToBecomeManager) {
         return !manager.setPositionOfMemberToStoreManager(sessionId, storeID, memberToBecomeManager).getError_occurred();
     }
+
+    @Override
+    public boolean getInformationAboutMembers(String sessionId) {
+        return !manager.getInformationAboutMembers(sessionId).getError_occurred();
+    }
 }

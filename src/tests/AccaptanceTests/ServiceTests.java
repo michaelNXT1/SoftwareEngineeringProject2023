@@ -270,4 +270,7 @@ public abstract class ServiceTests extends TestCase {
     public boolean setPositionOfMemberToStoreManager(String sessionId, int storeID, String memberToBecomeManager){
         return  bridge.setPositionOfMemberToStoreManager(sessionId, storeID, memberToBecomeManager);
     }
+    public boolean getInformationAboutMembers(String sessionId){
+        return bridge.getInformationAboutMembers(sessionId);
+    }
 }
