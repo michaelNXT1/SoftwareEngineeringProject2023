@@ -10,8 +10,10 @@ public class MinBagTotalDiscountPolicy extends BaseDiscountPolicy {
 
     public MinBagTotalDiscountPolicy(int policyId, double minTotal) throws Exception {
         super(policyId);
-        if (minTotal <= 0)
+        if (minTotal <= 0) {
+            logger.error("minimum total must be larger than 0 but is " + minTotal);
             throw new Exception("minimum total must be larger than 0");
+        }
         this.minTotal = minTotal;
     }
 
