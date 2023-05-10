@@ -54,6 +54,12 @@ public class Market {
     public Map<String, Member> getUsers() {
         return users;
     }
+    public List<String> getStoreOwners(int storeId) throws Exception {
+        checkStoreExists(storeId);
+        Store s = stores.get(storeId);
+        logger.info(String.format("try to get %s owners", s.getStoreName()));
+        return s.getStoreOwners();
+    }
 
     public Map<Integer, Store> getStores() {
         return stores;
