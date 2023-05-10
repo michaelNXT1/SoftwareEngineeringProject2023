@@ -52,4 +52,5 @@ public interface IMarketController {
 
     List<String> getAllCategories();
 
+    boolean addPaymentMethod(String sessionId, String cardNumber, String month, String year, String cvv);
 }

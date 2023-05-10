@@ -557,4 +557,34 @@ public class ProxyBridge implements Bridge {
         }
     }
 
+    @Override
+    public boolean setPositionOfMemberToStoreOwner(String sessionId, String memberToBecomeStoreOwner, int storeId) {
+        if(real != null){
+            return real.setPositionOfMemberToStoreOwner(sessionId, memberToBecomeStoreOwner, storeId);
+        }
+        else{
+            return false;
+        }
+    }
+
+    @Override
+    public boolean removeStoreOwner(String sessionId, String storeOwnerToRemove, int storeId) {
+        if(real != null){
+            return real.removeStoreOwner(sessionId, storeOwnerToRemove, storeId);
+        }
+        else{
+            return false;
+        }
+    }
+
+    @Override
+    public boolean setPositionOfMemberToStoreManager(String sessionId, int storeId, String memberToBecomeManager) {
+        if(real != null){
+            return real.setPositionOfMemberToStoreManager(sessionId, storeId, memberToBecomeManager);
+        }
+        else{
+            return false;
+        }
+    }
+
 }

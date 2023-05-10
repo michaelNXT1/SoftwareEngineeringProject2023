@@ -1,8 +1,6 @@
 package BusinessLayer;
 
-import BusinessLayer.Discounts.Discount;
-import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
-import BusinessLayer.Policies.PurchasePolicies.BasePolicy;
+import BusinessLayer.Logger.SystemLogger;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -11,10 +9,12 @@ public class StoreOwner implements Position {
 
     private Store store;
     private Member assigner;
+    private SystemLogger logger;
 
     public StoreOwner(Store store, Member assigner) {
         this.store = store;
         this.assigner = assigner;
+        logger = new SystemLogger();
     }
 
     @Override
@@ -39,14 +39,14 @@ public class StoreOwner implements Position {
     }
 
     @Override
-    public void setPositionOfMemberToStoreManager(Store store, Member member) throws Exception {
-        member.setToStoreManager(store);
+    public void setPositionOfMemberToStoreManager(Store store, Member member, Member assigner) throws Exception {
+        member.setToStoreManager(store, assigner);
     }
 
 
     @Override
-    public void setPositionOfMemberToStoreOwner(Store store, Member member) throws Exception {
-        member.setToStoreOwner(store);
+    public void setPositionOfMemberToStoreOwner(Store store, Member member,  Member assigner) throws Exception {
+        member.setToStoreOwner(store, assigner);
     }
 
     @Override
@@ -91,6 +91,15 @@ public class StoreOwner implements Position {
     @Override
     public List<Member> getStoreEmployees() {
         return store.getEmployees();
+    }
+
+    @Override
+    public void removeStoreOwner(Member storeOwnerToRemove, Guest m) throws Exception {
+        if (!assigner.equals(m)){
+            logger.error(String.format("%s is not the assigner of %s",m.getUsername(), storeOwnerToRemove.getUsername()));
+            throw new Exception("can remove only store owner assigned by him");
+        }
+        storeOwnerToRemove.notBeingStoreOwner(m, getStore());
     }
 
     @Override

@@ -41,6 +41,4 @@ public class AddStoreManager extends VerticalLayout{
             int storeId = Integer.parseInt(storeIdField.getValue());
             marketController.setPositionOfMemberToStoreManager( MainLayout.getSessionId(),storeId,username);
         }
-
-
 }

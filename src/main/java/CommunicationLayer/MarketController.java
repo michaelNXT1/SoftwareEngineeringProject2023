@@ -385,6 +385,12 @@ public class MarketController implements IMarketController{
         return this.marketManager.getAllCategories().value;
     }
 
+    @GetMapping("/addPaymentMethod")
+    @ResponseBody
+    @Override
+    public boolean addPaymentMethod(String sessionId, String cardNumber, String month, String year, String cvv) {
+        return !this.marketManager.addPaymentMethod(sessionId, cardNumber, month, year, cvv).getError_occurred();
+    }
 
 
 }
