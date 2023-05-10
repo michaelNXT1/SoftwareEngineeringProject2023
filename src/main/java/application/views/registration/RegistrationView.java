@@ -4,6 +4,7 @@ import CommunicationLayer.MarketController;
 import application.views.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Header;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
@@ -38,6 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
         private void regisration() {
             String username = usernameField.getValue();
             String password = passwordField.getValue();
-            marketController.signUp(username,password);
+            Boolean ans = marketController.signUp(username,password);
+            Notification.show(ans.toString());
         }
 }

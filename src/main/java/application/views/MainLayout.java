@@ -178,7 +178,8 @@ public class MainLayout extends AppLayout {
     private MenuItemInfo[] createMenuItems() {
         return new MenuItemInfo[]{ //
                 new MenuItemInfo("Hello World", LineAwesomeIcon.GLOBE_SOLID.create(), HelloWorldView.class), //
-
+                new MenuItemInfo("Sign Up", LineAwesomeIcon.CODEPEN.create(), RegistrationView.class), //
+                new MenuItemInfo("Log In", LineAwesomeIcon.CAPSULES_SOLID.create(), LoginView.class), //
                 new MenuItemInfo("About", LineAwesomeIcon.FILE.create(), AboutView.class), //
 
         };
