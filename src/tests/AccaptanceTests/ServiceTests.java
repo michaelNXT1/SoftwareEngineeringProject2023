@@ -258,8 +258,8 @@ public abstract class ServiceTests extends TestCase {
     }
 
 
-    public boolean addPaymentMethod(String sessionId, String creditCardNumber, String month, String year, String cvv) {
-        return this.bridge.addPaymentMethod(sessionId, creditCardNumber, month, year, cvv);
+    public boolean addPaymentMethod(String sessionId, String cardNumber, String month, String year, String cvv) {
+        return this.bridge.addPaymentMethod(sessionId, cardNumber, month, year,cvv);
     }
     public boolean setPositionOfMemberToStoreOwner(String sessionId, String memberToBecomeStoreOwner, int storeId){
         return bridge.setPositionOfMemberToStoreOwner(sessionId, memberToBecomeStoreOwner, storeId);

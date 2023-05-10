@@ -18,7 +18,7 @@ public class AddDiscountTest extends ServiceTests {
         register("alon1", "alon0601");
         register("alon12", "alon0601");
         sessionID1 = login("alon1", "alon0601");
-        addPaymentMethod(sessionID1, "Credit","3","2019", "123");
+        addPaymentMethod(sessionID1,"124","12","2026","540");
     }
 
     @Test

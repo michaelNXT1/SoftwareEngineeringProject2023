@@ -13,6 +13,8 @@ public class StoreTests extends ServiceTests {
         suite.addTest(new TestSuite(DeleteProductFromStore.class));
         suite.addTest(new TestSuite(EditExistingProduct.class));
         suite.addTest(new TestSuite(GetPositionInfo.class));
+        suite.addTest(new TestSuite(PurchasePolicyTest.class));
+        suite.addTest(new TestSuite(AddDiscountTest.class));
         return suite;
     }
 
