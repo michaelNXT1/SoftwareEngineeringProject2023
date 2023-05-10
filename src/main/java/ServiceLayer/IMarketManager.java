@@ -113,6 +113,8 @@ public interface IMarketManager {
         Response removeMember(String sessionId, String memberName);
         Response removeStoreOwner(String sessionId, String storeOwnerToRemove, int storeId);
 
+        ResponseT<List<MemberDTO>> getInformationAboutMembers(String sessionId);
+
 //        Response logoutSystemManager(String sessionId);
 
 //        ResponseT<String> loginSystemManager(String username, String password);

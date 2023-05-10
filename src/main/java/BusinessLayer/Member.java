@@ -6,6 +6,7 @@ import Security.SecurityUtils;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class Member extends Guest {
 
@@ -130,5 +131,9 @@ public class Member extends Guest {
         }
         positions.remove(storeOwnerP);
         logger.info(String.format("remove %s from being storeManager", getUsername()));
+    }
+
+    public List<Position> getPositions() {
+        return positions;
     }
 }
