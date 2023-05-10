@@ -51,6 +51,7 @@ public class Market {
         this.logger = new SystemLogger();
         fd = new FundDemander();
         SystemManager sm = new SystemManager("admin", new String(passwordEncoder.digest("admin".getBytes())));
+        marketOpen = true;
         systemManagers.put(sm.getUsername(), sm);
     }
 

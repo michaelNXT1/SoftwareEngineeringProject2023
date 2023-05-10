@@ -7,6 +7,8 @@ import application.components.AppNavItem;
 import application.views.category.CategoryView;
 import application.views.about.AboutView;
 import application.views.helloworld.HelloWorldView;
+import application.views.login.LoginView;
+import application.views.registration.RegistrationView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.html.*;
@@ -74,6 +76,7 @@ public class MainLayout extends AppLayout {
     public MainLayout() {
         addToNavbar(createHeaderContent());
         addDrawerContent();
+        marketController.enterMarket();
     }
 
     private void addDrawerContent() {
@@ -134,7 +137,8 @@ public class MainLayout extends AppLayout {
     private MenuItemInfo[] createMenuItems() {
         return new MenuItemInfo[]{ //
                 new MenuItemInfo("Hello World", LineAwesomeIcon.GLOBE_SOLID.create(), HelloWorldView.class), //
-
+                new MenuItemInfo("Sign Up", LineAwesomeIcon.CODEPEN.create(), RegistrationView.class), //
+                new MenuItemInfo("Log In", LineAwesomeIcon.CAPSULES_SOLID.create(), LoginView.class), //
                 new MenuItemInfo("About", LineAwesomeIcon.FILE.create(), AboutView.class), //
 
         };
