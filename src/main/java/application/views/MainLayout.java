@@ -10,6 +10,7 @@ import application.views.addStoreOwner.AddStoreOwner;
 import application.views.category.CategoryView;
 import application.views.helloworld.HelloWorldView;
 import application.views.login.LoginView;
+import application.views.openStore.OpenStore;
 import application.views.registration.RegistrationView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
@@ -149,6 +150,9 @@ public class MainLayout extends AppLayout {
         actionsMap.put("Add Store Manager", () -> UI.getCurrent().navigate(AddStoreManager.class));
         actionsMap.put("Add Store Owner", () -> UI.getCurrent().navigate(AddStoreOwner.class));
         actionsMap.put("Add Payment Method", () -> UI.getCurrent().navigate(AddPaymentMethod.class));
+        actionsMap.put("Add Product", () -> UI.getCurrent().navigate(AddProduct.class));
+        actionsMap.put("Open new Store", () -> UI.getCurrent().navigate(OpenStore.class));
+
         select.setItems(actionsMap.keySet());
         select.addValueChangeListener(event -> actionsMap.get(event.getValue()).run());
         select.setPlaceholder("Actions");
