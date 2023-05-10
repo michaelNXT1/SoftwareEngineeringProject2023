@@ -15,4 +15,12 @@ public class PurchaseProductDTO {
         this.price = p.getPrice();
         this.quantity = p.getQuantity();
     }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
 }

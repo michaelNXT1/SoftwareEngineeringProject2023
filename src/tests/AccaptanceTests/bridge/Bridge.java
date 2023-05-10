@@ -1,6 +1,9 @@
 package AccaptanceTests.bridge;
 
 
+import ServiceLayer.DTOs.PurchaseDTO;
+
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 public interface Bridge {
@@ -9,6 +12,7 @@ public interface Bridge {
     String login(String username, String password);
 
     boolean register(String username, String password);
+
     boolean getStore(String sessionId, int storeId);
 
     boolean getProduct(String sessionId, int productID, int storeID);
@@ -36,7 +40,7 @@ public interface Bridge {
 
 //    boolean clearCart(int sessionId);
 
-    boolean buyCart(String sessionId, String cardNumber, String cardMonth, String cardYear, String cardHolder, String cardCcv, String cardId, String buyerName, String address, String city, String country, String zip);
+    PurchaseDTO buyCart(String sessionId);
 
     String showCart(String sessionId);
 
@@ -49,11 +53,10 @@ public interface Bridge {
     String viewPurchaseHistory(String sessionId, int storeID);
 
 
-
     boolean deleteProduct(String sessionId, int storeId, int productId);
 
 
- //   boolean editStorePurchaseType(int sessionId, int storeId, String newType);
+    //   boolean editStorePurchaseType(int sessionId, int storeId, String newType);
 
     boolean appointManager(String sessionId, int storeId, String userName);
 
@@ -76,6 +79,7 @@ public interface Bridge {
     boolean editProductCategory(String sessionId, int storeId, int productId, String newCategory);
 
     boolean editProductName(String sessionId, int storeId, int productId, String newName);
+
     boolean appointOwner(String sessionId, int storeId, String userName);
 
 
@@ -85,14 +89,47 @@ public interface Bridge {
 
     void clearDatabase();
 
+
     String enterMarket();
 
     boolean exitMarket(String sessionId);
 
     boolean addProductTimeRestrictionPolicy(String sessionId, int storeId, int productId, LocalTime startTime, LocalTime endTime);
+
     boolean addCategoryTimeRestrictionPolicy(String sessionId, int storeId, String category, LocalTime startTime, LocalTime endTime);
+
     boolean joinPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator);
+
     boolean removePolicy(String sessionId, int storeId, int policyId);
+
     boolean addMinQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone);
+
     boolean addMaxQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone);
+
+    boolean addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType);
+
+    boolean addCategoryDiscount(String sessionId, int storeId, String category, double discountPercentage, int compositionType);
+
+    boolean addStoreDiscount(String sessionId, int storeId, double discountPercentage, int compositionType);
+
+    boolean addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone);
+
+    boolean addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity, boolean allowNone);
+
+    boolean addMinBagTotalDiscountPolicy(String sessionId, int storeId, int discountId, double minTotal);
+
+    boolean joinDiscountPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator);
+
+    boolean removeDiscountPolicy(String sessionId, int storeId, int policyId);
+
+    boolean addPaymentMethod(String sessionId, String creditCardNumber, int cvv, LocalDate expirationDate);
+
+    boolean removeMember(String sessionId, String memberName);
+
+//    String loginSystemManager(String username, String password);
+
+//    boolean logoutSystemManager(String sessionId);
+
+    boolean signUpSystemManager(String username, String password);
+
 }

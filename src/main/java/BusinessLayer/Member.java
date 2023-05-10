@@ -101,4 +101,8 @@ public class Member extends Guest {
         }
         return newStore;
     }
+
+    public boolean hasPositions() {
+        return !positions.isEmpty();
+    }
 }

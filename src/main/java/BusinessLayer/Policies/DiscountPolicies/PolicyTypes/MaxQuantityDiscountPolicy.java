@@ -10,12 +10,14 @@ public class MaxQuantityDiscountPolicy extends BaseDiscountPolicy {
     private final int minQuantity;
     private final boolean allowNone;
 
-    public MaxQuantityDiscountPolicy(int policyId, int productId, int minQuantity, boolean allowNone) throws Exception {
+    public MaxQuantityDiscountPolicy(int policyId, int productId, int maxQuantity, boolean allowNone) throws Exception {
         super(policyId);
-        if (minQuantity <= 0)
+        if (maxQuantity <= 0) {
+            logger.error("Max quantity must be larger than 0 but is " + maxQuantity);
             throw new Exception("Max quantity must be larger than 0");
+        }
         this.productId = productId;
-        this.minQuantity = minQuantity;
+        this.minQuantity = maxQuantity;
         this.allowNone = allowNone;
     }
 

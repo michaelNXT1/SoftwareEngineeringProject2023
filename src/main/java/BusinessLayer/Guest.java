@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.atmosphere.annotation.AnnotationUtil.logger;
+
 public class Guest {
 
     private ShoppingCart shoppingCart;
@@ -32,8 +34,10 @@ public class Guest {
     }
 
     public Purchase purchaseShoppingCart() throws Exception {    //2.14
-        if (paymentDetails == null)
+        if (paymentDetails == null) {
+            logger.error(String.format("no payment details exist"));
             throw new Exception("no payment details exist");
+        }
         Purchase p = shoppingCart.purchaseShoppingCart();
         purchaseHistory.add(p);
         return p;
@@ -64,10 +68,12 @@ public class Guest {
     }
 
     public Store openStore(String storeName, int storeId) throws Exception {
+        logger.error(String.format("Cannot perform action when not a member"));
         throw new Exception("Cannot perform action when not a member");
     }
 
     public String getUsername() throws Exception {
+        logger.error(String.format("Cannot perform action when not a member"));
         throw new Exception("Cannot perform action when not a member");
     }
 

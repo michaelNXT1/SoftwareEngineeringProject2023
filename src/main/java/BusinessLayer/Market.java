@@ -41,19 +41,17 @@ public class Market {
     public Market() {
         stores = new ConcurrentHashMap<>();
         systemManagers = new ConcurrentHashMap<>();
-
         users = new ConcurrentHashMap<>();
         try {
             passwordEncoder = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
-        systemManagers = new ConcurrentHashMap<>();
-        SystemManager sm = new SystemManager("admin", new String(passwordEncoder.digest("admin".getBytes())));
-        systemManagers.put(sm.getUsername(), sm);
         marketOpen = false;
         this.logger = new SystemLogger();
         fd = new FundDemander();
+        SystemManager sm = new SystemManager("admin", new String(passwordEncoder.digest("admin".getBytes())));
+        systemManagers.put(sm.getUsername(), sm);
     }
 
     public Map<String, Member> getUsers() {
@@ -66,7 +64,7 @@ public class Market {
 
     public void signUpSystemManager(String username, String password) throws Exception {
         logger.info(String.format("Sign Up new System Manager: %s", username));
-        if (usernameExists(username)) {
+        if (systemManagerUsernameExists(username)) {
             logger.error(String.format("Username already exists :%s", username));
             throw new Exception("Username already exists");
         }
@@ -82,6 +80,10 @@ public class Market {
             marketOpen = true;
         }
 
+    }
+
+    private boolean systemManagerUsernameExists(String username) {
+        return systemManagers.values().stream().anyMatch(m -> m.getUsername().equals(username));
     }
 
     //use case 1.1
@@ -174,7 +176,6 @@ public class Market {
             sessionManager.deleteSession(sessionId);
         }
     }
-
 
 //    //use case 2.3
 //    public String loginSystemManager(String username, String password) throws Exception {
@@ -547,6 +548,7 @@ public class Market {
 
     public void addMinQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone) throws Exception {
         isMarketOpen();
+        logger.info("trying to add minQuantityPolicy");
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
@@ -555,6 +557,7 @@ public class Market {
 
     public void addMaxQuantityPolicy(String sessionId, int storeId, int productId, int maxQuantity, boolean allowNone) throws Exception {
         isMarketOpen();
+        logger.info("trying to add maxQuantityPolicy");
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
@@ -563,6 +566,7 @@ public class Market {
 
     public void addProductTimeRestrictionPolicy(String sessionId, int storeId, int productId, LocalTime startTime, LocalTime endTime) throws Exception {
         isMarketOpen();
+        logger.info("trying to add addProductTimeRestrictionPolicy");
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
@@ -571,6 +575,7 @@ public class Market {
 
     public void addCategoryTimeRestrictionPolicy(String sessionId, int storeId, String category, LocalTime startTime, LocalTime endTime) throws Exception {
         isMarketOpen();
+        logger.info("trying to add CategoryTimeRestrictionPolicy");
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
@@ -579,6 +584,7 @@ public class Market {
 
     public void joinPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator) throws Exception {
         isMarketOpen();
+        logger.info("trying to joinPolicies");
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
@@ -586,6 +592,7 @@ public class Market {
     }
 
     public void removePolicy(String sessionId, int storeId, int policyId) throws Exception {
+        logger.info("trying to remove policy");
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
@@ -594,6 +601,7 @@ public class Market {
     }
 
     public void addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType) throws Exception {
+        logger.info("trying to addProductDiscount");
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
@@ -602,6 +610,7 @@ public class Market {
     }
 
     public void addCategoryDiscount(String sessionId, int storeId, String category, double discountPercentage, int compositionType) throws Exception {
+        logger.info("trying to addCategoryDiscount");
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
@@ -610,6 +619,7 @@ public class Market {
     }
 
     public void addStoreDiscount(String sessionId, int storeId, double discountPercentage, int compositionType) throws Exception {
+        logger.info("trying to addStoreDiscount");
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
@@ -618,6 +628,7 @@ public class Market {
     }
 
     public void addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone) throws Exception {
+        logger.info("trying to addMinQuantityDiscountPolicy");
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
@@ -626,6 +637,7 @@ public class Market {
     }
 
     public void addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity, boolean allowNone) throws Exception {
+        logger.info("trying to addMaxQuantityDiscountPolicy");
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
@@ -634,6 +646,7 @@ public class Market {
     }
 
     public void addMinBagTotalDiscountPolicy(String sessionId, int storeId, int discountId, double minTotal) throws Exception {
+        logger.info("trying to addMinBagTotalDiscountPolicy");
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
@@ -642,6 +655,7 @@ public class Market {
     }
 
     public void joinDiscountPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator) throws Exception {
+        logger.info("trying to joinDiscountPolicies");
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
@@ -650,6 +664,7 @@ public class Market {
     }
 
     public void removeDiscountPolicy(String sessionId, int storeId, int policyId) throws Exception {
+        logger.info("trying to removeDiscountPolicy");
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
@@ -658,6 +673,7 @@ public class Market {
     }
 
     public void addPaymentMethod(String sessionId, String creditCardNumber, int cvv, LocalDate expirationDate) throws Exception {
+        logger.info("trying to addPaymentMethod");
         isMarketOpen();
         Guest g = sessionManager.getSession(sessionId);
         g.addPaymentMethod(creditCardNumber, cvv, expirationDate);
@@ -712,6 +728,26 @@ public class Market {
         return marketOpen;
     }
 
+    public void removeMember(String sessionId, String memberName) throws Exception {
+        checkMarketOpen();
+        sessionManager.getSessionForSystemManager(sessionId);
+        Member mToRemove = users.get(memberName);
+        if (mToRemove == null) {
+            logger.error(String.format("%s is not a member", memberName));
+            throw new Exception("The member's name is not a name of a member");
+        }
+        if (mToRemove.hasPositions()) { //partial implantation - remove in full one
+            logger.error(String.format("cannot remove member with positions in the market"));
+            throw new Exception("cannot remove member with positions in the market");
+        }
+        if (systemManagers.get(mToRemove.getUsername()) != null) { //partial implantation - remove in full one
+            logger.error(String.format("cannot remove member with positions in the market"));
+            throw new Exception("cannot remove member with positions in the market");
+        }
+        users.remove(memberName);
+        logger.error(String.format("Success to remove %s from market", memberName));
+
+    }
     public List<String> getAllCategories() {
         logger.info("getting all categories");
         List<String> allCat = new ArrayList<>();
@@ -724,4 +760,5 @@ public class Market {
         allCat.add("test");
         return allCat;
     }
+
 }

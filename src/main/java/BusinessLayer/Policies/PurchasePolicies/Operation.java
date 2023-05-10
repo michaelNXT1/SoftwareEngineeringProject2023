@@ -9,10 +9,15 @@ public class Operation extends BasePolicy {
     private BasePolicy.JoinOperator joinOperator;
     private BasePolicy right;
 
-    public Operation(int policyId, BasePolicy left,int joinOperator,  BasePolicy right) {
+    public Operation(int policyId, BasePolicy left, int joinOperator, BasePolicy right) {
         this.policyId = policyId;
         this.left = left;
-        this.joinOperator = JoinOperator.values()[joinOperator];
+        try {
+            this.joinOperator = JoinOperator.values()[joinOperator];
+        } catch (Exception e) {
+            logger.error("illegal value for joinOperator");
+            throw e;
+        }
         this.right = right;
     }
 

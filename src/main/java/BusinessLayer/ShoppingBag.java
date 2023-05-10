@@ -39,7 +39,7 @@ public class ShoppingBag {
             //TODO: lock store
             PurchaseProduct pp = store.subtractForPurchase(productId, productList.get(productId));
             double discountPercentage = store.getProductDiscountPercentage(productId, productList);
-            pp.setPrice(pp.getProductId() * (1 - discountPercentage));
+            pp.setPrice(pp.getPrice() * (1.0 - discountPercentage));
             //TODO: release store
             this.productList.remove(productId);
             return new Pair<>(pp, true);
