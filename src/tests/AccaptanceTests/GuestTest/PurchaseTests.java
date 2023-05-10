@@ -5,6 +5,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.LocalDate;
+
 public class PurchaseTests extends ServiceTests {
     /*
      * USE CASES 2.8.1-2.8.4
@@ -20,6 +22,7 @@ public class PurchaseTests extends ServiceTests {
         sessionID1 = login("alon1","alon0601");
         storeID2 = openStore(sessionID1, "newStore3");
         productID2 = addProduct(sessionID1, storeID2,"test2",3.9,"milk",9,"1");
+        addPaymentMethod(sessionID1,"124",540, LocalDate.MAX);
         addToCart(sessionID1, storeID2, productID2, 5);
 
 
