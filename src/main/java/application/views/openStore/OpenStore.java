@@ -8,7 +8,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
-@Route(value = "OpenStore",layout = MainLayout.class)
+@Route(value = "openStore",layout = MainLayout.class)
 public class OpenStore  extends VerticalLayout {
         private TextField storeNameField;
         private Button submitButton;
@@ -32,7 +32,6 @@ public class OpenStore  extends VerticalLayout {
 
         private void openStore() {
             String storeName = storeNameField.getValue();
-
             marketController.openStore( MainLayout.getSessionId(),storeName);
         }
 
