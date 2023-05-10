@@ -302,8 +302,8 @@ public class Real implements Bridge {
     }
 
     @Override
-    public boolean addPaymentMethod(String sessionId, String creditCardNumber, int cvv, LocalDate expirationDate) {
-        return !this.manager.addPaymentMethod(sessionId, creditCardNumber, cvv, expirationDate).getError_occurred();
+    public boolean addPaymentMethod(String sessionId, String cardNumber, String month, String year, String cvv) {
+        return !this.manager.addPaymentMethod(sessionId, cardNumber, month, year,cvv).getError_occurred();
     }
 
     @Override
