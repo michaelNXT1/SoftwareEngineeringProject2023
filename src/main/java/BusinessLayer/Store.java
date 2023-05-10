@@ -369,4 +369,8 @@ public class Store {
     public List<Member> getEmployees() {
         return employees;
     }
+
+    public Set<String> getCategories() {
+        return categories;
+    }
 }
