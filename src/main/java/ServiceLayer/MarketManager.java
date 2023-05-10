@@ -73,6 +73,16 @@ public class MarketManager implements IMarketManager {
 //        }
 //    }
 
+    @Override
+    public Response removeStoreOwner(String sessionId, String storeOwnerName, int storeId) {
+        try {
+            market.removeStoreOwner(sessionId, storeOwnerName, storeId);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
     public Response logout(String sessionId) {
         try {
             market.logout(sessionId);

@@ -1,17 +1,6 @@
 package BusinessLayer;
 
-import BusinessLayer.Discounts.CategoryDiscount;
-import BusinessLayer.Discounts.Discount;
-import BusinessLayer.Discounts.ProductDiscount;
-import BusinessLayer.Discounts.StoreDiscount;
-import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
-import BusinessLayer.Policies.DiscountPolicies.DiscountPolicyOperation;
-import BusinessLayer.Policies.DiscountPolicies.PolicyTypes.MinBagTotalDiscountPolicy;
-import BusinessLayer.Policies.DiscountPolicies.PolicyTypes.MinQuantityDiscountPolicy;
-import BusinessLayer.Policies.PurchasePolicies.BasePolicy;
-
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public interface Position {
@@ -23,9 +12,9 @@ public interface Position {
 
     public void removeStoreManagerPermissions(Position storeManagerPosition, StoreManager.permissionType Permission) throws IllegalAccessException;   //5.10
 
-    void setPositionOfMemberToStoreManager(Store store, Member member) throws Exception; //5.9
+    void setPositionOfMemberToStoreManager(Store store, Member member, Member assigner) throws Exception; //5.9
 
-    void setPositionOfMemberToStoreOwner(Store store, Member member) throws Exception;   //5.8
+    void setPositionOfMemberToStoreOwner(Store store, Member member, Member assigner) throws Exception;   //5.8
 
     void removeProductFromStore(int productID) throws Exception;    //5.3
 
@@ -81,4 +70,6 @@ public interface Position {
     public void closeStore() throws IllegalAccessException;
 
     public List<Member> getStoreEmployees() throws IllegalAccessException;
+
+    void removeStoreOwner(Member storeOwnerToRemove, Guest m) throws Exception;
 }

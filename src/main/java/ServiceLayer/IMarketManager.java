@@ -111,6 +111,7 @@ public interface IMarketManager {
         ResponseT<List<String>> getAllCategories();
 
         Response removeMember(String sessionId, String memberName);
+        Response removeStoreOwner(String sessionId, String storeOwnerToRemove, int storeId);
 
 //        Response logoutSystemManager(String sessionId);
 

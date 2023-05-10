@@ -325,4 +325,19 @@ public class Real implements Bridge {
     public boolean signUpSystemManager(String username, String password) {
         return !manager.signUpSystemManager(username, password).getError_occurred();
     }
+
+    @Override
+    public boolean setPositionOfMemberToStoreOwner(String sessionId, String memberToBecomeStoreOwner, int storeId) {
+        return !manager.setPositionOfMemberToStoreOwner(sessionId, storeId, memberToBecomeStoreOwner).getError_occurred();
+    }
+
+    @Override
+    public boolean removeStoreOwner(String sessionId, String storeOwnerToRemove, int storeId) {
+        return !manager.removeStoreOwner(sessionId, storeOwnerToRemove, storeId).getError_occurred();
+    }
+
+    @Override
+    public boolean setPositionOfMemberToStoreManager(String sessionId, int storeID, String memberToBecomeManager) {
+        return !manager.setPositionOfMemberToStoreManager(sessionId, storeID, memberToBecomeManager).getError_occurred();
+    }
 }

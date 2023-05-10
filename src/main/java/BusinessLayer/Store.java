@@ -30,6 +30,7 @@ public class Store {
     private final Map<Product, Integer> products;
     private final List<Purchase> purchaseList;
     private final List<Member> employees;
+    private final List<String> storeOwners = new LinkedList<>();
     private final List<BasePolicy> purchasePolicies;
     private final Map<Discount, List<BaseDiscountPolicy>> productDiscountPolicyMap;
     private int purchasePolicyCounter;
@@ -40,14 +41,15 @@ public class Store {
 
     private SystemLogger logger;
 
-    public Store(int storeId, String storeName, Member m) {
+    public Store(int storeId, String storeName, Member storeFounder) {
         this.storeId = storeId;
         this.storeName = storeName;
+        this.storeOwners.add(storeFounder.getUsername());
         this.categories = new HashSet<>();
         this.products = new ConcurrentHashMap<>();
         this.purchaseList = new ArrayList<>();
         this.employees = new ArrayList<>();
-        employees.add(m);
+        employees.add(storeFounder);
         this.logger = new SystemLogger();
         this.productIdCounter = new AtomicInteger(0);
         purchasePolicies = new ArrayList<>();
@@ -372,5 +374,13 @@ public class Store {
 
     public Set<String> getCategories() {
         return categories;
+    }
+
+    public List<String> getStoreOwners() {
+        return storeOwners;
+    }
+
+    public void addStoreOwner(Member member) {
+        storeOwners.add(member.getUsername());
     }
 }
