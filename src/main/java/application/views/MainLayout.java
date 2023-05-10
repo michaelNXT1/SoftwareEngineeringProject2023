@@ -6,7 +6,7 @@ import application.components.AppNav;
 import application.components.AppNavItem;
 import application.views.about.AboutView;
 import application.views.addStoreManger.AddStoreManager;
-import application.views.addStoreManger.AddStoreOwner;
+import application.views.addStoreOwner.AddStoreOwner;
 import application.views.category.CategoryView;
 import application.views.helloworld.HelloWorldView;
 import application.views.login.LoginView;
