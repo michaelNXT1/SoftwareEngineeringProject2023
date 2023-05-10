@@ -21,7 +21,7 @@ public abstract class ServiceTests extends TestCase {
 
         this.bridge = Driver.getBridge();
 
-        this.bridge.setupSystem("alon1", "alon0601");
+        //this.bridge.setupSystem("alon1", "alon0601");
 
     }
 

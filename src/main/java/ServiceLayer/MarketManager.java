@@ -485,9 +485,9 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public Response addPaymentMethod(String sessionId, String creditCardNumber, int cvv, LocalDate expirationDate) {
+    public Response addPaymentMethod(String sessionId, String cardNumber, String month, String year, String cvv) {
         try {
-            market.addPaymentMethod(sessionId, creditCardNumber, cvv, expirationDate);
+            market.addPaymentMethod(sessionId, cardNumber, month, year, cvv);
             return new Response();
         } catch (Exception e) {
             return new Response(e.getMessage());
