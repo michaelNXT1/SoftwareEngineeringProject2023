@@ -12,9 +12,9 @@ public interface Position {
 
     public void removeStoreManagerPermissions(Position storeManagerPosition, StoreManager.permissionType Permission) throws IllegalAccessException;   //5.10
 
-    void setPositionOfMemberToStoreManager(Store store, Member member) throws Exception; //5.9
+    void setPositionOfMemberToStoreManager(Store store, Member member, Member assigner) throws Exception; //5.9
 
-    void setPositionOfMemberToStoreOwner(Store store, Member member) throws Exception;   //5.8
+    void setPositionOfMemberToStoreOwner(Store store, Member member, Member assigner) throws Exception;   //5.8
 
     void removeProductFromStore(int productID) throws Exception;    //5.3
 
@@ -71,5 +71,5 @@ public interface Position {
 
     public List<Member> getStoreEmployees() throws IllegalAccessException;
 
-    void removeStoreManager(Member storeOwnerToRemove, Guest m) throws Exception;
+    void removeStoreOwner(Member storeOwnerToRemove, Guest m) throws Exception;
 }

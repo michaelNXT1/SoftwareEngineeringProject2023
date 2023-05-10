@@ -122,6 +122,7 @@ public class Market {
     }
 
     //use case 2.3
+    //use case 2.3
     public String login(String username, String password) throws Exception {
         SystemManager sm = systemManagers.get(username);
         if (sm != null) {
@@ -446,23 +447,22 @@ public class Market {
     //use case 5.8
     public void setPositionOfMemberToStoreOwner(String sessionId, int storeID, String MemberToBecomeOwner) throws Exception {
         isMarketOpen();
-        sessionManager.getSession(sessionId);
-        logger.info(String.format("trying to appoint new owner to the store the member %s", MemberToBecomeOwner));
+        Guest g = sessionManager.getSession(sessionId);
+        logger.info(String.format("%s trying to appoint %s to new owner of the %s", g.getUsername(),MemberToBecomeOwner, stores.get(storeID).getStoreName()));
         checkStoreExists(storeID);
-        logger.info(String.format("promoting %s to be the owner of %s", MemberToBecomeOwner, getStore(sessionId, storeID)));
         Position p = checkPositionLegal(sessionId, storeID);
         Member m = users.get(MemberToBecomeOwner);
         if (m == null) {
             logger.error(String.format("%s is not a member", MemberToBecomeOwner));
             throw new Exception(MemberToBecomeOwner + " is not a member");
         }
-        p.setPositionOfMemberToStoreOwner(stores.get(storeID), m);
+        p.setPositionOfMemberToStoreOwner(stores.get(storeID), m, (Member)g);
     }
 
     //use case 5.9
     public void setPositionOfMemberToStoreManager(String sessionId, int storeID, String MemberToBecomeManager) throws Exception {
         isMarketOpen();
-        sessionManager.getSession(sessionId);
+        Guest g = sessionManager.getSession(sessionId);
         logger.info(String.format("trying to appoint new manager to the store the member %s", MemberToBecomeManager));
         checkStoreExists(storeID);
         logger.info(String.format("promoting %s to be the manager of %s", MemberToBecomeManager, getStore(sessionId, storeID)));
@@ -472,7 +472,7 @@ public class Market {
             logger.error(String.format("%s is not a member", MemberToBecomeManager));
             throw new Exception("MemberToBecomeManager is not a member ");
         }
-        p.setPositionOfMemberToStoreManager(stores.get(storeID), m);
+        p.setPositionOfMemberToStoreManager(stores.get(storeID), m, (Member) g);
     }
 
     //use case 5.10
@@ -718,7 +718,7 @@ public class Market {
         Guest g = sessionManager.getSession(sessionId);
         Position p = users.get(g.getUsername()).getStorePosition(stores.get(storeId));
         if (p == null) {
-            logger.error(String.format("Member not has a position in this store %s", getStore(sessionId, storeId).getStoreName()));
+            logger.error(String.format("%s not has a position in %s store", g.getUsername(), getStore(sessionId, storeId).getStoreName()));
             throw new Exception("Member not has a position in this store");
         }
         return p;
@@ -763,7 +763,7 @@ public class Market {
     }
 
     public void removeStoreOwner(String sessionId, String storeOwnerName, int storeId) throws Exception {
-        logger.info("try to remove %s from being storeManager");
+        logger.info(String.format("try to remove %s from being storeManager", storeOwnerName));
         checkMarketOpen();
         Guest m = sessionManager.getSession(sessionId);
         Member storeOwnerToRemove = users.get(storeOwnerName);
@@ -774,7 +774,7 @@ public class Market {
         checkStoreExists(storeId);
         Store s = stores.get(storeId);
         Position p = checkPositionLegal(sessionId,storeId);
-        p.removeStoreManager(storeOwnerToRemove, m);
+        p.removeStoreOwner(storeOwnerToRemove, m);
 
     }
 }

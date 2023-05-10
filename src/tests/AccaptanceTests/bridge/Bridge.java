@@ -132,4 +132,9 @@ public interface Bridge {
 
     boolean signUpSystemManager(String username, String password);
 
+    boolean setPositionOfMemberToStoreOwner(String sessionId, String memberToBecomeStoreOwner, int storeId);
+
+    boolean removeStoreOwner(String sessionId, String storeOwnerToRemove, int storeId);
+
+    boolean setPositionOfMemberToStoreManager(String sessionId, int storeID, String memberToBecomeManager);
 }

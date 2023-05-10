@@ -37,13 +37,13 @@ public class StoreFounder implements Position {
     }
 
     @Override
-    public void setPositionOfMemberToStoreManager(Store store, Member member) throws Exception {
-        member.setToStoreManager(store);
+    public void setPositionOfMemberToStoreManager(Store store, Member member, Member assigner) throws Exception {
+        member.setToStoreManager(store, assigner);
     }
 
     @Override
-    public void setPositionOfMemberToStoreOwner(Store store, Member member) throws Exception {
-        member.setToStoreOwner(store);
+    public void setPositionOfMemberToStoreOwner(Store store, Member member, Member assigner) throws Exception {
+        member.setToStoreOwner(store, assigner);
     }
 
     @Override
@@ -93,12 +93,8 @@ public class StoreFounder implements Position {
     }
 
     @Override
-    public void removeStoreManager(Member storeOwnerToRemove, Guest m) throws Exception {
-        if (!assigner.equals(m)){
-            logger.error(String.format("%s is not the assigner of %s",m.getUsername(), storeOwnerToRemove.getUsername()));
-            throw new Exception("can remove only store owner assigned by him");
-        }
-        storeOwnerToRemove.notBeingStoreOwner();
+    public void removeStoreOwner(Member storeOwnerToRemove, Guest m) throws Exception {
+        storeOwnerToRemove.notBeingStoreOwner(m, getStore());
     }
 
     @Override

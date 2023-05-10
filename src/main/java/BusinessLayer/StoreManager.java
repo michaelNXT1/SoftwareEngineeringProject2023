@@ -50,6 +50,7 @@ public class StoreManager implements Position {
             if (permissions.contains(permissionType.setPermissions))
                 storeManagerPosition.addPermission(newPermission);
             else {
+                logger.error(String.format("this store manager hasn't permission to set storeManager's permissions"));
                 throw new IllegalAccessException("This member hasn't permission to set storeManager's permissions");
             }
         }
@@ -62,30 +63,33 @@ public class StoreManager implements Position {
             if (permissions.contains(permissionType.setPermissions))
                 storeManagerPosition.removePermission(Permission);
             else {
+                logger.error(String.format("this store manager hasn't permission to set storeManager's permissions"));
                 throw new IllegalAccessException("This member hasn't permission to set storeManager's permissions");
             }
         }
     }
 
     @Override
-    public void setPositionOfMemberToStoreManager(Store store, Member member) throws Exception {
+    public void setPositionOfMemberToStoreManager(Store store, Member member, Member assigner) throws Exception {
         //TODO: Check if he has appropriate access permission
         synchronized (permissionLock) {
             if (permissions.contains(permissionType.setNewPosition))
-                member.setToStoreManager(store);
+                member.setToStoreManager(store, assigner);
             else {
+                logger.error(String.format("this store manager hasn't permission to set new position"));
                 throw new IllegalAccessException("This member hasn't permission to set new position");
             }
         }
     }
 
     @Override
-    public void setPositionOfMemberToStoreOwner(Store store, Member member) throws Exception {
+    public void setPositionOfMemberToStoreOwner(Store store, Member member, Member assigner) throws Exception {
         //TODO: Check if he has appropriate access permission
         synchronized (permissionLock) {
             if (permissions.contains(permissionType.setNewPosition))
-                member.setToStoreManager(store);
+                member.setToStoreManager(store, assigner);
             else {
+                logger.error(String.format("this store manager hasn't permission to set new position"));
                 throw new IllegalAccessException("This member hasn't permission to set new position");
             }
         }
@@ -97,6 +101,7 @@ public class StoreManager implements Position {
         if (permissions.contains(permissionType.Inventory))
             store.removeProduct(productID);
         else {
+            logger.error(String.format("this store manager hasn't permission to remove product from the store"));
             throw new Exception("This member hasn't permission to remove product from the store");
         }
     }
@@ -107,6 +112,7 @@ public class StoreManager implements Position {
         if (permissions.contains(permissionType.Inventory))
             store.editProductName(productId, newName);
         else {
+            logger.error(String.format("this store manager hasn't permission to edit product in the store"));
             throw new IllegalAccessException("This member hasn't permission to edit product in the store");
         }
     }
@@ -121,6 +127,7 @@ public class StoreManager implements Position {
         if (permissions.contains(permissionType.Inventory))
             store.editProductPrice(productId, newPrice);
         else {
+            logger.error(String.format("this store manager hasn't permission to edit product in the store"));
             throw new IllegalAccessException("This member hasn't permission to edit product in the store");
         }
     }
@@ -131,6 +138,7 @@ public class StoreManager implements Position {
         if (permissions.contains(permissionType.Inventory))
             store.editProductCategory(productId, newCategory);
         else {
+            logger.error(String.format("this store manager hasn't permission to edit product in the store"));
             throw new IllegalAccessException("This member hasn't permission to edit product in the store");
         }
     }
@@ -141,6 +149,7 @@ public class StoreManager implements Position {
         if (permissions.contains(permissionType.Inventory))
             store.editProductDescription(productId, newDescription);
         else {
+            logger.error(String.format("this store manager hasn't permission to edit product in the store"));
             throw new IllegalAccessException("This member hasn't permission to edit product in the store");
         }
     }
@@ -150,6 +159,7 @@ public class StoreManager implements Position {
         if (permissions.contains(permissionType.Inventory))
             return store.addProduct(productName, price, category, quantity, description);
         else {
+            logger.error(String.format("this store manager hasn't permission to add product to the store"));
             throw new IllegalAccessException("This member hasn't permission to add product to the store");
         }
     }
@@ -159,6 +169,7 @@ public class StoreManager implements Position {
         //TODO: Check if he has appropriate access permission
         if (permissions.contains(permissionType.Purchases))
             return store.getPurchaseList();
+        logger.error(String.format("this store manager hasn't permission to get the purchase's History"));
         throw new IllegalAccessException("This member hasn't permission to get the purchase's History");
     }
 
@@ -173,6 +184,7 @@ public class StoreManager implements Position {
 
     @Override
     public void closeStore() throws IllegalAccessException {
+        logger.error(String.format("this store manager hasn't permission to close store"));
         throw new IllegalAccessException("This member hasn't permission to close store");
     }
 
@@ -180,81 +192,97 @@ public class StoreManager implements Position {
     public List<Member> getStoreEmployees() throws IllegalAccessException {
         if (permissions.contains(permissionType.EmployeeList))
             return store.getEmployees();
+        logger.error(String.format("this store manager hasn't permission to get the purchase's History"));
         throw new IllegalAccessException("This member hasn't permission to get the purchase's History");
     }
 
     @Override
-    public void removeStoreManager(Member systemManagerToRemove, Guest m) throws Exception {
+    public void removeStoreOwner(Member systemManagerToRemove, Guest m) throws Exception {
+        logger.error(String.format("store manager hasn't permission to perform this action"));
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 
     @Override
     public void addMinQuantityPolicy(int productId, int minQuantity, boolean allowNone) throws Exception {
+        logger.error(String.format("store manager hasn't permission to perform this action"));
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 
     @Override
     public void addMaxQuantityPolicy(int productId, int maxQuantity, boolean allowNone) throws Exception {
+        logger.error(String.format("store manager hasn't permission to perform this action"));
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 
     @Override
     public void addProductTimeRestrictionPolicy(int productId, LocalTime startTime, LocalTime endTime) throws Exception {
+        logger.error(String.format("store manager hasn't permission to perform this action"));
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 
     @Override
     public void addCategoryTimeRestrictionPolicy(String category, LocalTime startTime, LocalTime endTime) throws Exception {
+        logger.error(String.format("store manager hasn't permission to perform this action"));
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 
     @Override
     public void joinPolicies(int policyId1, int policyId2, int operator) throws Exception {
+        logger.error(String.format("store manager hasn't permission to perform this action"));
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 
     @Override
     public void removePolicy(int policyId) throws Exception {
+        logger.error(String.format("store manager hasn't permission to perform this action"));
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 
     @Override
     public void addProductDiscount(int productId, double discountPercentage, int compositionType) throws Exception {
+        logger.error(String.format("store manager hasn't permission to perform this action"));
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 
     @Override
     public void addCategoryDiscount(String category, double discountPercentage, int compositionType) throws Exception {
+        logger.error(String.format("store manager hasn't permission to perform this action"));
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 
     @Override
     public void addStoreDiscount(double discountPercentage, int compositionType) throws Exception {
+        logger.error(String.format("store manager hasn't permission to perform this action"));
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 
     @Override
     public void addMinQuantityDiscountPolicy(int discountId, int productId, int minQuantity, boolean allowNone) throws Exception {
+        logger.error(String.format("store manager hasn't permission to perform this action"));
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 
     @Override
     public void addMaxQuantityDiscountPolicy(int discountId, int productId, int maxQuantity, boolean allowNone) throws Exception {
+        logger.error(String.format("store manager hasn't permission to perform this action"));
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 
     @Override
     public void addMinBagTotalDiscountPolicy(int discountId, double minTotal) throws Exception {
+        logger.error(String.format("store manager hasn't permission to perform this action"));
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 
     @Override
     public void joinDiscountPolicies(int policyId1, int policyId2, int operator) throws Exception {
+        logger.error(String.format("store manager hasn't permission to perform this action"));
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 
     @Override
     public void removeDiscountPolicy(int policyId) throws Exception {
+        logger.error(String.format("store manager hasn't permission to perform this action"));
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 }
