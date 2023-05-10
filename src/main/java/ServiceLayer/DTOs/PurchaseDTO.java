@@ -28,4 +28,8 @@ public class PurchaseDTO {
         this.productDTOList = new LinkedList<>();
     }
 
+    public double getTotalPrice() {
+        return productDTOList.stream().mapToDouble(pp->pp.getPrice()*pp.getQuantity()).sum();
+    }
+
 }

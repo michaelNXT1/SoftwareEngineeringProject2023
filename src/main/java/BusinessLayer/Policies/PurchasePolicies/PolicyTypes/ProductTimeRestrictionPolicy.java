@@ -13,8 +13,10 @@ public class ProductTimeRestrictionPolicy extends PurchasePolicy {
 
     public ProductTimeRestrictionPolicy(int policyId, int productId, LocalTime startTime, LocalTime endTime) throws Exception {
         super(policyId);
-        if(startTime.equals(endTime))
+        if (startTime.equals(endTime)) {
+            logger.error("Start time cannot be the same as end time");
             throw new Exception("Start time cannot be the same as end time");
+        }
         this.productId = productId;
         this.startTime = startTime;
         this.endTime = endTime;

@@ -90,30 +90,29 @@ public interface IMarketManager {
 
         Response addMinQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone);
 
-        Response addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType) throws Exception;
+        Response addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType);
 
-        Response addCategoryDiscount(String sessionId, int storeId, String category, double discountPercentage, int compositionType) throws Exception;
+        Response addCategoryDiscount(String sessionId, int storeId, String category, double discountPercentage, int compositionType);
 
-        Response addStoreDiscount(String sessionId, int storeId, double discountPercentage, int compositionType) throws Exception;
+        Response addStoreDiscount(String sessionId, int storeId, double discountPercentage, int compositionType);
 
-        Response addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone) throws Exception;
+        Response addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone);
 
-        Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity, boolean allowNone) throws Exception;
+        Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity, boolean allowNone);
 
-        Response addMinBagTotalDiscountPolicy(String sessionId, int storeId, int discountId, double minTotal) throws Exception;
+        Response addMinBagTotalDiscountPolicy(String sessionId, int storeId, int discountId, double minTotal);
 
-        Response joinDiscountPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator) throws Exception;
+        Response joinDiscountPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator);
 
-        Response removeDiscountPolicy(String sessionId, int storeId, int policyId) throws Exception;
+        Response removeDiscountPolicy(String sessionId, int storeId, int policyId);
 
-        Response addPaymentMethod(String sessionId, String creditCardNumber, int cvv, LocalDate expirationDate) throws Exception;
+        Response addPaymentMethod(String sessionId, String creditCardNumber, int cvv, LocalDate expirationDate);
 
         ResponseT<List<String>> getAllCategories();
 
         Response removeMember(String sessionId, String memberName);
 
-        Response logoutSystemManager(String sessionId);
+//        Response logoutSystemManager(String sessionId);
 
-        ResponseT<String> loginSystemManager(String username, String password);
-        Response removeStoreOwner(String sessionId, String storeOwnerName, int storeId);
+//        ResponseT<String> loginSystemManager(String username, String password);
 }
