@@ -145,6 +145,12 @@ class MarketTest {
         Store store0 = market.getStore(sessionID1,0);
         assertEquals(StoreManager.class , store0.getEmployees().get(1).getStorePosition(store0).getClass());
     }
+    @Test
+    void removeStoreOwner() throws Exception {
+        market.setPositionOfMemberToStoreOwner(sessionID1,0,"Michael987");
+        market.removeStoreOwner(sessionID1, "Michael987",0);
+        assertFalse(market.getStoreOwners(0).contains("Michael987"));
+    }
 
     private void setPositionOfMemberToStoreManagerWithoutPermissions() {
         try {
