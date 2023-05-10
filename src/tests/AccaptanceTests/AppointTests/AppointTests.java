@@ -15,5 +15,6 @@ public class AppointTests extends ServiceTests {
    //     suite.addTest(new TestSuite(StoreOwnerAppoint.class));
         suite.addTest(new TestSuite(StoreOwnerAppoint.class));
         return suite;
+
     }
 }
