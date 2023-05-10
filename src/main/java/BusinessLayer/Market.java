@@ -55,6 +55,7 @@ public class Market {
     public Map<String, Member> getUsers() {
         return users;
     }
+
     public List<String> getStoreOwners(int storeId) throws Exception {
         checkStoreExists(storeId);
         Store s = stores.get(storeId);
@@ -248,6 +249,7 @@ public class Market {
         if (!stringIsEmpty(productName))
             stores.values().forEach(s -> list.addAll(s.getProducts().keySet().stream().filter(p -> p.getProductName().equals(productName)).collect(Collectors.toList())));
         g.setSearchResults(list);
+        g.setSearchKeyword(productName);
         return list.stream().map(ProductDTO::new).toList();
     }
 
@@ -260,6 +262,7 @@ public class Market {
         if (!stringIsEmpty(productCategory))
             stores.values().forEach(s -> list.addAll(s.getProducts().keySet().stream().filter(p -> p.getCategory().equals(productCategory)).collect(Collectors.toList())));
         g.setSearchResults(list);
+        g.setSearchKeyword(productCategory);
         return list.stream().map(ProductDTO::new).toList();
     }
 
@@ -272,6 +275,7 @@ public class Market {
         if (!stringIsEmpty(productSubstring))
             stores.values().forEach(s -> list.addAll(s.getProducts().keySet().stream().filter(p -> p.getProductName().contains(productSubstring)).collect(Collectors.toList())));
         g.setSearchResults(list);
+        g.setSearchKeyword(productSubstring);
         return list.stream().map(ProductDTO::new).toList();
     }
 
@@ -424,7 +428,7 @@ public class Market {
         p.editProductCategory(productId, newCategory);
     }
 
-    //use case 5.2 - by product description (currently not necessary
+    //use case 5.2 - by product description (currently not necessary)
 //    public void editProductDescription(int storeId, int productId, String newDescription) throws Exception {
 //        checkStoreExists(storeId);
 //        Position p = checkPositionLegal(storeId);
@@ -452,7 +456,7 @@ public class Market {
     public void setPositionOfMemberToStoreOwner(String sessionId, int storeID, String MemberToBecomeOwner) throws Exception {
         isMarketOpen();
         Guest g = sessionManager.getSession(sessionId);
-        logger.info(String.format("%s trying to appoint %s to new owner of the %s", g.getUsername(),MemberToBecomeOwner, stores.get(storeID).getStoreName()));
+        logger.info(String.format("%s trying to appoint %s to new owner of the %s", g.getUsername(), MemberToBecomeOwner, stores.get(storeID).getStoreName()));
         checkStoreExists(storeID);
         Position p = checkPositionLegal(sessionId, storeID);
         Member m = users.get(MemberToBecomeOwner);
@@ -460,7 +464,7 @@ public class Market {
             logger.error(String.format("%s is not a member", MemberToBecomeOwner));
             throw new Exception(MemberToBecomeOwner + " is not a member");
         }
-        p.setPositionOfMemberToStoreOwner(stores.get(storeID), m, (Member)g);
+        p.setPositionOfMemberToStoreOwner(stores.get(storeID), m, (Member) g);
     }
 
     //use case 5.9
@@ -787,14 +791,20 @@ public class Market {
         Guest m = sessionManager.getSession(sessionId);
         Member storeOwnerToRemove = users.get(storeOwnerName);
         if (storeOwnerToRemove == null) {
-            logger.error(String.format("%s is not a member so you cant remove him",storeOwnerName));
+            logger.error(String.format("%s is not a member so you cant remove him", storeOwnerName));
             throw new Exception("storeManagerName is not a member");
         }
         checkStoreExists(storeId);
         Store s = stores.get(storeId);
-        Position p = checkPositionLegal(sessionId,storeId);
+        Position p = checkPositionLegal(sessionId, storeId);
         p.removeStoreOwner(storeOwnerToRemove, m);
 
+    }
+
+    public Object getSearchKeyword(String sessionId) throws Exception {
+        isMarketOpen();
+        Guest g = sessionManager.getSession(sessionId);
+        return g.getSearchKeyword();
     }
     public List<MemberDTO> getInformationAboutMembers(String sessionId) throws Exception {
         checkMarketOpen();

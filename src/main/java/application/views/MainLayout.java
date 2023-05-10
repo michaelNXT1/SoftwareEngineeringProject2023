@@ -31,6 +31,7 @@ import org.vaadin.lineawesome.LineAwesomeIcon;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * The main view is a top-level placeholder for other views.
@@ -39,6 +40,9 @@ public class MainLayout extends AppLayout {
     private static String sessionId;
 
     MarketController marketController = MarketController.getInstance();
+    private TextField searchBox;
+    private Map<String, Runnable> searchActionMap = new HashMap<>();
+    private Select<String> searchType;
 
     /**
      * A simple navigation item component, based on ListItem element.
@@ -75,7 +79,7 @@ public class MainLayout extends AppLayout {
     public MainLayout() {
         addToNavbar(createHeaderContent());
         addDrawerContent();
-        sessionId = null;
+        sessionId = marketController.enterMarket();
     }
 
 
@@ -113,25 +117,22 @@ public class MainLayout extends AppLayout {
         H1 appName = new H1("AIMSS inc.");
         appName.setWidthFull();
 
-        Button homeButton = new Button("Home");
-        homeButton.addClickListener(e -> UI.getCurrent().navigate(HelloWorldView.class));
-        Button aboutButton = new Button("About");
-        aboutButton.addClickListener(e -> UI.getCurrent().navigate(AboutView.class));
+        Button homeButton = new Button("Home", e -> UI.getCurrent().navigate(HelloWorldView.class));
+        Button aboutButton = new Button("About", e -> UI.getCurrent().navigate(AboutView.class));
         Button optionsButton = new Button("Options");
         Select<String> select = initActionSelect();
-        TextField searchBox = new TextField();
+        searchBox = new TextField();
         searchBox.setPlaceholder("Search product");
-        Button searchButton = new Button("", VaadinIcon.SEARCH.create());
-        Button cartButton=new Button("Cart", VaadinIcon.CART.create());
+        searchType = initSearchSelect();
+        Button searchButton = new Button("", VaadinIcon.SEARCH.create(), e -> SearchProducts());
+        Button cartButton = new Button("Cart", VaadinIcon.CART.create());
 
-        Button loginButton = new Button("Login");
-        loginButton.addClickListener(e -> UI.getCurrent().navigate(LoginView.class));
-        Button signUpButton = new Button("Sign Up");
-        signUpButton.addClickListener(e -> UI.getCurrent().navigate(RegistrationView.class));
+        Button loginButton = new Button("Login", e -> UI.getCurrent().navigate(LoginView.class));
+        Button signUpButton = new Button("Sign Up", e -> UI.getCurrent().navigate(RegistrationView.class));
 
         Div div1 = new Div(), div2 = new Div(), div3 = new Div();
         leftLayout.add(appName);
-        centerLayout.add(div1, homeButton, aboutButton, select, searchBox, searchButton, cartButton, div2);
+        centerLayout.add(div1, homeButton, aboutButton, select, searchBox, searchType, searchButton, cartButton, div2);
         centerLayout.setFlexGrow(1, div1);
         centerLayout.setFlexGrow(1, div2);
         rightLayout.add(div3, loginButton, signUpButton);
@@ -142,6 +143,13 @@ public class MainLayout extends AppLayout {
         layout.setFlexGrow(1, rightLayout);
         vl.add(layout);
         return vl;
+    }
+
+    private void SearchProducts() {
+        if (searchType.getValue() != null){
+            searchActionMap.get(searchType.getValue()).run();
+            UI.getCurrent().navigate(SearchResultView.class);
+        }
     }
 
     private Select<String> initActionSelect() {
@@ -157,6 +165,16 @@ public class MainLayout extends AppLayout {
         select.addValueChangeListener(event -> actionsMap.get(event.getValue()).run());
         select.setPlaceholder("Actions");
         return select;
+    }
+
+    private Select<String> initSearchSelect() {
+        Select<String> searchType = new Select<>();
+        searchActionMap.put("Exact match", () -> marketController.getProductsByName(MainLayout.getSessionId(), searchBox.getValue()));
+        searchActionMap.put("Contains keyword", () -> marketController.getProductsBySubstring(MainLayout.getSessionId(), searchBox.getValue()));
+        searchActionMap.put("Is of category", () -> marketController.getProductsByCategory(MainLayout.getSessionId(), searchBox.getValue()));
+        searchType.setItems(searchActionMap.keySet().stream().toList().stream().sorted().collect(Collectors.toList()));
+        searchType.setPlaceholder("Search type");
+        return searchType;
     }
 
     private void addStoreOwner() {

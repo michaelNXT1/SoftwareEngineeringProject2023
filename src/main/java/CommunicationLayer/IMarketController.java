@@ -10,7 +10,7 @@ import java.util.Map;
 
 public interface IMarketController {
     boolean signUpSystemManager(String username, String password);
-    boolean enterMarket();
+    String enterMarket();
     boolean exitMarket(String sessionId);
     boolean signUp(String username, String password);
     String login(String username, String password);
@@ -24,7 +24,7 @@ public interface IMarketController {
     List<ProductDTO> getSearchResults(String sessionId);
     List<ProductDTO> filterSearchResultsByCategory(String sessionId, String category);
     List<ProductDTO> filterSearchResultsByPrice(String sessionId, double minPrice, double maxPrice);
-    boolean addProductToCart(String sessionId, int storeId, int productId, int quantity);
+    Response addProductToCart(String sessionId, int storeId, int productId, int quantity);
     ShoppingCartDTO getShoppingCart(String sessionId);
     boolean changeProductQuantity(String sessionId, int storeId, int productId, int quantity);
     boolean removeProductFromCart(String sessionId, int storeId, int productId);
@@ -53,4 +53,6 @@ public interface IMarketController {
     List<String> getAllCategories();
 
     boolean addPaymentMethod(String sessionId, String cardNumber, String month, String year, String cvv);
+
+    String getSearchKeyword(String sessionId);
 }

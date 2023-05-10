@@ -1,23 +1,25 @@
 package BusinessLayer;
 
 public class Product {
-        private int productId;
-        private String productName;
-        private double price;
-        private String category;
-        private double rating;
-        private int amount;
-        private String description;
+    private int storeId;
+    private int productId;
+    private String productName;
+    private double price;
+    private String category;
+    private double rating;
+    private int amount;
+    private String description;
 
-        private PurchaseType purchaseType;
+    private PurchaseType purchaseType;
 
-    public Product(int productId, String productName, double price, String category,String description) throws Exception{
+    public Product(int storeId, int productId, String productName, double price, String category, String description) throws Exception {
         if (price < 0)
             throw new Exception("cannot add product with negative price");
-        if(stringIsEmpty(productName))
+        if (stringIsEmpty(productName))
             throw new Exception("product name is empty");
-        if(stringIsEmpty(category))
+        if (stringIsEmpty(category))
             throw new Exception("product category is empty");
+        this.storeId = storeId;
         this.purchaseType = new BuyItNow(this);
         this.productId = productId;
         this.productName = productName;
@@ -29,6 +31,10 @@ public class Product {
 
     public void setPurchaseType(PurchaseType purchaseType) {
         this.purchaseType = purchaseType;
+    }
+
+    public int getStoreId() {
+        return storeId;
     }
 
     public int getProductId() {
@@ -44,7 +50,7 @@ public class Product {
     }
 
     public void setProductName(String productName) throws Exception {
-        if(stringIsEmpty(productName))
+        if (stringIsEmpty(productName))
             throw new Exception("product name is empty");
         this.productName = productName;
     }
@@ -64,7 +70,7 @@ public class Product {
     }
 
     public void setCategory(String category) throws Exception {
-        if(stringIsEmpty(category))
+        if (stringIsEmpty(category))
             throw new Exception("product category is empty");
         this.category = category;
     }

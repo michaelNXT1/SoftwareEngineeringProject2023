@@ -502,7 +502,8 @@ public class MarketManager implements IMarketManager {
             return new Response(e.getMessage());
         }
     }
-    public Response removeMember(String sessionId, String memberName){
+
+    public Response removeMember(String sessionId, String memberName) {
         try {
             market.removeMember(sessionId, memberName);
             return new Response();
@@ -514,8 +515,16 @@ public class MarketManager implements IMarketManager {
     @Override
     public ResponseT<List<String>> getAllCategories() {
         try {
-            List<String> ret = market.getAllCategories();
-            return ResponseT.fromValue(ret);
+            return ResponseT.fromValue(market.getAllCategories());
+        } catch (Exception e) {
+            return ResponseT.fromError(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseT<String> getSearchKeyword(String sessionId) {
+        try {
+            return ResponseT.fromValue(market.getSearchKeyword(sessionId));
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }

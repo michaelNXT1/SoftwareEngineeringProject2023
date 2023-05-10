@@ -115,6 +115,8 @@ public interface IMarketManager {
 
         ResponseT<List<MemberDTO>> getInformationAboutMembers(String sessionId);
 
+    ResponseT<String> getSearchKeyword(String sessionId);
+
 //        Response logoutSystemManager(String sessionId);
 
 //        ResponseT<String> loginSystemManager(String username, String password);
