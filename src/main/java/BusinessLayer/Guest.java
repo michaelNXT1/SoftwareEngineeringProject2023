@@ -63,8 +63,8 @@ public class Guest {
         return searchResults.stream().filter(p -> minPrice <= p.getPrice() && p.getPrice() <= maxPrice).collect(Collectors.toList());
     }
 
-    public void addPaymentMethod(String creditCardNumber, int cvv, LocalDate expirationDate) {
-        paymentDetails = new PaymentDetails(creditCardNumber, cvv, expirationDate);
+    public void addPaymentMethod(String cardNumber, String month, String year, String cvv) {
+        paymentDetails = new PaymentDetails(cardNumber, month, year, cvv);
     }
 
     public Store openStore(String storeName, int storeId) throws Exception {

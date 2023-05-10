@@ -106,7 +106,7 @@ public interface IMarketManager {
 
         Response removeDiscountPolicy(String sessionId, int storeId, int policyId);
 
-        Response addPaymentMethod(String sessionId, String creditCardNumber, int cvv, LocalDate expirationDate);
+        Response addPaymentMethod(String sessionId, String cardNumber, String month, String year, String cvv);
 
         ResponseT<List<String>> getAllCategories();
 
