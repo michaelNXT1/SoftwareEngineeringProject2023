@@ -161,6 +161,8 @@ public class MainLayout extends AppLayout {
         actionsMap.put("Add Product", () -> UI.getCurrent().navigate(AddProduct.class));
         actionsMap.put("remove Product", () -> UI.getCurrent().navigate(RemoveProductFromStore.class));
         actionsMap.put("Open new Store", () -> UI.getCurrent().navigate(OpenStore.class));
+        actionsMap.put("Edit Product", () -> UI.getCurrent().navigate(EditProduct.class));
+
 
         select.setItems(actionsMap.keySet());
         select.addValueChangeListener(event -> actionsMap.get(event.getValue()).run());
