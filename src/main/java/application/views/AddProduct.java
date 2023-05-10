@@ -22,7 +22,7 @@ public class AddProduct extends VerticalLayout {
         @Autowired
         public AddProduct(){
             this.header = new Header();
-            this.header.setText("Add Store Owner");
+            this.header.setText("Add product to store");
             this.storeIdField = new TextField("store Id");
             this.productNameField = new TextField("product name");
             this.priceField = new TextField("price");

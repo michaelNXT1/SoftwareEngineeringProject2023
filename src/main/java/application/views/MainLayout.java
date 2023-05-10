@@ -151,6 +151,7 @@ public class MainLayout extends AppLayout {
         actionsMap.put("Add Store Owner", () -> UI.getCurrent().navigate(AddStoreOwner.class));
         actionsMap.put("Add Payment Method", () -> UI.getCurrent().navigate(AddPaymentMethod.class));
         actionsMap.put("Add Product", () -> UI.getCurrent().navigate(AddProduct.class));
+        actionsMap.put("remove Product", () -> UI.getCurrent().navigate(RemoveProductFromStore.class));
         actionsMap.put("Open new Store", () -> UI.getCurrent().navigate(OpenStore.class));
 
         select.setItems(actionsMap.keySet());
