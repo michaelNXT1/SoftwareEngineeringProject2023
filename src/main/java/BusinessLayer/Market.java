@@ -44,7 +44,7 @@ public class Market {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
-        marketOpen = false;
+        marketOpen = true;
         this.logger = new SystemLogger();
         fd = new FundDemander();
         SystemManager sm = new SystemManager("admin", new String(passwordEncoder.digest("admin".getBytes())));
@@ -675,11 +675,11 @@ public class Market {
         p.removeDiscountPolicy(policyId);
     }
 
-    public void addPaymentMethod(String sessionId, String creditCardNumber, int cvv, LocalDate expirationDate) throws Exception {
+    public void addPaymentMethod(String sessionId, String cardNumber, String month, String year, String cvv) throws Exception {
         logger.info("trying to addPaymentMethod");
         isMarketOpen();
         Guest g = sessionManager.getSession(sessionId);
-        g.addPaymentMethod(creditCardNumber, cvv, expirationDate);
+        g.addPaymentMethod(cardNumber, month, year, cvv);
     }
 
     //PRIVATE METHODS

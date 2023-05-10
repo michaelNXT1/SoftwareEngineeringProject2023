@@ -5,6 +5,8 @@ import CommunicationLayer.MarketController;
 import application.components.AppNav;
 import application.components.AppNavItem;
 import application.views.about.AboutView;
+import application.views.addStoreManger.AddStoreManager;
+import application.views.addStoreManger.AddStoreOwner;
 import application.views.category.CategoryView;
 import application.views.helloworld.HelloWorldView;
 import application.views.login.LoginView;
@@ -15,19 +17,19 @@ import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
-import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import com.vaadin.flow.theme.lumo.LumoUtility.*;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The main view is a top-level placeholder for other views.
@@ -109,27 +111,18 @@ public class MainLayout extends AppLayout {
 
         H1 appName = new H1("AIMSS inc.");
         appName.setWidthFull();
+
         Button homeButton = new Button("Home");
         homeButton.addClickListener(e -> UI.getCurrent().navigate(HelloWorldView.class));
         Button aboutButton = new Button("About");
         aboutButton.addClickListener(e -> UI.getCurrent().navigate(AboutView.class));
         Button optionsButton = new Button("Options");
-
-        Select<String> select = new Select<>();
-        select.setItems(
-                "Open Store",
-                "Add Payment Details"
-        );
-        select.setPlaceholder("Placeholder");
-        select.addValueChangeListener(event -> {
-            String selectedItem = event.getValue();
-            Notification.show("Selected item: " + event.getValue());
-            // Execute a lambda function when an item is clicked
-            System.out.println("Selected item: " + selectedItem);
-        });
+        Select<String> select = initActionSelect();
         TextField searchBox = new TextField();
         searchBox.setPlaceholder("Search product");
         Button searchButton = new Button("", VaadinIcon.SEARCH.create());
+        Button cartButton=new Button("Cart", VaadinIcon.CART.create());
+
         Button loginButton = new Button("Login");
         loginButton.addClickListener(e -> UI.getCurrent().navigate(LoginView.class));
         Button signUpButton = new Button("Sign Up");
@@ -137,7 +130,7 @@ public class MainLayout extends AppLayout {
 
         Div div1 = new Div(), div2 = new Div(), div3 = new Div();
         leftLayout.add(appName);
-        centerLayout.add(div1, homeButton, aboutButton, select, searchBox, searchButton, div2);
+        centerLayout.add(div1, homeButton, aboutButton, select, searchBox, searchButton, cartButton, div2);
         centerLayout.setFlexGrow(1, div1);
         centerLayout.setFlexGrow(1, div2);
         rightLayout.add(div3, loginButton, signUpButton);
@@ -148,6 +141,22 @@ public class MainLayout extends AppLayout {
         layout.setFlexGrow(1, rightLayout);
         vl.add(layout);
         return vl;
+    }
+
+    private Select<String> initActionSelect() {
+        Select<String> select = new Select<>();
+        Map<String, Runnable> actionsMap = new HashMap<>();
+        actionsMap.put("Add Store Manager", () -> UI.getCurrent().navigate(AddStoreManager.class));
+        actionsMap.put("Add Store Owner", () -> UI.getCurrent().navigate(AddStoreOwner.class));
+        actionsMap.put("Add Payment Method", () -> UI.getCurrent().navigate(AddPaymentMethod.class));
+        select.setItems(actionsMap.keySet());
+        select.addValueChangeListener(event -> actionsMap.get(event.getValue()).run());
+        select.setPlaceholder("Actions");
+        return select;
+    }
+
+    private void addStoreOwner() {
+        UI.getCurrent().navigate(AddStoreOwner.class);
     }
 
     private Footer createFooter() {

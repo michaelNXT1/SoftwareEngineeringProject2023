@@ -1,25 +1,34 @@
 package BusinessLayer;
+
 import java.time.LocalDate;
+
 public class PaymentDetails {
-        private final String creditCardNumber;
-        private final int cvv;
-        private final LocalDate expirationDate;
+    private final String creditCardNumber;
+    private final String month;
+    private final String year;
+    private final String cvv;
 
-        public PaymentDetails(String creditCardNumber, int cvv, LocalDate expirationDate) {
-            this.creditCardNumber = creditCardNumber;
-            this.cvv = cvv;
-            this.expirationDate = expirationDate;
-        }
 
-        public String getCreditCardNumber() {
-            return creditCardNumber;
-        }
+    public PaymentDetails(String cardNumber, String month, String year, String cvv) {
+        this.creditCardNumber = cardNumber;
+        this.month = month;
+        this.year = year;
+        this.cvv = cvv;
+    }
 
-        public int getCvv() {
-            return cvv;
-        }
+    public String getCreditCardNumber() {
+        return creditCardNumber;
+    }
 
-        public LocalDate getExpirationDate() {
-            return expirationDate;
-        }
+    public String getCvv() {
+        return cvv;
+    }
+
+    public String getMonth() {
+        return month;
+    }
+
+    public String getYear() {
+        return year;
+    }
 }
