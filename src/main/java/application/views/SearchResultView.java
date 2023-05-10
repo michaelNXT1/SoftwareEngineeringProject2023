@@ -67,7 +67,7 @@ public class SearchResultView extends VerticalLayout {
 
     private void addToCart(ProductDTO p, int quantity) {
         Response r = marketController.addProductToCart(MainLayout.getSessionId(), p.getStoreId(), p.getProductId(), quantity);
-        if (r.error_occurred)
+        if (r.getError_occurred())
             Notification.show(r.error_message);
         else
             Notification.show("Product added to cart successfully");

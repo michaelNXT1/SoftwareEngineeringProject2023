@@ -7,8 +7,8 @@ import java.util.logging.Logger;
 
 abstract public class Discount {
     public enum CompositionType {
-        MAX,
-        ADDITION
+        ADDITION,
+        MAX
     }
 
     protected final int discountId;
