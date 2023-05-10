@@ -1,6 +1,7 @@
 package BusinessLayer;
 
 import BusinessLayer.Discounts.Discount;
+import BusinessLayer.Logger.SystemLogger;
 import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
 import BusinessLayer.Policies.PurchasePolicies.BasePolicy;
 
@@ -11,10 +12,12 @@ public class StoreOwner implements Position {
 
     private Store store;
     private Member assigner;
+    private SystemLogger logger;
 
     public StoreOwner(Store store, Member assigner) {
         this.store = store;
         this.assigner = assigner;
+        logger = new SystemLogger();
     }
 
     @Override
@@ -91,6 +94,15 @@ public class StoreOwner implements Position {
     @Override
     public List<Member> getStoreEmployees() {
         return store.getEmployees();
+    }
+
+    @Override
+    public void removeStoreManager(Member storeOwnerToRemove, Guest m) throws Exception {
+        if (!assigner.equals(m)){
+            logger.error(String.format("%s is not the assigner of %s",m.getUsername(), storeOwnerToRemove.getUsername()));
+            throw new Exception("can remove only store owner assigned by him");
+        }
+        storeOwnerToRemove.notBeingStoreOwner();
     }
 
     @Override

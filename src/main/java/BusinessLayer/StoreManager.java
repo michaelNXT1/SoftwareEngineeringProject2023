@@ -184,6 +184,11 @@ public class StoreManager implements Position {
     }
 
     @Override
+    public void removeStoreManager(Member systemManagerToRemove, Guest m) throws Exception {
+        throw new IllegalAccessException("This member hasn't permission to perform this action");
+    }
+
+    @Override
     public void addMinQuantityPolicy(int productId, int minQuantity, boolean allowNone) throws Exception {
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }

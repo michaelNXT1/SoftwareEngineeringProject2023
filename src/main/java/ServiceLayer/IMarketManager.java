@@ -115,4 +115,5 @@ public interface IMarketManager {
         Response logoutSystemManager(String sessionId);
 
         ResponseT<String> loginSystemManager(String username, String password);
+        Response removeStoreOwner(String sessionId, String storeOwnerName, int storeId);
 }

@@ -105,4 +105,19 @@ public class Member extends Guest {
     public boolean hasPositions() {
         return !positions.isEmpty();
     }
+
+    public void notBeingStoreOwner() throws Exception {
+        Position storeOwnerP =null;
+        for (Position p: positions
+             ) {
+            if (p instanceof StoreOwner) {
+                storeOwnerP = p;
+            }
+        }
+        if (storeOwnerP == null){
+            logger.error(String.format("%s is not a store owner",username));
+            throw new Exception(String.format("%s is not a store owner",username));
+        }
+        positions.remove(storeOwnerP);
+    }
 }

@@ -716,6 +716,7 @@ public class Market {
     }
 
     public void removeMember(String sessionId, String memberName) throws Exception {
+        logger.info("try to remove %s from being member");
         checkMarketOpen();
         sessionManager.getSessionForSystemManager(sessionId);
         Member mToRemove = users.get(memberName);
@@ -748,4 +749,19 @@ public class Market {
         return allCat;
     }
 
+    public void removeStoreOwner(String sessionId, String storeOwnerName, int storeId) throws Exception {
+        logger.info("try to remove %s from being storeManager");
+        checkMarketOpen();
+        Guest m = sessionManager.getSession(sessionId);
+        Member storeOwnerToRemove = users.get(storeOwnerName);
+        if (storeOwnerToRemove == null) {
+            logger.error(String.format("%s is not a member so you cant remove him",storeOwnerName));
+            throw new Exception("storeManagerName is not a member");
+        }
+        checkStoreExists(storeId);
+        Store s = stores.get(storeId);
+        Position p = checkPositionLegal(sessionId,storeId);
+        p.removeStoreManager(storeOwnerToRemove, m);
+
+    }
 }
