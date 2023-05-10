@@ -23,14 +23,14 @@ class ShoppingCartTest {
     @BeforeEach
     void beforeEach() throws Exception {
         shoppingCart = new ShoppingCart();
-        product1 = new Product(1,"wine", 3, "60.0", "alcohol");
-        product2 = new Product(2, "cheese", 9.5, "milk","fads");
-        product3 = new Product(3, "steak", 120.0, "meat","asd");
+        store1 = new Store(1, "Shufersal" , member);
+        product1 = new Product(store1.getStoreId(),1,"wine", 3, "60.0", "alcohol");
+        product2 = new Product(store1.getStoreId(),2, "cheese", 9.5, "milk","fads");
+        product3 = new Product(store1.getStoreId(),3, "steak", 120.0, "meat","asd");
         market = new Market();
         market.signUp(userName1, password1);
         market.signUpSystemManager(userName1, password1);
         market.signUp("idan123",  "wswsad32");
-        store1 = new Store(1, "Shufersal" , member);
         //shoppingCart.addProduct(product2, 2, store1);
     }
 

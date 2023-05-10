@@ -11,6 +11,7 @@ import static org.atmosphere.annotation.AnnotationUtil.logger;
 public class Guest {
 
     private ShoppingCart shoppingCart;
+    private String searchKeyword;
     private List<Product> searchResults;
     private List<Purchase> purchaseHistory;
     private PaymentDetails paymentDetails;
@@ -76,6 +77,14 @@ public class Guest {
     public String getUsername() throws Exception {
         logger.error(String.format("Cannot perform action when not a member"));
         throw new Exception("Cannot perform action when not a member");
+    }
+
+    public String getSearchKeyword() {
+        return searchKeyword;
+    }
+
+    public void setSearchKeyword(String searchKeyword) {
+        this.searchKeyword = searchKeyword;
     }
 
     public PaymentDetails getPaymentDetails() {

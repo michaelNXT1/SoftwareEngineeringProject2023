@@ -33,12 +33,22 @@ public class SessionManager {
         }
         return sessionId;
     }
+
     public Guest getSession(String sessionId) throws Exception {
-        Guest g = sessions.get(sessionId);
+        System.out.println("here1");
+        Guest g = null;
+        try {
+            g = sessions.get(sessionId);
+        } catch (Exception e) {
+            throw e;
+        }
+        System.out.println("here1.5");
         if (g == null) {
+            System.out.println("here2");
             logger.error(String.format("the user isn't logged in"));
             throw new Exception("user session doesnt exist");
         }
+        System.out.println("here3");
         return g;
     }
 
@@ -49,6 +59,7 @@ public class SessionManager {
             throw new Exception("user session doesnt exist");
         }
     }
+
     public String generateSessionId() {
         SecureRandom random = new SecureRandom();
         byte[] bytes = new byte[SESSION_ID_LENGTH];
@@ -68,6 +79,7 @@ public class SessionManager {
         }
         return sessionId;
     }
+
     public void deleteSessionForSystemManager(String sessionId) throws Exception {
         SystemManager sm = systemManagerSessions.remove(sessionId);
         if (sm == null) {
@@ -87,8 +99,8 @@ public class SessionManager {
 
     public String getSessionIdByGuestName(String name) throws Exception {
         String session = null;
-        for(Entry<String,Guest> ent: sessions.entrySet()){
-            if(ent.getValue().getUsername().equals(name)){
+        for (Entry<String, Guest> ent : sessions.entrySet()) {
+            if (ent.getValue().getUsername().equals(name)) {
                 session = ent.getKey();
             }
         }

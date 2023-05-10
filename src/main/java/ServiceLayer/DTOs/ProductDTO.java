@@ -4,6 +4,7 @@ package ServiceLayer.DTOs;
 import BusinessLayer.Product;
 
 public class ProductDTO {
+    private final int storeId;
     private int productId;
     private String productName;
     private double price;
@@ -13,8 +14,9 @@ public class ProductDTO {
     private String description;
 
     public ProductDTO(Product p) {
+        this.storeId = p.getStoreId();
         this.productId = p.getProductId();
-        this.productName =  p.getProductName();
+        this.productName = p.getProductName();
         this.price = p.getProductPrice();
         this.category = p.getCategory();
         this.rating = p.getRating();
@@ -70,10 +72,6 @@ public class ProductDTO {
         this.amount = amount;
     }
 
-    public double getProductPrice() {
-        return price;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -81,8 +79,13 @@ public class ProductDTO {
     public void setDescription(String newDescription) {
         this.description = newDescription;
     }
+
+    public int getStoreId() {
+        return storeId;
+    }
+
     @Override
-    public String toString(){
+    public String toString() {
         return String.format(this.productName);
     }
 }

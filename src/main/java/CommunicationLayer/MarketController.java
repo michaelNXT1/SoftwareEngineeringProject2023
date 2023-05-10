@@ -1,6 +1,7 @@
 package CommunicationLayer;
 import ServiceLayer.DTOs.*;
 import ServiceLayer.MarketManager;
+import ServiceLayer.Response;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
@@ -72,8 +73,8 @@ public class MarketController implements IMarketController{
     @GetMapping("/enterMarket")
     @ResponseBody
     @Override
-    public boolean enterMarket() {
-        return !this.marketManager.enterMarket().getError_occurred();
+    public String enterMarket() {
+        return this.marketManager.enterMarket().value;
     }
     @GetMapping("/exitMarket")
     @ResponseBody
@@ -93,12 +94,12 @@ public class MarketController implements IMarketController{
 
     @GetMapping("/addProductToCart")
     @ResponseBody
-    public boolean addProductToCart(
+    public Response addProductToCart(
             @RequestParam(value = "sessionId", defaultValue = "") String sessionId,
             @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
             @RequestParam(value = "productId", defaultValue = "-1") int productId,
             @RequestParam(value = "amount", defaultValue = "-1") int amount) {
-        return !marketManager.addProductToCart(sessionId,storeId,productId,amount).getError_occurred();
+        return marketManager.addProductToCart(sessionId,storeId,productId,amount);
     }
 
 
@@ -390,6 +391,13 @@ public class MarketController implements IMarketController{
     @Override
     public boolean addPaymentMethod(String sessionId, String cardNumber, String month, String year, String cvv) {
         return !this.marketManager.addPaymentMethod(sessionId, cardNumber, month, year, cvv).getError_occurred();
+    }
+
+    @GetMapping("/getSearchKeyword")
+    @ResponseBody
+    @Override
+    public String getSearchKeyword(String sessionId) {
+        return this.marketManager.getSearchKeyword(sessionId).value;
     }
 
 
