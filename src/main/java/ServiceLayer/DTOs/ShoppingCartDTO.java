@@ -25,4 +25,14 @@ public class ShoppingCartDTO {
         }
         return cart.toString();
     }
+
+    public List<ProductDTO> getProducts() {
+        List<ProductDTO> productDTOList = new ArrayList<>();
+        for (ShoppingBagDTO shoppingBag : shoppingBags) {
+            productDTOList.addAll(shoppingBag.getProductList().keySet());
+        }
+        return productDTOList;
+    }
+
+
 }
