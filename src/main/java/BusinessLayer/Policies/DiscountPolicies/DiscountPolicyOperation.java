@@ -13,7 +13,12 @@ public class DiscountPolicyOperation extends BaseDiscountPolicy {
         super(policyId);
         this.policyId = policyId;
         this.left = left;
-        this.joinOperator = JoinOperator.values()[joinOperator];
+        try {
+            this.joinOperator = JoinOperator.values()[joinOperator];
+        } catch (Exception e) {
+            logger.error("illegal value for joinOperator");
+            throw e;
+        }
         this.right = right;
     }
 

@@ -12,8 +12,10 @@ public class MaxQuantityPolicy extends PurchasePolicy {
 
     public MaxQuantityPolicy(int policyId, int productId, int maxQuantity, boolean allowNone) throws Exception {
         super(policyId);
-        if (maxQuantity <= 0)
+        if (maxQuantity <= 0) {
+            logger.error("Max quantity must be larger than 0 but is" + maxQuantity);
             throw new Exception("Max quantity must be larger than 0");
+        }
         this.productId = productId;
         this.maxQuantity = maxQuantity;
         this.allowNone = allowNone;

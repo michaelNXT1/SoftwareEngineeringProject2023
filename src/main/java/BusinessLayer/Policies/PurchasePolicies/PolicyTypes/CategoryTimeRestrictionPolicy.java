@@ -14,10 +14,14 @@ public class CategoryTimeRestrictionPolicy extends PurchasePolicy {
 
     public CategoryTimeRestrictionPolicy(int policyId, String category, LocalTime startTime, LocalTime endTime) throws Exception {
         super(policyId);
-        if (startTime.equals(endTime))
+        if (startTime.equals(endTime)) {
+            logger.error("Start time cannot be the same as end time");
             throw new Exception("Start time cannot be the same as end time");
-        if (Objects.equals(category, "") || category == null)
+        }
+        if (Objects.equals(category, "") || category == null) {
+            logger.error("category cannot be empty");
             throw new Exception("category cannot be empty");
+        }
         this.category = category;
         this.startTime = startTime;
         this.endTime = endTime;

@@ -548,6 +548,7 @@ public class Market {
 
     public void addMinQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone) throws Exception {
         isMarketOpen();
+        logger.info("trying to add minQuantityPolicy");
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
@@ -556,6 +557,7 @@ public class Market {
 
     public void addMaxQuantityPolicy(String sessionId, int storeId, int productId, int maxQuantity, boolean allowNone) throws Exception {
         isMarketOpen();
+        logger.info("trying to add maxQuantityPolicy");
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
@@ -564,6 +566,7 @@ public class Market {
 
     public void addProductTimeRestrictionPolicy(String sessionId, int storeId, int productId, LocalTime startTime, LocalTime endTime) throws Exception {
         isMarketOpen();
+        logger.info("trying to add addProductTimeRestrictionPolicy");
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
@@ -572,6 +575,7 @@ public class Market {
 
     public void addCategoryTimeRestrictionPolicy(String sessionId, int storeId, String category, LocalTime startTime, LocalTime endTime) throws Exception {
         isMarketOpen();
+        logger.info("trying to add CategoryTimeRestrictionPolicy");
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
@@ -580,6 +584,7 @@ public class Market {
 
     public void joinPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator) throws Exception {
         isMarketOpen();
+        logger.info("trying to joinPolicies");
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
@@ -587,6 +592,7 @@ public class Market {
     }
 
     public void removePolicy(String sessionId, int storeId, int policyId) throws Exception {
+        logger.info("trying to remove policy");
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
@@ -595,6 +601,7 @@ public class Market {
     }
 
     public void addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType) throws Exception {
+        logger.info("trying to addProductDiscount");
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
@@ -603,6 +610,7 @@ public class Market {
     }
 
     public void addCategoryDiscount(String sessionId, int storeId, String category, double discountPercentage, int compositionType) throws Exception {
+        logger.info("trying to addCategoryDiscount");
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
@@ -611,6 +619,7 @@ public class Market {
     }
 
     public void addStoreDiscount(String sessionId, int storeId, double discountPercentage, int compositionType) throws Exception {
+        logger.info("trying to addStoreDiscount");
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
@@ -619,6 +628,7 @@ public class Market {
     }
 
     public void addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone) throws Exception {
+        logger.info("trying to addMinQuantityDiscountPolicy");
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
@@ -627,6 +637,7 @@ public class Market {
     }
 
     public void addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity, boolean allowNone) throws Exception {
+        logger.info("trying to addMaxQuantityDiscountPolicy");
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
@@ -635,6 +646,7 @@ public class Market {
     }
 
     public void addMinBagTotalDiscountPolicy(String sessionId, int storeId, int discountId, double minTotal) throws Exception {
+        logger.info("trying to addMinBagTotalDiscountPolicy");
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
@@ -643,6 +655,7 @@ public class Market {
     }
 
     public void joinDiscountPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator) throws Exception {
+        logger.info("trying to joinDiscountPolicies");
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
@@ -651,6 +664,7 @@ public class Market {
     }
 
     public void removeDiscountPolicy(String sessionId, int storeId, int policyId) throws Exception {
+        logger.info("trying to removeDiscountPolicy");
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
@@ -659,6 +673,7 @@ public class Market {
     }
 
     public void addPaymentMethod(String sessionId, String creditCardNumber, int cvv, LocalDate expirationDate) throws Exception {
+        logger.info("trying to addPaymentMethod");
         isMarketOpen();
         Guest g = sessionManager.getSession(sessionId);
         g.addPaymentMethod(creditCardNumber, cvv, expirationDate);

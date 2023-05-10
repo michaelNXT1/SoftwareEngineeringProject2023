@@ -7,6 +7,7 @@ import java.util.Map;
 public abstract class PurchasePolicy extends BasePolicy {
 
     protected PurchasePolicy(int policyId) {
+        super();
         this.policyId = policyId;
     }
 

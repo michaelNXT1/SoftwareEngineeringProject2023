@@ -12,8 +12,10 @@ public class MinQuantityDiscountPolicy extends BaseDiscountPolicy {
 
     public MinQuantityDiscountPolicy(int policyId, int productId, int minQuantity, boolean allowNone) throws Exception {
         super(policyId);
-        if (minQuantity <= 0)
+        if (minQuantity <= 0) {
+            logger.error("Min quantity must be larger than 0 but is " + minQuantity);
             throw new Exception("Min quantity must be larger than 0");
+        }
         this.productId = productId;
         this.minQuantity = minQuantity;
         this.allowNone = allowNone;
