@@ -2,6 +2,7 @@ package UnitTests;
 
 import BusinessLayer.*;
 import junit.framework.TestCase;
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 
 public class StoreFounderTest extends TestCase {
@@ -34,7 +35,13 @@ public class StoreFounderTest extends TestCase {
         p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"bb");
         int productId = p.getProductId();
         storeFounder.removeProductFromStore(productId);
-        assertNull(store.getProduct(p.getProductId()));
+        try{
+            store.getProduct(productId);
+            assertTrue(false);
+        }
+        catch (Exception e){
+            assertTrue(true);
+        }
     }
 
     public void testEditProductName() throws Exception {
@@ -62,7 +69,7 @@ public class StoreFounderTest extends TestCase {
         p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"ddd");
         int productId = p.getProductId();
         storeFounder.editProductDescription(productId, "new description");
-        assertEquals(p.getDescription(),Long.parseLong("new description"));
+        assertEquals(p.getDescription(),"new description");
     }
 
     public void testAddProduct() throws Exception {

@@ -130,44 +130,46 @@ public class Market {
     //use case 2.3
     public String login(String username, String password) throws Exception {
         SystemManager sm = systemManagers.get(username);
-        if (sm != null) {
-            String hashedPassword = new String(passwordEncoder.digest(password.getBytes()));
-            // If the Member doesn't exist or the password is incorrect, return false
-            if (!hashedPassword.equals(sm.getPassword())) {
-                logger.error(String.format("%s has Invalid username or password", username));
-                throw new Error("Invalid username or password");
+        synchronized (username.intern()) {
+            if (sm != null) {
+                String hashedPassword = new String(passwordEncoder.digest(password.getBytes()));
+                // If the Member doesn't exist or the password is incorrect, return false
+                if (!hashedPassword.equals(sm.getPassword())) {
+                    logger.error(String.format("%s has Invalid username or password", username));
+                    throw new Error("Invalid username or password");
+                }
+                // If the credentials are correct, authenticate the user and return true
+                boolean res = securityUtils.authenticate(username, password);
+                if (res) {
+                    logger.info(String.format("%s the user passed authenticate check and logged in to the systemManager", username));
+                    String sessionId = sessionManager.createSessionForSystemManager(sm);
+                    return sessionId;
+                }
+                return null;
             }
+            isMarketOpen();
+            // Retrieve the stored Member's object for the given username
+            Member member = null;
+            synchronized (username.intern()) {
+                member = users.get(username);
+            }
+
+            String hashedPassword = new String(passwordEncoder.digest(password.getBytes()));
+            // If the Member doesn't exist or the password is incorrect, throw exception
+            if (member == null || !hashedPassword.equals(member.getPassword())) {
+                logger.error(String.format("%s have Invalid username or password", username));
+                throw new Exception("Invalid username or password");
+            }
+
             // If the credentials are correct, authenticate the user and return true
             boolean res = securityUtils.authenticate(username, password);
             if (res) {
-                logger.info(String.format("%s the user passed authenticate check and logged in to the systemManager", username));
-                String sessionId = sessionManager.createSessionForSystemManager(sm);
+                logger.info(String.format("%s passed authenticate check and logged in to the system", username));
+                String sessionId = sessionManager.createSession(member);
                 return sessionId;
             }
-            return null;
+            logger.error(String.format("%s did not passed authenticate check and logged in to the system", username));
         }
-        isMarketOpen();
-        // Retrieve the stored Member's object for the given username
-        Member member = null;
-        synchronized (username.intern()) {
-            member = users.get(username);
-        }
-
-        String hashedPassword = new String(passwordEncoder.digest(password.getBytes()));
-        // If the Member doesn't exist or the password is incorrect, throw exception
-        if (member == null || !hashedPassword.equals(member.getPassword())) {
-            logger.error(String.format("%s have Invalid username or password", username));
-            throw new Exception("Invalid username or password");
-        }
-
-        // If the credentials are correct, authenticate the user and return true
-        boolean res = securityUtils.authenticate(username, password);
-        if (res) {
-            logger.info(String.format("%s passed authenticate check and logged in to the system", username));
-            String sessionId = sessionManager.createSession(member);
-            return sessionId;
-        }
-        logger.error(String.format("%s did not passed authenticate check and logged in to the system", username));
         return null;
     }
 
@@ -307,7 +309,7 @@ public class Market {
         isMarketOpen();
         Guest g = sessionManager.getSession(sessionId);
         Store s = getStore(sessionId, storeId);
-        logger.info(String.format("adding product %d to the %d store with %d amount", productId, storeId, quantity));
+        logger.info(String.format("adding product %d with the %d store with %d amount", productId, storeId, quantity));
         g.addProductToShoppingCart(s, productId, quantity);
     }
 
@@ -352,7 +354,11 @@ public class Market {
                     stores.get(pp.getStoreId()).addToProductQuantity(pp.getProductId(), pp.getQuantity());
                 throw new Exception("Purchase failed, fund demander hasn't managed to charge.");
             }
+            for(PurchaseProduct p : purchase.getProductList()) {
+                logger.info(String.format("purchase completed you just bought %d from %s", p.getQuantity(),p.getProductName()));
+            }
         }
+
         return new PurchaseDTO(purchase);
     }
 
@@ -365,7 +371,13 @@ public class Market {
         int storeId;
         synchronized (stores) {
             storeId = stores.keySet().stream().mapToInt(v -> v).max().orElse(0);
-            stores.put(storeId, g.openStore(storeName, storeId));
+            boolean isStoreExist = stores.values().stream().filter(x-> x.getStoreName() == storeName).toList().size() > 0;
+            if(!isStoreExist) {
+                stores.put(storeId, g.openStore(storeName, storeId));
+            }
+            else{
+                throw new Exception("this store already exist");
+            }
         }
         return storeId;
         //TODO: release stores variable
@@ -387,11 +399,14 @@ public class Market {
     //use case 5.1
     public ProductDTO addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description) throws Exception {
         isMarketOpen();
-        sessionManager.getSession(sessionId);
-        logger.info("trying adding new product");
-        checkStoreExists(storeId);
-        logger.info(String.format("adding product to store %s new product name %s price %.02f category %s quantity %d description %s", getStore(sessionId, storeId).getStoreName(), productName, price, category, quantity, description));
-        Position p = checkPositionLegal(sessionId, storeId);
+        Position p;
+        synchronized (purchaseLock) {
+            sessionManager.getSession(sessionId);
+            logger.info("trying adding new product");
+            checkStoreExists(storeId);
+            logger.info(String.format("adding product to store %s new product name %s price %.02f category %s quantity %d description %s", getStore(sessionId, storeId).getStoreName(), productName, price, category, quantity, description));
+            p = checkPositionLegal(sessionId, storeId);
+        }
         return new ProductDTO(p.addProduct(stores.get(storeId), productName, price, category, quantity, description));
     }
 
@@ -494,9 +509,11 @@ public class Market {
         if (storeManagerPosition == null) {
             logger.error(String.format("%s has not have that position in this store", storeManager));
             throw new Exception("the name of the store manager has not have that position in this store");
-        } else if (storeManagerPosition.getAssigner().equals(m)) {
-            throw new Exception("only the systemManager's assigner can edit his permissions");
-        } else {
+        }
+//        else if (storeManagerPosition.getAssigner().equals(m)) {
+//            throw new Exception("only the systemManager's assigner can edit his permissions");
+//        }
+        else {
             logger.info(String.format("%s have new permissions %d to %s", storeManager, newPermission, getStore(sessionId, storeID)));
             p.addStoreManagerPermissions(storeManagerPosition, perm);
         }

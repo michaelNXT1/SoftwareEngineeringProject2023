@@ -35,20 +35,16 @@ public class SessionManager {
     }
 
     public Guest getSession(String sessionId) throws Exception {
-        System.out.println("here1");
         Guest g = null;
         try {
             g = sessions.get(sessionId);
         } catch (Exception e) {
             throw e;
         }
-        System.out.println("here1.5");
         if (g == null) {
-            System.out.println("here2");
             logger.error(String.format("the user isn't logged in"));
             throw new Exception("user session doesnt exist");
         }
-        System.out.println("here3");
         return g;
     }
 
