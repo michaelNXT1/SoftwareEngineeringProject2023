@@ -365,7 +365,13 @@ public class Market {
         int storeId;
         synchronized (stores) {
             storeId = stores.keySet().stream().mapToInt(v -> v).max().orElse(0);
-            stores.put(storeId, g.openStore(storeName, storeId));
+            boolean isStoreExist = stores.values().stream().filter(x-> x.getStoreName() == storeName).toList().size() > 0;
+            if(!isStoreExist) {
+                stores.put(storeId, g.openStore(storeName, storeId));
+            }
+            else{
+                throw new Exception("this store already exist");
+            }
         }
         return storeId;
         //TODO: release stores variable
@@ -494,9 +500,11 @@ public class Market {
         if (storeManagerPosition == null) {
             logger.error(String.format("%s has not have that position in this store", storeManager));
             throw new Exception("the name of the store manager has not have that position in this store");
-        } else if (storeManagerPosition.getAssigner().equals(m)) {
-            throw new Exception("only the systemManager's assigner can edit his permissions");
-        } else {
+        }
+//        else if (storeManagerPosition.getAssigner().equals(m)) {
+//            throw new Exception("only the systemManager's assigner can edit his permissions");
+//        }
+        else {
             logger.info(String.format("%s have new permissions %d to %s", storeManager, newPermission, getStore(sessionId, storeID)));
             p.addStoreManagerPermissions(storeManagerPosition, perm);
         }

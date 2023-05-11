@@ -9,8 +9,8 @@ public class GetAllHistoryTests extends ServiceTests {
     @Before
     public void setUp(){
         super.setUp();
-        register("alon1", "alon0601");
-        sessionID = login("alon", "alon0601");
+        register("alon1", "alon0601"); 
+        sessionID = loginSystemManager("admin", "admin");
 
     }
 
