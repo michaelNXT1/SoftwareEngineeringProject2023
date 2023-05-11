@@ -1,10 +1,7 @@
 package ServiceLayer;
 
-import BusinessLayer.Discounts.Discount;
-import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
 import ServiceLayer.DTOs.*;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
@@ -116,6 +113,8 @@ public interface IMarketManager {
         ResponseT<List<MemberDTO>> getInformationAboutMembers(String sessionId);
 
     ResponseT<String> getSearchKeyword(String sessionId);
+
+    ResponseT<String> getUsername(String sessionId);
 
 //        Response logoutSystemManager(String sessionId);
 

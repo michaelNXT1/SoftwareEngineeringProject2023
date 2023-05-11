@@ -45,7 +45,7 @@ public class SearchResultView extends VerticalLayout {
             IntegerField quantity = new IntegerField();
             quantity.setValue(1);
             quantity.setStepButtonsVisible(true);
-            quantity.setMin(0);
+            quantity.setMin(1);
             Button addToCartButton = new Button("Add to Cart", e -> addToCart(product, quantity.getValue()));
             hl.add(quantity, addToCartButton);
             return hl;
@@ -53,7 +53,7 @@ public class SearchResultView extends VerticalLayout {
 
         List<ProductDTO> people = marketController.getSearchResults(MainLayout.getSessionId());
         grid.setItems(people);
-        grid.setVisible(people.isEmpty());
+        grid.setVisible(!people.isEmpty());
         add(grid);
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);

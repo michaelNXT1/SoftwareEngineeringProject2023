@@ -9,7 +9,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ShoppingBagDTO {
+    public StoreDTO getStore() {
+        return store;
+    }
+
     private final StoreDTO store;
+
+    public Map<ProductDTO, Integer> getProductList() {
+        return productList;
+    }
+
     private final Map<ProductDTO, Integer> productList;
 
     public ShoppingBagDTO(ShoppingBag shoppingBag) throws Exception {
@@ -20,6 +29,7 @@ public class ShoppingBagDTO {
             productList.put(productDTO, shoppingBag.getProductList().get(productId));
         }
     }
+
     @Override
     public String toString(){
         StringBuilder shopping = new StringBuilder();
