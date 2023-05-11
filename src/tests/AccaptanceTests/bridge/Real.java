@@ -112,7 +112,7 @@ public class Real implements Bridge {
         return !this.manager.enterMarket().getError_occurred();
     }
 
-
+    @Override
     public Integer openStore(String sessionId, String storeName) {
         return manager.openStore(sessionId, storeName).value;
     }

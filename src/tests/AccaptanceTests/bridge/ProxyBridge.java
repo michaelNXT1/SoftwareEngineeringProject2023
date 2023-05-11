@@ -189,7 +189,7 @@ public class ProxyBridge implements Bridge {
         }
     }
 
-
+    @Override
     public Integer openStore(String sessionId, String storeNames) {
         if (real != null) {
             return real.openStore(sessionId, storeNames);
