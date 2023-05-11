@@ -432,5 +432,12 @@ public class MarketController implements IMarketController{
         return this.marketManager.getSearchKeyword(sessionId).value;
     }
 
+    @GetMapping("/getUsername")
+    @ResponseBody
+    @Override
+    public String getUsername(String sessionId) {
+        return this.marketManager.getUsername(sessionId).value;
+    }
+
 
 }

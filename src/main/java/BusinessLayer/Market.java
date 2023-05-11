@@ -817,4 +817,15 @@ public class Market {
         }
         return ret;
     }
+
+    public String getUsername(String sessionId) throws Exception {
+        isMarketOpen();
+        Guest g = sessionManager.getSession(sessionId);
+        try {
+            return g.getUsername();
+        } catch (Exception e) {
+            return "guest";
+        }
+
+    }
 }

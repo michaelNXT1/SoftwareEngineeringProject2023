@@ -81,4 +81,6 @@ public interface IMarketController {
     boolean addPaymentMethod(String sessionId, String cardNumber, String month, String year, String cvv);
 
     String getSearchKeyword(String sessionId);
+
+    String getUsername(String sessionId);
 }
