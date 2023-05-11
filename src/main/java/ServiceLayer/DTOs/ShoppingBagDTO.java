@@ -30,6 +30,7 @@ public class ShoppingBagDTO {
         }
     }
 
+
     @Override
     public String toString(){
         StringBuilder shopping = new StringBuilder();

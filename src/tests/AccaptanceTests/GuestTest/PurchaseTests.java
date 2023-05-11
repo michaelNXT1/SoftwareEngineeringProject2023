@@ -1,11 +1,15 @@
 package AccaptanceTests.GuestTest;
 
 import AccaptanceTests.ServiceTests;
+import ServiceLayer.DTOs.ProductDTO;
+import ServiceLayer.DTOs.ShoppingBagDTO;
+import ServiceLayer.DTOs.ShoppingCartDTO;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class PurchaseTests extends ServiceTests {
     /*
@@ -36,7 +40,16 @@ public class PurchaseTests extends ServiceTests {
 
     @Test
     public void testPurchaseSuccessful(){
-        assertNotNull(buyCart(sessionID1));
+        boolean product1Exist = false;
+        ShoppingCartDTO shoppingCartDTO = viewCart(sessionID1);
+        List<ShoppingBagDTO> bagList =  shoppingCartDTO.shoppingBags;
+        for(ShoppingBagDTO bagDTO: bagList){
+            for(ProductDTO productDTO: bagDTO.getProductList().keySet()){
+                if(productDTO.getProductId() == productID2)
+                    product1Exist = true;
+            }
+        }
+        assertTrue(product1Exist && buyCart(sessionID1)!=null);
     }
     @Test
     public void testNotEngItemsQuantityFail(){

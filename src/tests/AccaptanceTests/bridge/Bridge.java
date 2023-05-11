@@ -2,8 +2,8 @@ package AccaptanceTests.bridge;
 
 
 import ServiceLayer.DTOs.PurchaseDTO;
+import ServiceLayer.DTOs.ShoppingCartDTO;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 
 public interface Bridge {
@@ -42,7 +42,7 @@ public interface Bridge {
 
     PurchaseDTO buyCart(String sessionId);
 
-    String showCart(String sessionId);
+    ShoppingCartDTO showCart(String sessionId);
 
     boolean logout(String sessionId);
 

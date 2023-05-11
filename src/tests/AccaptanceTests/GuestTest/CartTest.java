@@ -3,9 +3,15 @@ package AccaptanceTests.GuestTest;
 
 
 import AccaptanceTests.ServiceTests;
+import BusinessLayer.ShoppingBag;
+import ServiceLayer.DTOs.ProductDTO;
+import ServiceLayer.DTOs.ShoppingBagDTO;
+import ServiceLayer.DTOs.ShoppingCartDTO;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.List;
 
 public class CartTest extends ServiceTests {
 
@@ -36,7 +42,19 @@ public class CartTest extends ServiceTests {
         int productID2 = addProduct(sessionID1, storeID,"test2",3.9,"milk",9,"10");
         addToCart(sessionID1, storeID,productID1,5);
         addToCart(sessionID1, storeID,productID2,5);
-        assertEquals(viewCart(sessionID1), "test: 5\ntest2: 5\n\n");
+        boolean product1Exist = false;
+        boolean product2Exist = false;
+        ShoppingCartDTO shoppingCartDTO = viewCart(sessionID1);
+        List<ShoppingBagDTO> bagList =  shoppingCartDTO.shoppingBags;
+        for(ShoppingBagDTO bagDTO: bagList){
+           for(ProductDTO productDTO: bagDTO.getProductList().keySet()){
+               if(productDTO.getProductId() == productID1)
+                   product1Exist = true;
+               if(productDTO.getProductId() == productID2)
+                   product2Exist = true;
+           }
+        }
+        assertTrue(product1Exist && product2Exist);
     }
 
 
