@@ -115,10 +115,10 @@ public class MarketController implements IMarketController{
 
     @GetMapping("/removeProductFromCart")
     @ResponseBody
-    public boolean removeProductFromCart(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+    public Response removeProductFromCart(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
                                           @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
                                           @RequestParam(value = "productId", defaultValue = "-1") int productId) {
-        return !marketManager.removeProductFromCart(sessionId, storeId, productId).getError_occurred();
+        return marketManager.removeProductFromCart(sessionId, storeId, productId);
     }
 
 //    @GetMapping("/clearCart")
@@ -404,11 +404,11 @@ public class MarketController implements IMarketController{
     @GetMapping("/changeProductQuantity")
     @ResponseBody
     @Override
-    public boolean changeProductQuantity(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
-                                         @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
-                                         @RequestParam(value = "productId", defaultValue = "-1") int productId,
-                                         @RequestParam(value = "quantity", defaultValue = "-1") int quantity) {
-        return !this.marketManager.changeProductQuantity(sessionId, storeId, productId, quantity).getError_occurred();
+    public Response changeProductQuantity(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                          @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
+                                          @RequestParam(value = "productId", defaultValue = "-1") int productId,
+                                          @RequestParam(value = "quantity", defaultValue = "-1") int quantity) {
+        return this.marketManager.changeProductQuantity(sessionId, storeId, productId, quantity);
     }
 
     @GetMapping("/getAllCategories")
@@ -430,6 +430,13 @@ public class MarketController implements IMarketController{
     @Override
     public String getSearchKeyword(String sessionId) {
         return this.marketManager.getSearchKeyword(sessionId).value;
+    }
+
+    @GetMapping("/getUsername")
+    @ResponseBody
+    @Override
+    public String getUsername(String sessionId) {
+        return this.marketManager.getUsername(sessionId).value;
     }
 
 

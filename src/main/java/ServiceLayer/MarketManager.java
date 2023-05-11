@@ -3,8 +3,6 @@ package ServiceLayer;
 import BusinessLayer.Market;
 import ServiceLayer.DTOs.*;
 
-import java.time.LocalDate;
-
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
@@ -525,6 +523,15 @@ public class MarketManager implements IMarketManager {
     public ResponseT<String> getSearchKeyword(String sessionId) {
         try {
             return ResponseT.fromValue(market.getSearchKeyword(sessionId));
+        } catch (Exception e) {
+            return ResponseT.fromError(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseT<String> getUsername(String sessionId) {
+        try {
+            return ResponseT.fromValue(market.getUsername(sessionId));
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }

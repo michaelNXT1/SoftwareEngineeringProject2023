@@ -9,7 +9,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ShoppingBagDTO {
+    public StoreDTO getStore() {
+        return store;
+    }
+
     private final StoreDTO store;
+
+    public Map<ProductDTO, Integer> getProductList() {
+        return productList;
+    }
+
     private final Map<ProductDTO, Integer> productList;
 
     public ShoppingBagDTO(ShoppingBag shoppingBag) throws Exception {
@@ -21,9 +30,6 @@ public class ShoppingBagDTO {
         }
     }
 
-    public Map<ProductDTO, Integer> getProductList() {
-        return productList;
-    }
 
     @Override
     public String toString(){
