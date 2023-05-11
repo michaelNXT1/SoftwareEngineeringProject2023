@@ -52,8 +52,8 @@ public interface IMarketController {
     List<ProductDTO> filterSearchResultsByPrice(String sessionId, double minPrice, double maxPrice);
     Response addProductToCart(String sessionId, int storeId, int productId, int quantity);
     ShoppingCartDTO getShoppingCart(String sessionId);
-    boolean changeProductQuantity(String sessionId, int storeId, int productId, int quantity);
-    boolean removeProductFromCart(String sessionId, int storeId, int productId);
+    Response changeProductQuantity(String sessionId, int storeId, int productId, int quantity);
+    Response removeProductFromCart(String sessionId, int storeId, int productId);
     PurchaseDTO purchaseShoppingCart(String sessionId);
     Integer openStore(String sessionId, String storeName);
     List<PurchaseDTO> getPurchaseHistory(String sessionId, int storeId);

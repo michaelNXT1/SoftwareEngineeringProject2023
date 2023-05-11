@@ -80,6 +80,10 @@ public class MainLayout extends AppLayout {
         addToNavbar(createHeaderContent());
         addDrawerContent();
         sessionId = marketController.enterMarket();
+        marketController.signUp("Michael", "1234");
+        sessionId = marketController.login("Michael", "1234");
+        marketController.openStore(sessionId, "Amazon");
+        marketController.addProduct(sessionId, 0, "a man", 10.0, "people", 50, "just a man");
     }
 
 
@@ -125,7 +129,7 @@ public class MainLayout extends AppLayout {
         searchBox.setPlaceholder("Search product");
         searchType = initSearchSelect();
         Button searchButton = new Button("", VaadinIcon.SEARCH.create(), e -> SearchProducts());
-        Button cartButton = new Button("Cart", VaadinIcon.CART.create());
+        Button cartButton = new Button("Cart", VaadinIcon.CART.create(), e -> UI.getCurrent().navigate(ShoppingCart.class));
 
         Button loginButton = new Button("Login", e -> UI.getCurrent().navigate(LoginView.class));
         Button signUpButton = new Button("Sign Up", e -> UI.getCurrent().navigate(RegistrationView.class));
@@ -146,7 +150,7 @@ public class MainLayout extends AppLayout {
     }
 
     private void SearchProducts() {
-        if (searchType.getValue() != null){
+        if (searchType.getValue() != null) {
             searchActionMap.get(searchType.getValue()).run();
             UI.getCurrent().navigate(SearchResultView.class);
         }
