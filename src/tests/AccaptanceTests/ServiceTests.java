@@ -5,6 +5,7 @@ import AccaptanceTests.bridge.Bridge;
 
 import AccaptanceTests.bridge.*;
 import ServiceLayer.DTOs.PurchaseDTO;
+import ServiceLayer.DTOs.ShoppingCartDTO;
 import junit.framework.TestCase;
 import org.junit.After;
 
@@ -153,7 +154,7 @@ public abstract class ServiceTests extends TestCase {
 //        return this.bridge.searchProducts(sessionId, productName, category, keywords, productRating, storeRating, priceFrom, priceTo); }
 
 
-    public String viewCart(String sessionId) {
+    public ShoppingCartDTO viewCart(String sessionId) {
         return this.bridge.showCart(sessionId);
     }
 

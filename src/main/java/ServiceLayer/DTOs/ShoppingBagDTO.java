@@ -20,6 +20,11 @@ public class ShoppingBagDTO {
             productList.put(productDTO, shoppingBag.getProductList().get(productId));
         }
     }
+
+    public Map<ProductDTO, Integer> getProductList() {
+        return productList;
+    }
+
     @Override
     public String toString(){
         StringBuilder shopping = new StringBuilder();

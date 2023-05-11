@@ -3,10 +3,10 @@ package AccaptanceTests.bridge;
 import ServiceLayer.DTOs.MemberDTO;
 import ServiceLayer.DTOs.ProductDTO;
 import ServiceLayer.DTOs.PurchaseDTO;
+import ServiceLayer.DTOs.ShoppingCartDTO;
 import ServiceLayer.IMarketManager;
 import ServiceLayer.MarketManager;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -79,8 +79,8 @@ public class Real implements Bridge {
     }
 
 
-    public String showCart(String sessionId) {
-        return manager.getShoppingCart(sessionId).value.toString();
+    public ShoppingCartDTO showCart(String sessionId) {
+        return manager.getShoppingCart(sessionId).value;
     }
 
     public boolean updateAmount(String sessionId, int storeId, int productId, int amount) {

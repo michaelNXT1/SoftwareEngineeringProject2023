@@ -1,8 +1,8 @@
 package AccaptanceTests.bridge;
 
 import ServiceLayer.DTOs.PurchaseDTO;
+import ServiceLayer.DTOs.ShoppingCartDTO;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class ProxyBridge implements Bridge {
@@ -138,7 +138,7 @@ public class ProxyBridge implements Bridge {
     }
 
 
-    public String showCart(String sessionId) {
+    public ShoppingCartDTO showCart(String sessionId) {
         if (real != null) {
             return real.showCart(sessionId);
         } else {
