@@ -32,9 +32,10 @@ public class ConcurrencyTest extends TestCase {
     public void testBuyProductsMultipleBuysSucess() throws Exception {
         market.signUp("master","1234");
         String id = market.login("master","1234");
+        market.addPaymentMethod(id,"123","06","2026","540");
         int storeid = market.openStore(id,"newStore");
         int productID =setUpStoreWithAmount(id,storeid,100);
-        buyFromStoreAmount(storeid,id,productID);
+        buyFromStoreAmount(storeid,productID,5);
         try {
             assertEquals(100-(THREADS*5),market.getStore(id,storeid).getProduct(productID).getAmount());
         } catch (Exception e) {
@@ -46,26 +47,27 @@ public class ConcurrencyTest extends TestCase {
     public void testBuyProductsMultipleBuysSucessMoreThenInventory() throws Exception {
         market.signUp("master","1234");
         String id = market.login("master","1234");
+        market.addPaymentMethod(id,"123","06","2026","540");
         int storeId = market.openStore(id,"newStore");
-        int productId = setUpStoreWithAmount(id, storeId,7);
-        buyFromStoreAmount(storeId,id,1);
+        int productId = setUpStoreWithAmount(id, storeId,10);
+        buyFromStoreAmount(storeId,productId,1);
         try {
-            assertEquals(0,market.getStore(id, storeId).getProduct(productId).getProductId());
+            assertEquals(1,market.getStore(id, storeId).getProduct(productId).getProductId());
         } catch (Exception e) {
             fail();
         }
     }
 
     @Test
-    public void testBuyProductsMultipleBuysSucessMoreThenInventoryHistory() throws Exception {
+    public void testBuyProductsMultipleBuysFailMoreThenInventoryHistory() throws Exception {
         market.signUp("master","1234");
         String id = market.login("master","1234");
+        market.addPaymentMethod(id,"123","06","2026","540");
         int storeId = market.openStore(id,"newStore");
         int productID = setUpStoreWithAmount(id,storeId,7);
-        buyFromStoreAmount(storeId,id,1);
-
+        buyFromStoreAmount(storeId,productID,10);
         try {
-            assertEquals(7,market.getStore(id,storeId).getPurchaseList().size());
+            assertEquals(0,market.getStore(id,storeId).getPurchaseList().size());
         } catch (Exception e) {
             fail();
         }
@@ -78,20 +80,20 @@ public class ConcurrencyTest extends TestCase {
     /*
     Sets THREADS to buy from storeId with the amount on the parameter
      */
-    private void buyFromStoreAmount(int storeId,String id,int amount) {
-
+    private void buyFromStoreAmount(int storeId,int productId,int amount) {
         List<Thread> threadList = new ArrayList();
+        AtomicInteger nameId = new AtomicInteger(0);
         for(int i = 0;i<THREADS;i++) {
             Thread t1 = new Thread(() -> {
+                String newId;
                 try {
-                    market.addProductToCart(id, storeId, 69, amount);
+                    String name = String.format("bob%d", nameId.getAndIncrement());
+                    market.signUp(name, "123");
+                    newId = market.login(name, "123");
+                    market.addPaymentMethod(newId, "123", "13", "12", "232");
+                    market.addProductToCart(newId, storeId, productId, amount);
+                    confirmPurchase(newId);
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-                try {
-                    confirmPurchase(id);
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
             });
             threadList.add(t1);
@@ -110,7 +112,7 @@ public class ConcurrencyTest extends TestCase {
 
 
     private void confirmPurchase(String sessionId) throws Exception {
-        PurchaseDTO result = market.purchaseShoppingCart(sessionId);
+        market.purchaseShoppingCart(sessionId);
     }
 
 
@@ -256,10 +258,8 @@ public class ConcurrencyTest extends TestCase {
 
             Thread t = new Thread(()->{
                 String name = String.valueOf(nameId.getAndIncrement());
-                String id = "";
                 try {
                     market.signUp(name,"123");
-                    id = market.login(name,"123");
                     market.setPositionOfMemberToStoreManager(sessionID,storeId, name);
                 } catch (Exception e) {
                 }
