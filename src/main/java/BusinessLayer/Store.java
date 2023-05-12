@@ -1,21 +1,13 @@
 package BusinessLayer;
 
-import BusinessLayer.Discounts.CategoryDiscount;
-import BusinessLayer.Discounts.Discount;
-import BusinessLayer.Discounts.ProductDiscount;
-import BusinessLayer.Discounts.StoreDiscount;
+import BusinessLayer.Discounts.*;
 import BusinessLayer.Logger.SystemLogger;
 import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
 import BusinessLayer.Policies.DiscountPolicies.DiscountPolicyOperation;
-import BusinessLayer.Policies.DiscountPolicies.PolicyTypes.MaxQuantityDiscountPolicy;
-import BusinessLayer.Policies.DiscountPolicies.PolicyTypes.MinBagTotalDiscountPolicy;
-import BusinessLayer.Policies.DiscountPolicies.PolicyTypes.MinQuantityDiscountPolicy;
+import BusinessLayer.Policies.DiscountPolicies.PolicyTypes.*;
 import BusinessLayer.Policies.PurchasePolicies.Operation;
 import BusinessLayer.Policies.PurchasePolicies.*;
-import BusinessLayer.Policies.PurchasePolicies.PolicyTypes.CategoryTimeRestrictionPolicy;
-import BusinessLayer.Policies.PurchasePolicies.PolicyTypes.MaxQuantityPolicy;
-import BusinessLayer.Policies.PurchasePolicies.PolicyTypes.MinQuantityPolicy;
-import BusinessLayer.Policies.PurchasePolicies.PolicyTypes.ProductTimeRestrictionPolicy;
+import BusinessLayer.Policies.PurchasePolicies.PolicyTypes.*;
 
 import java.time.LocalTime;
 import java.util.*;
