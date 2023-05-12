@@ -85,6 +85,7 @@ public class StoreOwner implements Position {
 
     @Override
     public void closeStore() throws IllegalAccessException {
+        logger.error(String.format("This member hasn't permission to close store"));
         throw new IllegalAccessException("This member hasn't permission to close store");
     }
 

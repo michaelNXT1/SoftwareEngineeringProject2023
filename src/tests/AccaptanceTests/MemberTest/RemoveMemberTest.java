@@ -2,7 +2,6 @@ package AccaptanceTests.MemberTest;
 
 import AccaptanceTests.ServiceTests;
 import org.junit.Before;
-import org.junit.Test;
 
 
 public class RemoveMemberTest extends ServiceTests {
