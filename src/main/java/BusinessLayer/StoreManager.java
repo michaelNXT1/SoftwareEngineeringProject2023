@@ -1,9 +1,4 @@
 package BusinessLayer;
-
-import BusinessLayer.Discounts.Discount;
-import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
-import BusinessLayer.Policies.PurchasePolicies.BasePolicy;
-
 import java.time.LocalTime;
 import BusinessLayer.Logger.SystemLogger;
 
