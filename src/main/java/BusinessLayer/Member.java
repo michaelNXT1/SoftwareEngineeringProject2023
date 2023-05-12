@@ -6,7 +6,6 @@ import Security.SecurityUtils;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public class Member extends Guest {
 

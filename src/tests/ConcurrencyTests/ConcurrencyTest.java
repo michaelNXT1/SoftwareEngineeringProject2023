@@ -2,8 +2,6 @@ package ConcurrencyTests;
 
 
 import BusinessLayer.Market;
-import BusinessLayer.Purchase;
-import ServiceLayer.DTOs.PurchaseDTO;
 import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.Before;
@@ -37,7 +35,7 @@ public class ConcurrencyTest extends TestCase {
         int productID =setUpStoreWithAmount(id,storeid,100);
         buyFromStoreAmount(storeid,productID,5);
         try {
-            assertEquals(100-(THREADS*5),market.getStore(id,storeid).getProduct(productID).getAmount());
+            assertEquals(100-(THREADS*5),market.getStore(storeid).getProduct(productID).getAmount());
         } catch (Exception e) {
             fail();
         }
@@ -52,7 +50,7 @@ public class ConcurrencyTest extends TestCase {
         int productId = setUpStoreWithAmount(id, storeId,10);
         buyFromStoreAmount(storeId,productId,1);
         try {
-            assertEquals(1,market.getStore(id, storeId).getProduct(productId).getProductId());
+            assertEquals(1,market.getStore(storeId).getProduct(productId).getProductId());
         } catch (Exception e) {
             fail();
         }
@@ -67,7 +65,7 @@ public class ConcurrencyTest extends TestCase {
         int productID = setUpStoreWithAmount(id,storeId,7);
         buyFromStoreAmount(storeId,productID,10);
         try {
-            assertEquals(0,market.getStore(id,storeId).getPurchaseList().size());
+            assertEquals(0,market.getStore(storeId).getPurchaseList().size());
         } catch (Exception e) {
             fail();
         }
@@ -272,6 +270,6 @@ public class ConcurrencyTest extends TestCase {
         }
         while(count.get()<THREADS){}
 
-        assertEquals(THREADS,market.getStore(sessionID,storeId).getManagers().size());
+        assertEquals(THREADS,market.getStore(storeId).getManagers().size());
     }
 }
