@@ -107,8 +107,10 @@ public class Store {
         }
         Product p;
         synchronized (productName.intern()) {
-            if (quantity < 0)
+            if (quantity < 0) {
+                logger.error("cannot set quantity to less then 0");
                 throw new Exception("cannot set quantity to less then 0");
+            }
             p = new Product(storeId, this.productIdCounter.incrementAndGet(), productName, price, category, description);
             categories.add(category);
             products.put(p, quantity);
