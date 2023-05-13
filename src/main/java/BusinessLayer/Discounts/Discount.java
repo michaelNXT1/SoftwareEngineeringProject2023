@@ -33,6 +33,13 @@ abstract public class Discount {
 
     public abstract boolean checkApplies(Product p);
 
+    public double calculateNewPercentage(double currentPercentage) {
+        return switch (compositionType) {
+            case ADDITION -> Math.max(currentPercentage + discountPercentage, 1.0);
+            case MAX -> Math.max(currentPercentage, discountPercentage);
+        };
+    }
+
     public double getDiscountPercentage() {
         return discountPercentage;
     }
