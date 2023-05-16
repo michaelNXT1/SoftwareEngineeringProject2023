@@ -73,6 +73,10 @@ public class Guest {
         throw new Exception("Cannot perform action when not a member");
     }
 
+    public boolean isLoggedIn(){
+        return false;
+    }
+
     public String getUsername() throws Exception {
         logger.error(String.format("Cannot perform action when not a member"));
         throw new Exception("Cannot perform action when not a member");

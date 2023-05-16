@@ -2,8 +2,10 @@ package BusinessLayer;
 
 import BusinessLayer.Logger.SystemLogger;
 import Security.SecurityUtils;
+import ServiceLayer.DTOs.StoreDTO;
 
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -40,11 +42,6 @@ public class Member extends Guest {
         return hashedPassword;
     }
 
-    /*public List<Position> getPositions() {
-        return this.positions;
-    }*/
-
-
     public String getUsername() {
         return username;
     }
@@ -71,7 +68,7 @@ public class Member extends Guest {
 
     public void setToStoreManager(Store store, Member assigner) throws Exception {
         if (getStorePosition(store) != null) {
-            logger.error(String.format("the member is already have a different position in this store : %s",store.getStoreName()));
+            logger.error(String.format("the member is already have a different position in this store : %s", store.getStoreName()));
             throw new Exception("the member is already have a different position in this store");
         } else {
             positions.add(new StoreManager(store, assigner));
@@ -81,7 +78,7 @@ public class Member extends Guest {
 
     public void setToStoreOwner(Store store, Member assigner) throws Exception {
         if (getStorePosition(store) != null) {
-            logger.error(String.format("the member is already have a different position in this store : %s",store.getStoreName()));
+            logger.error(String.format("the member is already have a different position in this store : %s", store.getStoreName()));
             throw new Exception("the member is already have a different position in this store");
         } else {
             logger.info(String.format("%s promote to be the owner of %s", getUsername(), store.getStoreName()));
@@ -89,6 +86,7 @@ public class Member extends Guest {
             store.addStoreOwner(this);
         }
     }
+
     @Override
     public Store openStore(String name, int storeID) {
         Store newStore = new Store(storeID, name, this);
@@ -109,23 +107,23 @@ public class Member extends Guest {
     }
 
     public void notBeingStoreOwner(Guest m, Store store) throws Exception {
-        Position storeOwnerP =null;
-        for (Position p: positions
-             ) {
+        Position storeOwnerP = null;
+        for (Position p : positions
+        ) {
             if (p instanceof StoreOwner) {
                 storeOwnerP = p;
             }
         }
-        if (storeOwnerP == null){
-            logger.error(String.format("%s is not a store owner",username));
-            throw new Exception(String.format("%s is not a store owner",username));
+        if (storeOwnerP == null) {
+            logger.error(String.format("%s is not a store owner", username));
+            throw new Exception(String.format("%s is not a store owner", username));
         }
-        if (!storeOwnerP.getAssigner().equals(m)){
-            logger.error(String.format("%s is not the assigner of %s",m.getUsername(), getUsername()));
+        if (!storeOwnerP.getAssigner().equals(m)) {
+            logger.error(String.format("%s is not the assigner of %s", m.getUsername(), getUsername()));
             throw new Exception("can remove only store owner assigned by him");
         }
-        if (!storeOwnerP.getStore().equals(store)){
-            logger.error(String.format("%s is not store owner of %s store",m.getUsername(), store.getStoreName()));
+        if (!storeOwnerP.getStore().equals(store)) {
+            logger.error(String.format("%s is not store owner of %s store", m.getUsername(), store.getStoreName()));
             throw new Exception("can remove only store owner assigned by him");
         }
         positions.remove(storeOwnerP);
@@ -134,5 +132,18 @@ public class Member extends Guest {
 
     public List<Position> getPositions() {
         return positions;
+    }
+
+    @Override
+    public boolean isLoggedIn() {
+        return true;
+    }
+
+    public List<StoreDTO> getResponsibleStores() {
+        List<StoreDTO> ret = new ArrayList<>();
+        for (Position p : positions) {
+            ret.add(new StoreDTO(p.getStore()));
+        }
+        return ret;
     }
 }

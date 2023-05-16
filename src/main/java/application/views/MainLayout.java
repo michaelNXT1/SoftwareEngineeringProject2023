@@ -77,13 +77,19 @@ public class MainLayout extends AppLayout {
     }
 
     public MainLayout() {
+        sessionId = marketController.enterMarket();
+        config();
         addToNavbar(createHeaderContent());
         addDrawerContent();
-        sessionId = marketController.enterMarket();
+    }
+
+    private void config() {
         marketController.signUp("Michael", "1234");
         sessionId = marketController.login("Michael", "1234");
         marketController.openStore(sessionId, "Amazon");
+        marketController.openStore(sessionId, "Ebay");
         marketController.addProduct(sessionId, 0, "a man", 10.0, "people", 50, "just a man");
+//        sessionId = marketController.logout(sessionId).value;
     }
 
 
@@ -133,13 +139,18 @@ public class MainLayout extends AppLayout {
 
         Button loginButton = new Button("Login", e -> UI.getCurrent().navigate(LoginView.class));
         Button signUpButton = new Button("Sign Up", e -> UI.getCurrent().navigate(RegistrationView.class));
+        Button logoutButton = new Button("Logout", e -> logout());
 
         Div div1 = new Div(), div2 = new Div(), div3 = new Div();
         leftLayout.add(appName);
         centerLayout.add(div1, homeButton, aboutButton, select, searchBox, searchType, searchButton, cartButton, div2);
         centerLayout.setFlexGrow(1, div1);
         centerLayout.setFlexGrow(1, div2);
-        rightLayout.add(div3, loginButton, signUpButton);
+        boolean isLoggedIn = marketController.isLoggedIn(sessionId).value;
+        if (marketController.isLoggedIn(sessionId).value)
+            rightLayout.add(div3, logoutButton);
+        else
+            rightLayout.add(div3, loginButton, signUpButton);
         rightLayout.setFlexGrow(1, div3);
         layout.add(leftLayout, centerLayout, rightLayout);
         layout.setFlexGrow(1, leftLayout);
@@ -147,6 +158,12 @@ public class MainLayout extends AppLayout {
         layout.setFlexGrow(1, rightLayout);
         vl.add(layout);
         return vl;
+    }
+
+    private void logout() {
+        sessionId = marketController.logout(sessionId).value;
+        if (sessionId != null)
+            UI.getCurrent().navigate(HelloWorldView.class);
     }
 
     private void SearchProducts() {
@@ -163,15 +180,16 @@ public class MainLayout extends AppLayout {
         actionsMap.put("Add Store Owner", () -> UI.getCurrent().navigate(AddStoreOwner.class));
         actionsMap.put("Add Payment Method", () -> UI.getCurrent().navigate(AddPaymentMethod.class));
         actionsMap.put("Add Product", () -> UI.getCurrent().navigate(AddProduct.class));
-        actionsMap.put("remove Product", () -> UI.getCurrent().navigate(RemoveProductFromStore.class));
-        actionsMap.put("Open new Store", () -> UI.getCurrent().navigate(OpenStore.class));
+        actionsMap.put("Remove Product", () -> UI.getCurrent().navigate(RemoveProductFromStore.class));
+        actionsMap.put("Open a New Store", () -> UI.getCurrent().navigate(OpenStore.class));
         actionsMap.put("Add Discount", () -> UI.getCurrent().navigate(AddDiscount.class));
         actionsMap.put("Edit Product", () -> UI.getCurrent().navigate(EditProduct.class));
-        actionsMap.put("add Store Manager Permission", () -> UI.getCurrent().navigate(addStoreManagerPermissions.class));
-        actionsMap.put("remove Store Manager Permission", () -> UI.getCurrent().navigate(removeStoreManagerPermissions.class));
-        actionsMap.put("close store", () -> UI.getCurrent().navigate(CloseStore.class));
+        actionsMap.put("Add Store Manager Permission", () -> UI.getCurrent().navigate(addStoreManagerPermissions.class));
+        actionsMap.put("Remove Store Manager Permission", () -> UI.getCurrent().navigate(removeStoreManagerPermissions.class));
+        actionsMap.put("Close Store", () -> UI.getCurrent().navigate(CloseStore.class));
+        actionsMap.put("My Stores", () -> UI.getCurrent().navigate(ManagerStoresView.class));
 
-        select.setItems(actionsMap.keySet());
+        select.setItems(actionsMap.keySet().stream().sorted().collect(Collectors.toList()));
         select.addValueChangeListener(event -> actionsMap.get(event.getValue()).run());
         select.setPlaceholder("Actions");
         return select;
@@ -206,15 +224,4 @@ public class MainLayout extends AppLayout {
         }
         return nav;
     }
-
-    private MenuItemInfo[] createMenuItems() {
-        return new MenuItemInfo[]{ //
-                new MenuItemInfo("Hello World", LineAwesomeIcon.GLOBE_SOLID.create(), HelloWorldView.class), //
-                new MenuItemInfo("Sign Up", LineAwesomeIcon.CODEPEN.create(), RegistrationView.class), //
-                new MenuItemInfo("Log In", LineAwesomeIcon.CAPSULES_SOLID.create(), LoginView.class), //
-                new MenuItemInfo("About", LineAwesomeIcon.FILE.create(), AboutView.class), //
-
-        };
-    }
-
 }

@@ -90,12 +90,11 @@ public class MarketManager implements IMarketManager {
             return ResponseT.fromError(e.getMessage());
         }    }
 
-    public Response logout(String sessionId) {
+    public ResponseT<String> logout(String sessionId) {
         try {
-            market.logout(sessionId);
-            return new Response();
+            return ResponseT.fromValue(market.logout(sessionId));
         } catch (Exception e) {
-            return new Response(e.getMessage());
+            return ResponseT.fromError(e.getMessage());
         }
     }
 
@@ -532,6 +531,24 @@ public class MarketManager implements IMarketManager {
     public ResponseT<String> getUsername(String sessionId) {
         try {
             return ResponseT.fromValue(market.getUsername(sessionId));
+        } catch (Exception e) {
+            return ResponseT.fromError(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseT<List<StoreDTO>> getResponsibleStores(String sessionId) {
+        try {
+            return ResponseT.fromValue(market.ResponsibleStores(sessionId));
+        } catch (Exception e) {
+            return ResponseT.fromError(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseT<Boolean> isLoggedIn(String sessionId) {
+        try {
+            return ResponseT.fromValue(market.isLoggedIn(sessionId));
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }

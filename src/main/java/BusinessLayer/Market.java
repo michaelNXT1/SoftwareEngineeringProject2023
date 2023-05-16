@@ -4,6 +4,7 @@ import BusinessLayer.Logger.SystemLogger;
 import Security.ProxyScurity;
 import Security.SecurityAdapter;
 import ServiceLayer.DTOs.*;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalTime;
@@ -171,15 +172,17 @@ public class Market {
 
 
     //use case 3.1
-    public void logout(String sessionId) throws Exception {
+    public String logout(String sessionId) throws Exception {
         logger.info(String.format("%s try to logout from the system", sessionId));
         try {
             sessionManager.deleteSessionForSystemManager(sessionId);
             logger.info("logged out of the system");
+            return enterMarket();
         } catch (Exception e) {
             isMarketOpen();
             sessionManager.deleteSession(sessionId);
             logger.info(String.format("%s logged out of the system as member", sessionId));
+            return enterMarket();
         }
     }
 
@@ -353,8 +356,8 @@ public class Market {
                     stores.get(pp.getStoreId()).addToProductQuantity(pp.getProductId(), pp.getQuantity());
                 throw new Exception("Purchase failed, fund demander hasn't managed to charge.");
             }
-            for(PurchaseProduct p : purchase.getProductList()) {
-                logger.info(String.format("purchase completed you just bought %d from %s", p.getQuantity(),p.getProductName()));
+            for (PurchaseProduct p : purchase.getProductList()) {
+                logger.info(String.format("purchase completed you just bought %d from %s", p.getQuantity(), p.getProductName()));
             }
         }
 
@@ -370,11 +373,10 @@ public class Market {
         int storeId;
         synchronized (stores) {
             storeId = stores.keySet().stream().mapToInt(v -> v).max().orElse(0);
-            boolean isStoreExist = stores.values().stream().filter(x-> Objects.equals(x.getStoreName(), storeName)).toList().size() > 0;
-            if(!isStoreExist) {
+            boolean isStoreExist = stores.values().stream().filter(x -> Objects.equals(x.getStoreName(), storeName)).toList().size() > 0;
+            if (!isStoreExist) {
                 stores.put(storeId, g.openStore(storeName, storeId));
-            }
-            else{
+            } else {
                 logger.error(String.format("%s already exist", storeName));
                 throw new Exception("this store already exist");
             }
@@ -636,7 +638,7 @@ public class Market {
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
         p.joinPolicies(policyId1, policyId2, operator);
-        logger.info(String.format("%d and %d policies joined with %d operator in %d store by %s", policyId1,policyId2,storeId, sessionId));
+        logger.info(String.format("%d and %d policies joined with %d operator in %d store by %s", policyId1, policyId2, storeId, sessionId));
     }
 
     public void removePolicy(String sessionId, int storeId, int policyId) throws Exception {
@@ -717,7 +719,7 @@ public class Market {
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
         p.joinDiscountPolicies(policyId1, policyId2, operator);
-        logger.info(String.format("%d and %d DiscountPolicies joined with %d operator in %d store by %s", policyId1,policyId2,storeId, sessionId));
+        logger.info(String.format("%d and %d DiscountPolicies joined with %d operator in %d store by %s", policyId1, policyId2, storeId, sessionId));
     }
 
     public void removeDiscountPolicy(String sessionId, int storeId, int policyId) throws Exception {
@@ -727,7 +729,7 @@ public class Market {
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
         p.removeDiscountPolicy(policyId);
-        logger.info(String.format("%d DiscountPolicies is removed from %d store by %s", policyId,storeId, sessionId));
+        logger.info(String.format("%d DiscountPolicies is removed from %d store by %s", policyId, storeId, sessionId));
     }
 
     public void addPaymentMethod(String sessionId, String cardNumber, String month, String year, String cvv) throws Exception {
@@ -743,7 +745,7 @@ public class Market {
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
-        logger.info(String.format("%s get the store with specific storeID : %d", storeId));
+        logger.info(String.format("get the store with specific storeID : %d", storeId));
         return stores.get(storeId);
     }
 
@@ -867,5 +869,25 @@ public class Market {
             return "guest";
         }
 
+    }
+
+    public List<StoreDTO> ResponsibleStores(String sessionId) throws Exception {
+        isMarketOpen();
+        Guest g = sessionManager.getSession(sessionId);
+        if (g.isLoggedIn()) {
+            Member m = (Member) g;
+            return m.getResponsibleStores();
+        }
+        return new ArrayList<>();
+    }
+
+    public boolean isLoggedIn(String sessionId) throws Exception {
+        isMarketOpen();
+        try {
+            Guest g = sessionManager.getSession(sessionId);
+            return g.isLoggedIn();
+        } catch(Exception e) {
+            return false;
+        }
     }
 }

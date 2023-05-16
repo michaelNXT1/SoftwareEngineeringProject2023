@@ -2,6 +2,7 @@ package CommunicationLayer;
 import ServiceLayer.DTOs.*;
 import ServiceLayer.MarketManager;
 import ServiceLayer.Response;
+import ServiceLayer.ResponseT;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,8 +39,8 @@ public class MarketController implements IMarketController{
     @GetMapping("/logout")
     @ResponseBody
     @Override
-    public boolean logout(@RequestParam(value = "sessionId", defaultValue = "") String sessionId) {
-        return !this.marketManager.logout(sessionId).getError_occurred();
+    public ResponseT<String> logout(@RequestParam(value = "sessionId", defaultValue = "") String sessionId) {
+        return marketManager.logout(sessionId);
     }
     @GetMapping("/getStores")
     @ResponseBody
@@ -437,6 +438,20 @@ public class MarketController implements IMarketController{
     @Override
     public String getUsername(String sessionId) {
         return this.marketManager.getUsername(sessionId).value;
+    }
+
+    @GetMapping("/getResponsibleStores")
+    @ResponseBody
+    @Override
+    public List<StoreDTO> getResponsibleStores(String sessionId) {
+        return this.marketManager.getResponsibleStores(sessionId).value;
+    }
+
+    @GetMapping("/isLoggedIn")
+    @ResponseBody
+    @Override
+    public ResponseT<Boolean> isLoggedIn(String sessionId) {
+        return marketManager.isLoggedIn(sessionId);
     }
 
 
