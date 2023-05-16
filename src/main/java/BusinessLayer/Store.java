@@ -31,7 +31,7 @@ public class Store {
     private boolean isOpen;
     private final AtomicInteger productIdCounter;
 
-    private SystemLogger logger;
+    private final SystemLogger logger;
 
     public Store(int storeId, String storeName, Member storeFounder) {
         this.storeId = storeId;
@@ -321,13 +321,8 @@ public class Store {
         Product product = checkProductExists(productId);
         for (Discount d : productDiscountPolicyMap.keySet())
             if (d.checkApplies(product))
-                if (productDiscountPolicyMap.get(d).stream().allMatch(pdp -> pdp.evaluate(productList))) {
-                    double percentage = d.getDiscountPercentage();
-                    if (d.getCompositionType() == Discount.CompositionType.ADDITION)
-                        discountPercentage += percentage;
-                    else if (d.getCompositionType() == Discount.CompositionType.MAX)
-                        discountPercentage = Math.max(discountPercentage, percentage);
-                }
+                if (productDiscountPolicyMap.get(d).stream().allMatch(pdp -> pdp.evaluate(productList)))
+                    discountPercentage= d.calculateNewPercentage(discountPercentage);
         return discountPercentage;
     }
 
