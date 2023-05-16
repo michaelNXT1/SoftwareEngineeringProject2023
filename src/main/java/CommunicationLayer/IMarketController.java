@@ -2,6 +2,7 @@ package CommunicationLayer;
 
 import ServiceLayer.DTOs.*;
 import ServiceLayer.Response;
+import ServiceLayer.ResponseT;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -16,7 +17,7 @@ public interface IMarketController {
     boolean exitMarket(String sessionId);
     boolean signUp(String username, String password);
     String login(String username, String password);
-    boolean logout(String sessionId);
+    ResponseT<String> logout(String sessionId);
     List<StoreDTO> getStores(String sessionId, String storeSubString);
     StoreDTO getStore(String sessionId, int storeId);
     ProductDTO getProduct(String sessionId, int storeId, int productId);
@@ -83,4 +84,8 @@ public interface IMarketController {
     String getSearchKeyword(String sessionId);
 
     String getUsername(String sessionId);
+
+    List<StoreDTO> getResponsibleStores(String sessionId);
+
+    ResponseT<Boolean> isLoggedIn(String sessionId);
 }

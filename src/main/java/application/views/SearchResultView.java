@@ -1,19 +1,15 @@
 package application.views;
 
-import BusinessLayer.Product;
 import CommunicationLayer.MarketController;
 import ServiceLayer.DTOs.ProductDTO;
 import ServiceLayer.Response;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.IntegerField;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,12 +17,6 @@ import java.util.List;
 
 @Route(value = "SearchResultView", layout = MainLayout.class)
 public class SearchResultView extends VerticalLayout {
-    private TextField cardNumberField;
-    private Select<String> monthSelect;
-    private Select<String> yearSelect;
-    private TextField cvvField;
-    private TextField storeIdField;
-    private Button submitButton;
     private MarketController marketController;
     private Header header;
 
@@ -75,13 +65,5 @@ public class SearchResultView extends VerticalLayout {
 
     private void getProducts() {
         List<ProductDTO> products = marketController.getSearchResults(MainLayout.getSessionId());
-    }
-
-    private void addPaymentMethod() {
-        String cardNumber = cardNumberField.getValue();
-        String month = monthSelect.getValue();
-        String year = yearSelect.getValue();
-        String cvv = cvvField.getValue();
-        Notification.show(Boolean.toString(marketController.addPaymentMethod(MainLayout.getSessionId(), cardNumber, month, year, cvv)));
     }
 }
