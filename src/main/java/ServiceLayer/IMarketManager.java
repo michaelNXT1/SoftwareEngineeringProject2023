@@ -1,6 +1,8 @@
 package ServiceLayer;
 
 import ServiceLayer.DTOs.*;
+import ServiceLayer.DTOs.Discounts.DiscountDTO;
+import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -120,6 +122,10 @@ public interface IMarketManager {
     ResponseT<List<StoreDTO>> getResponsibleStores(String sessionId);
 
     ResponseT<Boolean> isLoggedIn(String sessionId);
+
+    ResponseT<Map<ProductDTO, Integer>> getProductsByStore(int storeId);
+
+    ResponseT<Map<DiscountDTO, List<BaseDiscountPolicyDTO>>> getDiscountPolicyMap(int storeId);
 
 //        Response logoutSystemManager(String sessionId);
 

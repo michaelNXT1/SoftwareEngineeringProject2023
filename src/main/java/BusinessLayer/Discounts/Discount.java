@@ -2,6 +2,10 @@ package BusinessLayer.Discounts;
 
 import BusinessLayer.Logger.SystemLogger;
 import BusinessLayer.Product;
+import ServiceLayer.DTOs.Discounts.CategoryDiscountDTO;
+import ServiceLayer.DTOs.Discounts.DiscountDTO;
+import ServiceLayer.DTOs.Discounts.ProductDiscountDTO;
+import ServiceLayer.DTOs.Discounts.StoreDiscountDTO;
 
 import java.util.logging.Logger;
 
@@ -47,4 +51,6 @@ abstract public class Discount {
     public CompositionType getCompositionType() {
         return compositionType;
     }
+    
+    public abstract DiscountDTO copyConstruct();
 }

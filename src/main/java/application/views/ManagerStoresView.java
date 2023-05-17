@@ -1,18 +1,15 @@
 package application.views;
 
 import CommunicationLayer.MarketController;
-import ServiceLayer.DTOs.ProductDTO;
 import ServiceLayer.DTOs.StoreDTO;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.Header;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.vaadin.flow.component.button.Button;
 
 import java.util.List;
 
@@ -35,6 +32,7 @@ public class ManagerStoresView extends VerticalLayout {
         grid.addColumn(this::getStoreStatus).setHeader("Status").setSortable(true).setTextAlign(ColumnTextAlign.START);
         grid.addComponentColumn(store -> {
             Button enterButton = new Button("Manage", e -> {
+                UI.getCurrent().navigate("StoreManagementView/" + String.valueOf(store.getStoreId()));
             });
             return enterButton;
         });

@@ -357,6 +357,10 @@ public class Store {
         employees.add(member);
     }
 
+    public Map<Discount, List<BaseDiscountPolicy>> getProductDiscountPolicyMap() {
+        return productDiscountPolicyMap;
+    }
+
     public List<Member> getEmployees() {
         return employees;
     }

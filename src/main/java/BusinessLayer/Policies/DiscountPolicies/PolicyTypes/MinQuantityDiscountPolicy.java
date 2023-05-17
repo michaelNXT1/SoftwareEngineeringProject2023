@@ -2,6 +2,8 @@ package BusinessLayer.Policies.DiscountPolicies.PolicyTypes;
 
 import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
 import BusinessLayer.Product;
+import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
+import ServiceLayer.DTOs.Policies.DiscountPolicies.PolicyTypes.MinQuantityDiscountPolicyDTO;
 
 import java.util.Map;
 
@@ -26,6 +28,23 @@ public class MinQuantityDiscountPolicy extends BaseDiscountPolicy {
         for (Product p : productList.keySet())
             if (p.getProductId() == productId)
                 return productList.get(p) >= minQuantity;
+        return allowNone;
+    }
+
+    @Override
+    public BaseDiscountPolicyDTO copyConstruct() throws Exception {
+        return new MinQuantityDiscountPolicyDTO(this);
+    }
+
+    public int getProductId() {
+        return productId;
+    }
+
+    public int getMinQuantity() {
+        return minQuantity;
+    }
+
+    public boolean isAllowNone() {
         return allowNone;
     }
 }

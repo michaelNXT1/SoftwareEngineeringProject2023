@@ -2,6 +2,8 @@ package ServiceLayer;
 
 import BusinessLayer.Market;
 import ServiceLayer.DTOs.*;
+import ServiceLayer.DTOs.Discounts.DiscountDTO;
+import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -549,6 +551,24 @@ public class MarketManager implements IMarketManager {
     public ResponseT<Boolean> isLoggedIn(String sessionId) {
         try {
             return ResponseT.fromValue(market.isLoggedIn(sessionId));
+        } catch (Exception e) {
+            return ResponseT.fromError(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseT<Map<ProductDTO, Integer>> getProductsByStore(int storeId) {
+        try {
+            return ResponseT.fromValue(market.getProductsByStore(storeId));
+        } catch (Exception e) {
+            return ResponseT.fromError(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseT<Map<DiscountDTO, List<BaseDiscountPolicyDTO>>> getDiscountPolicyMap(int storeId) {
+        try {
+            return ResponseT.fromValue(market.getDiscountPolicyMap(storeId));
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }

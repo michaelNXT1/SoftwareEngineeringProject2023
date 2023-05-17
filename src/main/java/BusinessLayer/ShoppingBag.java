@@ -40,11 +40,9 @@ public class ShoppingBag {
     //Use case 2.14
     public Pair<PurchaseProduct, Boolean> purchaseProduct(int productId) {
         try {
-            //TODO: lock store
             PurchaseProduct pp = store.subtractForPurchase(productId, productList.get(productId));
             double discountPercentage = store.getProductDiscountPercentage(productId, productList);
             pp.setPrice(pp.getPrice() * (1.0 - discountPercentage));
-            //TODO: release store
             this.productList.remove(productId);
             return new Pair<>(pp, true);
         } catch (Exception e) {

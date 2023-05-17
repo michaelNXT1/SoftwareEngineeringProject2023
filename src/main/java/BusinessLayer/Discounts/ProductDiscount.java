@@ -1,6 +1,8 @@
 package BusinessLayer.Discounts;
 
 import BusinessLayer.Product;
+import ServiceLayer.DTOs.Discounts.DiscountDTO;
+import ServiceLayer.DTOs.Discounts.ProductDiscountDTO;
 
 public class ProductDiscount extends Discount {
     private final int productId;
@@ -13,5 +15,10 @@ public class ProductDiscount extends Discount {
     @Override
     public boolean checkApplies(Product p) {
         return p.getProductId() == productId;
+    }
+
+    @Override
+    public DiscountDTO copyConstruct() {
+        return new ProductDiscountDTO(this);
     }
 }
