@@ -1,9 +1,13 @@
 package BusinessLayer;
 
+import BusinessLayer.Discounts.Discount;
 import BusinessLayer.Logger.SystemLogger;
+import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
 import Security.ProxyScurity;
 import Security.SecurityAdapter;
+import ServiceLayer.DTOs.Discounts.DiscountDTO;
 import ServiceLayer.DTOs.*;
+import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -372,7 +376,7 @@ public class Market {
         //TODO: lock stores variable
         int storeId;
         synchronized (stores) {
-            storeId = stores.keySet().stream().mapToInt(v -> v).max().orElse(0);
+            storeId = stores.keySet().isEmpty() ? 0 : stores.keySet().stream().mapToInt(Integer::intValue).max().getAsInt() + 1;
             boolean isStoreExist = stores.values().stream().filter(x -> Objects.equals(x.getStoreName(), storeName)).toList().size() > 0;
             if (!isStoreExist) {
                 stores.put(storeId, g.openStore(storeName, storeId));
@@ -815,10 +819,6 @@ public class Market {
         Set<String> allCat = new HashSet<>();
         for (Store store : this.stores.values())
             allCat.addAll(store.getCategories());
-        allCat.add("Zebra");
-        allCat.add("Ant");
-        allCat.add("Dog");
-        allCat.add("Cat");
         List<String> retList = new ArrayList<>(allCat);
         Collections.sort(retList);
         logger.info("getting all categories");
@@ -886,8 +886,34 @@ public class Market {
         try {
             Guest g = sessionManager.getSession(sessionId);
             return g.isLoggedIn();
-        } catch(Exception e) {
+        } catch (Exception e) {
             return false;
         }
+    }
+
+    public Map<ProductDTO, Integer> getProductsByStore(int storeId) throws Exception {
+        checkMarketOpen();
+        checkStoreExists(storeId);
+        Map<ProductDTO, Integer> newMap = new HashMap<>();
+        for (Map.Entry<Product, Integer> entry : stores.get(storeId).getProducts().entrySet())
+            newMap.put(new ProductDTO(entry.getKey()), entry.getValue());
+        return newMap;
+    }
+
+    public Map<DiscountDTO, List<BaseDiscountPolicyDTO>> getDiscountPolicyMap(int storeId) throws Exception {
+        checkMarketOpen();
+        checkStoreExists(storeId);
+        Map<Discount, List<BaseDiscountPolicy>> discountMap = stores.get(storeId).getProductDiscountPolicyMap();
+        Map<DiscountDTO, List<BaseDiscountPolicyDTO>> retMap = new HashMap<>();
+        for (Discount d : discountMap.keySet()) {
+            DiscountDTO discountDTO = d.copyConstruct();
+            retMap.put(discountDTO, new ArrayList<>());
+            List<BaseDiscountPolicy> policyList = discountMap.get(d);
+            for (BaseDiscountPolicy bdp : policyList) {
+                List<BaseDiscountPolicyDTO> ls=retMap.get(d);
+                retMap.get(discountDTO).add(bdp.copyConstruct());
+            }
+        }
+        return retMap;
     }
 }

@@ -86,10 +86,20 @@ public class MainLayout extends AppLayout {
     private void config() {
         marketController.signUp("Michael", "1234");
         sessionId = marketController.login("Michael", "1234");
-        marketController.openStore(sessionId, "Amazon");
+        marketController.openStore(sessionId, "Shufersal");
         marketController.openStore(sessionId, "Ebay");
-        marketController.addProduct(sessionId, 0, "a man", 10.0, "people", 50, "just a man");
-//        sessionId = marketController.logout(sessionId).value;
+        marketController.addProduct(sessionId, 0, "Bamba", 4.3, "Snacks", 50, "");
+        marketController.addProduct(sessionId, 0, "Lay's", 4.0, "Snacks", 50, "");
+        marketController.addProduct(sessionId, 0, "Klik Marbles", 6.8, "Snacks", 50, "");
+        marketController.addProduct(sessionId, 0, "Watermelon", 35.4, "Fruit", 50, "");
+        marketController.addProduct(sessionId, 0, "Banana", 7.9, "Fruit", 50, "");
+        int productId = marketController.addProduct(sessionId, 0, "Apple", 11.9, "Fruit", 50, "").getProductId();
+        marketController.addProduct(sessionId, 0, "Yogurt", 5.3, "Dairy", 50, "");
+        marketController.addProduct(sessionId, 0, "Milk", 6.75, "Dairy", 50, "");
+        marketController.addCategoryDiscount(sessionId, 0, "Dairy", 0.5, 0);
+        marketController.addStoreDiscount(sessionId, 0, 0.2, 0);
+        marketController.addProductDiscount(sessionId, 0, productId, 0.1, 0);
+        marketController.addMinBagTotalDiscountPolicy(sessionId, 0, 2, 200.0);
     }
 
 

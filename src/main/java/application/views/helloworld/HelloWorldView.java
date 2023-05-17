@@ -4,7 +4,9 @@ import CommunicationLayer.IMarketController;
 import CommunicationLayer.MarketController;
 import application.views.MainLayout;
 import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -30,9 +32,18 @@ public class HelloWorldView extends HorizontalLayout {
         });
         sayHello.addClickShortcut(Key.ENTER);
 
+        Button openDialogButton = new Button("Open Dialog");
+        Dialog dialog = new Dialog();
+        dialog.add(new Text("This is a dialog"));
+        Button closeDialogButton = new Button("Close");
+        closeDialogButton.addClickListener(event -> dialog.close());
+        dialog.add(closeDialogButton);
+
+        openDialogButton.addClickListener(event -> dialog.open());
+
         setMargin(true);
         setVerticalComponentAlignment(Alignment.END, name, sayHello);
-
+        add(openDialogButton);
         add(new H1("Welcome, " + marketController.getUsername(MainLayout.getSessionId()) + "!"));
     }
 
