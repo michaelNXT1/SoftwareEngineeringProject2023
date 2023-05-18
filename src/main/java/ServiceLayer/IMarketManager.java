@@ -3,6 +3,7 @@ package ServiceLayer;
 import ServiceLayer.DTOs.*;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
+import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -85,7 +86,7 @@ public interface IMarketManager {
 
     Response removePolicy(String sessionId, int storeId, int policyId);
 
-    Response addMaxQuantityPolicy(String sessionId, int storeId, int productId, int maxQuantity, boolean allowNone);
+    Response addMaxQuantityPolicy(String sessionId, int storeId, int productId, int maxQuantity);
 
     Response addMinQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone);
 
@@ -126,6 +127,8 @@ public interface IMarketManager {
     ResponseT<Map<ProductDTO, Integer>> getProductsByStore(int storeId);
 
     ResponseT<Map<DiscountDTO, List<BaseDiscountPolicyDTO>>> getDiscountPolicyMap(int storeId);
+
+    ResponseT<List<BasePurchasePolicyDTO>> getPurchasePoliciesByStoreId(int storeId);
 
 //        Response logoutSystemManager(String sessionId);
 

@@ -3,6 +3,7 @@ package CommunicationLayer;
 import ServiceLayer.DTOs.*;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
+import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 import ServiceLayer.MarketManager;
 import ServiceLayer.Response;
 import ServiceLayer.ResponseT;
@@ -343,9 +344,8 @@ public class MarketController implements IMarketController {
     public boolean addMaxQuantityPolicy(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
                                         @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
                                         @RequestParam(value = "productId", defaultValue = "-1") int productId,
-                                        @RequestParam(value = "minQuantity", defaultValue = "-1") int minQuantity,
-                                        @RequestParam(value = "allowNone", defaultValue = "false") boolean allowNone) {
-        return !this.marketManager.addMaxQuantityPolicy(sessionId, storeId, productId, minQuantity, allowNone).getError_occurred();
+                                        @RequestParam(value = "minQuantity", defaultValue = "-1") int minQuantity) {
+        return !this.marketManager.addMaxQuantityPolicy(sessionId, storeId, productId, minQuantity).getError_occurred();
     }
 
     @GetMapping("/addProductDiscount")
@@ -521,6 +521,11 @@ public class MarketController implements IMarketController {
     @Override
     public ResponseT<Map<DiscountDTO, List<BaseDiscountPolicyDTO>>> getDiscountPolicyMap(int storeId) {
         return marketManager.getDiscountPolicyMap(storeId);
+    }
+
+    @Override
+    public ResponseT<List<BasePurchasePolicyDTO>> getPurchasePoliciesByStoreId(int storeId) {
+        return marketManager.getPurchasePoliciesByStoreId(storeId);
     }
 
 

@@ -206,8 +206,8 @@ public abstract class ServiceTests extends TestCase {
         return this.bridge.addMinQuantityPolicy(sessionId, storeId, productId, minQuantity, allowNone);
     }
 
-    public boolean addMaxQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone) {
-        return this.bridge.addMaxQuantityPolicy(sessionId, storeId, productId, minQuantity, allowNone);
+    public boolean addMaxQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity) {
+        return this.bridge.addMaxQuantityPolicy(sessionId, storeId, productId, minQuantity);
     }
 //    public int startSession() { return this.bridge.startSession(); }
     public boolean removeMember(String sessionId, String memberName){

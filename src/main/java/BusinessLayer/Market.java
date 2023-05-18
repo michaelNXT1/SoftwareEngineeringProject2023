@@ -3,11 +3,13 @@ package BusinessLayer;
 import BusinessLayer.Discounts.Discount;
 import BusinessLayer.Logger.SystemLogger;
 import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
+import BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy;
 import Security.ProxyScurity;
 import Security.SecurityAdapter;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
 import ServiceLayer.DTOs.*;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
+import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -605,13 +607,13 @@ public class Market {
         logger.info(String.format("minQuantityPolicy is added to %d store by %s", storeId, sessionId));
     }
 
-    public void addMaxQuantityPolicy(String sessionId, int storeId, int productId, int maxQuantity, boolean allowNone) throws Exception {
+    public void addMaxQuantityPolicy(String sessionId, int storeId, int productId, int maxQuantity) throws Exception {
         isMarketOpen();
         logger.info("trying to add maxQuantityPolicy");
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
-        p.addMaxQuantityPolicy(productId, maxQuantity, allowNone);
+        p.addMaxQuantityPolicy(productId, maxQuantity);
         logger.info(String.format("maxQuantityPolicy is added to %d store by %s", storeId, sessionId));
     }
 
@@ -627,12 +629,12 @@ public class Market {
 
     public void addCategoryTimeRestrictionPolicy(String sessionId, int storeId, String category, LocalTime startTime, LocalTime endTime) throws Exception {
         isMarketOpen();
-        logger.info("trying to add CategoryTimeRestrictionPolicy");
+        logger.info("trying to add CategoryTimeRestrictionPurchasePolicyDTO");
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
         p.addCategoryTimeRestrictionPolicy(category, startTime, endTime);
-        logger.info(String.format("CategoryTimeRestrictionPolicy is added to %d store by %s", storeId, sessionId));
+        logger.info(String.format("CategoryTimeRestrictionPurchasePolicyDTO is added to %d store by %s", storeId, sessionId));
     }
 
     public void joinPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator) throws Exception {
@@ -909,11 +911,19 @@ public class Market {
             DiscountDTO discountDTO = d.copyConstruct();
             retMap.put(discountDTO, new ArrayList<>());
             List<BaseDiscountPolicy> policyList = discountMap.get(d);
-            for (BaseDiscountPolicy bdp : policyList) {
-                List<BaseDiscountPolicyDTO> ls=retMap.get(d);
+            for (BaseDiscountPolicy bdp : policyList)
                 retMap.get(discountDTO).add(bdp.copyConstruct());
-            }
         }
         return retMap;
+    }
+
+    public List<BasePurchasePolicyDTO> getPurchasePoliciesByStoreId(int storeId) throws Exception {
+        checkMarketOpen();
+        checkStoreExists(storeId);
+        List<BasePurchasePolicyDTO> ret=new ArrayList<>();
+        for(BasePurchasePolicy bpp : stores.get(storeId).getPurchasePolicies()){
+            ret.add(bpp.copyConstruct());
+        }
+        return ret;
     }
 }
