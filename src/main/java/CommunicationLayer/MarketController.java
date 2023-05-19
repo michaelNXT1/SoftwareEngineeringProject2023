@@ -20,7 +20,7 @@ import java.util.Map;
 @Component
 public class MarketController implements IMarketController {
 
-    private MarketManager marketManager;
+    private final MarketManager marketManager;
     private static MarketController instance = null;
 
     public static MarketController getInstance() {
@@ -175,14 +175,14 @@ public class MarketController implements IMarketController {
     @GetMapping("/addProduct")
     @ResponseBody
     @Override
-    public ProductDTO addProduct(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
-                                 @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
-                                 @RequestParam(value = "productName", defaultValue = "") String productName,
-                                 @RequestParam(value = "price", defaultValue = "-1") double price,
-                                 @RequestParam(value = "category", defaultValue = "") String category,
-                                 @RequestParam(value = "quantity", defaultValue = "-1") int quantity,
-                                 @RequestParam(value = "description", defaultValue = "") String description) {
-        return this.marketManager.addProduct(sessionId, storeId, productName, price, category, quantity, description).value;
+    public ResponseT<ProductDTO> addProduct(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                            @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
+                                            @RequestParam(value = "productName", defaultValue = "") String productName,
+                                            @RequestParam(value = "price", defaultValue = "-1") double price,
+                                            @RequestParam(value = "category", defaultValue = "") String category,
+                                            @RequestParam(value = "quantity", defaultValue = "-1") int quantity,
+                                            @RequestParam(value = "description", defaultValue = "") String description) {
+        return this.marketManager.addProduct(sessionId, storeId, productName, price, category, quantity, description);
     }
 
     @GetMapping("/editProductName")
@@ -202,7 +202,7 @@ public class MarketController implements IMarketController {
                                     @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
                                     @RequestParam(value = "productId", defaultValue = "-1") int productId,
                                     @RequestParam(value = "newPrice", defaultValue = "-1") int newPrice) {
-        return this.editProductPrice(sessionId, storeId, productId, newPrice);
+        return !this.marketManager.editProductPrice(sessionId, storeId, productId, newPrice).getError_occurred();
     }
 
     @GetMapping("/editProductCategory")
