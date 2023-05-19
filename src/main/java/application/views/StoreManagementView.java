@@ -8,8 +8,11 @@ import ServiceLayer.DTOs.Discounts.StoreDiscountDTO;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 import ServiceLayer.DTOs.ProductDTO;
+import ServiceLayer.Response;
 import ServiceLayer.ResponseT;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
@@ -22,12 +25,14 @@ import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.data.renderer.NumberRenderer;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.WildcardParameter;
+import com.vaadin.flow.shared.Registration;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.NumberFormat;
@@ -35,6 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Route(value = "StoreManagementView", layout = MainLayout.class)
 public class StoreManagementView extends VerticalLayout implements HasUrlParameter<String> {
@@ -124,7 +130,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         VerticalLayout purchasePolicies = new VerticalLayout();
         HorizontalLayout purchasePoliciesHL = new HorizontalLayout();
         Div purchasePoliciesDiv = new Div();
-        purchasePoliciesHL.add(new H1("Purchase Policy List"), purchasePoliciesDiv, new Button("Join Policies"), new Button("+"));
+        purchasePoliciesHL.add(new H1("Purchase Policy List"), purchasePoliciesDiv, new Button("Join Policies"), new Button("+", e -> addPurchasePolicyDialog()));
         purchasePoliciesHL.setFlexGrow(1, purchasePoliciesDiv);
         purchasePoliciesHL.setWidthFull();
         purchasePolicyGrid = new Grid<>(BasePurchasePolicyDTO.class, false);
@@ -143,9 +149,9 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
     private VerticalLayout initProductDiscountGrid() {
         VerticalLayout productDiscountLayout = new VerticalLayout();
         HorizontalLayout productDiscountHL = new HorizontalLayout();
-        Div div1 = new Div();
-        productDiscountHL.add(new H2("Product Discounts"), div1, new Button("+"));
-        productDiscountHL.setFlexGrow(1, div1);
+        Div div = new Div();
+        productDiscountHL.add(new H2("Product Discounts"), div, new Button("+"));
+        productDiscountHL.setFlexGrow(1, div);
         productDiscountHL.setWidthFull();
         productDiscountGrid = new Grid<>(ProductDiscountDTO.class, false);
         productDiscountGrid.addColumn(this::getProductName).setHeader("Product Name").setSortable(true).setTextAlign(ColumnTextAlign.CENTER).setKey("Id");
@@ -158,9 +164,9 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
     private VerticalLayout initCategoryDiscountGrid() {
         VerticalLayout categoryDiscountLayout = new VerticalLayout();
         HorizontalLayout categoryDiscountHL = new HorizontalLayout();
-        Div div2 = new Div();
-        categoryDiscountHL.add(new H2("Category Discounts"), div2, new Button("+"));
-        categoryDiscountHL.setFlexGrow(1, div2);
+        Div div = new Div();
+        categoryDiscountHL.add(new H2("Category Discounts"), div, new Button("+"));
+        categoryDiscountHL.setFlexGrow(1, div);
         categoryDiscountHL.setWidthFull();
         categoryDiscountGrid = new Grid<>(CategoryDiscountDTO.class, false);
         categoryDiscountGrid.addColumn(CategoryDiscountDTO::getCategory).setHeader("Category").setSortable(true).setTextAlign(ColumnTextAlign.CENTER).setKey("Id");
@@ -173,9 +179,9 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
     private VerticalLayout initStoreDiscountGrid() {
         VerticalLayout storeDiscountLayout = new VerticalLayout();
         HorizontalLayout storeDiscountHL = new HorizontalLayout();
-        Div div3 = new Div();
-        storeDiscountHL.add(new H2("Store Discounts"), div3, new Button("+"));
-        storeDiscountHL.setFlexGrow(1, div3);
+        Div div = new Div();
+        storeDiscountHL.add(new H2("Store Discounts"), div, new Button("+"));
+        storeDiscountHL.setFlexGrow(1, div);
         storeDiscountHL.setWidthFull();
         storeDiscountGrid = new Grid<>(StoreDiscountDTO.class, false);
         storeDiscountGrid.addColumn(new NumberRenderer<>(DiscountDTO::getDiscountPercentage, NumberFormat.getPercentInstance())).setHeader("Discount Percentage").setSortable(true).setTextAlign(ColumnTextAlign.CENTER);
@@ -213,24 +219,23 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         IntegerField quantityField = new IntegerField();
         TextArea descriptionField = new TextArea();
         Button submitButton = new Button("Submit", event -> {
-            ResponseT<ProductDTO> response = marketController.addProduct(
-                    MainLayout.getSessionId(),
-                    storeId,
-                    productNameField.getValue(),
-                    priceField.getValue(),
-                    newCategoryField.isVisible() ? newCategoryField.getValue() : categoryField.getValue(),
-                    quantityField.getValue(),
-                    descriptionField.getValue());
-            if (response.getError_occurred()) {
-                errorSuccessLabel.setText(response.error_message);
-            } else {
-                errorSuccessLabel.setText("");
-                dialog.close();
-                Dialog successDialog = new Dialog();
-                VerticalLayout successVl = new VerticalLayout();
-                successVl.add(new Label("Product added successfully!"), new Button("Close", e -> successDialog.close()));
-                successDialog.add(successVl);
-                successDialog.open();
+            if (priceField.getValue() == null)
+                errorSuccessLabel.setText("Price can't be empty");
+            else if (quantityField.getValue() == null)
+                errorSuccessLabel.setText("Quantity can't be empty");
+            else {
+                ResponseT<ProductDTO> response = marketController.addProduct(
+                        MainLayout.getSessionId(),
+                        storeId,
+                        productNameField.getValue(),
+                        priceField.getValue(),
+                        newCategoryField.isVisible() ? newCategoryField.getValue() : categoryField.getValue(),
+                        quantityField.getValue(),
+                        descriptionField.getValue());
+                if (response.getError_occurred())
+                    errorSuccessLabel.setText(response.error_message);
+                else
+                    successMessage(dialog, errorSuccessLabel, "Product added successfully!");
             }
         });
         Button cancelButton = new Button("Cancel", event -> dialog.close());
@@ -242,9 +247,6 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         quantityField.setPlaceholder("Quantity");
         descriptionField.setPlaceholder("Description");
 
-        priceField.setValue(0.0);
-        quantityField.setValue(0);
-
         List<String> lst = new ArrayList<>();
         lst.add("new");
         lst.addAll(marketController.getAllCategories());
@@ -253,9 +255,158 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         categoryField.addValueChangeListener(event -> newCategoryField.setVisible(event.getValue().equals("new")));
 
         newCategoryField.setVisible(false);
+
         VerticalLayout vl = new VerticalLayout();
         vl.add(header, errorSuccessLabel, productNameField, priceField, categoryField, newCategoryField, quantityField, descriptionField, submitButton, cancelButton);
         dialog.add(vl);
         dialog.open();
     }
+
+    private void addPurchasePolicyDialog() {
+        Dialog dialog = new Dialog();
+        Header header = new Header();
+        header.setText("Add New Product");
+        Label errorSuccessLabel = new Label();
+        Select<String> purchasePolicyTypeSelect = new Select<>();
+        purchasePolicyTypeSelect.setItems(marketController.getPurchasePolicyTypes().value);
+        purchasePolicyTypeSelect.setPlaceholder("Purchase policy type");
+        VerticalLayout vl = new VerticalLayout();
+        vl.add(header, errorSuccessLabel, purchasePolicyTypeSelect);
+
+
+        //fields
+        Select<String> categoryField = new Select<>();
+        Select<String> productField = new Select<>();
+        TimePicker startTime = new TimePicker();
+        TimePicker endTime = new TimePicker();
+        IntegerField quantityField = new IntegerField();
+        Checkbox allowNone = new Checkbox();
+        categoryField.setItems(marketController.getAllCategories());
+        Map<String, Integer> productNameMap = productMap.keySet().stream().collect(Collectors.toMap(ProductDTO::getProductName, ProductDTO::getProductId));
+        productField.setItems(productNameMap.keySet().stream().sorted().collect(Collectors.toList()));
+
+        categoryField.setPlaceholder("Category");
+        productField.setPlaceholder("Product");
+        startTime.setPlaceholder("Start time");
+        endTime.setPlaceholder("End time");
+        allowNone.setLabel("Allow none");
+
+        List<Component> components = new ArrayList<>();
+        components.add(categoryField);
+        components.add(productField);
+        components.add(startTime);
+        components.add(endTime);
+        components.add(quantityField);
+        components.add(allowNone);
+
+        Button submitButton = new Button("Submit");
+        submitButton.setEnabled(false);
+        final Registration[] clickListener = new Registration[1];
+        components.forEach(component -> component.setVisible(false));
+
+        purchasePolicyTypeSelect.addValueChangeListener(e -> {
+            submitButton.setEnabled(true);
+            switch (e.getValue()) {
+                case "Category Time Restriction" -> {
+                    if (clickListener[0] != null)
+                        clickListener[0].remove();
+                    components.forEach(component -> component.setVisible(false));
+                    categoryField.setVisible(true);
+                    startTime.setVisible(true);
+                    endTime.setVisible(true);
+                    clickListener[0] = submitButton.addClickListener(event -> {
+                        Response response = marketController.addCategoryTimeRestrictionPolicy(
+                                MainLayout.getSessionId(),
+                                storeId,
+                                categoryField.getValue(),
+                                startTime.getValue(),
+                                endTime.getValue());
+                        if (response.getError_occurred())
+                            errorSuccessLabel.setText(response.error_message);
+                        else
+                            successMessage(dialog, errorSuccessLabel, "Policy added successfully");
+                    });
+                }
+                case "Product Max Quantity" -> {
+                    if (clickListener[0] != null)
+                        clickListener[0].remove();
+                    components.forEach(component -> component.setVisible(false));
+                    productField.setVisible(true);
+                    quantityField.setVisible(true);
+                    quantityField.setPlaceholder("Max quantity");
+                    clickListener[0] = submitButton.addClickListener(event -> {
+                        Response response = marketController.addMaxQuantityPolicy(
+                                MainLayout.getSessionId(),
+                                storeId,
+                                productNameMap.get(productField.getValue()),
+                                quantityField.getValue());
+                        if (response.getError_occurred())
+                            errorSuccessLabel.setText(response.error_message);
+                        else
+                            successMessage(dialog, errorSuccessLabel, "Policy added successfully");
+                    });
+                }
+                case "Product Min Quantity" -> {
+                    if (clickListener[0] != null)
+                        clickListener[0].remove();
+                    components.forEach(component -> component.setVisible(false));
+                    productField.setVisible(true);
+                    quantityField.setVisible(true);
+                    allowNone.setVisible(true);
+                    quantityField.setPlaceholder("Min quantity");
+                    clickListener[0] = submitButton.addClickListener(event -> {
+                        Response response = marketController.addMinQuantityPolicy(
+                                MainLayout.getSessionId(),
+                                storeId,
+                                productNameMap.get(productField.getValue()),
+                                quantityField.getValue(),
+                                allowNone.getValue());
+                        if (response.getError_occurred())
+                            errorSuccessLabel.setText(response.error_message);
+                        else
+                            successMessage(dialog, errorSuccessLabel, "Policy added successfully");
+                    });
+                }
+                case "Product Time Restriction" -> {
+                    if (clickListener[0] != null)
+                        clickListener[0].remove();
+                    components.forEach(component -> component.setVisible(false));
+                    productField.setVisible(true);
+                    startTime.setVisible(true);
+                    endTime.setVisible(true);
+                    clickListener[0] = submitButton.addClickListener(event -> {
+                        Response response = marketController.addProductTimeRestrictionPolicy(
+                                MainLayout.getSessionId(),
+                                storeId,
+                                productNameMap.get(productField.getValue()),
+                                startTime.getValue(),
+                                endTime.getValue());
+                        if (response.getError_occurred())
+                            errorSuccessLabel.setText(response.error_message);
+                        else
+                            successMessage(dialog, errorSuccessLabel, "Policy added successfully");
+                    });
+                }
+                default -> {
+                }
+            }
+        });
+        vl.add(categoryField, productField, startTime, endTime, quantityField, allowNone, submitButton);
+        dialog.add(vl);
+        vl.setJustifyContentMode(JustifyContentMode.CENTER);
+        vl.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+        vl.getStyle().set("text-align", "center");
+        dialog.open();
+    }
+
+    private static void successMessage(Dialog dialog, Label errorSuccessLabel, String msg) {
+        errorSuccessLabel.setText("");
+        dialog.close();
+        Dialog successDialog = new Dialog();
+        VerticalLayout successVl = new VerticalLayout();
+        successVl.add(new Label(msg), new Button("Close", e -> successDialog.close()));
+        successDialog.add(successVl);
+        successDialog.open();
+    }
+
 }

@@ -130,6 +130,8 @@ public interface IMarketManager {
 
     ResponseT<List<BasePurchasePolicyDTO>> getPurchasePoliciesByStoreId(int storeId);
 
+    ResponseT<List<String>> getPurchasePolicyTypes();
+
 //        Response logoutSystemManager(String sessionId);
 
 //        ResponseT<String> loginSystemManager(String username, String password);

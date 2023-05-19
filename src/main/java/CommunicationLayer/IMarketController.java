@@ -80,17 +80,17 @@ public interface IMarketController {
 
     Map<StoreDTO, List<PurchaseDTO>> getStoresPurchases(String sessionId);
 
-    boolean addProductTimeRestrictionPolicy(String sessionId, int storeId, int productId, LocalTime startTime, LocalTime endTime);
+    Response addProductTimeRestrictionPolicy(String sessionId, int storeId, int productId, LocalTime startTime, LocalTime endTime);
 
-    boolean addCategoryTimeRestrictionPolicy(String sessionId, int storeId, String category, LocalTime startTime, LocalTime endTime);
+    Response addCategoryTimeRestrictionPolicy(String sessionId, int storeId, String category, LocalTime startTime, LocalTime endTime);
 
     boolean joinPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator);
 
     boolean removePolicy(String sessionId, int storeId, int policyId);
 
-    boolean addMinQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone);
+    Response addMinQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone);
 
-    boolean addMaxQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity);
+    Response addMaxQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity);
 
     Response addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType);
 
@@ -125,4 +125,6 @@ public interface IMarketController {
     ResponseT<Map<DiscountDTO, List<BaseDiscountPolicyDTO>>> getDiscountPolicyMap(int storeId);
 
     ResponseT<List<BasePurchasePolicyDTO>> getPurchasePoliciesByStoreId(int storeId);
+
+    ResponseT<List<String>> getPurchasePolicyTypes();
 }
