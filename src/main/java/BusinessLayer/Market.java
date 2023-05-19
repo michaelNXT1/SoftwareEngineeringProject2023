@@ -946,15 +946,20 @@ public class Market {
     public List<BasePurchasePolicyDTO> getPurchasePoliciesByStoreId(int storeId) throws Exception {
         checkMarketOpen();
         checkStoreExists(storeId);
-        List<BasePurchasePolicyDTO> ret=new ArrayList<>();
-        for(BasePurchasePolicy bpp : stores.get(storeId).getPurchasePolicies()){
+        List<BasePurchasePolicyDTO> ret = new ArrayList<>();
+        for (BasePurchasePolicy bpp : stores.get(storeId).getPurchasePolicies()) {
             ret.add(bpp.copyConstruct());
         }
         return ret;
     }
+  
+    public List<String> getPurchasePolicyTypes() {
+        return BasePurchasePolicy.getPurchasePolicyTypes();
+    }
     public void setPaymentSystem(IPaymentSystem ps){
         paymentSystem.setPaymentSystem(ps);
     }
+      
     public void setSupplySystem(ISupplySystem ps){
         supplySystem.setSupplySystem(ps);
     }

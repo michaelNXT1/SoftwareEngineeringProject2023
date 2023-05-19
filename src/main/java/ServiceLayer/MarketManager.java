@@ -91,7 +91,8 @@ public class MarketManager implements IMarketManager {
             return ResponseT.fromValue(ret);
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
-        }    }
+        }
+    }
 
     public ResponseT<String> logout(String sessionId) {
         try {
@@ -579,6 +580,15 @@ public class MarketManager implements IMarketManager {
     public ResponseT<List<BasePurchasePolicyDTO>> getPurchasePoliciesByStoreId(int storeId) {
         try {
             return ResponseT.fromValue(market.getPurchasePoliciesByStoreId(storeId));
+        } catch (Exception e) {
+            return ResponseT.fromError(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseT<List<String>> getPurchasePolicyTypes() {
+        try {
+            return ResponseT.fromValue(market.getPurchasePolicyTypes());
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }

@@ -288,23 +288,23 @@ public class MarketController implements IMarketController {
     @GetMapping("/addProductTimeRestrictionPolicy")
     @ResponseBody
     @Override
-    public boolean addProductTimeRestrictionPolicy(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
-                                                   @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
-                                                   @RequestParam(value = "productId", defaultValue = "-1") int productId,
-                                                   @RequestParam(value = "startTime", defaultValue = "") LocalTime startTime,
-                                                   @RequestParam(value = "endTime", defaultValue = "") LocalTime endTime) {
-        return !this.marketManager.addProductTimeRestrictionPolicy(sessionId, storeId, productId, startTime, endTime).getError_occurred();
+    public Response addProductTimeRestrictionPolicy(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                                    @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
+                                                    @RequestParam(value = "productId", defaultValue = "-1") int productId,
+                                                    @RequestParam(value = "startTime", defaultValue = "") LocalTime startTime,
+                                                    @RequestParam(value = "endTime", defaultValue = "") LocalTime endTime) {
+        return this.marketManager.addProductTimeRestrictionPolicy(sessionId, storeId, productId, startTime, endTime);
     }
 
     @GetMapping("/addCategoryTimeRestrictionPolicy")
     @ResponseBody
     @Override
-    public boolean addCategoryTimeRestrictionPolicy(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
-                                                    @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
-                                                    @RequestParam(value = "category", defaultValue = "") String category,
-                                                    @RequestParam(value = "startTime", defaultValue = "") LocalTime startTime,
-                                                    @RequestParam(value = "endTime", defaultValue = "") LocalTime endTime) {
-        return !this.marketManager.addCategoryTimeRestrictionPolicy(sessionId, storeId, category, startTime, endTime).getError_occurred();
+    public Response addCategoryTimeRestrictionPolicy(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                                     @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
+                                                     @RequestParam(value = "category", defaultValue = "") String category,
+                                                     @RequestParam(value = "startTime", defaultValue = "") LocalTime startTime,
+                                                     @RequestParam(value = "endTime", defaultValue = "") LocalTime endTime) {
+        return this.marketManager.addCategoryTimeRestrictionPolicy(sessionId, storeId, category, startTime, endTime);
     }
 
     @GetMapping("/joinPolicies")
@@ -330,22 +330,22 @@ public class MarketController implements IMarketController {
     @GetMapping("/addMinQuantityPolicy")
     @ResponseBody
     @Override
-    public boolean addMinQuantityPolicy(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
-                                        @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
-                                        @RequestParam(value = "productId", defaultValue = "-1") int productId,
-                                        @RequestParam(value = "minQuantity", defaultValue = "-1") int minQuantity,
-                                        @RequestParam(value = "allowNone", defaultValue = "false") boolean allowNone) {
-        return !this.marketManager.addMinQuantityPolicy(sessionId, storeId, productId, minQuantity, allowNone).getError_occurred();
+    public Response addMinQuantityPolicy(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                         @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
+                                         @RequestParam(value = "productId", defaultValue = "-1") int productId,
+                                         @RequestParam(value = "minQuantity", defaultValue = "-1") int minQuantity,
+                                         @RequestParam(value = "allowNone", defaultValue = "false") boolean allowNone) {
+        return this.marketManager.addMinQuantityPolicy(sessionId, storeId, productId, minQuantity, allowNone);
     }
 
     @GetMapping("/addMaxQuantityPolicy")
     @ResponseBody
     @Override
-    public boolean addMaxQuantityPolicy(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
-                                        @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
-                                        @RequestParam(value = "productId", defaultValue = "-1") int productId,
-                                        @RequestParam(value = "minQuantity", defaultValue = "-1") int minQuantity) {
-        return !this.marketManager.addMaxQuantityPolicy(sessionId, storeId, productId, minQuantity).getError_occurred();
+    public Response addMaxQuantityPolicy(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                         @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
+                                         @RequestParam(value = "productId", defaultValue = "-1") int productId,
+                                         @RequestParam(value = "minQuantity", defaultValue = "-1") int minQuantity) {
+        return this.marketManager.addMaxQuantityPolicy(sessionId, storeId, productId, minQuantity);
     }
 
     @GetMapping("/addProductDiscount")
@@ -526,6 +526,11 @@ public class MarketController implements IMarketController {
     @Override
     public ResponseT<List<BasePurchasePolicyDTO>> getPurchasePoliciesByStoreId(int storeId) {
         return marketManager.getPurchasePoliciesByStoreId(storeId);
+    }
+
+    @Override
+    public ResponseT<List<String>> getPurchasePolicyTypes() {
+        return marketManager.getPurchasePolicyTypes();
     }
 
 
