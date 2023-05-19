@@ -28,6 +28,7 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
 import com.vaadin.flow.theme.lumo.LumoUtility.*;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,18 +89,28 @@ public class MainLayout extends AppLayout {
         sessionId = marketController.login("Michael", "1234");
         marketController.openStore(sessionId, "Shufersal");
         marketController.openStore(sessionId, "Ebay");
-        marketController.addProduct(sessionId, 0, "Bamba", 4.3, "Snacks", 50, "");
-        marketController.addProduct(sessionId, 0, "Lay's", 4.0, "Snacks", 50, "");
-        marketController.addProduct(sessionId, 0, "Klik Marbles", 6.8, "Snacks", 50, "");
-        marketController.addProduct(sessionId, 0, "Watermelon", 35.4, "Fruit", 50, "");
-        marketController.addProduct(sessionId, 0, "Banana", 7.9, "Fruit", 50, "");
-        int productId = marketController.addProduct(sessionId, 0, "Apple", 11.9, "Fruit", 50, "").getProductId();
-        marketController.addProduct(sessionId, 0, "Yogurt", 5.3, "Dairy", 50, "");
-        marketController.addProduct(sessionId, 0, "Milk", 6.75, "Dairy", 50, "");
+        Map<String, Integer> productMap = new HashMap<>();
+        productMap.put("Klik Marbles", marketController.addProduct(sessionId, 0, "Klik Marbles", 6.8, "Snacks", 50, "").getProductId());
+        productMap.put("Banana", marketController.addProduct(sessionId, 0, "Banana", 7.9, "Fruit", 50, "").getProductId());
+        productMap.put("Bread", marketController.addProduct(sessionId, 0, "Bread", 10.0, "Pastries", 50, "").getProductId());
+        productMap.put("Watermelon", marketController.addProduct(sessionId, 0, "Watermelon", 35.4, "Fruit", 50, "").getProductId());
+        productMap.put("Milk", marketController.addProduct(sessionId, 0, "Milk", 6.75, "Dairy", 50, "").getProductId());
+        productMap.put("Bamba", marketController.addProduct(sessionId, 0, "Bamba", 4.3, "Snacks", 50, "").getProductId());
+        productMap.put("Yogurt", marketController.addProduct(sessionId, 0, "Yogurt", 5.3, "Dairy", 50, "").getProductId());
+        productMap.put("Lay's", marketController.addProduct(sessionId, 0, "Lay's", 4.0, "Snacks", 50, "").getProductId());
+        productMap.put("Apple", marketController.addProduct(sessionId, 0, "Apple", 11.9, "Fruit", 50, "").getProductId());
+        productMap.put("Bun", marketController.addProduct(sessionId, 0, "Bun", 4.0, "Pastries", 50, "").getProductId());
+
+        marketController.addProductDiscount(sessionId, 0, productMap.get("Apple"), 0.1, 0);
         marketController.addCategoryDiscount(sessionId, 0, "Dairy", 0.5, 0);
+        marketController.addCategoryDiscount(sessionId, 0, "Pastries", 0.05, 0);
         marketController.addStoreDiscount(sessionId, 0, 0.2, 0);
-        marketController.addProductDiscount(sessionId, 0, productId, 0.1, 0);
-        marketController.addMinBagTotalDiscountPolicy(sessionId, 0, 2, 200.0);
+        marketController.addMinBagTotalDiscountPolicy(sessionId, 0, 0, 200.0);
+        marketController.addMinQuantityDiscountPolicy(sessionId, 0, 2, productMap.get("Bread"), 5, true);
+        marketController.addMinQuantityDiscountPolicy(sessionId, 0, 2, productMap.get("Bun"), 5, true);
+
+        marketController.addMaxQuantityPolicy(sessionId, 0, productMap.get("Apple"), 5);
+        marketController.addCategoryTimeRestrictionPolicy(sessionId, 0, "Snacks", LocalTime.of(7, 0, 0), LocalTime.of(23, 0,0));
     }
 
 

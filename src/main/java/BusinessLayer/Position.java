@@ -32,7 +32,7 @@ public interface Position {
 
     void addMinQuantityPolicy(int productId, int minQuantity, boolean allowNone) throws Exception;
 
-    void addMaxQuantityPolicy(int productId, int maxQuantity, boolean allowNone) throws Exception;
+    void addMaxQuantityPolicy(int productId, int maxQuantity) throws Exception;
 
     void addProductTimeRestrictionPolicy(int productId, LocalTime startTime, LocalTime endTime) throws Exception;
 

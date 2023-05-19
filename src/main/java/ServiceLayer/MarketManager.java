@@ -4,6 +4,7 @@ import BusinessLayer.Market;
 import ServiceLayer.DTOs.*;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
+import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -368,9 +369,9 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public Response addMaxQuantityPolicy(String sessionId, int storeId, int productId, int maxQuantity, boolean allowNone) {
+    public Response addMaxQuantityPolicy(String sessionId, int storeId, int productId, int maxQuantity) {
         try {
-            market.addMaxQuantityPolicy(sessionId, storeId, productId, maxQuantity, allowNone);
+            market.addMaxQuantityPolicy(sessionId, storeId, productId, maxQuantity);
             return new Response();
         } catch (Exception e) {
             return new Response(e.getMessage());
@@ -569,6 +570,15 @@ public class MarketManager implements IMarketManager {
     public ResponseT<Map<DiscountDTO, List<BaseDiscountPolicyDTO>>> getDiscountPolicyMap(int storeId) {
         try {
             return ResponseT.fromValue(market.getDiscountPolicyMap(storeId));
+        } catch (Exception e) {
+            return ResponseT.fromError(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseT<List<BasePurchasePolicyDTO>> getPurchasePoliciesByStoreId(int storeId) {
+        try {
+            return ResponseT.fromValue(market.getPurchasePoliciesByStoreId(storeId));
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }
