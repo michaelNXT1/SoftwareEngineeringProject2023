@@ -321,10 +321,10 @@ public class MarketController implements IMarketController {
     @GetMapping("/removePolicy")
     @ResponseBody
     @Override
-    public boolean removePolicy(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
-                                @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
-                                @RequestParam(value = "policyId", defaultValue = "-1") int policyId) {
-        return !this.marketManager.removePolicy(sessionId, storeId, policyId).getError_occurred();
+    public Response removePolicy(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                 @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
+                                 @RequestParam(value = "policyId", defaultValue = "-1") int policyId) {
+        return this.marketManager.removePolicy(sessionId, storeId, policyId);
     }
 
     @GetMapping("/addMinQuantityPolicy")

@@ -86,7 +86,7 @@ public interface IMarketController {
 
     boolean joinPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator);
 
-    boolean removePolicy(String sessionId, int storeId, int policyId);
+    Response removePolicy(String sessionId, int storeId, int policyId);
 
     Response addMinQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone);
 

@@ -141,7 +141,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
             div.setText(purchasePolicy.toString());
             return div;
         }).setHeader("Policy Description").setSortable(true).setTextAlign(ColumnTextAlign.START);
-        purchasePolicyGrid.addComponentColumn(purchasePolicy -> new Button("Remove"));
+        purchasePolicyGrid.addComponentColumn(purchasePolicy -> new Button("Remove", e -> removePurchasePolicyDialog(purchasePolicy.getPolicyId())));
         purchasePolicies.add(purchasePoliciesHL, purchasePolicyGrid);
         return purchasePolicies;
     }
@@ -396,6 +396,27 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         vl.setJustifyContentMode(JustifyContentMode.CENTER);
         vl.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         vl.getStyle().set("text-align", "center");
+        dialog.open();
+    }
+
+    private void removePurchasePolicyDialog(int policyId) {
+        Dialog dialog = new Dialog();
+        VerticalLayout vl = new VerticalLayout();
+        Label errorSuccessLabel = new Label();
+        Label label = new Label("Are you sure? This cannot be undone.");
+        HorizontalLayout hl = new HorizontalLayout();
+        hl.add(
+                new Button("Remove", e -> {
+                    Response response = marketController.removePolicy(MainLayout.getSessionId(), storeId, policyId);
+                    if (response.getError_occurred()) {
+                        errorSuccessLabel.setText(response.error_message);
+                    } else
+                        successMessage(dialog, errorSuccessLabel, "Policy removed successfully");
+                }),
+                new Button("Cancel", e -> dialog.close())
+        );
+        vl.add(label, hl);
+        dialog.add(vl);
         dialog.open();
     }
 
