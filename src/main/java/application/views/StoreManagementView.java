@@ -28,10 +28,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.data.renderer.NumberRenderer;
-import com.vaadin.flow.router.BeforeEvent;
-import com.vaadin.flow.router.HasUrlParameter;
-import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.WildcardParameter;
+import com.vaadin.flow.router.*;
 import com.vaadin.flow.shared.Registration;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -43,6 +40,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Route(value = "StoreManagementView", layout = MainLayout.class)
+@PreserveOnRefresh
 public class StoreManagementView extends VerticalLayout implements HasUrlParameter<String> {
     private final MarketController marketController;
     private final Header header;
