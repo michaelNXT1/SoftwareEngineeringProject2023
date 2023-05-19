@@ -6,9 +6,6 @@ import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 import ServiceLayer.Response;
 import ServiceLayer.ResponseT;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -59,7 +56,7 @@ public interface IMarketController {
 
     List<PurchaseDTO> getPurchaseHistory(String sessionId, int storeId);
 
-    ProductDTO addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description);
+    ResponseT<ProductDTO> addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description);
 
     boolean editProductName(String sessionId, int storeId, int productId, String newName);
 

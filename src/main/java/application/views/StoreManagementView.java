@@ -8,14 +8,20 @@ import ServiceLayer.DTOs.Discounts.StoreDiscountDTO;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 import ServiceLayer.DTOs.ProductDTO;
+import ServiceLayer.ResponseT;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridSortOrder;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.Header;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.component.textfield.NumberField;
+import com.vaadin.flow.component.textfield.TextArea;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.data.renderer.NumberRenderer;
 import com.vaadin.flow.router.BeforeEvent;
@@ -42,6 +48,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
     private Grid<CategoryDiscountDTO> categoryDiscountGrid;
     private Grid<StoreDiscountDTO> storeDiscountGrid;
     private List<BasePurchasePolicyDTO> purchasePolicyList;
+    private int storeId;
 
     @Autowired
     public StoreManagementView() {
@@ -49,26 +56,21 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         this.header = new Header();
         add(header);
 
+        VerticalLayout products = initProductGrid();
+        VerticalLayout purchasePolicies = initPurchasePolicyGrid();
         HorizontalLayout productAndPolicyGrids = new HorizontalLayout();
-        VerticalLayout products = new VerticalLayout();
-        initProductGrid();
-        products.add(new H1("Product List"), productGrid);
-        VerticalLayout purchasePolicies = new VerticalLayout();
-        initPurchasePolicyGrid();
-        purchasePolicies.add(new H1("Purchase Policy List"), purchasePolicyGrid);
-        purchasePolicies.setSizeFull();
         productAndPolicyGrids.add(products, purchasePolicies);
         productAndPolicyGrids.setSizeFull();
-        add(productAndPolicyGrids);
 
+        VerticalLayout productDiscountLayout = initProductDiscountGrid();
+        VerticalLayout categoryDiscountLayout = initCategoryDiscountGrid();
+        VerticalLayout storeDiscountLayout = initStoreDiscountGrid();
         HorizontalLayout discountGrids = new HorizontalLayout();
-        initProductDiscountGrid();
-        initCategoryDiscountGrid();
-        initStoreDiscountGrid();
-        discountGrids.add(productDiscountGrid, categoryDiscountGrid, storeDiscountGrid);
-        add(new H1("Discount Lists"), discountGrids);
-
+        discountGrids.add(productDiscountLayout, categoryDiscountLayout, storeDiscountLayout);
         discountGrids.setSizeFull();
+
+        add(productAndPolicyGrids, new H1("Discount Lists"), discountGrids);
+
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
@@ -77,7 +79,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
 
     @Override
     public void setParameter(BeforeEvent beforeEvent, @WildcardParameter String parameter) {
-        int storeId = Integer.parseInt(parameter);
+        storeId = Integer.parseInt(parameter);
         header.setText("Store Management: " + marketController.getStore(MainLayout.getSessionId(), storeId).getStoreName());
         productMap = marketController.getProductsByStore(storeId).value;
         productGrid.setItems(productMap.keySet().stream().toList());
@@ -99,7 +101,13 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         storeDiscountGrid.setItems(storeDiscountDTOS);
     }
 
-    private void initProductGrid() {
+    private VerticalLayout initProductGrid() {
+        VerticalLayout products = new VerticalLayout();
+        HorizontalLayout productsHL = new HorizontalLayout();
+        Div productsDiv = new Div();
+        productsHL.add(new H1("Product List"), productsDiv, new Button("+", e -> addProductDialog()));
+        productsHL.setFlexGrow(1, productsDiv);
+        productsHL.setWidthFull();
         productGrid = new Grid<>(ProductDTO.class, false);
         productGrid.addColumn(ProductDTO::getProductId).setHeader("Id").setSortable(true).setTextAlign(ColumnTextAlign.START).setKey("Id");
         productGrid.addColumn(ProductDTO::getProductName).setHeader("Name").setSortable(true).setTextAlign(ColumnTextAlign.START);
@@ -108,37 +116,72 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         productGrid.addColumn(ProductDTO::getRating).setHeader("Rating").setSortable(true).setTextAlign(ColumnTextAlign.START);
         productGrid.addColumn(productDTO -> productMap.get(productDTO)).setHeader("Quantity").setSortable(true).setTextAlign(ColumnTextAlign.START);
         productGrid.sort(List.of(new GridSortOrder<>(productGrid.getColumnByKey("Id"), SortDirection.ASCENDING)));
+        products.add(productsHL, productGrid);
+        return products;
     }
 
-    private void initPurchasePolicyGrid() {
+    private VerticalLayout initPurchasePolicyGrid() {
+        VerticalLayout purchasePolicies = new VerticalLayout();
+        HorizontalLayout purchasePoliciesHL = new HorizontalLayout();
+        Div purchasePoliciesDiv = new Div();
+        purchasePoliciesHL.add(new H1("Purchase Policy List"), purchasePoliciesDiv, new Button("Join Policies"), new Button("+"));
+        purchasePoliciesHL.setFlexGrow(1, purchasePoliciesDiv);
+        purchasePoliciesHL.setWidthFull();
         purchasePolicyGrid = new Grid<>(BasePurchasePolicyDTO.class, false);
-        purchasePolicyGrid.addColumn(basePurchasePolicyDTO -> purchasePolicyList.indexOf(basePurchasePolicyDTO)).setHeader("#").setSortable(true).setTextAlign(ColumnTextAlign.START);
+        purchasePolicyGrid.addColumn(basePurchasePolicyDTO -> purchasePolicyList.indexOf(basePurchasePolicyDTO) + 1).setHeader("#").setSortable(true).setTextAlign(ColumnTextAlign.START);
         purchasePolicyGrid.addComponentColumn(purchasePolicy -> {
             Div div = new Div();
             div.getStyle().set("white-space", "pre-wrap");
             div.setText(purchasePolicy.toString());
             return div;
         }).setHeader("Policy Description").setSortable(true).setTextAlign(ColumnTextAlign.START);
+        purchasePolicyGrid.addComponentColumn(purchasePolicy -> new Button("Remove"));
+        purchasePolicies.add(purchasePoliciesHL, purchasePolicyGrid);
+        return purchasePolicies;
     }
 
-    private void initProductDiscountGrid() {
+    private VerticalLayout initProductDiscountGrid() {
+        VerticalLayout productDiscountLayout = new VerticalLayout();
+        HorizontalLayout productDiscountHL = new HorizontalLayout();
+        Div div1 = new Div();
+        productDiscountHL.add(new H2("Product Discounts"), div1, new Button("+"));
+        productDiscountHL.setFlexGrow(1, div1);
+        productDiscountHL.setWidthFull();
         productDiscountGrid = new Grid<>(ProductDiscountDTO.class, false);
         productDiscountGrid.addColumn(this::getProductName).setHeader("Product Name").setSortable(true).setTextAlign(ColumnTextAlign.CENTER).setKey("Id");
         productDiscountGrid.addColumn(new NumberRenderer<>(DiscountDTO::getDiscountPercentage, NumberFormat.getPercentInstance())).setHeader("Discount Percentage").setSortable(true).setTextAlign(ColumnTextAlign.CENTER);
         productDiscountGrid.addComponentColumn(this::getPolicyToString).setHeader("Policy condition").setSortable(true).setTextAlign(ColumnTextAlign.CENTER);
+        productDiscountLayout.add(productDiscountHL, productDiscountGrid);
+        return productDiscountLayout;
     }
 
-    private void initCategoryDiscountGrid() {
+    private VerticalLayout initCategoryDiscountGrid() {
+        VerticalLayout categoryDiscountLayout = new VerticalLayout();
+        HorizontalLayout categoryDiscountHL = new HorizontalLayout();
+        Div div2 = new Div();
+        categoryDiscountHL.add(new H2("Category Discounts"), div2, new Button("+"));
+        categoryDiscountHL.setFlexGrow(1, div2);
+        categoryDiscountHL.setWidthFull();
         categoryDiscountGrid = new Grid<>(CategoryDiscountDTO.class, false);
         categoryDiscountGrid.addColumn(CategoryDiscountDTO::getCategory).setHeader("Category").setSortable(true).setTextAlign(ColumnTextAlign.CENTER).setKey("Id");
         categoryDiscountGrid.addColumn(new NumberRenderer<>(DiscountDTO::getDiscountPercentage, NumberFormat.getPercentInstance())).setHeader("Discount Percentage").setSortable(true).setTextAlign(ColumnTextAlign.CENTER);
         categoryDiscountGrid.addComponentColumn(this::getPolicyToString).setHeader("Policy condition").setSortable(true).setTextAlign(ColumnTextAlign.CENTER);
+        categoryDiscountLayout.add(categoryDiscountHL, categoryDiscountGrid);
+        return categoryDiscountLayout;
     }
 
-    private void initStoreDiscountGrid() {
+    private VerticalLayout initStoreDiscountGrid() {
+        VerticalLayout storeDiscountLayout = new VerticalLayout();
+        HorizontalLayout storeDiscountHL = new HorizontalLayout();
+        Div div3 = new Div();
+        storeDiscountHL.add(new H2("Store Discounts"), div3, new Button("+"));
+        storeDiscountHL.setFlexGrow(1, div3);
+        storeDiscountHL.setWidthFull();
         storeDiscountGrid = new Grid<>(StoreDiscountDTO.class, false);
         storeDiscountGrid.addColumn(new NumberRenderer<>(DiscountDTO::getDiscountPercentage, NumberFormat.getPercentInstance())).setHeader("Discount Percentage").setSortable(true).setTextAlign(ColumnTextAlign.CENTER);
         storeDiscountGrid.addComponentColumn(this::getPolicyToString).setHeader("Policy condition").setSortable(true).setTextAlign(ColumnTextAlign.CENTER);
+        storeDiscountLayout.add(storeDiscountHL, storeDiscountGrid);
+        return storeDiscountLayout;
     }
 
     private Div getPolicyToString(DiscountDTO discountDTO) {
@@ -149,12 +192,70 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         div.setText("None");
         if (ls.isEmpty()) return div;
         for (BaseDiscountPolicyDTO bdpDTO : ls)
-            ret.append(bdpDTO.toString() + (ls.indexOf(bdpDTO) != ls.size() - 1 ? "\nAND\n" : ""));
+            ret.append(bdpDTO.toString()).append(ls.indexOf(bdpDTO) != ls.size() - 1 ? "\nAND\n" : "");
         div.setText(ret.toString());
         return div;
     }
 
     private String getProductName(ProductDiscountDTO productDiscountDTO) {
         return Objects.requireNonNull(productMap.keySet().stream().filter(productDTO -> productDTO.getProductId() == productDiscountDTO.getProductId()).findFirst().orElse(null)).getProductName();
+    }
+
+    private void addProductDialog() {
+        Dialog dialog = new Dialog();
+        Header header = new Header();
+        header.setText("Add New Product");
+        Label errorSuccessLabel = new Label();
+        TextField productNameField = new TextField();
+        NumberField priceField = new NumberField();
+        Select<String> categoryField = new Select<>();
+        TextField newCategoryField = new TextField();
+        IntegerField quantityField = new IntegerField();
+        TextArea descriptionField = new TextArea();
+        Button submitButton = new Button("Submit", event -> {
+            ResponseT<ProductDTO> response = marketController.addProduct(
+                    MainLayout.getSessionId(),
+                    storeId,
+                    productNameField.getValue(),
+                    priceField.getValue(),
+                    newCategoryField.isVisible() ? newCategoryField.getValue() : categoryField.getValue(),
+                    quantityField.getValue(),
+                    descriptionField.getValue());
+            if (response.getError_occurred()) {
+                errorSuccessLabel.setText(response.error_message);
+            } else {
+                errorSuccessLabel.setText("");
+                dialog.close();
+                Dialog successDialog = new Dialog();
+                VerticalLayout successVl = new VerticalLayout();
+                successVl.add(new Label("Product added successfully!"), new Button("Close", e -> successDialog.close()));
+                successDialog.add(successVl);
+                successDialog.open();
+            }
+        });
+        Button cancelButton = new Button("Cancel", event -> dialog.close());
+
+        productNameField.setPlaceholder("Product name");
+        priceField.setPlaceholder("Price");
+        categoryField.setPlaceholder("Category");
+        newCategoryField.setPlaceholder("New category");
+        quantityField.setPlaceholder("Quantity");
+        descriptionField.setPlaceholder("Description");
+
+        priceField.setValue(0.0);
+        quantityField.setValue(0);
+
+        List<String> lst = new ArrayList<>();
+        lst.add("new");
+        lst.addAll(marketController.getAllCategories());
+        categoryField.setItems(lst);
+        categoryField.addComponents("new", new Hr());
+        categoryField.addValueChangeListener(event -> newCategoryField.setVisible(event.getValue().equals("new")));
+
+        newCategoryField.setVisible(false);
+        VerticalLayout vl = new VerticalLayout();
+        vl.add(header, errorSuccessLabel, productNameField, priceField, categoryField, newCategoryField, quantityField, descriptionField, submitButton, cancelButton);
+        dialog.add(vl);
+        dialog.open();
     }
 }
