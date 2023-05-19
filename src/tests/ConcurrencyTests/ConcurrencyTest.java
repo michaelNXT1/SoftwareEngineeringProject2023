@@ -30,12 +30,12 @@ public class ConcurrencyTest extends TestCase {
     public void testBuyProductsMultipleBuysSucess() throws Exception {
         market.signUp("master","1234");
         String id = market.login("master","1234");
-        market.addPaymentMethod(id,"123","06","2026","540");
+        market.addPaymentMethod(id,"123","06","2026","540", "Micheal", "260589064");
         int storeid = market.openStore(id,"newStore");
         int productID =setUpStoreWithAmount(id,storeid,100);
         buyFromStoreAmount(storeid,productID,5);
         try {
-            assertEquals(100-(THREADS*5),market.getStore(storeid).getProduct(productID).getAmount());
+            assertEquals(100-(THREADS*5),market.getStore(id, storeid).getProduct(productID).getAmount());
         } catch (Exception e) {
             fail();
         }
@@ -45,12 +45,12 @@ public class ConcurrencyTest extends TestCase {
     public void testBuyProductsMultipleBuysSucessMoreThenInventory() throws Exception {
         market.signUp("master","1234");
         String id = market.login("master","1234");
-        market.addPaymentMethod(id,"123","06","2026","540");
+        market.addPaymentMethod(id,"123","06","2026","540", "Micheal", "260589064");
         int storeId = market.openStore(id,"newStore");
         int productId = setUpStoreWithAmount(id, storeId,10);
         buyFromStoreAmount(storeId,productId,1);
         try {
-            assertEquals(1,market.getStore(storeId).getProduct(productId).getProductId());
+            assertEquals(1,market.getStore(id, storeId).getProduct(productId).getProductId());
         } catch (Exception e) {
             fail();
         }
@@ -60,12 +60,12 @@ public class ConcurrencyTest extends TestCase {
     public void testBuyProductsMultipleBuysFailMoreThenInventoryHistory() throws Exception {
         market.signUp("master","1234");
         String id = market.login("master","1234");
-        market.addPaymentMethod(id,"123","06","2026","540");
+        market.addPaymentMethod(id,"123","06","2026","540", "Micheal", "260589064");
         int storeId = market.openStore(id,"newStore");
         int productID = setUpStoreWithAmount(id,storeId,7);
         buyFromStoreAmount(storeId,productID,10);
         try {
-            assertEquals(0,market.getStore(storeId).getPurchaseList().size());
+            assertEquals(0,market.getStore(id, storeId).getPurchaseList().size());
         } catch (Exception e) {
             fail();
         }
@@ -88,7 +88,7 @@ public class ConcurrencyTest extends TestCase {
                     String name = String.format("bob%d", nameId.getAndIncrement());
                     market.signUp(name, "123");
                     newId = market.login(name, "123");
-                    market.addPaymentMethod(newId, "123", "13", "12", "232");
+                    market.addPaymentMethod(newId, "123", "13", "12", "232", "Micheal", "260589064");
                     market.addProductToCart(newId, storeId, productId, amount);
                     confirmPurchase(newId);
                 } catch (Exception e) {
@@ -270,6 +270,6 @@ public class ConcurrencyTest extends TestCase {
         }
         while(count.get()<THREADS){}
 
-        assertEquals(THREADS,market.getStore(storeId).getManagers().size());
+        assertEquals(THREADS,market.getStore(sessionID, storeId).getManagers().size());
     }
 }
