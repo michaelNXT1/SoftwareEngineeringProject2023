@@ -8,17 +8,17 @@ import ServiceLayer.DTOs.Policies.DiscountPolicies.PolicyTypes.MaxQuantityDiscou
 import java.util.Map;
 
 public class MaxQuantityDiscountPolicy extends BaseDiscountPolicy {
-    private final int productId;
+    private final Product product;
     private final int minQuantity;
     private final boolean allowNone;
 
-    public MaxQuantityDiscountPolicy(int policyId, int productId, int maxQuantity, boolean allowNone) throws Exception {
+    public MaxQuantityDiscountPolicy(int policyId, Product product, int maxQuantity, boolean allowNone) throws Exception {
         super(policyId);
         if (maxQuantity <= 0) {
             logger.error("Max quantity must be larger than 0 but is " + maxQuantity);
             throw new Exception("Max quantity must be larger than 0");
         }
-        this.productId = productId;
+        this.product = product;
         this.minQuantity = maxQuantity;
         this.allowNone = allowNone;
     }
@@ -26,7 +26,7 @@ public class MaxQuantityDiscountPolicy extends BaseDiscountPolicy {
     @Override
     public boolean evaluate(Map<Product, Integer> productList) {
         for (Product p : productList.keySet())
-            if (p.getProductId() == productId)
+            if (p == product)
                 return productList.get(p) <= minQuantity;
         return allowNone;
     }
@@ -36,8 +36,8 @@ public class MaxQuantityDiscountPolicy extends BaseDiscountPolicy {
         return new MaxQuantityDiscountPolicyDTO(this);
     }
 
-    public int getProductId() {
-        return productId;
+    public Product getProduct() {
+        return product;
     }
 
     public int getMinQuantity() {

@@ -5,7 +5,7 @@ import BusinessLayer.Logger.SystemLogger;
 import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
 import BusinessLayer.Policies.DiscountPolicies.DiscountPolicyOperation;
 import BusinessLayer.Policies.DiscountPolicies.PolicyTypes.*;
-import BusinessLayer.Policies.PurchasePolicies.Operation;
+import BusinessLayer.Policies.PurchasePolicies.PurchasePolicyOperation;
 import BusinessLayer.Policies.PurchasePolicies.*;
 import BusinessLayer.Policies.PurchasePolicies.PolicyTypes.*;
 
@@ -23,7 +23,7 @@ public class Store {
     private final List<Purchase> purchaseList;
     private final List<Member> employees;
     private final List<String> storeOwners = new LinkedList<>();
-    private final List<BasePolicy> purchasePolicies;
+    private final List<BasePurchasePolicy> purchasePolicies;
     private final Map<Discount, List<BaseDiscountPolicy>> productDiscountPolicyMap;
     private int purchasePolicyCounter;
     private int discountPolicyCounter;
@@ -103,7 +103,7 @@ public class Store {
                 logger.error("cannot set quantity to less then 0");
                 throw new Exception("cannot set quantity to less then 0");
             }
-            p = new Product(storeId, this.productIdCounter.incrementAndGet(), productName, price, category, description);
+            p = new Product(storeId, this.productIdCounter.getAndIncrement(), productName, price, category, description);
             categories.add(category);
             products.put(p, quantity);
         }
@@ -179,28 +179,25 @@ public class Store {
 
     //Purchase policies
     public void addMinQuantityPolicy(int productId, int minQuantity, boolean allowNone) throws Exception {
-        checkProductExists(productId);
-        purchasePolicies.add(new MinQuantityPolicy(purchasePolicyCounter++, productId, minQuantity, allowNone));
+        purchasePolicies.add(new MinQuantityPurchasePolicy(purchasePolicyCounter++, checkProductExists(productId), minQuantity, allowNone));
     }
 
-    public void addMaxQuantityPolicy(int productId, int maxQuantity, boolean allowNone) throws Exception {
-        checkProductExists(productId);
-        purchasePolicies.add(new MaxQuantityPolicy(purchasePolicyCounter++, productId, maxQuantity, allowNone));
+    public void addMaxQuantityPolicy(int productId, int maxQuantity) throws Exception {
+        purchasePolicies.add(new MaxQuantityPurchasePolicy(purchasePolicyCounter++, checkProductExists(productId), maxQuantity));
     }
 
     public void addProductTimeRestrictionPolicy(int productId, LocalTime startTime, LocalTime endTime) throws Exception {
-        checkProductExists(productId);
-        purchasePolicies.add(new ProductTimeRestrictionPolicy(purchasePolicyCounter++, productId, startTime, endTime));
+        purchasePolicies.add(new ProductTimeRestrictionPurchasePolicy(purchasePolicyCounter++, checkProductExists(productId), startTime, endTime));
     }
 
     public void addCategoryTimeRestrictionPolicy(String category, LocalTime startTime, LocalTime endTime) throws Exception {
-        purchasePolicies.add(new CategoryTimeRestrictionPolicy(purchasePolicyCounter++, category, startTime, endTime));
+        purchasePolicies.add(new CategoryTimeRestrictionPurchasePolicy(purchasePolicyCounter++, category, startTime, endTime));
     }
 
     public void joinPolicies(int policyId1, int policyId2, int operator) throws Exception {
-        BasePolicy bp1 = findPolicy(policyId1);
-        BasePolicy bp2 = findPolicy(policyId2);
-        purchasePolicies.add(new Operation(purchasePolicyCounter++, bp1, operator, bp2));
+        BasePurchasePolicy bp1 = findPolicy(policyId1);
+        BasePurchasePolicy bp2 = findPolicy(policyId2);
+        purchasePolicies.add(new PurchasePolicyOperation(purchasePolicyCounter++, bp1, operator, bp2));
         purchasePolicies.remove(bp1);
         purchasePolicies.remove(bp2);
     }
@@ -209,8 +206,8 @@ public class Store {
         purchasePolicies.remove(findPolicy(policyId));
     }
 
-    private BasePolicy findPolicy(int policyId) throws Exception {
-        BasePolicy bp = purchasePolicies.stream().filter(p -> p.getPolicyId() == policyId).findFirst().orElse(null);
+    private BasePurchasePolicy findPolicy(int policyId) throws Exception {
+        BasePurchasePolicy bp = purchasePolicies.stream().filter(p -> p.getPolicyId() == policyId).findFirst().orElse(null);
         if (bp == null) {
             logger.error("couldn't find purchase policy of id" + policyId);
             throw new Exception("couldn't find purchase policy of id" + policyId);
@@ -255,15 +252,13 @@ public class Store {
 
     //Discount policies
     public void addMinQuantityDiscountPolicy(int discountId, int productId, int minQuantity, boolean allowNone) throws Exception {
-        checkProductExists(productId);
         Discount d = findDiscount(discountId);
-        productDiscountPolicyMap.get(d).add(new MinQuantityDiscountPolicy(purchasePolicyCounter++, productId, minQuantity, allowNone));
+        productDiscountPolicyMap.get(d).add(new MinQuantityDiscountPolicy(purchasePolicyCounter++, checkProductExists(productId), minQuantity, allowNone));
     }
 
     public void addMaxQuantityDiscountPolicy(int discountId, int productId, int maxQuantity, boolean allowNone) throws Exception {
-        checkProductExists(productId);
         Discount d = findDiscount(discountId);
-        productDiscountPolicyMap.get(d).add(new MaxQuantityDiscountPolicy(purchasePolicyCounter++, productId, maxQuantity, allowNone));
+        productDiscountPolicyMap.get(d).add(new MaxQuantityDiscountPolicy(purchasePolicyCounter++, checkProductExists(productId), maxQuantity, allowNone));
     }
 
     public void addMinBagTotalDiscountPolicy(int discountId, double minTotal) throws Exception {
@@ -322,7 +317,7 @@ public class Store {
         for (Discount d : productDiscountPolicyMap.keySet())
             if (d.checkApplies(product))
                 if (productDiscountPolicyMap.get(d).stream().allMatch(pdp -> pdp.evaluate(productList)))
-                    discountPercentage= d.calculateNewPercentage(discountPercentage);
+                    discountPercentage = d.calculateNewPercentage(discountPercentage);
         return discountPercentage;
     }
 
@@ -371,6 +366,10 @@ public class Store {
 
     public List<String> getStoreOwners() {
         return storeOwners;
+    }
+
+    public List<BasePurchasePolicy> getPurchasePolicies() {
+        return purchasePolicies;
     }
 
     public void addStoreOwner(Member member) {

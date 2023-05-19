@@ -204,7 +204,7 @@ public class StoreManager implements Position {
     }
 
     @Override
-    public void addMaxQuantityPolicy(int productId, int maxQuantity, boolean allowNone) throws Exception {
+    public void addMaxQuantityPolicy(int productId, int maxQuantity) throws Exception {
         logger.error(String.format("store manager hasn't permission to perform this action"));
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }

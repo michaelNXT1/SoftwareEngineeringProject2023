@@ -1,18 +1,18 @@
-package BusinessLayer.Policies.DiscountPolicies.PolicyTypes;
+package BusinessLayer.Policies.PurchasePolicies.PolicyTypes;
 
-import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
+import BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy;
 import BusinessLayer.Product;
-import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
-import ServiceLayer.DTOs.Policies.DiscountPolicies.PolicyTypes.MinQuantityDiscountPolicyDTO;
+import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
+import ServiceLayer.DTOs.Policies.PurchasePolicies.PolicyTypes.MinQuantityPurchasePolicyDTO;
 
 import java.util.Map;
 
-public class MinQuantityDiscountPolicy extends BaseDiscountPolicy {
+public class MinQuantityPurchasePolicy extends BasePurchasePolicy {
     private final Product product;
     private final int minQuantity;
     private final boolean allowNone;
 
-    public MinQuantityDiscountPolicy(int policyId, Product product, int minQuantity, boolean allowNone) throws Exception {
+    public MinQuantityPurchasePolicy(int policyId, Product product, int minQuantity, boolean allowNone) throws Exception {
         super(policyId);
         if (minQuantity <= 0) {
             logger.error("Min quantity must be larger than 0 but is " + minQuantity);
@@ -32,8 +32,8 @@ public class MinQuantityDiscountPolicy extends BaseDiscountPolicy {
     }
 
     @Override
-    public BaseDiscountPolicyDTO copyConstruct() throws Exception {
-        return new MinQuantityDiscountPolicyDTO(this);
+    public BasePurchasePolicyDTO copyConstruct() {
+        return new MinQuantityPurchasePolicyDTO(this);
     }
 
     public Product getProduct() {

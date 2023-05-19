@@ -3,6 +3,7 @@ package CommunicationLayer;
 import ServiceLayer.DTOs.*;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
+import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 import ServiceLayer.Response;
 import ServiceLayer.ResponseT;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -92,7 +93,7 @@ public interface IMarketController {
 
     boolean addMinQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone);
 
-    boolean addMaxQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone);
+    boolean addMaxQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity);
 
     Response addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType);
 
@@ -125,4 +126,6 @@ public interface IMarketController {
     ResponseT<Map<ProductDTO, Integer>> getProductsByStore(int storeId);
 
     ResponseT<Map<DiscountDTO, List<BaseDiscountPolicyDTO>>> getDiscountPolicyMap(int storeId);
+
+    ResponseT<List<BasePurchasePolicyDTO>> getPurchasePoliciesByStoreId(int storeId);
 }

@@ -1,18 +1,20 @@
 package BusinessLayer.Policies.PurchasePolicies.PolicyTypes;
 
-import BusinessLayer.Policies.PurchasePolicies.PurchasePolicy;
+import BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy;
 import BusinessLayer.Product;
+import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
+import ServiceLayer.DTOs.Policies.PurchasePolicies.PolicyTypes.CategoryTimeRestrictionPurchasePolicyDTO;
 
 import java.time.LocalTime;
 import java.util.Map;
 import java.util.Objects;
 
-public class CategoryTimeRestrictionPolicy extends PurchasePolicy {
+public class CategoryTimeRestrictionPurchasePolicy extends BasePurchasePolicy {
     private final String category;
     private final LocalTime startTime;
     private final LocalTime endTime;
 
-    public CategoryTimeRestrictionPolicy(int policyId, String category, LocalTime startTime, LocalTime endTime) throws Exception {
+    public CategoryTimeRestrictionPurchasePolicy(int policyId, String category, LocalTime startTime, LocalTime endTime) throws Exception {
         super(policyId);
         if (startTime.equals(endTime)) {
             logger.error("Start time cannot be the same as end time");
@@ -33,5 +35,22 @@ public class CategoryTimeRestrictionPolicy extends PurchasePolicy {
             if (Objects.equals(p.getCategory(), category))
                 return LocalTime.now().isBefore(endTime) && LocalTime.now().isAfter(startTime);
         return true;
+    }
+
+    @Override
+    public BasePurchasePolicyDTO copyConstruct() {
+        return new CategoryTimeRestrictionPurchasePolicyDTO(this);
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public LocalTime getStartTime() {
+        return startTime;
+    }
+
+    public LocalTime getEndTime() {
+        return endTime;
     }
 }
