@@ -663,7 +663,7 @@ public class Market {
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
         p.joinPolicies(policyId1, policyId2, operator);
-        logger.info(String.format("%d and %d policies joined with %d operator in %d store by %s", policyId1, policyId2, storeId, sessionId));
+        logger.info(String.format("%d and %d policies joined with %d operator in %s", policyId1, policyId2, storeId, sessionId));
     }
 
     public void removePolicy(String sessionId, int storeId, int policyId) throws Exception {
