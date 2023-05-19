@@ -7,9 +7,14 @@ import ServiceLayer.DTOs.Policies.PurchasePolicies.PurchasePolicyOperationDTO;
 import java.util.Map;
 
 public class PurchasePolicyOperation extends BasePurchasePolicy {
-    private BasePurchasePolicy left;
-    private BasePurchasePolicy.JoinOperator joinOperator;
-    private BasePurchasePolicy right;
+
+    public enum JoinOperator {
+        OR,
+        COND
+    }
+    private final BasePurchasePolicy left;
+    private final JoinOperator joinOperator;
+    private final BasePurchasePolicy right;
 
     public PurchasePolicyOperation(int policyId, BasePurchasePolicy left, int joinOperator, BasePurchasePolicy right) {
         super(policyId);
@@ -30,7 +35,6 @@ public class PurchasePolicyOperation extends BasePurchasePolicy {
         return switch (joinOperator) {
             case OR -> leftValue || rightValue;
             case COND -> !leftValue || rightValue;
-            default -> throw new IllegalArgumentException("Invalid operator: " + joinOperator);
         };
     }
 

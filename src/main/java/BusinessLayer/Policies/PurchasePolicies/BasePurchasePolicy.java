@@ -21,11 +21,6 @@ public abstract class BasePurchasePolicy {
         return ret.stream().sorted().collect(Collectors.toList());
     }
 
-    public enum JoinOperator {
-        OR,
-        COND
-    }
-
     protected int policyId;
 
     public BasePurchasePolicy(int policyId) {

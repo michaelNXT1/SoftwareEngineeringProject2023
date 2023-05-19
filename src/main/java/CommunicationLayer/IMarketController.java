@@ -84,9 +84,9 @@ public interface IMarketController {
 
     Response addCategoryTimeRestrictionPolicy(String sessionId, int storeId, String category, LocalTime startTime, LocalTime endTime);
 
-    boolean joinPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator);
+    Response joinPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator);
 
-    boolean removePolicy(String sessionId, int storeId, int policyId);
+    Response removePolicy(String sessionId, int storeId, int policyId);
 
     Response addMinQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone);
 
