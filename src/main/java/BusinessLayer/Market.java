@@ -30,7 +30,8 @@ public class Market {
     private boolean marketOpen;
 
     public static final Object purchaseLock = new Object();
-    FundDemander fd;
+    PaymentSystemProxy paymentSystem;
+    SupplySystemProxy supplySystem;
     SessionManager sessionManager = new SessionManager();
 
 
@@ -45,7 +46,7 @@ public class Market {
         }
         marketOpen = true;
         this.logger = new SystemLogger();
-        fd = new FundDemander();
+        paymentSystem = new PaymentSystemProxy();
         SystemManager sm = new SystemManager("admin", new String(passwordEncoder.digest("admin".getBytes())));
         marketOpen = true;
         systemManagers.put(sm.getUsername(), sm);
@@ -352,14 +353,17 @@ public class Market {
         Guest g = sessionManager.getSession(sessionId);
         Purchase purchase;
         synchronized (purchaseLock) {
-            purchase = g.purchaseShoppingCart();
-            if (!fd.charge(g.getPaymentDetails(), purchase.getTotalPrice())) {
-                logger.info("Purchase failed, fund demander charge failed, reverting purchase.");
-                g.revertPurchase(purchase);
-                for (PurchaseProduct pp : purchase.getProductList())
-                    stores.get(pp.getStoreId()).addToProductQuantity(pp.getProductId(), pp.getQuantity());
-                throw new Exception("Purchase failed, fund demander hasn't managed to charge.");
+            PaymentDetails payDetails = g.getPaymentDetails();
+            SupplyDetails supplyDetails = g.getSupplyDetails();
+            if (supplySystem.supply(supplyDetails.getName(), supplyDetails.getAddress(), supplyDetails.getCity(), supplyDetails.getCountry(), supplyDetails.getZip()) == -1){
+                logger.info("Purchase failed, supply system charge failed");
+                throw new Exception("Purchase failed, supply system hasn't managed to charge");
             }
+            if (paymentSystem.pay(payDetails.getCreditCardNumber(),payDetails.getMonth(),payDetails.getYear(),payDetails.getHolder(),payDetails.getCvv(),payDetails.getCardId()) == -1){ //purchase.getTotalPrice())) {
+                logger.info("Purchase failed, payment system charge failed");
+                throw new Exception("Purchase failed, payment system hasn't managed to charge");
+            }
+            purchase = g.purchaseShoppingCart();
             for (PurchaseProduct p : purchase.getProductList()) {
                 logger.info(String.format("purchase completed you just bought %d from %s", p.getQuantity(), p.getProductName()));
             }
@@ -736,11 +740,11 @@ public class Market {
         logger.info(String.format("%d DiscountPolicies is removed from %d store by %s", policyId, storeId, sessionId));
     }
 
-    public void addPaymentMethod(String sessionId, String cardNumber, String month, String year, String cvv) throws Exception {
+    public void addPaymentMethod(String sessionId, String cardNumber, String month, String year, String cvv, String holder, String cardId) throws Exception {
         logger.info("trying to Payment details");
         isMarketOpen();
         Guest g = sessionManager.getSession(sessionId);
-        g.addPaymentMethod(cardNumber, month, year, cvv);
+        g.addPaymentMethod(cardNumber, month, year, cvv, holder, cardId);
         logger.info(String.format("Payment details of %s are added", sessionId));
     }
 
