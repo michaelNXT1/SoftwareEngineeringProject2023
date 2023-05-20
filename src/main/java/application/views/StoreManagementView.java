@@ -261,7 +261,6 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         VerticalLayout vl = new VerticalLayout();
         vl.add(header, errorSuccessLabel, purchasePolicyTypeSelect);
 
-
         //fields
         Select<String> categoryField = new Select<>();
         Select<String> productField = new Select<>();
@@ -468,6 +467,10 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         Dialog dialog = new Dialog();
         Header header = new Header();
         header.setText("Modify Discount");
+        Button addPolicyButton = new Button("Add new Discount Policy", event -> {
+            dialog.close();
+            addDiscountPolicyDialog(discount);
+        });
         Button joinButton = new Button("Join Policies", event -> {
             dialog.close();
             joinDiscountPolicies(discount);
@@ -500,12 +503,119 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         Button cancelButton = new Button("Cancel", event -> dialog.close());
 
         VerticalLayout vl = new VerticalLayout();
-        vl.add(header, joinButton, removePolicyButton, removeButton, cancelButton);
+        vl.add(header, addPolicyButton, joinButton, removePolicyButton, removeButton, cancelButton);
         dialog.add(vl);
         vl.setJustifyContentMode(JustifyContentMode.CENTER);
         vl.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         vl.getStyle().set("text-align", "center");
         dialog.open();
+    }
+
+    private void addDiscountPolicyDialog(DiscountDTO discount) {
+        Dialog dialog = new Dialog();
+        Header header = new Header();
+        header.setText("Add New Discount Policy");
+        Label errorSuccessLabel = new Label();
+        Select<String> discountPolicyTypeSelect = new Select<>();
+        discountPolicyTypeSelect.setItems(marketController.getDiscountPolicyTypes().value);
+        discountPolicyTypeSelect.setPlaceholder("Discount policy type");
+        VerticalLayout vl = new VerticalLayout();
+        vl.add(header, errorSuccessLabel, discountPolicyTypeSelect);
+
+        //fields
+        Select<String> productField = new Select<>();
+        IntegerField quantityField = new IntegerField();
+        NumberField bagTotalField = new NumberField();
+        Checkbox allowNone = new Checkbox();
+        Map<String, Integer> productNameMap = productMap.keySet().stream().collect(Collectors.toMap(ProductDTO::getProductName, ProductDTO::getProductId));
+        productField.setItems(productNameMap.keySet().stream().sorted().collect(Collectors.toList()));
+
+        productField.setPlaceholder("Product");
+        bagTotalField.setPlaceholder("Bag total");
+        allowNone.setLabel("Allow none");
+
+        List<Component> components = new ArrayList<>();
+        components.add(productField);
+        components.add(bagTotalField);
+        components.add(allowNone);
+
+        Button submitButton = new Button("Submit");
+        submitButton.setEnabled(false);
+        final Registration[] clickListener = new Registration[1];
+        components.forEach(component -> component.setVisible(false));
+
+        discountPolicyTypeSelect.addValueChangeListener(e -> {
+            submitButton.setEnabled(true);
+            switch (e.getValue()) {
+                case "Product Max Quantity" -> {
+                    if (clickListener[0] != null)
+                        clickListener[0].remove();
+                    components.forEach(component -> component.setVisible(false));
+                    productField.setVisible(true);
+                    quantityField.setVisible(true);
+                    quantityField.setPlaceholder("Max quantity");
+                    clickListener[0] = submitButton.addClickListener(event -> {
+                        Response response = marketController.addMaxQuantityDiscountPolicy(
+                                MainLayout.getSessionId(),
+                                storeId,
+                                discount.getDiscountId(),
+                                productNameMap.get(productField.getValue()),
+                                quantityField.getValue());
+                        if (response.getError_occurred())
+                            errorSuccessLabel.setText(response.error_message);
+                        else
+                            successMessage(dialog, errorSuccessLabel, "Policy added successfully");
+                    });
+                }
+                case "Product Min Quantity" -> {
+                    if (clickListener[0] != null)
+                        clickListener[0].remove();
+                    components.forEach(component -> component.setVisible(false));
+                    productField.setVisible(true);
+                    quantityField.setVisible(true);
+                    quantityField.setPlaceholder("Min quantity");
+                    clickListener[0] = submitButton.addClickListener(event -> {
+                        Response response = marketController.addMinQuantityDiscountPolicy(
+                                MainLayout.getSessionId(),
+                                storeId,
+                                discount.getDiscountId(),
+                                productNameMap.get(productField.getValue()),
+                                quantityField.getValue(),
+                                allowNone.getValue());
+                        if (response.getError_occurred())
+                            errorSuccessLabel.setText(response.error_message);
+                        else
+                            successMessage(dialog, errorSuccessLabel, "Policy added successfully");
+                    });
+                }
+                case "Min Bag Total" -> {
+                    if (clickListener[0] != null)
+                        clickListener[0].remove();
+                    components.forEach(component -> component.setVisible(false));
+                    bagTotalField.setVisible(true);
+                    clickListener[0] = submitButton.addClickListener(event -> {
+                        Response response = marketController.addMinBagTotalDiscountPolicy(
+                                MainLayout.getSessionId(),
+                                storeId,
+                                discount.getDiscountId(),
+                                bagTotalField.getValue());
+                        if (response.getError_occurred())
+                            errorSuccessLabel.setText(response.error_message);
+                        else
+                            successMessage(dialog, errorSuccessLabel, "Policy added successfully");
+                    });
+                }
+                default -> {
+                }
+            }
+        });
+        vl.add(productField, bagTotalField, quantityField, allowNone, submitButton);
+        dialog.add(vl);
+        vl.setJustifyContentMode(JustifyContentMode.CENTER);
+        vl.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+        vl.getStyle().set("text-align", "center");
+        dialog.open();
+
     }
 
     private void joinDiscountPolicies(DiscountDTO discount) {

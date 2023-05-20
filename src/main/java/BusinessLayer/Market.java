@@ -727,13 +727,13 @@ public class Market {
         logger.info(String.format("%s added min quantity discount policy to %d store", sessionId, storeId));
     }
 
-    public void addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity, boolean allowNone) throws Exception {
+    public void addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity) throws Exception {
         logger.info("trying to addMaxQuantityDiscountPolicy");
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
-        p.addMaxQuantityDiscountPolicy(discountId, productId, maxQuantity, allowNone);
+        p.addMaxQuantityDiscountPolicy(discountId, productId, maxQuantity);
         logger.info(String.format("%s added max quantity discount policy to %d store", sessionId, storeId));
 
     }
@@ -967,6 +967,10 @@ public class Market {
 
     public List<String> getPurchasePolicyTypes() {
         return BasePurchasePolicy.getPurchasePolicyTypes();
+    }
+
+    public List<String> getDiscountPolicyTypes() {
+        return BaseDiscountPolicy.getDiscountPolicyTypes();
     }
 
     public void setPaymentSystem(IPaymentSystem ps) {

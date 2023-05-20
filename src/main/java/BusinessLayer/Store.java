@@ -260,9 +260,9 @@ public class Store {
         productDiscountPolicyMap.get(d).add(new MinQuantityDiscountPolicy(purchasePolicyCounter++, checkProductExists(productId), minQuantity, allowNone));
     }
 
-    public void addMaxQuantityDiscountPolicy(int discountId, int productId, int maxQuantity, boolean allowNone) throws Exception {
+    public void addMaxQuantityDiscountPolicy(int discountId, int productId, int maxQuantity) throws Exception {
         Discount d = findDiscount(discountId);
-        productDiscountPolicyMap.get(d).add(new MaxQuantityDiscountPolicy(purchasePolicyCounter++, checkProductExists(productId), maxQuantity, allowNone));
+        productDiscountPolicyMap.get(d).add(new MaxQuantityDiscountPolicy(purchasePolicyCounter++, checkProductExists(productId), maxQuantity));
     }
 
     public void addMinBagTotalDiscountPolicy(int discountId, double minTotal) throws Exception {

@@ -153,8 +153,8 @@ public class StoreFounder implements Position {
     }
 
     @Override
-    public void addMaxQuantityDiscountPolicy(int discountId, int productId, int maxQuantity, boolean allowNone) throws Exception {
-        store.addMaxQuantityDiscountPolicy(discountId, productId, maxQuantity, allowNone);
+    public void addMaxQuantityDiscountPolicy(int discountId, int productId, int maxQuantity) throws Exception {
+        store.addMaxQuantityDiscountPolicy(discountId, productId, maxQuantity);
     }
 
     @Override

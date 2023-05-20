@@ -55,7 +55,7 @@ public interface Position {
     //Discount policies
     void addMinQuantityDiscountPolicy(int discountId, int productId, int minQuantity, boolean allowNone) throws Exception;
 
-    void addMaxQuantityDiscountPolicy(int discountId, int productId, int maxQuantity, boolean allowNone) throws Exception;
+    void addMaxQuantityDiscountPolicy(int discountId, int productId, int maxQuantity) throws Exception;
 
     void addMinBagTotalDiscountPolicy(int discountId, double minTotal) throws Exception;
 

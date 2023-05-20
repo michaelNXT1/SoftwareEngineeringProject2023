@@ -391,8 +391,8 @@ public class MarketController implements IMarketController {
     }
 
     @Override
-    public Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity, boolean allowNone) {
-        return null;
+    public Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity) {
+        return marketManager.addMaxQuantityDiscountPolicy(sessionId, storeId, discountId, productId, maxQuantity);
     }
 
     @Override
@@ -536,6 +536,11 @@ public class MarketController implements IMarketController {
     @Override
     public ResponseT<List<String>> getPurchasePolicyTypes() {
         return marketManager.getPurchasePolicyTypes();
+    }
+
+    @Override
+    public ResponseT<List<String>> getDiscountPolicyTypes() {
+        return marketManager.getDiscountPolicyTypes();
     }
 
 
