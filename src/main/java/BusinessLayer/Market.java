@@ -606,9 +606,10 @@ public class Market {
         sessionManager.getSessionForSystemManager(sessionId);
         Map<StoreDTO, List<PurchaseDTO>> ret = new HashMap<>();
         for (Store s : stores.values()) {
+            StoreDTO sDTO=new StoreDTO(s);
             ret.put(new StoreDTO(s), new ArrayList<>());
             for (Purchase p : s.getPurchaseList()) {
-                ret.get(s).add(new PurchaseDTO(p));
+                ret.get(sDTO).add(new PurchaseDTO(p));
             }
         }
         logger.info(String.format("%s get his purchases", sessionId));
@@ -683,7 +684,7 @@ public class Market {
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
         p.addProductDiscount(productId, discountPercentage, compositionType);
-        logger.info(String.format("%s added product discount of %d to %d store", sessionId, storeId));
+        logger.info(String.format("%s added product discount to %d store", sessionId, storeId));
     }
 
     public void addCategoryDiscount(String sessionId, int storeId, String category, double discountPercentage, int compositionType) throws Exception {
@@ -703,7 +704,7 @@ public class Market {
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
         p.addStoreDiscount(discountPercentage, compositionType);
-        logger.info(String.format("%s added store discount of %d percentage to %d store", sessionId, discountPercentage, storeId));
+        logger.info(String.format("%s added store discount of %f percentage to %d store", sessionId, discountPercentage, storeId));
     }
 
     public void addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone) throws Exception {
@@ -744,7 +745,7 @@ public class Market {
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
         p.joinDiscountPolicies(policyId1, policyId2, operator);
-        logger.info(String.format("%d and %d DiscountPolicies joined with %d operator in %d store by %s", policyId1, policyId2, storeId, sessionId));
+        logger.info(String.format("%d and %d DiscountPolicies joined with %d operator in %s", policyId1, policyId2, operator, sessionId));
     }
 
     public void removeDiscountPolicy(String sessionId, int storeId, int policyId) throws Exception {

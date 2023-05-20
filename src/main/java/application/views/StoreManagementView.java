@@ -132,14 +132,14 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         purchasePoliciesHL.setFlexGrow(1, purchasePoliciesDiv);
         purchasePoliciesHL.setWidthFull();
         purchasePolicyGrid = new Grid<>(BasePurchasePolicyDTO.class, false);
-        purchasePolicyGrid.addColumn(basePurchasePolicyDTO -> purchasePolicyList.indexOf(basePurchasePolicyDTO) + 1).setHeader("#").setSortable(true).setTextAlign(ColumnTextAlign.START);
+        purchasePolicyGrid.addColumn(basePurchasePolicyDTO -> purchasePolicyList.indexOf(basePurchasePolicyDTO) + 1).setHeader("#").setSortable(true).setTextAlign(ColumnTextAlign.START).setFlexGrow(0);
         purchasePolicyGrid.addComponentColumn(purchasePolicy -> {
             Div div = new Div();
             div.getStyle().set("white-space", "pre-wrap");
             div.setText(purchasePolicy.toString());
             return div;
         }).setHeader("Policy Description").setSortable(true).setTextAlign(ColumnTextAlign.START);
-        purchasePolicyGrid.addComponentColumn(purchasePolicy -> new Button("Remove", e -> removePurchasePolicyDialog(purchasePolicy.getPolicyId())));
+        purchasePolicyGrid.addComponentColumn(purchasePolicy -> new Button("Remove", e -> removePurchasePolicyDialog(purchasePolicy.getPolicyId()))).setFlexGrow(0).setAutoWidth(true);
         purchasePolicies.add(purchasePoliciesHL, purchasePolicyGrid);
         return purchasePolicies;
     }
@@ -152,9 +152,10 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         productDiscountHL.setFlexGrow(1, div);
         productDiscountHL.setWidthFull();
         productDiscountGrid = new Grid<>(ProductDiscountDTO.class, false);
-        productDiscountGrid.addColumn(this::getProductName).setHeader("Product Name").setSortable(true).setTextAlign(ColumnTextAlign.CENTER).setKey("Id");
-        productDiscountGrid.addColumn(new NumberRenderer<>(DiscountDTO::getDiscountPercentage, NumberFormat.getPercentInstance())).setHeader("Discount Percentage").setSortable(true).setTextAlign(ColumnTextAlign.CENTER);
+        productDiscountGrid.addColumn(this::getProductName).setHeader("Product Name").setSortable(true);
+        productDiscountGrid.addColumn(new NumberRenderer<>(DiscountDTO::getDiscountPercentage, NumberFormat.getPercentInstance())).setHeader(generateColumnHeader()).setSortable(true).setTextAlign(ColumnTextAlign.CENTER);
         productDiscountGrid.addComponentColumn(this::getPolicyToString).setHeader("Policy condition").setSortable(true).setTextAlign(ColumnTextAlign.CENTER);
+        productDiscountGrid.addComponentColumn(discountDTO -> new Button("Modify", e -> modifyDiscountDialog(discountDTO))).setFlexGrow(0).setAutoWidth(true);
         productDiscountLayout.add(productDiscountHL, productDiscountGrid);
         return productDiscountLayout;
     }
@@ -168,8 +169,9 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         categoryDiscountHL.setWidthFull();
         categoryDiscountGrid = new Grid<>(CategoryDiscountDTO.class, false);
         categoryDiscountGrid.addColumn(CategoryDiscountDTO::getCategory).setHeader("Category").setSortable(true).setTextAlign(ColumnTextAlign.CENTER).setKey("Id");
-        categoryDiscountGrid.addColumn(new NumberRenderer<>(DiscountDTO::getDiscountPercentage, NumberFormat.getPercentInstance())).setHeader("Discount Percentage").setSortable(true).setTextAlign(ColumnTextAlign.CENTER);
+        categoryDiscountGrid.addColumn(new NumberRenderer<>(DiscountDTO::getDiscountPercentage, NumberFormat.getPercentInstance())).setHeader(generateColumnHeader()).setSortable(true).setTextAlign(ColumnTextAlign.CENTER);
         categoryDiscountGrid.addComponentColumn(this::getPolicyToString).setHeader("Policy condition").setSortable(true).setTextAlign(ColumnTextAlign.CENTER);
+        categoryDiscountGrid.addComponentColumn(discountDTO -> new Button("Modify", e -> modifyDiscountDialog(discountDTO))).setFlexGrow(0).setAutoWidth(true);
         categoryDiscountLayout.add(categoryDiscountHL, categoryDiscountGrid);
         return categoryDiscountLayout;
     }
@@ -182,23 +184,11 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         storeDiscountHL.setFlexGrow(1, div);
         storeDiscountHL.setWidthFull();
         storeDiscountGrid = new Grid<>(StoreDiscountDTO.class, false);
-        storeDiscountGrid.addColumn(new NumberRenderer<>(DiscountDTO::getDiscountPercentage, NumberFormat.getPercentInstance())).setHeader("Discount Percentage").setSortable(true).setTextAlign(ColumnTextAlign.CENTER);
+        storeDiscountGrid.addColumn(new NumberRenderer<>(DiscountDTO::getDiscountPercentage, NumberFormat.getPercentInstance())).setHeader(generateColumnHeader()).setSortable(true).setTextAlign(ColumnTextAlign.CENTER);
         storeDiscountGrid.addComponentColumn(this::getPolicyToString).setHeader("Policy condition").setSortable(true).setTextAlign(ColumnTextAlign.CENTER);
+        storeDiscountGrid.addComponentColumn(discountDTO -> new Button("Modify", e -> modifyDiscountDialog(discountDTO))).setFlexGrow(0).setAutoWidth(true);
         storeDiscountLayout.add(storeDiscountHL, storeDiscountGrid);
         return storeDiscountLayout;
-    }
-
-    private Div getPolicyToString(DiscountDTO discountDTO) {
-        List<BaseDiscountPolicyDTO> ls = discountPolicyMap.get(discountDTO);
-        StringBuilder ret = new StringBuilder();
-        Div div = new Div();
-        div.getStyle().set("white-space", "pre-wrap");
-        div.setText("None");
-        if (ls.isEmpty()) return div;
-        for (BaseDiscountPolicyDTO bdpDTO : ls)
-            ret.append(bdpDTO.toString()).append(ls.indexOf(bdpDTO) != ls.size() - 1 ? "\nAND\n" : "");
-        div.setText(ret.toString());
-        return div;
     }
 
     private String getProductName(ProductDiscountDTO productDiscountDTO) {
@@ -474,6 +464,124 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         dialog.open();
     }
 
+    private void modifyDiscountDialog(DiscountDTO discount) {
+        Dialog dialog = new Dialog();
+        Header header = new Header();
+        header.setText("Modify Discount");
+        Button joinButton = new Button("Join Policies", event -> {
+            dialog.close();
+            joinDiscountPolicies(discount);
+        });
+        Button removePolicyButton = new Button("Remove Policy", event -> {
+            dialog.close();
+            removeDiscountPolicy(discount);
+        });
+        Button removeButton = new Button("Remove Discount", event -> {
+            dialog.close();
+            removeDiscount(discount);
+        });
+        Button cancelButton = new Button("Cancel", event -> dialog.close());
+
+        VerticalLayout vl = new VerticalLayout();
+        vl.add(header, joinButton, removePolicyButton, removeButton, cancelButton);
+        dialog.add(vl);
+        vl.setJustifyContentMode(JustifyContentMode.CENTER);
+        vl.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+        vl.getStyle().set("text-align", "center");
+        dialog.open();
+    }
+
+    private void joinDiscountPolicies(DiscountDTO discount) {
+        Map<String, Integer> discountPolicyNameMap = discountPolicyMap.get(discount).stream().collect(Collectors.toMap(BaseDiscountPolicyDTO::toString, BaseDiscountPolicyDTO::getPolicyId));
+        Dialog dialog = new Dialog();
+        Header header = new Header();
+        header.setText("Join Discount Policies");
+        Label errorSuccessLabel = new Label();
+        Select<String> leftPolicySelect = new Select<>();
+        Select<String> rightPolicySelect = new Select<>();
+        Select<String> joinOperatorSelect = new Select<>();
+        Div joinPreview = new Div();
+        Button submitButton = new Button("Submit");
+
+        joinPreview.getStyle().set("white-space", "pre-wrap");
+        leftPolicySelect.setItems(discountPolicyNameMap.keySet().stream().sorted().collect(Collectors.toList()));
+        rightPolicySelect.setItems(discountPolicyNameMap.keySet().stream().sorted().collect(Collectors.toList()));
+        joinOperatorSelect.setItems("Or", "Xor");
+        leftPolicySelect.setPlaceholder("Policy #1");
+        rightPolicySelect.setPlaceholder("Policy #2");
+        joinOperatorSelect.setPlaceholder("Join Operator");
+
+        leftPolicySelect.addValueChangeListener(e -> rightPolicySelect.setItemEnabledProvider(item -> !e.getValue().equals(item)));
+        rightPolicySelect.addValueChangeListener(e -> leftPolicySelect.setItemEnabledProvider(item -> !e.getValue().equals(item)));
+        joinOperatorSelect.addValueChangeListener(e -> {
+            switch (e.getValue()) {
+                case "Or" -> joinPreview.setText(leftPolicySelect.getValue() + "\nOR\n" + rightPolicySelect.getValue());
+                case "Xor" ->
+                        joinPreview.setText(leftPolicySelect.getValue() + "\nOR\n" + rightPolicySelect.getValue() + "\nbut not both.");
+            }
+        });
+        submitButton.addClickListener(e -> {
+            int joinOperator = -1;
+            switch (joinOperatorSelect.getValue()) {
+                case "Or" -> joinOperator = 0;
+                case "Xor" -> joinOperator = 1;
+            }
+            Response response = marketController.joinDiscountPolicies(
+                    MainLayout.getSessionId(),
+                    storeId,
+                    discountPolicyNameMap.get(leftPolicySelect.getValue()),
+                    discountPolicyNameMap.get(rightPolicySelect.getValue()),
+                    joinOperator);
+            if (response.getError_occurred())
+                errorSuccessLabel.setText(response.error_message);
+            else
+                successMessage(dialog, errorSuccessLabel, "Policies joined successfully");
+        });
+        VerticalLayout vl = new VerticalLayout();
+        vl.add(header, errorSuccessLabel, leftPolicySelect, rightPolicySelect, joinOperatorSelect, joinPreview, submitButton);
+        dialog.add(vl);
+        vl.setJustifyContentMode(JustifyContentMode.CENTER);
+        vl.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+        vl.getStyle().set("text-align", "center");
+        dialog.open();
+
+    }
+
+    private void removeDiscountPolicy(DiscountDTO discount) {
+        Map<String, Integer> discountPolicyNameMap = discountPolicyMap.get(discount).stream().collect(Collectors.toMap(BaseDiscountPolicyDTO::toString, BaseDiscountPolicyDTO::getPolicyId));
+        Dialog dialog = new Dialog();
+        Header header = new Header();
+        header.setText("Remove Discount Policy");
+        Label errorSuccessLabel = new Label();
+        Select<String> policySelect = new Select<>();
+        policySelect.setItems(discountPolicyNameMap.keySet().stream().sorted().collect(Collectors.toList()));
+        policySelect.setPlaceholder("Policy");
+        Button submitButton = new Button("Submit");
+        submitButton.addClickListener(e -> {
+            Response response = marketController.removeDiscountPolicy(
+                    MainLayout.getSessionId(),
+                    storeId,
+                    discountPolicyNameMap.get(policySelect.getValue()));
+            if (response.getError_occurred())
+                errorSuccessLabel.setText(response.error_message);
+            else
+                successMessage(dialog, errorSuccessLabel, "Policy removed successfully");
+        });
+        VerticalLayout vl = new VerticalLayout();
+        vl.add(header, errorSuccessLabel, policySelect, submitButton);
+        dialog.add(vl);
+        vl.setJustifyContentMode(JustifyContentMode.CENTER);
+        vl.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+        vl.getStyle().set("text-align", "center");
+        dialog.open();
+
+    }
+
+    private void removeDiscount(DiscountDTO discount) {
+        Map<String, Integer> purchasePolicyNameMap = discountPolicyMap.get(discount).stream().collect(Collectors.toMap(BaseDiscountPolicyDTO::toString, BaseDiscountPolicyDTO::getPolicyId));
+
+    }
+
     private static void successMessage(Dialog dialog, Label errorSuccessLabel, String msg) {
         errorSuccessLabel.setText("");
         dialog.close();
@@ -482,6 +590,25 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         successVl.add(new Label(msg), new Button("Close", e -> successDialog.close()));
         successDialog.add(successVl);
         successDialog.open();
+    }
+
+    private Span generateColumnHeader() {
+        Span header = new Span("Discount<br/>Percentage");
+        header.getElement().setProperty("innerHTML", "Discount<br/>Percentage");
+        return header;
+    }
+
+    private Div getPolicyToString(DiscountDTO discountDTO) {
+        List<BaseDiscountPolicyDTO> ls = discountPolicyMap.get(discountDTO);
+        StringBuilder ret = new StringBuilder();
+        Div div = new Div();
+        div.getStyle().set("white-space", "pre-wrap");
+        div.setText("None");
+        if (ls.isEmpty()) return div;
+        for (BaseDiscountPolicyDTO bdpDTO : ls)
+            ret.append(bdpDTO.toString()).append(ls.indexOf(bdpDTO) != ls.size() - 1 ? "\nAND\n" : "");
+        div.setText(ret.toString());
+        return div;
     }
 
 }

@@ -280,16 +280,15 @@ public class Store {
                 baseDiscountPolicies.add(new DiscountPolicyOperation(discountPolicyCounter++, found_1, operator, found_2));
                 baseDiscountPolicies.remove(found_1);
                 baseDiscountPolicies.remove(found_2);
+                return;
             }
         }
         if (found_1 == null) {
             logger.error("couldn't find discount policy of id" + policyId1);
             throw new Exception("couldn't find discount policy of id" + policyId1);
         }
-        if (found_2 == null) {
-            logger.error("couldn't find discount policy of id" + policyId2);
-            throw new Exception("couldn't find discount policy of id" + policyId2);
-        }
+        logger.error("couldn't find discount policy of id" + policyId2);
+        throw new Exception("couldn't find discount policy of id" + policyId2);
     }
 
     public void removeDiscountPolicy(int policyId) throws Exception {
@@ -300,7 +299,7 @@ public class Store {
     }
 
     private BaseDiscountPolicy findDiscountPolicy(int policyId) throws Exception {
-        BaseDiscountPolicy bp = productDiscountPolicyMap.values().stream().flatMap(Collection::stream).collect(Collectors.toList()).stream().filter(p -> p.getPolicyId() == policyId).findFirst().orElse(null);
+        BaseDiscountPolicy bp = productDiscountPolicyMap.values().stream().flatMap(Collection::stream).toList().stream().filter(p -> p.getPolicyId() == policyId).findFirst().orElse(null);
         if (bp == null) {
             logger.error("couldn't find discount policy of id" + policyId);
             throw new Exception("couldn't find discount policy of id" + policyId);

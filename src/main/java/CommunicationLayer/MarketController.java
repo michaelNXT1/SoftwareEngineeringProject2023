@@ -397,12 +397,12 @@ public class MarketController implements IMarketController {
 
     @Override
     public Response joinDiscountPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator) {
-        return null;
+        return marketManager.joinDiscountPolicies(sessionId, storeId, policyId1, policyId2, operator);
     }
 
     @Override
     public Response removeDiscountPolicy(String sessionId, int storeId, int policyId) {
-        return null;
+        return marketManager.removeDiscountPolicy(sessionId, storeId, policyId);
     }
 
 
