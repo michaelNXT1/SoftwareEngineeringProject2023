@@ -363,20 +363,20 @@ public class Market {
         Purchase purchase;
         synchronized (purchaseLock) {
             PaymentDetails payDetails = g.getPaymentDetails();
-            if (payDetails == null){
+            if (payDetails == null) {
                 logger.info("Purchase failed, need to add payment Details first");
                 throw new Exception("Purchase failed, need to add payment Details first");
             }
             SupplyDetails supplyDetails = g.getSupplyDetails();
-            if (supplyDetails == null){
+            if (supplyDetails == null) {
                 logger.info("Purchase failed, need to add supply Details first");
                 throw new Exception("Purchase failed, need to add supply Details first");
             }
-            if (supplySystem.supply(supplyDetails.getName(), supplyDetails.getAddress(), supplyDetails.getCity(), supplyDetails.getCountry(), supplyDetails.getZip()) == -1){
+            if (supplySystem.supply(supplyDetails.getName(), supplyDetails.getAddress(), supplyDetails.getCity(), supplyDetails.getCountry(), supplyDetails.getZip()) == -1) {
                 logger.info("Purchase failed, supply system charge failed");
                 throw new Exception("Purchase failed, supply system hasn't managed to charge");
             }
-            if (paymentSystem.pay(payDetails.getCreditCardNumber(),payDetails.getMonth(),payDetails.getYear(),payDetails.getHolder(),payDetails.getCvv(),payDetails.getCardId()) == -1){ //purchase.getTotalPrice())) {
+            if (paymentSystem.pay(payDetails.getCreditCardNumber(), payDetails.getMonth(), payDetails.getYear(), payDetails.getHolder(), payDetails.getCvv(), payDetails.getCardId()) == -1) { //purchase.getTotalPrice())) {
                 logger.info("Purchase failed, payment system charge failed");
                 throw new Exception("Purchase failed, payment system hasn't managed to charge");
             }
@@ -606,7 +606,7 @@ public class Market {
         sessionManager.getSessionForSystemManager(sessionId);
         Map<StoreDTO, List<PurchaseDTO>> ret = new HashMap<>();
         for (Store s : stores.values()) {
-            StoreDTO sDTO=new StoreDTO(s);
+            StoreDTO sDTO = new StoreDTO(s);
             ret.put(new StoreDTO(s), new ArrayList<>());
             for (Purchase p : s.getPurchaseList()) {
                 ret.get(sDTO).add(new PurchaseDTO(p));
@@ -707,6 +707,16 @@ public class Market {
         logger.info(String.format("%s added store discount of %f percentage to %d store", sessionId, discountPercentage, storeId));
     }
 
+    public void removeDiscount(String sessionId, int storeId, int discountId) throws Exception {
+        logger.info("Trying to remove discount of id " + discountId);
+        isMarketOpen();
+        sessionManager.getSession(sessionId);
+        checkStoreExists(storeId);
+        Position p = checkPositionLegal(sessionId, storeId);
+        p.removeDiscount(discountId);
+        logger.info("successfully removed discount");
+    }
+
     public void addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone) throws Exception {
         logger.info("trying to addMinQuantityDiscountPolicy");
         isMarketOpen();
@@ -765,7 +775,8 @@ public class Market {
         g.addPaymentMethod(cardNumber, month, year, cvv, holder, cardId);
         logger.info(String.format("Payment details of %s are added", sessionId));
     }
-    public void addSupplyDetails(String sessionId, String name,String address, String city, String country, String zip) throws Exception {
+
+    public void addSupplyDetails(String sessionId, String name, String address, String city, String country, String zip) throws Exception {
         logger.info("trying to add Supply details");
         isMarketOpen();
         Guest g = sessionManager.getSession(sessionId);
@@ -953,15 +964,16 @@ public class Market {
         }
         return ret;
     }
-  
+
     public List<String> getPurchasePolicyTypes() {
         return BasePurchasePolicy.getPurchasePolicyTypes();
     }
-    public void setPaymentSystem(IPaymentSystem ps){
+
+    public void setPaymentSystem(IPaymentSystem ps) {
         paymentSystem.setPaymentSystem(ps);
     }
-      
-    public void setSupplySystem(ISupplySystem ps){
+
+    public void setSupplySystem(ISupplySystem ps) {
         supplySystem.setSupplySystem(ps);
     }
 }

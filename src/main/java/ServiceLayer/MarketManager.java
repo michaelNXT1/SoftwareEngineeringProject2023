@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MarketManager implements IMarketManager {
-    private Market market;
+    private final Market market;
 
     public MarketManager() {
         this.market = new Market();
@@ -439,6 +439,16 @@ public class MarketManager implements IMarketManager {
     public Response addStoreDiscount(String sessionId, int storeId, double discountPercentage, int compositionType) {
         try {
             market.addStoreDiscount(sessionId, storeId, discountPercentage, compositionType);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
+    @Override
+    public Response removeDiscount(String sessionId, int storeId, int discountId) {
+        try {
+            market.removeDiscount(sessionId, storeId, discountId);
             return new Response();
         } catch (Exception e) {
             return new Response(e.getMessage());

@@ -7,9 +7,9 @@ import java.util.List;
 
 public class StoreOwner implements Position {
 
-    private Store store;
-    private Member assigner;
-    private SystemLogger logger;
+    private final Store store;
+    private final Member assigner;
+    private final SystemLogger logger;
 
     public StoreOwner(Store store, Member assigner) {
         this.store = store;
@@ -21,6 +21,7 @@ public class StoreOwner implements Position {
     public Store getStore() {
         return store;
     }
+
     @Override
     public Member getAssigner() {
         return assigner;
@@ -45,12 +46,12 @@ public class StoreOwner implements Position {
 
 
     @Override
-    public void setPositionOfMemberToStoreOwner(Store store, Member member,  Member assigner) throws Exception {
+    public void setPositionOfMemberToStoreOwner(Store store, Member member, Member assigner) throws Exception {
         member.setToStoreOwner(store, assigner);
     }
 
     @Override
-    public void removeProductFromStore(int productID) throws Exception{
+    public void removeProductFromStore(int productID) throws Exception {
         store.removeProduct(productID);
     }
 
@@ -85,7 +86,7 @@ public class StoreOwner implements Position {
 
     @Override
     public void closeStore() throws IllegalAccessException {
-        logger.error(String.format("This member hasn't permission to close store"));
+        logger.error("This member hasn't permission to close store");
         throw new IllegalAccessException("This member hasn't permission to close store");
     }
 
@@ -96,8 +97,8 @@ public class StoreOwner implements Position {
 
     @Override
     public void removeStoreOwner(Member storeOwnerToRemove, Guest m) throws Exception {
-        if (!assigner.equals(m)){
-            logger.error(String.format("%s is not the assigner of %s",m.getUsername(), storeOwnerToRemove.getUsername()));
+        if (!assigner.equals(m)) {
+            logger.error(String.format("%s is not the assigner of %s", m.getUsername(), storeOwnerToRemove.getUsername()));
             throw new Exception("can remove only store owner assigned by him");
         }
         storeOwnerToRemove.notBeingStoreOwner(m, getStore());
@@ -140,32 +141,37 @@ public class StoreOwner implements Position {
 
     @Override
     public void addCategoryDiscount(String category, double discountPercentage, int compositionType) throws Exception {
-        store.addCategoryDiscount(category,discountPercentage,compositionType);
+        store.addCategoryDiscount(category, discountPercentage, compositionType);
     }
 
     @Override
     public void addStoreDiscount(double discountPercentage, int compositionType) throws Exception {
-        store.addStoreDiscount(discountPercentage,compositionType);
+        store.addStoreDiscount(discountPercentage, compositionType);
+    }
+
+    @Override
+    public void removeDiscount(int discountId) throws Exception {
+        store.removeDiscount(discountId);
     }
 
     @Override
     public void addMinQuantityDiscountPolicy(int discountId, int productId, int minQuantity, boolean allowNone) throws Exception {
-        store.addMinQuantityDiscountPolicy(discountId,productId,minQuantity,allowNone);
+        store.addMinQuantityDiscountPolicy(discountId, productId, minQuantity, allowNone);
     }
 
     @Override
     public void addMaxQuantityDiscountPolicy(int discountId, int productId, int maxQuantity, boolean allowNone) throws Exception {
-        store.addMaxQuantityDiscountPolicy(discountId,productId,maxQuantity,allowNone);
+        store.addMaxQuantityDiscountPolicy(discountId, productId, maxQuantity, allowNone);
     }
 
     @Override
     public void addMinBagTotalDiscountPolicy(int discountId, double minTotal) throws Exception {
-        store.addMinBagTotalDiscountPolicy(discountId,minTotal);
+        store.addMinBagTotalDiscountPolicy(discountId, minTotal);
     }
 
     @Override
     public void joinDiscountPolicies(int policyId1, int policyId2, int operator) throws Exception {
-        store.joinDiscountPolicies(policyId1,policyId2,operator);
+        store.joinDiscountPolicies(policyId1, policyId2, operator);
     }
 
     @Override

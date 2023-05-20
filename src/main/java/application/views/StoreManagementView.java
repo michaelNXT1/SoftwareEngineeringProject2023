@@ -477,8 +477,25 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
             removeDiscountPolicy(discount);
         });
         Button removeButton = new Button("Remove Discount", event -> {
-            dialog.close();
-            removeDiscount(discount);
+            Dialog dialog2 = new Dialog();
+            VerticalLayout vl2 = new VerticalLayout();
+            Label errorSuccessLabel = new Label();
+            Label label = new Label("Are you sure? This cannot be undone.");
+            HorizontalLayout hl = new HorizontalLayout();
+            hl.add(
+                    new Button("Remove", e -> {
+                        Response response = marketController.removeDiscount(MainLayout.getSessionId(), storeId, discount.getDiscountId());
+                        if (response.getError_occurred()) {
+                            errorSuccessLabel.setText(response.error_message);
+                        } else
+                            successMessage(dialog2, errorSuccessLabel, "Discount removed successfully");
+                        dialog.close();
+                    }),
+                    new Button("Cancel", e -> dialog2.close())
+            );
+            vl2.add(label, hl);
+            dialog2.add(vl2);
+            dialog2.open();
         });
         Button cancelButton = new Button("Cancel", event -> dialog.close());
 
@@ -574,11 +591,6 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         vl.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         vl.getStyle().set("text-align", "center");
         dialog.open();
-
-    }
-
-    private void removeDiscount(DiscountDTO discount) {
-        Map<String, Integer> purchasePolicyNameMap = discountPolicyMap.get(discount).stream().collect(Collectors.toMap(BaseDiscountPolicyDTO::toString, BaseDiscountPolicyDTO::getPolicyId));
 
     }
 

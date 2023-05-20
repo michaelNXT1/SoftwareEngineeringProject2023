@@ -143,6 +143,11 @@ public class StoreFounder implements Position {
     }
 
     @Override
+    public void removeDiscount(int discountId) throws Exception {
+        store.removeDiscount(discountId);
+    }
+
+    @Override
     public void addMinQuantityDiscountPolicy(int discountId, int productId, int minQuantity, boolean allowNone) throws Exception {
         store.addMinQuantityDiscountPolicy(discountId, productId, minQuantity, allowNone);
     }

@@ -127,4 +127,6 @@ public interface IMarketController {
     ResponseT<List<BasePurchasePolicyDTO>> getPurchasePoliciesByStoreId(int storeId);
 
     ResponseT<List<String>> getPurchasePolicyTypes();
+
+    Response removeDiscount(String sessionId, int storeId, int discountId);
 }

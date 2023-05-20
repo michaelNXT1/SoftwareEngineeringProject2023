@@ -381,6 +381,11 @@ public class MarketController implements IMarketController {
     }
 
     @Override
+    public Response removeDiscount(String sessionId, int storeId, int discountId) {
+        return marketManager.removeDiscount(sessionId, storeId, discountId);
+    }
+
+    @Override
     public Response addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone) {
         return marketManager.addMinQuantityDiscountPolicy(sessionId, storeId, discountId, productId, minQuantity, allowNone);
     }

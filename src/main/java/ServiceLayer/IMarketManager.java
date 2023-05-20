@@ -132,6 +132,8 @@ public interface IMarketManager {
 
     ResponseT<List<String>> getPurchasePolicyTypes();
 
+    Response removeDiscount(String sessionId, int storeId, int discountId);
+
 //        Response logoutSystemManager(String sessionId);
 
 //        ResponseT<String> loginSystemManager(String username, String password);

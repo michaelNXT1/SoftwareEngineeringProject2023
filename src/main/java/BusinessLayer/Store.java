@@ -13,7 +13,6 @@ import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 public class Store {
     private final int storeId;
@@ -239,6 +238,11 @@ public class Store {
     public void addStoreDiscount(double discountPercentage, int compositionType) throws Exception {
         Discount discount = new StoreDiscount(discountCounter++, discountPercentage, this, compositionType);
         productDiscountPolicyMap.put(discount, new ArrayList<>());
+    }
+
+    public void removeDiscount(int discountId) throws Exception {
+        Discount d = findDiscount(discountId);
+        productDiscountPolicyMap.remove(d);
     }
 
     private Discount findDiscount(int discountId) throws Exception {
