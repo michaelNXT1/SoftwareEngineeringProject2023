@@ -2,6 +2,7 @@ package application.views;
 
 import BusinessLayer.Product;
 import CommunicationLayer.MarketController;
+import CommunicationLayer.NotificationController;
 import ServiceLayer.DTOs.ProductDTO;
 import ServiceLayer.DTOs.ShoppingCartDTO;
 import ServiceLayer.Response;
@@ -33,7 +34,7 @@ ShoppingCart extends VerticalLayout {
 
     @Autowired
     public ShoppingCart() {
-        this.marketController = MarketController.getInstance();
+        this.marketController = MarketController.getInstance(new NotificationController());
         shoppingCart = marketController.getShoppingCart(MainLayout.getSessionId());
         productDTOList = shoppingCart.getProducts();
         productGrid = new Grid<>(ProductDTO.class, false);

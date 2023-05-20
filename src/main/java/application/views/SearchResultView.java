@@ -1,6 +1,7 @@
 package application.views;
 
 import CommunicationLayer.MarketController;
+import CommunicationLayer.NotificationController;
 import ServiceLayer.DTOs.ProductDTO;
 import ServiceLayer.Response;
 import com.vaadin.flow.component.button.Button;
@@ -24,7 +25,7 @@ public class SearchResultView extends VerticalLayout {
 
     @Autowired
     public SearchResultView() {
-        this.marketController = MarketController.getInstance();
+        this.marketController = MarketController.getInstance(new NotificationController());
         this.header = new Header();
         this.header.setText("Search results for " + marketController.getSearchKeyword(MainLayout.getSessionId()));
         add(header);

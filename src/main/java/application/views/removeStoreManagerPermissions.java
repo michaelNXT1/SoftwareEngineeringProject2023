@@ -1,6 +1,7 @@
 package application.views;
 
 import CommunicationLayer.MarketController;
+import CommunicationLayer.NotificationController;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -26,7 +27,7 @@ public class removeStoreManagerPermissions extends VerticalLayout {
             this.storeIdField = new TextField("storeId");
             this.newPermissionField = new TextField("permission to remove");
             this.submitButton = new Button("remove", e -> removeStoreManagerPermissions());
-            this.marketController = MarketController.getInstance();
+            this.marketController = MarketController.getInstance(new NotificationController());
 
             add(header,usernameField,storeIdField, submitButton);
             setSizeFull();

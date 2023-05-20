@@ -1,6 +1,7 @@
 package application.views;
 
 import CommunicationLayer.MarketController;
+import CommunicationLayer.NotificationController;
 import ServiceLayer.Response;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Header;
@@ -51,7 +52,7 @@ public class AddDiscount extends VerticalLayout {
         compositionType = new Select<>();
         compositionType.setItems("Add", "Max");
         this.submitButton = new Button("add");
-        this.marketController = MarketController.getInstance();
+        this.marketController = MarketController.getInstance(new NotificationController());
 
         add(header, discountType, storeIdField, valueField, discountField, compositionType, submitButton);
         setSizeFull();

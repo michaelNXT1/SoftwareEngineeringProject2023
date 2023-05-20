@@ -2,6 +2,7 @@ package application.views;
 
 
 import CommunicationLayer.MarketController;
+import CommunicationLayer.NotificationController;
 import application.components.AppNav;
 import application.components.AppNavItem;
 import application.views.about.AboutView;
@@ -45,7 +46,7 @@ import java.util.stream.Collectors;
 public class MainLayout extends AppLayout {
     private static String sessionId;
 
-    MarketController marketController = MarketController.getInstance();
+    MarketController marketController = MarketController.getInstance(new NotificationController());
     private TextField searchBox;
     private final Map<String, Runnable> searchActionMap = new HashMap<>();
     private Select<String> searchType;

@@ -1,6 +1,7 @@
 package application.views;
 
 import CommunicationLayer.MarketController;
+import CommunicationLayer.NotificationController;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.notification.Notification;
@@ -43,7 +44,7 @@ public class AddPaymentMethod extends VerticalLayout {
         hl.add(monthSelect, yearSelect);
         this.cvvField = new TextField("cvv");
         this.submitButton = new Button("add", e -> addPaymentMethod());
-        this.marketController = MarketController.getInstance();
+        this.marketController = MarketController.getInstance(new NotificationController());
 
         add(header, cardNumberField,hl, cvvField, submitButton);
         setSizeFull();

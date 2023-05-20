@@ -1,6 +1,7 @@
 package application.views;
 
 import CommunicationLayer.MarketController;
+import CommunicationLayer.NotificationController;
 import ServiceLayer.DTOs.Discounts.CategoryDiscountDTO;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
 import ServiceLayer.DTOs.Discounts.ProductDiscountDTO;
@@ -56,7 +57,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
 
     @Autowired
     public StoreManagementView() {
-        this.marketController = MarketController.getInstance();
+        this.marketController = MarketController.getInstance(new NotificationController());
         this.header = new Header();
         add(header);
 

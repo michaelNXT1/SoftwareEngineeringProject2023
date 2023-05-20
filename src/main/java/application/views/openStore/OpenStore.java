@@ -1,6 +1,7 @@
 package application.views.openStore;
 
 import CommunicationLayer.MarketController;
+import CommunicationLayer.NotificationController;
 import application.views.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Header;
@@ -23,7 +24,7 @@ public class OpenStore  extends VerticalLayout {
             this.header.setText("Open Store");
             this.storeNameField = new TextField("store name");
             this.submitButton = new Button("open", e -> openStore());
-            this.marketController = MarketController.getInstance();
+            this.marketController = MarketController.getInstance(new NotificationController());
 
             add(header,storeNameField, submitButton);
             setSizeFull();

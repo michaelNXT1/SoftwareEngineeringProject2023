@@ -2,6 +2,7 @@ package application.views.helloworld;
 
 import CommunicationLayer.IMarketController;
 import CommunicationLayer.MarketController;
+import CommunicationLayer.NotificationController;
 import application.views.MainLayout;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.Text;
@@ -26,7 +27,7 @@ public class HelloWorldView extends HorizontalLayout {
     private Button sayHello;
 
     public HelloWorldView() {
-        IMarketController marketController = MarketController.getInstance();
+        IMarketController marketController = MarketController.getInstance(new NotificationController());
         name = new TextField("Your name");
         sayHello = new Button("Say hello");
         sayHello.addClickListener(e -> {

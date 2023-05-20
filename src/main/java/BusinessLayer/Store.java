@@ -51,6 +51,8 @@ public class Store {
         discountCounter = 0;
     }
 
+
+
     public String getStoreName() {
         return storeName;
     }

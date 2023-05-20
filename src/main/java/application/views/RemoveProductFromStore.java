@@ -1,6 +1,7 @@
 package application.views;
 
 import CommunicationLayer.MarketController;
+import CommunicationLayer.NotificationController;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -24,7 +25,7 @@ public class RemoveProductFromStore extends VerticalLayout {
             this.storeIdField = new TextField("store Id");
             this.productIdField = new TextField("product id");
             this.submitButton = new Button("remove", e -> AddProduct());
-            this.marketController = MarketController.getInstance();
+            this.marketController = MarketController.getInstance(new NotificationController());
 
             add(header,storeIdField,productIdField, submitButton);
             setSizeFull();

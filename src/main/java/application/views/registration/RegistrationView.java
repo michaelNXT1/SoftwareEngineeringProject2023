@@ -1,6 +1,7 @@
 package application.views.registration;
 
 import CommunicationLayer.MarketController;
+import CommunicationLayer.NotificationController;
 import application.views.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Header;
@@ -29,7 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
             this.usernameField = new TextField("Username");
             this.passwordField = new PasswordField("Password");
             this.submitButton = new Button("Registration", e -> regisration());
-            this.marketController = MarketController.getInstance();
+            this.marketController = MarketController.getInstance(new NotificationController());
 
             add(header,usernameField, passwordField, submitButton);
             setSizeFull();

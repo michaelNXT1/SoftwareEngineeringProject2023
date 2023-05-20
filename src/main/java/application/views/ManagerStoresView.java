@@ -1,6 +1,7 @@
 package application.views;
 
 import CommunicationLayer.MarketController;
+import CommunicationLayer.NotificationController;
 import ServiceLayer.DTOs.StoreDTO;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -23,7 +24,7 @@ public class ManagerStoresView extends VerticalLayout {
 
     @Autowired
     public ManagerStoresView() {
-        this.marketController = MarketController.getInstance();
+        this.marketController = MarketController.getInstance(new NotificationController());
         List<StoreDTO> stores = marketController.getResponsibleStores(MainLayout.getSessionId());
         this.header = new Header();
         this.header.setText("Stores under " + marketController.getUsername(MainLayout.getSessionId()));

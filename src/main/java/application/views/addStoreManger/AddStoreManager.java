@@ -1,6 +1,7 @@
 package application.views.addStoreManger;
 
 import CommunicationLayer.MarketController;
+import CommunicationLayer.NotificationController;
 import application.views.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Header;
@@ -29,7 +30,7 @@ public class AddStoreManager extends VerticalLayout{
             this.usernameField = new TextField("Username");
             this.storeIdField = new TextField("storeId");
             this.submitButton = new Button("add", e -> setPositionOfMemberToStoreManager());
-            this.marketController = MarketController.getInstance();
+            this.marketController = MarketController.getInstance(new NotificationController());
 
             add(header,usernameField,storeIdField, submitButton);
             setSizeFull();

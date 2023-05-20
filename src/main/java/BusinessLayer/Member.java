@@ -1,19 +1,25 @@
 package BusinessLayer;
 
 import BusinessLayer.Logger.SystemLogger;
+
+import CommunicationLayer.NotificationBroker;
 import Security.SecurityUtils;
 import ServiceLayer.DTOs.StoreDTO;
 
 
+import Notification.Notification;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Member extends Guest {
 
     private String username;
     private String hashedPassword;
+    private NotificationBroker notificationBroker;
 
+    private ConcurrentLinkedQueue<Notification> notifications;
     private SystemLogger logger;
     private List<Position> positions = new LinkedList<>(); //all the positions of this member, note that position act as a state
 
@@ -22,9 +28,13 @@ public class Member extends Guest {
         this.username = username;
         this.hashedPassword = hashedPassword;
         this.logger = new SystemLogger();
+        this.notifications = new ConcurrentLinkedQueue<Notification>();
     }
 
     // getter, setter
+    public void setNotificationBroker(NotificationBroker notificationBroker){
+        this.notificationBroker = notificationBroker;
+    }
     public void setPosition(Position newPosition) {
         boolean found = false;
         for (int i = 0; i < positions.size() && !found; i++) {
@@ -52,6 +62,8 @@ public class Member extends Guest {
 
     public void logout() {
         SecurityUtils.logout();
+        notificationBroker = null;
+
     }
 
     public Position getStorePosition(Store store) {
@@ -73,6 +85,23 @@ public class Member extends Guest {
         } else {
             positions.add(new StoreManager(store, assigner));
             store.addEmployee(this);
+        }
+    }
+
+    public void sendRealTimeNotification(){
+        if(!(notifications == null || notifications.isEmpty())) {
+            for (Notification notification : notifications) {
+                this.notificationBroker.sendRealTimeNotification(notification, this.username);
+            }
+            notifications.clear();
+        }
+    }
+
+    public void sendNotification(Notification shopNotification) {
+        if (this.notificationBroker != null) {
+            notificationBroker.sendRealTimeNotification(shopNotification, this.username);
+        }else {
+            this.notifications.add(shopNotification);
         }
     }
 

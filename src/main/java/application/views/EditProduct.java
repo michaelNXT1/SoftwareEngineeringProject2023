@@ -1,6 +1,7 @@
 package application.views;
 
 import CommunicationLayer.MarketController;
+import CommunicationLayer.NotificationController;
 import application.views.addStoreManger.AddStoreManager;
 import application.views.addStoreOwner.AddStoreOwner;
 import application.views.openStore.OpenStore;
@@ -36,7 +37,7 @@ public class EditProduct extends VerticalLayout {
         this.editField = new TextField("edit property");
         this.submitButton = new Button("edit");
 
-        this.marketController = MarketController.getInstance();
+        this.marketController = MarketController.getInstance(new NotificationController());
 
 
 

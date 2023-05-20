@@ -1,6 +1,7 @@
 package application.views;
 
 import CommunicationLayer.MarketController;
+import CommunicationLayer.NotificationController;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -28,7 +29,7 @@ public class addStoreManagerPermissions extends VerticalLayout {
             this.storeIdField = new TextField("storeId");
             this.newPermissionField = new TextField("new permission");
             this.submitButton = new Button("add", e -> addStoreManagerPermissions());
-            this.marketController = MarketController.getInstance();
+            this.marketController = MarketController.getInstance(new NotificationController());
 
             add(header,usernameField,storeIdField, submitButton);
             setSizeFull();

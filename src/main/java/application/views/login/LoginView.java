@@ -1,6 +1,7 @@
 package application.views.login;
 
 import CommunicationLayer.MarketController;
+import CommunicationLayer.NotificationController;
 import application.views.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Header;
@@ -30,7 +31,7 @@ public class LoginView extends VerticalLayout{
         this.usernameField = new TextField("Username");
         this.passwordField = new PasswordField("Password");
         this.submitButton = new Button("Login", e -> login());
-        this.marketController = MarketController.getInstance();
+        this.marketController = MarketController.getInstance(new NotificationController());
 
         add(header,usernameField, passwordField, submitButton);
         setSizeFull();
