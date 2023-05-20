@@ -150,7 +150,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         VerticalLayout productDiscountLayout = new VerticalLayout();
         HorizontalLayout productDiscountHL = new HorizontalLayout();
         Div div = new Div();
-        productDiscountHL.add(new H2("Product Discounts"), div, new Button("+", e->addProductDiscountDialog()));
+        productDiscountHL.add(new H2("Product Discounts"), div, new Button("+", e -> addProductDiscountDialog()));
         productDiscountHL.setFlexGrow(1, div);
         productDiscountHL.setWidthFull();
         productDiscountGrid = new Grid<>(ProductDiscountDTO.class, false);
@@ -166,7 +166,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         VerticalLayout categoryDiscountLayout = new VerticalLayout();
         HorizontalLayout categoryDiscountHL = new HorizontalLayout();
         Div div = new Div();
-        categoryDiscountHL.add(new H2("Category Discounts"), div, new Button("+", e->addCategoryDiscountDialog()));
+        categoryDiscountHL.add(new H2("Category Discounts"), div, new Button("+", e -> addCategoryDiscountDialog()));
         categoryDiscountHL.setFlexGrow(1, div);
         categoryDiscountHL.setWidthFull();
         categoryDiscountGrid = new Grid<>(CategoryDiscountDTO.class, false);
@@ -182,7 +182,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         VerticalLayout storeDiscountLayout = new VerticalLayout();
         HorizontalLayout storeDiscountHL = new HorizontalLayout();
         Div div = new Div();
-        storeDiscountHL.add(new H2("Store Discounts"), div, new Button("+", e->addStoreDiscountDialog()));
+        storeDiscountHL.add(new H2("Store Discounts"), div, new Button("+", e -> addStoreDiscountDialog()));
         storeDiscountHL.setFlexGrow(1, div);
         storeDiscountHL.setWidthFull();
         storeDiscountGrid = new Grid<>(StoreDiscountDTO.class, false);
@@ -505,7 +505,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
                 if (response.getError_occurred())
                     errorSuccessLabel.setText(response.error_message);
                 else
-                    successMessage(dialog, errorSuccessLabel, "Product added successfully!");
+                    successMessage(dialog, errorSuccessLabel, "Discount added successfully!");
             }
         });
 
@@ -516,10 +516,95 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
     }
 
     private void addCategoryDiscountDialog() {
+        Dialog dialog = new Dialog();
+        Header header = new Header();
+        header.setText("Add New Category Discount");
+        Label errorSuccessLabel = new Label();
+        Select<String> categoryField = new Select<>();
+        IntegerField discountPercentageField = new IntegerField();
+        RadioButtonGroup<String> radioGroup = new RadioButtonGroup<>();
+        radioGroup.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
+        radioGroup.setLabel("Travel class");
+        radioGroup.setItems("Addition", "Max Discount");
 
+        Button cancelButton = new Button("Cancel", event -> dialog.close());
+        categoryField.setItems(marketController.getAllCategories());
+        categoryField.setPlaceholder("Category Name");
+        discountPercentageField.setPlaceholder("Discount Percentage");
+
+        discountPercentageField.setMin(0);
+        discountPercentageField.setMax(100);
+
+        Button submitButton = new Button("Submit", event -> {
+            if (discountPercentageField.getValue() == null)
+                errorSuccessLabel.setText("Discount percentage can't be empty");
+            else {
+                int compositionType = -1;
+                switch (radioGroup.getValue()) {
+                    case "Addition" -> compositionType = 0;
+                    case "Max Discount" -> compositionType = 1;
+                }
+                Response response = marketController.addCategoryDiscount(
+                        MainLayout.getSessionId(),
+                        storeId,
+                        categoryField.getValue(),
+                        (double) (discountPercentageField.getValue()) / 100.0,
+                        compositionType);
+                if (response.getError_occurred())
+                    errorSuccessLabel.setText(response.error_message);
+                else
+                    successMessage(dialog, errorSuccessLabel, "Discount added successfully!");
+            }
+        });
+
+        VerticalLayout vl = new VerticalLayout();
+        vl.add(header, errorSuccessLabel, categoryField, discountPercentageField, radioGroup, submitButton, cancelButton);
+        dialog.add(vl);
+        dialog.open();
     }
 
     private void addStoreDiscountDialog() {
+        Dialog dialog = new Dialog();
+        Header header = new Header();
+        header.setText("Add New Category Discount");
+        Label errorSuccessLabel = new Label();
+        IntegerField discountPercentageField = new IntegerField();
+        RadioButtonGroup<String> radioGroup = new RadioButtonGroup<>();
+        radioGroup.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
+        radioGroup.setLabel("Travel class");
+        radioGroup.setItems("Addition", "Max Discount");
+
+        Button cancelButton = new Button("Cancel", event -> dialog.close());
+        discountPercentageField.setPlaceholder("Discount Percentage");
+
+        discountPercentageField.setMin(0);
+        discountPercentageField.setMax(100);
+
+        Button submitButton = new Button("Submit", event -> {
+            if (discountPercentageField.getValue() == null)
+                errorSuccessLabel.setText("Discount percentage can't be empty");
+            else {
+                int compositionType = -1;
+                switch (radioGroup.getValue()) {
+                    case "Addition" -> compositionType = 0;
+                    case "Max Discount" -> compositionType = 1;
+                }
+                Response response = marketController.addStoreDiscount(
+                        MainLayout.getSessionId(),
+                        storeId,
+                        (double) (discountPercentageField.getValue()) / 100.0,
+                        compositionType);
+                if (response.getError_occurred())
+                    errorSuccessLabel.setText(response.error_message);
+                else
+                    successMessage(dialog, errorSuccessLabel, "Discount added successfully!");
+            }
+        });
+
+        VerticalLayout vl = new VerticalLayout();
+        vl.add(header, errorSuccessLabel, discountPercentageField, radioGroup, submitButton, cancelButton);
+        dialog.add(vl);
+        dialog.open();
 
     }
 
