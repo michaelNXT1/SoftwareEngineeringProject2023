@@ -5,12 +5,13 @@ import java.util.List;
 
 public interface Position {
 
-    public Store getStore();
-    public Member getAssigner();
+    Store getStore();
 
-    public void addStoreManagerPermissions(Position storeManagerPosition, StoreManager.permissionType newPermission) throws IllegalAccessException;   //5.10
+    Member getAssigner();
 
-    public void removeStoreManagerPermissions(Position storeManagerPosition, StoreManager.permissionType Permission) throws IllegalAccessException;   //5.10
+    void addStoreManagerPermissions(Position storeManagerPosition, StoreManager.permissionType newPermission) throws IllegalAccessException;   //5.10
+
+    void removeStoreManagerPermissions(Position storeManagerPosition, StoreManager.permissionType Permission) throws IllegalAccessException;   //5.10
 
     void setPositionOfMemberToStoreManager(Store store, Member member, Member assigner) throws Exception; //5.9
 
@@ -26,7 +27,7 @@ public interface Position {
 
     void editProductDescription(int productId, String newDescription) throws Exception;    //5.2
 
-    Product addProduct(Store store, String productName, double price, String category, int quantity,String description) throws Exception; //5.1
+    Product addProduct(Store store, String productName, double price, String category, int quantity, String description) throws Exception; //5.1
 
     List<Purchase> getPurchaseHistory(Store store) throws IllegalAccessException;   //4.1
 
@@ -43,22 +44,24 @@ public interface Position {
     void removePolicy(int policyId) throws Exception;
 
 
-    public void addProductDiscount(int productId, double discountPercentage, int compositionType) throws Exception ;
+    void addProductDiscount(int productId, double discountPercentage, int compositionType) throws Exception;
 
-    public void addCategoryDiscount(String category, double discountPercentage, int compositionType) throws Exception ;
+    void addCategoryDiscount(String category, double discountPercentage, int compositionType) throws Exception;
 
-    public void addStoreDiscount(double discountPercentage, int compositionType) throws Exception ;
+    void addStoreDiscount(double discountPercentage, int compositionType) throws Exception;
+
+    void removeDiscount(int discountId) throws Exception;
 
     //Discount policies
-    public void addMinQuantityDiscountPolicy(int discountId, int productId, int minQuantity, boolean allowNone) throws Exception ;
+    void addMinQuantityDiscountPolicy(int discountId, int productId, int minQuantity, boolean allowNone) throws Exception;
 
-    public void addMaxQuantityDiscountPolicy(int discountId, int productId, int maxQuantity, boolean allowNone) throws Exception ;
+    void addMaxQuantityDiscountPolicy(int discountId, int productId, int maxQuantity) throws Exception;
 
-    public void addMinBagTotalDiscountPolicy(int discountId, double minTotal) throws Exception ;
+    void addMinBagTotalDiscountPolicy(int discountId, double minTotal) throws Exception;
 
-    public void joinDiscountPolicies(int policyId1, int policyId2, int operator) throws Exception ;
+    void joinDiscountPolicies(int policyId1, int policyId2, int operator) throws Exception;
 
-    public void removeDiscountPolicy(int policyId) throws Exception ;
+    void removeDiscountPolicy(int policyId) throws Exception;
 
 
     default void addPermission(StoreManager.permissionType newPermission) {
@@ -67,9 +70,9 @@ public interface Position {
     default void removePermission(StoreManager.permissionType permission) {
     }
 
-    public void closeStore() throws IllegalAccessException;
+    void closeStore() throws IllegalAccessException;
 
-    public List<Member> getStoreEmployees() throws IllegalAccessException;
+    List<Member> getStoreEmployees() throws IllegalAccessException;
 
     void removeStoreOwner(Member storeOwnerToRemove, Guest m) throws Exception;
 }

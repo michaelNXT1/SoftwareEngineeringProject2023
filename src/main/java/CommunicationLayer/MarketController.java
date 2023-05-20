@@ -381,13 +381,18 @@ public class MarketController implements IMarketController {
     }
 
     @Override
+    public Response removeDiscount(String sessionId, int storeId, int discountId) {
+        return marketManager.removeDiscount(sessionId, storeId, discountId);
+    }
+
+    @Override
     public Response addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone) {
         return marketManager.addMinQuantityDiscountPolicy(sessionId, storeId, discountId, productId, minQuantity, allowNone);
     }
 
     @Override
-    public Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity, boolean allowNone) {
-        return null;
+    public Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity) {
+        return marketManager.addMaxQuantityDiscountPolicy(sessionId, storeId, discountId, productId, maxQuantity);
     }
 
     @Override
@@ -397,12 +402,12 @@ public class MarketController implements IMarketController {
 
     @Override
     public Response joinDiscountPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator) {
-        return null;
+        return marketManager.joinDiscountPolicies(sessionId, storeId, policyId1, policyId2, operator);
     }
 
     @Override
     public Response removeDiscountPolicy(String sessionId, int storeId, int policyId) {
-        return null;
+        return marketManager.removeDiscountPolicy(sessionId, storeId, policyId);
     }
 
 
@@ -531,6 +536,11 @@ public class MarketController implements IMarketController {
     @Override
     public ResponseT<List<String>> getPurchasePolicyTypes() {
         return marketManager.getPurchasePolicyTypes();
+    }
+
+    @Override
+    public ResponseT<List<String>> getDiscountPolicyTypes() {
+        return marketManager.getDiscountPolicyTypes();
     }
 
 

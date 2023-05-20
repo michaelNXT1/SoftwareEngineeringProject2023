@@ -10,9 +10,8 @@ import java.util.Map;
 public class MaxQuantityDiscountPolicy extends BaseDiscountPolicy {
     private final Product product;
     private final int minQuantity;
-    private final boolean allowNone;
 
-    public MaxQuantityDiscountPolicy(int policyId, Product product, int maxQuantity, boolean allowNone) throws Exception {
+    public MaxQuantityDiscountPolicy(int policyId, Product product, int maxQuantity) throws Exception {
         super(policyId);
         if (maxQuantity <= 0) {
             logger.error("Max quantity must be larger than 0 but is " + maxQuantity);
@@ -20,7 +19,6 @@ public class MaxQuantityDiscountPolicy extends BaseDiscountPolicy {
         }
         this.product = product;
         this.minQuantity = maxQuantity;
-        this.allowNone = allowNone;
     }
 
     @Override
@@ -28,7 +26,7 @@ public class MaxQuantityDiscountPolicy extends BaseDiscountPolicy {
         for (Product p : productList.keySet())
             if (p == product)
                 return productList.get(p) <= minQuantity;
-        return allowNone;
+        return true;
     }
 
     @Override
@@ -42,9 +40,5 @@ public class MaxQuantityDiscountPolicy extends BaseDiscountPolicy {
 
     public int getMinQuantity() {
         return minQuantity;
-    }
-
-    public boolean isAllowNone() {
-        return allowNone;
     }
 }

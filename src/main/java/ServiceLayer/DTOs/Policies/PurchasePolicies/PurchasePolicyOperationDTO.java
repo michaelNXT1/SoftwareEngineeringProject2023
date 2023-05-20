@@ -1,9 +1,6 @@
 package ServiceLayer.DTOs.Policies.PurchasePolicies;
 
 import BusinessLayer.Policies.PurchasePolicies.PurchasePolicyOperation;
-import BusinessLayer.Product;
-
-import java.util.Map;
 
 public class PurchasePolicyOperationDTO extends BasePurchasePolicyDTO {
 
@@ -12,9 +9,9 @@ public class PurchasePolicyOperationDTO extends BasePurchasePolicyDTO {
         COND
     }
 
-    private BasePurchasePolicyDTO left;
-    private JoinOperator joinOperator;
-    private BasePurchasePolicyDTO right;
+    private final BasePurchasePolicyDTO left;
+    private final JoinOperator joinOperator;
+    private final BasePurchasePolicyDTO right;
 
     public PurchasePolicyOperationDTO(PurchasePolicyOperation ppo) {
         super(ppo);
@@ -28,9 +25,9 @@ public class PurchasePolicyOperationDTO extends BasePurchasePolicyDTO {
 
     @Override
     public String toString() {
-        if (joinOperator == JoinOperator.OR)
-            return "(" + left.toString() + ")\nOR\n(" + right.toString() + ")";
-        else
-            return "If\n(" + left.toString() + "}\nis fulfilled, then\n(" + right.toString() + ")";
+        return switch (joinOperator) {
+            case OR -> "(" + left.toString() + ")\nOR\n(" + right.toString() + ")";
+            case COND -> "If\n(" + left.toString() + ")\nis fulfilled, then check\n(" + right.toString() + ")";
+        };
     }
 }
