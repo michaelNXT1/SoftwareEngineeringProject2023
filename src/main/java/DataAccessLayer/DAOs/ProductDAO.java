@@ -1,6 +1,6 @@
-package BusinessLayer.DAOs;
+package DataAccessLayer.DAOs;
 
-import BusinessLayer.Product;
+import ServiceLayer.DTOs.ProductDTO;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -18,7 +18,7 @@ public class ProductDAO {
         sessionFactory = configuration.buildSessionFactory();
     }
 
-    public void addProduct(Product product) {
+    public void addProduct(ProductDTO product) {
         Session session = null;
         Transaction transaction = null;
 
@@ -42,7 +42,7 @@ public class ProductDAO {
         }
     }
 
-    public void updateProduct(Product product) {
+    public void updateProduct(ProductDTO product) {
         Session session = null;
         Transaction transaction = null;
 
