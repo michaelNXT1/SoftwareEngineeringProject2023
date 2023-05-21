@@ -30,7 +30,7 @@ public class AddStoreManager extends VerticalLayout{
             this.usernameField = new TextField("Username");
             this.storeIdField = new TextField("storeId");
             this.submitButton = new Button("add", e -> setPositionOfMemberToStoreManager());
-            this.marketController = MarketController.getInstance(new NotificationController());
+            this.marketController = MarketController.getInstance();
 
             add(header,usernameField,storeIdField, submitButton);
             setSizeFull();

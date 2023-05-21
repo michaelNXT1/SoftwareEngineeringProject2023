@@ -23,7 +23,7 @@ public class CloseStore extends VerticalLayout {
             this.header.setText("Close Store");
             this.storeIdField = new TextField("store Id");
             this.submitButton = new Button("close", e -> CloseStore());
-            this.marketController = MarketController.getInstance(new NotificationController());
+            this.marketController = MarketController.getInstance();
 
             add(header,storeIdField, submitButton);
             setSizeFull();

@@ -29,7 +29,7 @@ public class addStoreManagerPermissions extends VerticalLayout {
             this.storeIdField = new TextField("storeId");
             this.newPermissionField = new TextField("new permission");
             this.submitButton = new Button("add", e -> addStoreManagerPermissions());
-            this.marketController = MarketController.getInstance(new NotificationController());
+            this.marketController = MarketController.getInstance();
 
             add(header,usernameField,storeIdField, submitButton);
             setSizeFull();

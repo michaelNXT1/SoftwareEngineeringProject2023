@@ -25,7 +25,7 @@ public class RemoveProductFromStore extends VerticalLayout {
             this.storeIdField = new TextField("store Id");
             this.productIdField = new TextField("product id");
             this.submitButton = new Button("remove", e -> AddProduct());
-            this.marketController = MarketController.getInstance(new NotificationController());
+            this.marketController = MarketController.getInstance();
 
             add(header,storeIdField,productIdField, submitButton);
             setSizeFull();

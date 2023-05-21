@@ -37,7 +37,7 @@ public class EditProduct extends VerticalLayout {
         this.editField = new TextField("edit property");
         this.submitButton = new Button("edit");
 
-        this.marketController = MarketController.getInstance(new NotificationController());
+        this.marketController = MarketController.getInstance();
 
 
 

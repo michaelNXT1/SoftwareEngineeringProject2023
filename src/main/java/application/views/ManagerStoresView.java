@@ -24,7 +24,7 @@ public class ManagerStoresView extends VerticalLayout {
 
     @Autowired
     public ManagerStoresView() {
-        this.marketController = MarketController.getInstance(new NotificationController());
+        this.marketController = MarketController.getInstance();
         List<StoreDTO> stores = marketController.getResponsibleStores(MainLayout.getSessionId());
         this.header = new Header();
         this.header.setText("Stores under " + marketController.getUsername(MainLayout.getSessionId()));

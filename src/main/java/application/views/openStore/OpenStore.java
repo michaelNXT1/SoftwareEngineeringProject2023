@@ -24,7 +24,7 @@ public class OpenStore  extends VerticalLayout {
             this.header.setText("Open Store");
             this.storeNameField = new TextField("store name");
             this.submitButton = new Button("open", e -> openStore());
-            this.marketController = MarketController.getInstance(new NotificationController());
+            this.marketController = MarketController.getInstance();
 
             add(header,storeNameField, submitButton);
             setSizeFull();

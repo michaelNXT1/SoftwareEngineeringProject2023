@@ -27,38 +27,53 @@ import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import com.vaadin.flow.theme.lumo.LumoUtility.AlignItems;
 import com.vaadin.flow.theme.lumo.LumoUtility.Display;
 import com.vaadin.flow.theme.lumo.LumoUtility.FontSize;
 import com.vaadin.flow.theme.lumo.LumoUtility.Padding;
-import org.vaadin.lineawesome.LineAwesomeIcon;
 
+import org.vaadin.lineawesome.LineAwesomeIcon;
+import org.springframework.messaging.simp.stomp.*;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.web.socket.messaging.WebSocketStompClient;
+import org.springframework.web.socket.sockjs.client.SockJsClient;
+import org.springframework.web.socket.sockjs.client.Transport;
+import org.springframework.web.socket.sockjs.client.WebSocketTransport;
+import org.springframework.web.socket.client.standard.StandardWebSocketClient;
+import org.springframework.web.socket.client.WebSocketClient;
+import javax.script.ScriptException;
+import java.io.FileNotFoundException;
+import java.lang.reflect.Type;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 /**
  * The main view is a top-level placeholder for other views.
  */
 public class MainLayout extends AppLayout {
     private static String sessionId;
-
-    MarketController marketController = MarketController.getInstance(new NotificationController());
+    MarketController marketController = MarketController.getInstance();
     private TextField searchBox;
     private final Map<String, Runnable> searchActionMap = new HashMap<>();
     private Select<String> searchType;
 
-    public MainLayout() {
+
+    public MainLayout() throws ScriptException, FileNotFoundException {
         sessionId = marketController.enterMarket();
         config();
         addToNavbar(createHeaderContent());
         addDrawerContent();
     }
 
-    private void config() {
+    private void config() throws FileNotFoundException, ScriptException {
         marketController.signUp("Michael", "1234");
         sessionId = marketController.login("Michael", "1234");
         marketController.openStore(sessionId, "Shufersal");

@@ -30,7 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
             this.usernameField = new TextField("Username");
             this.passwordField = new PasswordField("Password");
             this.submitButton = new Button("Registration", e -> regisration());
-            this.marketController = MarketController.getInstance(new NotificationController());
+            this.marketController = MarketController.getInstance();
 
             add(header,usernameField, passwordField, submitButton);
             setSizeFull();

@@ -416,8 +416,9 @@ public class Market {
         }
         Store s = stores.get(storeId);
         Product product = p.addProduct(s,productName, price, category, quantity, description);
-        List<Member> managers = s.getManagers();
+        List<Member> managers = s.getEmployees();
         for(Member manager: managers){
+            logger.info("sending notifications");
             manager.sendNotification(new Notification(String.format("%s added to %s with %d quantity",productName,s.getStoreName(),quantity)));
         }
         return new ProductDTO(product);

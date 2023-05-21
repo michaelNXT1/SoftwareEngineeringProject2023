@@ -7,6 +7,7 @@ import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 import ServiceLayer.MarketManager;
 import ServiceLayer.Response;
 import ServiceLayer.ResponseT;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,16 +25,16 @@ public class MarketController implements IMarketController {
     private static MarketController instance = null;
     private final NotificationController notificationBroker;
 
-    public static MarketController getInstance(NotificationController notificationBroker) {
+    public static MarketController getInstance() {
         if (instance == null) {
-            instance = new MarketController(notificationBroker);
+            instance = new MarketController();
         }
         return instance;
     }
 
-    private MarketController(NotificationController notificationBroker) {
+    private MarketController() {
         this.marketManager = new MarketManager();
-        this.notificationBroker = notificationBroker;
+        this.notificationBroker = new NotificationController();
     }
 
     @GetMapping("/login")

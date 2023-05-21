@@ -52,7 +52,7 @@ public class AddDiscount extends VerticalLayout {
         compositionType = new Select<>();
         compositionType.setItems("Add", "Max");
         this.submitButton = new Button("add");
-        this.marketController = MarketController.getInstance(new NotificationController());
+        this.marketController = MarketController.getInstance();
 
         add(header, discountType, storeIdField, valueField, discountField, compositionType, submitButton);
         setSizeFull();

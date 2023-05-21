@@ -25,7 +25,7 @@ public class SearchResultView extends VerticalLayout {
 
     @Autowired
     public SearchResultView() {
-        this.marketController = MarketController.getInstance(new NotificationController());
+        this.marketController = MarketController.getInstance();
         this.header = new Header();
         this.header.setText("Search results for " + marketController.getSearchKeyword(MainLayout.getSessionId()));
         add(header);

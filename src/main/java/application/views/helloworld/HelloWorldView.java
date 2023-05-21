@@ -27,7 +27,7 @@ public class HelloWorldView extends HorizontalLayout {
     private Button sayHello;
 
     public HelloWorldView() {
-        IMarketController marketController = MarketController.getInstance(new NotificationController());
+        IMarketController marketController = MarketController.getInstance();
         name = new TextField("Your name");
         sayHello = new Button("Say hello");
         sayHello.addClickListener(e -> {

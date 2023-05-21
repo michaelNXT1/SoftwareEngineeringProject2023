@@ -31,7 +31,7 @@ public class LoginView extends VerticalLayout{
         this.usernameField = new TextField("Username");
         this.passwordField = new PasswordField("Password");
         this.submitButton = new Button("Login", e -> login());
-        this.marketController = MarketController.getInstance(new NotificationController());
+        this.marketController = MarketController.getInstance();
 
         add(header,usernameField, passwordField, submitButton);
         setSizeFull();

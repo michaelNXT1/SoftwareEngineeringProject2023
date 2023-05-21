@@ -44,7 +44,7 @@ public class AddPaymentMethod extends VerticalLayout {
         hl.add(monthSelect, yearSelect);
         this.cvvField = new TextField("cvv");
         this.submitButton = new Button("add", e -> addPaymentMethod());
-        this.marketController = MarketController.getInstance(new NotificationController());
+        this.marketController = MarketController.getInstance();
 
         add(header, cardNumberField,hl, cvvField, submitButton);
         setSizeFull();

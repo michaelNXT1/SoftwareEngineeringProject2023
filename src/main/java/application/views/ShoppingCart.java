@@ -34,7 +34,7 @@ ShoppingCart extends VerticalLayout {
 
     @Autowired
     public ShoppingCart() {
-        this.marketController = MarketController.getInstance(new NotificationController());
+        this.marketController = MarketController.getInstance();
         shoppingCart = marketController.getShoppingCart(MainLayout.getSessionId());
         productDTOList = shoppingCart.getProducts();
         productGrid = new Grid<>(ProductDTO.class, false);

@@ -27,7 +27,7 @@ public class removeStoreManagerPermissions extends VerticalLayout {
             this.storeIdField = new TextField("storeId");
             this.newPermissionField = new TextField("permission to remove");
             this.submitButton = new Button("remove", e -> removeStoreManagerPermissions());
-            this.marketController = MarketController.getInstance(new NotificationController());
+            this.marketController = MarketController.getInstance();
 
             add(header,usernameField,storeIdField, submitButton);
             setSizeFull();
