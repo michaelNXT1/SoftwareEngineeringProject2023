@@ -1,17 +1,33 @@
 package BusinessLayer;
 
+import javax.persistence.*;
+
 import static org.atmosphere.annotation.AnnotationUtil.logger;
 
+@Entity
+@Table(name = "products")
 public class Product {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "product_id")
     private int storeId;
+    @Column(name = "store_id")
     private int productId;
+    @Column(name = "product_name", nullable = false)
     private String productName;
+    @Column(name = "price")
     private double price;
+    @Column(name = "category", nullable = false)
     private String category;
+    @Column(name = "rating")
     private double rating;
+    @Column(name = "amount")
     private int amount;
+    @Column(name = "description")
     private String description;
 
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "product")
     private PurchaseType purchaseType;
 
     public Product(int storeId, int productId, String productName, double price, String category, String description) throws Exception {
