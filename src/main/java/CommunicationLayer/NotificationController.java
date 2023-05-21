@@ -21,6 +21,9 @@ public class NotificationController implements NotificationBroker {
 
     @Override
     public void sendRealTimeNotification(@Payload Notification notification, String ... memberName) {
+        ui.access(() -> {
+            com.vaadin.flow.component.notification.Notification.show(notification.getMessage());
+        });
         System.out.println(String.format("sent to %s the massage was %s",memberName[0],notification.getMessage()));
 //        try {
 //            simpMessagingTemplate.convertAndSend("/user/queue/specific/" + memberName[0], notification.getMessage() + "\nSent at: " + notification.getCreatedAt().toString());
