@@ -2,6 +2,8 @@ package application.views;
 
 
 import CommunicationLayer.MarketController;
+import ServiceLayer.Response;
+import ServiceLayer.ResponseT;
 import application.components.AppNav;
 import application.components.AppNavItem;
 import application.views.about.AboutView;
@@ -21,6 +23,7 @@ import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -59,7 +62,7 @@ public class MainLayout extends AppLayout {
 
     private void config() {
         marketController.signUp("Michael", "1234");
-        sessionId = marketController.login("Michael", "1234");
+        sessionId = marketController.login("Michael", "1234").value;
         marketController.openStore(sessionId, "Shufersal");
         marketController.openStore(sessionId, "Ebay");
         Map<String, Integer> productMap = new HashMap<>();
@@ -141,7 +144,7 @@ public class MainLayout extends AppLayout {
         centerLayout.setFlexGrow(1, div2);
         if (marketController.isLoggedIn(sessionId).value)
             rightLayout.add(div3, logoutButton);
-        else
+        //else
             rightLayout.add(div3, loginButton, signUpButton);
         rightLayout.setFlexGrow(1, div3);
         layout.add(leftLayout, centerLayout, rightLayout);
@@ -153,7 +156,14 @@ public class MainLayout extends AppLayout {
     }
 
     private void logout() {
-        sessionId = marketController.logout(sessionId).value;
+
+        Response r = marketController.logout(sessionId);
+        sessionId = ((ResponseT<String>) r).value;
+        if (r.getError_occurred())
+            Notification.show(r.error_message, 3000, Notification.Position.MIDDLE);
+        else
+            Notification.show("you logged out successfully", 3000, Notification.Position.MIDDLE);
+
         if (sessionId != null)
             UI.getCurrent().navigate(HelloWorldView.class);
     }
