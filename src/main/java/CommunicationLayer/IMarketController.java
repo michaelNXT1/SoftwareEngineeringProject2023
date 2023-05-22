@@ -6,6 +6,9 @@ import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 import ServiceLayer.Response;
 import ServiceLayer.ResponseT;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -95,6 +98,8 @@ public interface IMarketController {
     Response addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType);
 
     Response addCategoryDiscount(String sessionId, int storeId, String category, double discountPercentage, int compositionType);
+
+    ResponseT<List<MemberDTO>> getInformationAboutMembers(String sessionId);
 
     Response addStoreDiscount(String sessionId, int storeId, double discountPercentage, int compositionType);
 

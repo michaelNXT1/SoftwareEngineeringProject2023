@@ -179,6 +179,7 @@ public class MainLayout extends AppLayout {
         actionsMap.put("Remove Store Manager Permission", () -> UI.getCurrent().navigate(removeStoreManagerPermissions.class));
         actionsMap.put("Close Store", () -> UI.getCurrent().navigate(CloseStore.class));
         actionsMap.put("My Stores", () -> UI.getCurrent().navigate(ManagerStoresView.class));
+        actionsMap.put("Get information about members", () -> UI.getCurrent().navigate(GetInformationAboutMembers.class));
 
         select.setItems(actionsMap.keySet().stream().sorted().collect(Collectors.toList()));
         select.addValueChangeListener(event -> actionsMap.get(event.getValue()).run());

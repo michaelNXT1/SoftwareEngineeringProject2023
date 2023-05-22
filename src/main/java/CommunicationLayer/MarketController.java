@@ -369,6 +369,12 @@ public class MarketController implements IMarketController {
                                         @RequestParam(value = "compositionType", defaultValue = "-1.0") int compositionType) {
         return marketManager.addCategoryDiscount(sessionId, storeId, category, discountPercentage, compositionType);
     }
+    @GetMapping("/getInformationAboutMembers")
+    @ResponseBody
+    @Override
+    public ResponseT<List<MemberDTO>> getInformationAboutMembers(@RequestParam(value = "sessionId", defaultValue = "") String sessionId){
+        return marketManager.getInformationAboutMembers(sessionId);
+    }
 
     @GetMapping("/addStoreDiscount")
     @ResponseBody
