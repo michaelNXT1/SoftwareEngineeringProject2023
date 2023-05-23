@@ -1,11 +1,18 @@
 package BusinessLayer;
 
 public class PaymentDetails {
+    @Id
+    @Column(name = "creditCardNumber")
     private final String creditCardNumber;
+    @Column(name = "month")
     private final String month;
+    @Column(name = "year")
     private final String year;
+    @Column(name = "cvv")
     private final String cvv;
+    @Column(name = "holder")
     private final String holder;
+    @Column(name = "cardId")
     private final String cardId;
 
 
