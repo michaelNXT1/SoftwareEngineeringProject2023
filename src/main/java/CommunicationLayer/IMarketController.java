@@ -6,9 +6,6 @@ import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 import ServiceLayer.Response;
 import ServiceLayer.ResponseT;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -61,13 +58,13 @@ public interface IMarketController {
 
     ResponseT<ProductDTO> addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description);
 
-    boolean editProductName(String sessionId, int storeId, int productId, String newName);
+    Response editProductName(String sessionId, int storeId, int productId, String newName);
 
-    boolean editProductPrice(String sessionId, int storeId, int productId, int newPrice);
+    Response editProductPrice(String sessionId, int storeId, int productId, double newPrice);
 
-    boolean editProductCategory(String sessionId, int storeId, int productId, String newCategory);
+    Response editProductCategory(String sessionId, int storeId, int productId, String newCategory);
 
-    boolean removeProductFromStore(String sessionId, int storeId, int productId);
+    Response removeProductFromStore(String sessionId, int storeId, int productId);
 
     boolean setPositionOfMemberToStoreManager(String sessionId, int storeID, String MemberToBecomeManager);
 

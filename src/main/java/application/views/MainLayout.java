@@ -52,6 +52,9 @@ public class MainLayout extends AppLayout {
     private TextField searchBox;
     private final Map<String, Runnable> searchActionMap = new HashMap<>();
     private Select<String> searchType;
+    private Button loginButton;
+    private Button signUpButton;
+    private Button logoutButton;
 
     public MainLayout() {
         sessionId = marketController.enterMarket();
@@ -86,7 +89,8 @@ public class MainLayout extends AppLayout {
         marketController.addMinQuantityDiscountPolicy(sessionId, 0, 2, productMap.get("Bun"), 5, true);
 
         marketController.addMaxQuantityPolicy(sessionId, 0, productMap.get("Apple"), 5);
-        marketController.addCategoryTimeRestrictionPolicy(sessionId, 0, "Snacks", LocalTime.of(7, 0, 0), LocalTime.of(23, 0,0));
+        marketController.addCategoryTimeRestrictionPolicy(sessionId, 0, "Snacks", LocalTime.of(7, 0, 0), LocalTime.of(23, 0, 0));
+//        marketController.logout(sessionId);
     }
 
 
@@ -133,19 +137,21 @@ public class MainLayout extends AppLayout {
         Button searchButton = new Button("", VaadinIcon.SEARCH.create(), e -> SearchProducts());
         Button cartButton = new Button("Cart", VaadinIcon.CART.create(), e -> UI.getCurrent().navigate(ShoppingCart.class));
 
-        Button loginButton = new Button("Login", e -> UI.getCurrent().navigate(LoginView.class));
-        Button signUpButton = new Button("Sign Up", e -> UI.getCurrent().navigate(RegistrationView.class));
-        Button logoutButton = new Button("Logout", e -> logout());
+        loginButton = new Button("Login", e -> UI.getCurrent().navigate(LoginView.class));
+        signUpButton = new Button("Sign Up", e -> UI.getCurrent().navigate(RegistrationView.class));
+        logoutButton = new Button("Logout", e -> logout());
+        boolean isLoggedIn = marketController.isLoggedIn(sessionId).value;
+        loginButton.setVisible(!isLoggedIn);
+        signUpButton.setVisible(!isLoggedIn);
+        logoutButton.setVisible(isLoggedIn);
 
         Div div1 = new Div(), div2 = new Div(), div3 = new Div();
         leftLayout.add(appName);
         centerLayout.add(div1, homeButton, aboutButton, select, searchBox, searchType, searchButton, cartButton, div2);
         centerLayout.setFlexGrow(1, div1);
         centerLayout.setFlexGrow(1, div2);
-        if (marketController.isLoggedIn(sessionId).value)
-            rightLayout.add(div3, logoutButton);
-        //else
-            rightLayout.add(div3, loginButton, signUpButton);
+
+        rightLayout.add(div3, loginButton, signUpButton, logoutButton);
         rightLayout.setFlexGrow(1, div3);
         layout.add(leftLayout, centerLayout, rightLayout);
         layout.setFlexGrow(1, leftLayout);
@@ -161,8 +167,14 @@ public class MainLayout extends AppLayout {
         sessionId = ((ResponseT<String>) r).value;
         if (r.getError_occurred())
             Notification.show(r.error_message, 3000, Notification.Position.MIDDLE);
-        else
+        else {
             Notification.show("you logged out successfully", 3000, Notification.Position.MIDDLE);
+            UI.getCurrent().navigate(HelloWorldView.class);
+            boolean isLoggedIn = marketController.isLoggedIn(sessionId).value;
+            loginButton.setVisible(!isLoggedIn);
+            signUpButton.setVisible(!isLoggedIn);
+            logoutButton.setVisible(isLoggedIn);
+        }
 
         if (sessionId != null)
             UI.getCurrent().navigate(HelloWorldView.class);
@@ -181,10 +193,7 @@ public class MainLayout extends AppLayout {
         actionsMap.put("Add Store Manager", () -> UI.getCurrent().navigate(AddStoreManager.class));
         actionsMap.put("Add Store Owner", () -> UI.getCurrent().navigate(AddStoreOwner.class));
         actionsMap.put("Add Payment Method", () -> UI.getCurrent().navigate(AddPaymentMethod.class));
-        actionsMap.put("Remove Product", () -> UI.getCurrent().navigate(RemoveProductFromStore.class));
         actionsMap.put("Open a New Store", () -> UI.getCurrent().navigate(OpenStore.class));
-        actionsMap.put("Add Discount", () -> UI.getCurrent().navigate(AddDiscount.class));
-        actionsMap.put("Edit Product", () -> UI.getCurrent().navigate(EditProduct.class));
         actionsMap.put("Add Store Manager Permission", () -> UI.getCurrent().navigate(addStoreManagerPermissions.class));
         actionsMap.put("Remove Store Manager Permission", () -> UI.getCurrent().navigate(removeStoreManagerPermissions.class));
         actionsMap.put("Close Store", () -> UI.getCurrent().navigate(CloseStore.class));
@@ -192,7 +201,6 @@ public class MainLayout extends AppLayout {
 
         actionsMap.put("Get information about members", () -> UI.getCurrent().navigate(GetInformationAboutMembers.class));
         actionsMap.put("System Manager Registration", () -> UI.getCurrent().navigate(SignUpSystemManager.class));
-
 
         select.setItems(actionsMap.keySet().stream().sorted().collect(Collectors.toList()));
         select.addValueChangeListener(event -> actionsMap.get(event.getValue()).run());
