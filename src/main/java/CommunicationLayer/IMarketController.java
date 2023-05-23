@@ -18,9 +18,9 @@ public interface IMarketController {
 
     boolean exitMarket(String sessionId);
 
-    boolean signUp(String username, String password);
+    Response signUp(String username, String password);
 
-    String login(String username, String password);
+    ResponseT<String> login(String username, String password);
 
     ResponseT<String> logout(String sessionId);
 
@@ -76,7 +76,7 @@ public interface IMarketController {
 
     List<MemberDTO> getStoreEmployees(String sessionId, int storeId);
 
-    boolean closeStore(String sessionId, int storeId);
+    Response closeStore(String sessionId, int storeId);
 
     Map<StoreDTO, List<PurchaseDTO>> getStoresPurchases(String sessionId);
 
