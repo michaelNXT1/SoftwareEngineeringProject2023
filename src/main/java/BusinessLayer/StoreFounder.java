@@ -7,9 +7,9 @@ import java.util.List;
 
 public class StoreFounder implements Position {
 
-    private Store store;
-    private Member assigner;
-    private SystemLogger logger;
+    private final Store store;
+    private final Member assigner;
+    private final SystemLogger logger;
 
     public StoreFounder(Store store) {
         this.store = store;
@@ -134,36 +134,41 @@ public class StoreFounder implements Position {
 
     @Override
     public void addCategoryDiscount(String category, double discountPercentage, int compositionType) throws Exception {
-        store.addCategoryDiscount(category,discountPercentage,compositionType);
+        store.addCategoryDiscount(category, discountPercentage, compositionType);
     }
 
     @Override
     public void addStoreDiscount(double discountPercentage, int compositionType) throws Exception {
-store.addStoreDiscount(discountPercentage,compositionType);
+        store.addStoreDiscount(discountPercentage, compositionType);
+    }
+
+    @Override
+    public void removeDiscount(int discountId) throws Exception {
+        store.removeDiscount(discountId);
     }
 
     @Override
     public void addMinQuantityDiscountPolicy(int discountId, int productId, int minQuantity, boolean allowNone) throws Exception {
-store.addMinQuantityDiscountPolicy(discountId,productId,minQuantity,allowNone);
+        store.addMinQuantityDiscountPolicy(discountId, productId, minQuantity, allowNone);
     }
 
     @Override
-    public void addMaxQuantityDiscountPolicy(int discountId, int productId, int maxQuantity, boolean allowNone) throws Exception {
-        store.addMaxQuantityDiscountPolicy(discountId,productId,maxQuantity,allowNone);
+    public void addMaxQuantityDiscountPolicy(int discountId, int productId, int maxQuantity) throws Exception {
+        store.addMaxQuantityDiscountPolicy(discountId, productId, maxQuantity);
     }
 
     @Override
     public void addMinBagTotalDiscountPolicy(int discountId, double minTotal) throws Exception {
-store.addMinBagTotalDiscountPolicy(discountId,minTotal);
+        store.addMinBagTotalDiscountPolicy(discountId, minTotal);
     }
 
     @Override
     public void joinDiscountPolicies(int policyId1, int policyId2, int operator) throws Exception {
-store.joinDiscountPolicies(policyId1,policyId2,operator);
+        store.joinDiscountPolicies(policyId1, policyId2, operator);
     }
 
     @Override
     public void removeDiscountPolicy(int policyId) throws Exception {
-store.removeDiscountPolicy(policyId);
+        store.removeDiscountPolicy(policyId);
     }
 }

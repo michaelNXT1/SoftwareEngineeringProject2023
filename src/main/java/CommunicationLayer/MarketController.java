@@ -7,7 +7,6 @@ import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 import ServiceLayer.MarketManager;
 import ServiceLayer.Response;
 import ServiceLayer.ResponseT;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,7 +38,7 @@ public class MarketController implements IMarketController {
 
     @GetMapping("/login")
     @ResponseBody
-    public String login(
+    public ResponseT<String> login(
             @RequestParam(value = "username", defaultValue = "") String username,
             @RequestParam(value = "password", defaultValue = "") String password) {
         return marketManager.login(username, password,notificationBroker).value;
@@ -101,10 +100,10 @@ public class MarketController implements IMarketController {
 
     @GetMapping("/signUp")
     @ResponseBody
-    public boolean signUp(
+    public Response signUp(
             @RequestParam(value = "username", defaultValue = "") String username,
             @RequestParam(value = "password", defaultValue = "") String password) {
-        return !marketManager.signUp(username, password).getError_occurred();
+        return marketManager.signUp(username, password);
     }
 
 
@@ -276,9 +275,9 @@ public class MarketController implements IMarketController {
     @GetMapping("/closeStore")
     @ResponseBody
     @Override
-    public boolean closeStore(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
-                              @RequestParam(value = "storeId", defaultValue = "-1") int storeId) {
-        return !marketManager.closeStore(sessionId, storeId).getError_occurred();
+    public Response closeStore(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                               @RequestParam(value = "storeId", defaultValue = "-1") int storeId) {
+        return marketManager.closeStore(sessionId, storeId);
     }
 
     @GetMapping("/getStoresPurchases")
@@ -372,6 +371,12 @@ public class MarketController implements IMarketController {
                                         @RequestParam(value = "compositionType", defaultValue = "-1.0") int compositionType) {
         return marketManager.addCategoryDiscount(sessionId, storeId, category, discountPercentage, compositionType);
     }
+    @GetMapping("/getInformationAboutMembers")
+    @ResponseBody
+    @Override
+    public ResponseT<List<MemberDTO>> getInformationAboutMembers(@RequestParam(value = "sessionId", defaultValue = "") String sessionId){
+        return marketManager.getInformationAboutMembers(sessionId);
+    }
 
     @GetMapping("/addStoreDiscount")
     @ResponseBody
@@ -384,13 +389,18 @@ public class MarketController implements IMarketController {
     }
 
     @Override
+    public Response removeDiscount(String sessionId, int storeId, int discountId) {
+        return marketManager.removeDiscount(sessionId, storeId, discountId);
+    }
+
+    @Override
     public Response addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone) {
         return marketManager.addMinQuantityDiscountPolicy(sessionId, storeId, discountId, productId, minQuantity, allowNone);
     }
 
     @Override
-    public Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity, boolean allowNone) {
-        return null;
+    public Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity) {
+        return marketManager.addMaxQuantityDiscountPolicy(sessionId, storeId, discountId, productId, maxQuantity);
     }
 
     @Override
@@ -400,12 +410,12 @@ public class MarketController implements IMarketController {
 
     @Override
     public Response joinDiscountPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator) {
-        return null;
+        return marketManager.joinDiscountPolicies(sessionId, storeId, policyId1, policyId2, operator);
     }
 
     @Override
     public Response removeDiscountPolicy(String sessionId, int storeId, int policyId) {
-        return null;
+        return marketManager.removeDiscountPolicy(sessionId, storeId, policyId);
     }
 
 
@@ -534,6 +544,11 @@ public class MarketController implements IMarketController {
     @Override
     public ResponseT<List<String>> getPurchasePolicyTypes() {
         return marketManager.getPurchasePolicyTypes();
+    }
+
+    @Override
+    public ResponseT<List<String>> getDiscountPolicyTypes() {
+        return marketManager.getDiscountPolicyTypes();
     }
 
 

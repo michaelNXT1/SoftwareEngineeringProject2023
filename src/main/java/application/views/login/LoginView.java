@@ -1,10 +1,10 @@
 package application.views.login;
 
 import CommunicationLayer.MarketController;
-import CommunicationLayer.NotificationController;
 import application.views.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Header;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
@@ -43,7 +43,12 @@ public class LoginView extends VerticalLayout{
     private void login() {
         String username = usernameField.getValue();
         String password = passwordField.getValue();
-        MainLayout.setSessionId(marketController.login(username,password));
+        Response r = marketController.login(username,password);
+        MainLayout.setSessionId(((ResponseT<String>) r).value);
+        if (r.getError_occurred())
+            Notification.show(r.error_message, 3000, Notification.Position.MIDDLE);
+        else
+            Notification.show("you logged in successfully", 3000, Notification.Position.MIDDLE);
 
     }
 }

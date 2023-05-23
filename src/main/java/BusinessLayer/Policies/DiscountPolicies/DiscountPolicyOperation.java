@@ -9,7 +9,6 @@ import java.util.Map;
 public class DiscountPolicyOperation extends BaseDiscountPolicy {
 
     public enum JoinOperator {
-        AND,
         OR,
         XOR
     }
@@ -36,10 +35,8 @@ public class DiscountPolicyOperation extends BaseDiscountPolicy {
         boolean rightValue = right.evaluate(productList);
 
         return switch (joinOperator) {
-            case AND -> leftValue && rightValue;
             case OR -> leftValue || rightValue;
-//            case XOR-> //TODO figure it out.
-            default -> throw new IllegalArgumentException("Invalid operator: " + joinOperator);
+            case XOR -> leftValue || rightValue && !(leftValue && rightValue);
         };
     }
 

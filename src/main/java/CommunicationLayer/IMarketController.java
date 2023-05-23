@@ -6,6 +6,9 @@ import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 import ServiceLayer.Response;
 import ServiceLayer.ResponseT;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -18,9 +21,9 @@ public interface IMarketController {
 
     boolean exitMarket(String sessionId);
 
-    boolean signUp(String username, String password);
+    Response signUp(String username, String password);
 
-    String login(String username, String password);
+    ResponseT<String> login(String username, String password);
 
     ResponseT<String> logout(String sessionId);
 
@@ -76,7 +79,7 @@ public interface IMarketController {
 
     List<MemberDTO> getStoreEmployees(String sessionId, int storeId);
 
-    boolean closeStore(String sessionId, int storeId);
+    Response closeStore(String sessionId, int storeId);
 
     Map<StoreDTO, List<PurchaseDTO>> getStoresPurchases(String sessionId);
 
@@ -96,11 +99,13 @@ public interface IMarketController {
 
     Response addCategoryDiscount(String sessionId, int storeId, String category, double discountPercentage, int compositionType);
 
+    ResponseT<List<MemberDTO>> getInformationAboutMembers(String sessionId);
+
     Response addStoreDiscount(String sessionId, int storeId, double discountPercentage, int compositionType);
 
     Response addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone);
 
-    Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity, boolean allowNone);
+    Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity);
 
     Response addMinBagTotalDiscountPolicy(String sessionId, int storeId, int discountId, double minTotal);
 
@@ -127,4 +132,8 @@ public interface IMarketController {
     ResponseT<List<BasePurchasePolicyDTO>> getPurchasePoliciesByStoreId(int storeId);
 
     ResponseT<List<String>> getPurchasePolicyTypes();
+
+    Response removeDiscount(String sessionId, int storeId, int discountId);
+
+    ResponseT<List<String>> getDiscountPolicyTypes();
 }

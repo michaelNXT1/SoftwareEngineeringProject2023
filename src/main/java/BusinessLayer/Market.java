@@ -337,20 +337,20 @@ public class Market {
         Purchase purchase;
         synchronized (purchaseLock) {
             PaymentDetails payDetails = g.getPaymentDetails();
-            if (payDetails == null){
+            if (payDetails == null) {
                 logger.info("Purchase failed, need to add payment Details first");
                 throw new Exception("Purchase failed, need to add payment Details first");
             }
             SupplyDetails supplyDetails = g.getSupplyDetails();
-            if (supplyDetails == null){
+            if (supplyDetails == null) {
                 logger.info("Purchase failed, need to add supply Details first");
                 throw new Exception("Purchase failed, need to add supply Details first");
             }
-            if (supplySystem.supply(supplyDetails.getName(), supplyDetails.getAddress(), supplyDetails.getCity(), supplyDetails.getCountry(), supplyDetails.getZip()) == -1){
+            if (supplySystem.supply(supplyDetails.getName(), supplyDetails.getAddress(), supplyDetails.getCity(), supplyDetails.getCountry(), supplyDetails.getZip()) == -1) {
                 logger.info("Purchase failed, supply system charge failed");
                 throw new Exception("Purchase failed, supply system hasn't managed to charge");
             }
-            if (paymentSystem.pay(payDetails.getCreditCardNumber(),payDetails.getMonth(),payDetails.getYear(),payDetails.getHolder(),payDetails.getCvv(),payDetails.getCardId()) == -1){ //purchase.getTotalPrice())) {
+            if (paymentSystem.pay(payDetails.getCreditCardNumber(), payDetails.getMonth(), payDetails.getYear(), payDetails.getHolder(), payDetails.getCvv(), payDetails.getCardId()) == -1) { //purchase.getTotalPrice())) {
                 logger.info("Purchase failed, payment system charge failed");
                 throw new Exception("Purchase failed, payment system hasn't managed to charge");
             }
@@ -629,9 +629,10 @@ public class Market {
         sessionManager.getSessionForSystemManager(sessionId);
         Map<StoreDTO, List<PurchaseDTO>> ret = new HashMap<>();
         for (Store s : stores.values()) {
+            StoreDTO sDTO = new StoreDTO(s);
             ret.put(new StoreDTO(s), new ArrayList<>());
             for (Purchase p : s.getPurchaseList()) {
-                ret.get(s).add(new PurchaseDTO(p));
+                ret.get(sDTO).add(new PurchaseDTO(p));
             }
         }
         logger.info(String.format("%s get his purchases", sessionId));
@@ -706,7 +707,7 @@ public class Market {
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
         p.addProductDiscount(productId, discountPercentage, compositionType);
-        logger.info(String.format("%s added product discount of %d to %d store", sessionId, storeId));
+        logger.info(String.format("%s added product discount to %d store", sessionId, storeId));
     }
 
     public void addCategoryDiscount(String sessionId, int storeId, String category, double discountPercentage, int compositionType) throws Exception {
@@ -726,7 +727,17 @@ public class Market {
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
         p.addStoreDiscount(discountPercentage, compositionType);
-        logger.info(String.format("%s added store discount of %d percentage to %d store", sessionId, discountPercentage, storeId));
+        logger.info(String.format("%s added store discount of %f percentage to %d store", sessionId, discountPercentage, storeId));
+    }
+
+    public void removeDiscount(String sessionId, int storeId, int discountId) throws Exception {
+        logger.info("Trying to remove discount of id " + discountId);
+        isMarketOpen();
+        sessionManager.getSession(sessionId);
+        checkStoreExists(storeId);
+        Position p = checkPositionLegal(sessionId, storeId);
+        p.removeDiscount(discountId);
+        logger.info("successfully removed discount");
     }
 
     public void addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone) throws Exception {
@@ -739,13 +750,13 @@ public class Market {
         logger.info(String.format("%s added min quantity discount policy to %d store", sessionId, storeId));
     }
 
-    public void addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity, boolean allowNone) throws Exception {
+    public void addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity) throws Exception {
         logger.info("trying to addMaxQuantityDiscountPolicy");
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
-        p.addMaxQuantityDiscountPolicy(discountId, productId, maxQuantity, allowNone);
+        p.addMaxQuantityDiscountPolicy(discountId, productId, maxQuantity);
         logger.info(String.format("%s added max quantity discount policy to %d store", sessionId, storeId));
 
     }
@@ -767,7 +778,7 @@ public class Market {
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
         p.joinDiscountPolicies(policyId1, policyId2, operator);
-        logger.info(String.format("%d and %d DiscountPolicies joined with %d operator in %d store by %s", policyId1, policyId2, storeId, sessionId));
+        logger.info(String.format("%d and %d DiscountPolicies joined with %d operator in %s", policyId1, policyId2, operator, sessionId));
     }
 
     public void removeDiscountPolicy(String sessionId, int storeId, int policyId) throws Exception {
@@ -787,7 +798,8 @@ public class Market {
         g.addPaymentMethod(cardNumber, month, year, cvv, holder, cardId);
         logger.info(String.format("Payment details of %s are added", sessionId));
     }
-    public void addSupplyDetails(String sessionId, String name,String address, String city, String country, String zip) throws Exception {
+
+    public void addSupplyDetails(String sessionId, String name, String address, String city, String country, String zip) throws Exception {
         logger.info("trying to add Supply details");
         isMarketOpen();
         Guest g = sessionManager.getSession(sessionId);
@@ -975,15 +987,20 @@ public class Market {
         }
         return ret;
     }
-  
+
     public List<String> getPurchasePolicyTypes() {
         return BasePurchasePolicy.getPurchasePolicyTypes();
     }
-    public void setPaymentSystem(IPaymentSystem ps){
+
+    public List<String> getDiscountPolicyTypes() {
+        return BaseDiscountPolicy.getDiscountPolicyTypes();
+    }
+
+    public void setPaymentSystem(IPaymentSystem ps) {
         paymentSystem.setPaymentSystem(ps);
     }
-      
-    public void setSupplySystem(ISupplySystem ps){
+
+    public void setSupplySystem(ISupplySystem ps) {
         supplySystem.setSupplySystem(ps);
     }
 }

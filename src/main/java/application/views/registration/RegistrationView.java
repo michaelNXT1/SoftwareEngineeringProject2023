@@ -1,7 +1,8 @@
 package application.views.registration;
 
 import CommunicationLayer.MarketController;
-import CommunicationLayer.NotificationController;
+import ServiceLayer.Response;
+import ServiceLayer.ResponseT;
 import application.views.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Header;
@@ -42,7 +43,10 @@ import org.springframework.beans.factory.annotation.Autowired;
         private void regisration() {
             String username = usernameField.getValue();
             String password = passwordField.getValue();
-            Boolean ans = marketController.signUp(username,password);
-            Notification.show(ans.toString());
+            Response r = marketController.signUp(username,password);
+            if (r.getError_occurred())
+                Notification.show(r.error_message, 3000, Notification.Position.MIDDLE);
+            Notification.show("you sign up successfully", 3000, Notification.Position.MIDDLE);
+
         }
 }

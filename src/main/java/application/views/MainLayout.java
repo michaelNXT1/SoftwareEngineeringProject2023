@@ -2,7 +2,8 @@ package application.views;
 
 
 import CommunicationLayer.MarketController;
-import CommunicationLayer.NotificationController;
+import ServiceLayer.Response;
+import ServiceLayer.ResponseT;
 import application.components.AppNav;
 import application.components.AppNavItem;
 import application.views.about.AboutView;
@@ -22,60 +23,46 @@ import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import com.vaadin.flow.theme.lumo.LumoUtility.AlignItems;
 import com.vaadin.flow.theme.lumo.LumoUtility.Display;
 import com.vaadin.flow.theme.lumo.LumoUtility.FontSize;
 import com.vaadin.flow.theme.lumo.LumoUtility.Padding;
-
 import org.vaadin.lineawesome.LineAwesomeIcon;
-import org.springframework.messaging.simp.stomp.*;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.web.socket.messaging.WebSocketStompClient;
-import org.springframework.web.socket.sockjs.client.SockJsClient;
-import org.springframework.web.socket.sockjs.client.Transport;
-import org.springframework.web.socket.sockjs.client.WebSocketTransport;
-import org.springframework.web.socket.client.standard.StandardWebSocketClient;
-import org.springframework.web.socket.client.WebSocketClient;
-import javax.script.ScriptException;
-import java.io.FileNotFoundException;
-import java.lang.reflect.Type;
+
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
 /**
  * The main view is a top-level placeholder for other views.
  */
 public class MainLayout extends AppLayout {
     private static String sessionId;
+
     MarketController marketController = MarketController.getInstance();
     private TextField searchBox;
     private final Map<String, Runnable> searchActionMap = new HashMap<>();
     private Select<String> searchType;
 
-
-    public MainLayout() throws ScriptException, FileNotFoundException {
+    public MainLayout() {
         sessionId = marketController.enterMarket();
         config();
         addToNavbar(createHeaderContent());
         addDrawerContent();
     }
 
-    private void config() throws FileNotFoundException, ScriptException {
+    private void config() {
         marketController.signUp("Michael", "1234");
-        sessionId = marketController.login("Michael", "1234");
+        sessionId = marketController.login("Michael", "1234").value;
         marketController.openStore(sessionId, "Shufersal");
         marketController.openStore(sessionId, "Ebay");
         Map<String, Integer> productMap = new HashMap<>();
@@ -157,7 +144,7 @@ public class MainLayout extends AppLayout {
         centerLayout.setFlexGrow(1, div2);
         if (marketController.isLoggedIn(sessionId).value)
             rightLayout.add(div3, logoutButton);
-        else
+        //else
             rightLayout.add(div3, loginButton, signUpButton);
         rightLayout.setFlexGrow(1, div3);
         layout.add(leftLayout, centerLayout, rightLayout);
@@ -169,7 +156,14 @@ public class MainLayout extends AppLayout {
     }
 
     private void logout() {
-        sessionId = marketController.logout(sessionId).value;
+
+        Response r = marketController.logout(sessionId);
+        sessionId = ((ResponseT<String>) r).value;
+        if (r.getError_occurred())
+            Notification.show(r.error_message, 3000, Notification.Position.MIDDLE);
+        else
+            Notification.show("you logged out successfully", 3000, Notification.Position.MIDDLE);
+
         if (sessionId != null)
             UI.getCurrent().navigate(HelloWorldView.class);
     }

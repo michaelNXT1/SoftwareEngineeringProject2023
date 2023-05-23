@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MarketManager implements IMarketManager {
-    private Market market;
+    private final Market market;
 
     public MarketManager() {
         this.market = new Market();
@@ -446,6 +446,16 @@ public class MarketManager implements IMarketManager {
         }
     }
 
+    @Override
+    public Response removeDiscount(String sessionId, int storeId, int discountId) {
+        try {
+            market.removeDiscount(sessionId, storeId, discountId);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
 
     public Response addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone) {
         try {
@@ -457,9 +467,9 @@ public class MarketManager implements IMarketManager {
     }
 
 
-    public Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity, boolean allowNone) {
+    public Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity) {
         try {
-            market.addMaxQuantityDiscountPolicy(sessionId, storeId, discountId, productId, maxQuantity, allowNone);
+            market.addMaxQuantityDiscountPolicy(sessionId, storeId, discountId, productId, maxQuantity);
             return new Response();
         } catch (Exception e) {
             return new Response(e.getMessage());
@@ -590,6 +600,15 @@ public class MarketManager implements IMarketManager {
     public ResponseT<List<String>> getPurchasePolicyTypes() {
         try {
             return ResponseT.fromValue(market.getPurchasePolicyTypes());
+        } catch (Exception e) {
+            return ResponseT.fromError(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseT<List<String>> getDiscountPolicyTypes() {
+        try {
+            return ResponseT.fromValue(market.getDiscountPolicyTypes());
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }
