@@ -36,10 +36,10 @@ public class MarketController implements IMarketController {
 
     @GetMapping("/login")
     @ResponseBody
-    public String login(
+    public ResponseT<String> login(
             @RequestParam(value = "username", defaultValue = "") String username,
             @RequestParam(value = "password", defaultValue = "") String password) {
-        return marketManager.login(username, password).value;
+        return marketManager.login(username, password);
     }
 
     @GetMapping("/logout")
@@ -98,10 +98,10 @@ public class MarketController implements IMarketController {
 
     @GetMapping("/signUp")
     @ResponseBody
-    public boolean signUp(
+    public Response signUp(
             @RequestParam(value = "username", defaultValue = "") String username,
             @RequestParam(value = "password", defaultValue = "") String password) {
-        return !marketManager.signUp(username, password).getError_occurred();
+        return marketManager.signUp(username, password);
     }
 
 
@@ -273,9 +273,9 @@ public class MarketController implements IMarketController {
     @GetMapping("/closeStore")
     @ResponseBody
     @Override
-    public boolean closeStore(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
-                              @RequestParam(value = "storeId", defaultValue = "-1") int storeId) {
-        return !marketManager.closeStore(sessionId, storeId).getError_occurred();
+    public Response closeStore(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                               @RequestParam(value = "storeId", defaultValue = "-1") int storeId) {
+        return marketManager.closeStore(sessionId, storeId);
     }
 
     @GetMapping("/getStoresPurchases")
