@@ -23,7 +23,7 @@ public class Real implements Bridge {
     }
 
     public String login(String username, String password) {
-        return manager.login(username, password, ).value;
+        return manager.login(username, password, null).value;
     }
 
     public boolean register(String username, String password) {

@@ -91,7 +91,7 @@ public class Member extends Guest {
     public void sendRealTimeNotification(){
         if(!(notifications == null || notifications.isEmpty())) {
             for (Notification notification : notifications) {
-                this.notificationBroker.sendRealTimeNotification(notification, this.username);
+                this.notificationBroker.sendNotificationToUser(notification, this.username);
             }
             notifications.clear();
         }
@@ -99,7 +99,7 @@ public class Member extends Guest {
 
     public void sendNotification(Notification shopNotification) {
         if (this.notificationBroker != null) {
-            notificationBroker.sendRealTimeNotification(shopNotification, this.username);
+            notificationBroker.sendNotificationToUser(shopNotification, this.username);
         }else {
             this.notifications.add(shopNotification);
         }
