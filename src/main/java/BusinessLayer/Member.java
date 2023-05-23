@@ -8,13 +8,17 @@ import ServiceLayer.DTOs.StoreDTO;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
+@Entity
+@Table(name = "members")
 public class Member extends Guest {
-
+    @Id
+    @Column(name = "username")
     private String username;
+    @Column(name = "hashed_password")
     private String hashedPassword;
 
     private SystemLogger logger;
+    @Column(name = "positions")
     private List<Position> positions = new LinkedList<>(); //all the positions of this member, note that position act as a state
 
     public Member(String username, String hashedPassword) {
