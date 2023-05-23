@@ -41,7 +41,7 @@ public class MarketController implements IMarketController {
     public ResponseT<String> login(
             @RequestParam(value = "username", defaultValue = "") String username,
             @RequestParam(value = "password", defaultValue = "") String password) {
-        return marketManager.login(username, password,notificationBroker).value;
+        return marketManager.login(username, password,notificationBroker);
     }
 
     @GetMapping("/logout")

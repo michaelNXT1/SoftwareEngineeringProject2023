@@ -282,8 +282,8 @@ public class Real implements Bridge {
     }
 
     @Override
-    public boolean addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity, boolean allowNone) {
-        return !this.manager.addMaxQuantityDiscountPolicy(sessionId, storeId, discountId, productId, maxQuantity, allowNone).getError_occurred();
+    public boolean addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity) {
+        return !this.manager.addMaxQuantityDiscountPolicy(sessionId, storeId, discountId, productId, maxQuantity).getError_occurred();
     }
 
     @Override
