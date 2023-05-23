@@ -98,6 +98,11 @@ public class StoreFounder implements Position {
     }
 
     @Override
+    public String getPositionName() {
+        return "Founder";
+    }
+
+    @Override
     public void addMinQuantityPolicy(int productId, int minQuantity, boolean allowNone) throws Exception {
         store.addMinQuantityPolicy(productId, minQuantity, allowNone);
     }
