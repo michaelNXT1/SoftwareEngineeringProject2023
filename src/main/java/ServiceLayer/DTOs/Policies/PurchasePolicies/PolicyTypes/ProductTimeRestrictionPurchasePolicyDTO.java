@@ -21,6 +21,6 @@ public class ProductTimeRestrictionPurchasePolicyDTO extends BasePurchasePolicyD
 
     @Override
     public String toString() {
-        return "Product " + product.getProductName() + " allowed between " + startTime + " and " + endTime;
+        return "Product " + product.getProductName() + " allowed between " + startTime + "-" + endTime;
     }
 }
