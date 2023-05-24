@@ -188,40 +188,40 @@ public class MarketController implements IMarketController {
     @GetMapping("/editProductName")
     @ResponseBody
     @Override
-    public boolean editProductName(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
-                                   @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
-                                   @RequestParam(value = "productId", defaultValue = "-1") int productId,
-                                   @RequestParam(value = "newName", defaultValue = "") String newName) {
-        return !marketManager.editProductName(sessionId, storeId, productId, newName).getError_occurred();
+    public Response editProductName(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                    @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
+                                    @RequestParam(value = "productId", defaultValue = "-1") int productId,
+                                    @RequestParam(value = "newName", defaultValue = "") String newName) {
+        return marketManager.editProductName(sessionId, storeId, productId, newName);
     }
 
     @GetMapping("/editProductPrice")
     @ResponseBody
     @Override
-    public boolean editProductPrice(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
-                                    @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
-                                    @RequestParam(value = "productId", defaultValue = "-1") int productId,
-                                    @RequestParam(value = "newPrice", defaultValue = "-1") int newPrice) {
-        return !marketManager.editProductPrice(sessionId, storeId, productId, newPrice).getError_occurred();
+    public Response editProductPrice(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                     @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
+                                     @RequestParam(value = "productId", defaultValue = "-1") int productId,
+                                     @RequestParam(value = "newPrice", defaultValue = "-1") double newPrice) {
+        return marketManager.editProductPrice(sessionId, storeId, productId, newPrice);
     }
 
     @GetMapping("/editProductCategory")
     @ResponseBody
     @Override
-    public boolean editProductCategory(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
-                                       @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
-                                       @RequestParam(value = "productId", defaultValue = "-1") int productId,
-                                       @RequestParam(value = "newCategory", defaultValue = "") String newCategory) {
-        return !marketManager.editProductCategory(sessionId, storeId, productId, newCategory).getError_occurred();
+    public Response editProductCategory(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                        @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
+                                        @RequestParam(value = "productId", defaultValue = "-1") int productId,
+                                        @RequestParam(value = "newCategory", defaultValue = "") String newCategory) {
+        return marketManager.editProductCategory(sessionId, storeId, productId, newCategory);
     }
 
     @GetMapping("/removeProductFromStore")
     @ResponseBody
     @Override
-    public boolean removeProductFromStore(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
-                                          @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
-                                          @RequestParam(value = "productId", defaultValue = "-1") int productId) {
-        return !marketManager.removeProductFromStore(sessionId, storeId, productId).getError_occurred();
+    public Response removeProductFromStore(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                           @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
+                                           @RequestParam(value = "productId", defaultValue = "-1") int productId) {
+        return marketManager.removeProductFromStore(sessionId, storeId, productId);
     }
 
     @GetMapping("/setPositionOfMemberToStoreManager")

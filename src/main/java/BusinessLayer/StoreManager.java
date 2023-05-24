@@ -9,7 +9,13 @@ import java.util.Set;
 public class StoreManager implements Position {
 
     private final SystemLogger logger = new SystemLogger();
-    public enum permissionType {setPermissions, setNewPosition, Inventory, Purchases, EmployeeList}
+    public enum permissionType {
+        setPermissions,
+        setNewPosition,
+        Inventory,
+        Purchases,
+        EmployeeList
+    }
 
     private final Store store;
     private final Member assigner;
@@ -195,6 +201,11 @@ public class StoreManager implements Position {
     public void removeStoreOwner(Member systemManagerToRemove, Guest m) throws Exception {
         logger.error("store manager hasn't permission to perform this action");
         throw new IllegalAccessException("This member hasn't permission to perform this action");
+    }
+
+    @Override
+    public String getPositionName() {
+        return "Manager";
     }
 
     @Override

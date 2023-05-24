@@ -58,7 +58,7 @@ public interface IMarketManager {
 
     Response editProductName(String sessionId, int storeId, int productId, String newName);
 
-    Response editProductPrice(String sessionId, int storeId, int productId, int newPrice);
+    Response editProductPrice(String sessionId, int storeId, int productId, double newPrice);
 
     Response editProductCategory(String sessionId, int storeId, int productId, String newCategory);
 

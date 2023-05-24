@@ -75,4 +75,6 @@ public interface Position {
     List<Member> getStoreEmployees() throws IllegalAccessException;
 
     void removeStoreOwner(Member storeOwnerToRemove, Guest m) throws Exception;
+
+    String getPositionName();
 }

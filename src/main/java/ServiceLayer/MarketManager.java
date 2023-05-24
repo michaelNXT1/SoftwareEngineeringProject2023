@@ -270,7 +270,7 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public Response editProductPrice(String sessionId, int storeId, int productId, int newPrice) {
+    public Response editProductPrice(String sessionId, int storeId, int productId, double newPrice) {
         try {
             market.editProductPrice(sessionId, storeId, productId, newPrice);
             return new Response();
