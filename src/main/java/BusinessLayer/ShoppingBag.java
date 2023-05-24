@@ -2,6 +2,7 @@ package BusinessLayer;
 
 import Utils.Pair;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +34,10 @@ public class ShoppingBag {
         this.store = store;
         this.productList = new HashMap<>();
         bagPurchase = new Purchase(new ArrayList<>());
+    }
+
+    public ShoppingBag() {
+
     }
 
     //Use case 2.10 & Use case 2.12
