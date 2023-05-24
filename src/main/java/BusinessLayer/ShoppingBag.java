@@ -9,10 +9,25 @@ import java.util.Map;
 
 import static org.atmosphere.annotation.AnnotationUtil.logger;
 
+@Entity
+@Table(name = "shopping_bag")
 public class ShoppingBag {
-    private final Store store;
-    private final Map<Integer, Integer> productList;
-    private final Purchase bagPurchase;
+    @Id
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "store_id")
+    private Store store;
+
+    @ElementCollection
+    @CollectionTable(name = "product_list_mapping", joinColumns = @JoinColumn(name = "shopping_bag_id"))
+    @MapKeyColumn(name = "product_id")
+    @Column(name = "quantity")
+    private Map<Integer, Integer> productList;
+
+    @OneToOne(mappedBy = "shoppingBag", cascade = CascadeType.ALL)
+    private Purchase bagPurchase;
+
 
     public ShoppingBag(Store store) {
         this.store = store;
