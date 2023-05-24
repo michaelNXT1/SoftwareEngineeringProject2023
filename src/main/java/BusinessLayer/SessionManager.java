@@ -9,11 +9,18 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static org.atmosphere.annotation.AnnotationUtil.logger;
 
+@Entity
 public class SessionManager {
 
-    private Object sessionLock = new Object();
-    private final Map<String, Guest> sessions;
-    private final Map<String, SystemManager> systemManagerSessions;
+    @Id
+    private Long id;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Map<String, Guest> sessions;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Map<String, SystemManager> systemManagerSessions;
+
     private static final int SESSION_ID_LENGTH = 16;
 
     public SessionManager() {
