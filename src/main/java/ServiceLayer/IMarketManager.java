@@ -136,6 +136,8 @@ public interface IMarketManager {
 
     Response removeDiscount(String sessionId, int storeId, int discountId);
 
+    Response hasPermission(String sessionId, int storeId, PositionDTO.permissionType employeeList);
+
 
 //        Response logoutSystemManager(String sessionId);
 

@@ -83,7 +83,7 @@ public class Member extends Guest {
         } else {
             logger.info(String.format("%s promote to be the owner of %s", getUsername(), store.getStoreName()));
             positions.add(new StoreOwner(store, assigner));
-            store.addStoreOwner(this);
+            store.addEmployee(this);
         }
     }
 

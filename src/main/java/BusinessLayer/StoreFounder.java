@@ -1,6 +1,7 @@
 package BusinessLayer;
 
 import BusinessLayer.Logger.SystemLogger;
+import ServiceLayer.DTOs.PositionDTO;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -17,23 +18,8 @@ public class StoreFounder implements Position {
         this.logger = new SystemLogger();
     }
 
-    @Override
-    public Store getStore() {
-        return store;
-    }
-
     public Member getAssigner() {
         return assigner;
-    }
-
-    @Override
-    public void addStoreManagerPermissions(Position storeManagerPosition, StoreManager.permissionType newPermission) {
-        storeManagerPosition.addPermission(newPermission);
-    }
-
-    @Override
-    public void removeStoreManagerPermissions(Position storeManagerPosition, StoreManager.permissionType permission) {
-        storeManagerPosition.removePermission(permission);
     }
 
     @Override
@@ -47,8 +33,18 @@ public class StoreFounder implements Position {
     }
 
     @Override
-    public void removeProductFromStore(int productID) throws Exception {
-        store.removeProduct(productID);
+    public void addStoreManagerPermissions(Position storeManagerPosition, StoreManager.permissionType newPermission) {
+        storeManagerPosition.addPermission(newPermission);
+    }
+
+    @Override
+    public void removeStoreManagerPermissions(Position storeManagerPosition, StoreManager.permissionType permission) {
+        storeManagerPosition.removePermission(permission);
+    }
+
+    @Override
+    public Product addProduct(Store store, String productName, double price, String category, int quantity, String description) throws Exception {
+        return store.addProduct(productName, price, category, quantity, description);
     }
 
     @Override
@@ -72,8 +68,8 @@ public class StoreFounder implements Position {
     }
 
     @Override
-    public Product addProduct(Store store, String productName, double price, String category, int quantity, String description) throws Exception {
-        return store.addProduct(productName, price, category, quantity, description);
+    public void removeProductFromStore(int productID) throws Exception {
+        store.removeProduct(productID);
     }
 
     @Override
@@ -81,54 +77,33 @@ public class StoreFounder implements Position {
         return store.getPurchaseList();
     }
 
-
     @Override
-    public void closeStore() throws IllegalAccessException {
-        store.setOpen(false);
-    }
-
-    @Override
-    public List<Member> getStoreEmployees() {
-        return store.getEmployees();
-    }
-
-    @Override
-    public void removeStoreOwner(Member storeOwnerToRemove, Guest m) throws Exception {
-        storeOwnerToRemove.notBeingStoreOwner(m, getStore());
-    }
-
-    @Override
-    public String getPositionName() {
-        return "Founder";
-    }
-
-    @Override
-    public void addMinQuantityPolicy(int productId, int minQuantity, boolean allowNone) throws Exception {
+    public void addMinQuantityPurchasePolicy(int productId, int minQuantity, boolean allowNone) throws Exception {
         store.addMinQuantityPolicy(productId, minQuantity, allowNone);
     }
 
     @Override
-    public void addMaxQuantityPolicy(int productId, int maxQuantity) throws Exception {
+    public void addMaxQuantityPurchasePolicy(int productId, int maxQuantity) throws Exception {
         store.addMaxQuantityPolicy(productId, maxQuantity);
     }
 
     @Override
-    public void addProductTimeRestrictionPolicy(int productId, LocalTime startTime, LocalTime endTime) throws Exception {
+    public void addProductTimeRestrictionPurchasePolicy(int productId, LocalTime startTime, LocalTime endTime) throws Exception {
         store.addProductTimeRestrictionPolicy(productId, startTime, endTime);
     }
 
     @Override
-    public void addCategoryTimeRestrictionPolicy(String category, LocalTime startTime, LocalTime endTime) throws Exception {
+    public void addCategoryTimeRestrictionPurchasePolicy(String category, LocalTime startTime, LocalTime endTime) throws Exception {
         store.addCategoryTimeRestrictionPolicy(category, startTime, endTime);
     }
 
     @Override
-    public void joinPolicies(int policyId1, int policyId2, int operator) throws Exception {
+    public void joinPurchasePolicies(int policyId1, int policyId2, int operator) throws Exception {
         store.joinPolicies(policyId1, policyId2, operator);
     }
 
     @Override
-    public void removePolicy(int policyId) throws Exception {
+    public void removePurchasePolicy(int policyId) throws Exception {
         store.removePolicy(policyId);
     }
 
@@ -175,5 +150,45 @@ public class StoreFounder implements Position {
     @Override
     public void removeDiscountPolicy(int policyId) throws Exception {
         store.removeDiscountPolicy(policyId);
+    }
+
+    @Override
+    public void addPermission(StoreManager.permissionType newPermission) {
+        //TODO: do
+    }
+
+    @Override
+    public void removePermission(StoreManager.permissionType permission) {
+        //TODO: do
+    }
+
+    @Override
+    public void closeStore() throws IllegalAccessException {
+        store.setOpen(false);
+    }
+
+    @Override
+    public List<Member> getStoreEmployees() {
+        return store.getEmployees();
+    }
+
+    @Override
+    public void removeStoreOwner(Member storeOwnerToRemove, Guest m) throws Exception {
+        storeOwnerToRemove.notBeingStoreOwner(m, getStore());
+    }
+
+    @Override
+    public Store getStore() {
+        return store;
+    }
+
+    @Override
+    public boolean hasPermission(PositionDTO.permissionType employeeList) {
+        return true;
+    }
+
+    @Override
+    public String getPositionName() {
+        return "Founder";
     }
 }

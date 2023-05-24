@@ -376,6 +376,6 @@ public class Store {
     }
 
     public void addStoreOwner(Member member) {
-        storeOwners.add(member.getUsername());
+        employees.add(member);
     }
 }

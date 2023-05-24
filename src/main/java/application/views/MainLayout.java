@@ -64,9 +64,14 @@ public class MainLayout extends AppLayout {
     }
 
     private void config() {
+        marketController.signUp("The Extra!", "1234");
+        sessionId = marketController.login("The Extra!", "1234").value;
+        marketController.logout(sessionId);
+
         marketController.signUp("Michael", "1234");
         sessionId = marketController.login("Michael", "1234").value;
         marketController.openStore(sessionId, "Shufersal");
+        marketController.setPositionOfMemberToStoreManager(sessionId, 0, "The Extra!");
         marketController.openStore(sessionId, "Ebay");
         Map<String, Integer> productMap = new HashMap<>();
         productMap.put("Klik Marbles", marketController.addProduct(sessionId, 0, "Klik Marbles", 6.8, "Snacks", 50, "").value.getProductId());

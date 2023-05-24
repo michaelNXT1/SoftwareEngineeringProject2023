@@ -133,4 +133,6 @@ public interface IMarketController {
     Response removeDiscount(String sessionId, int storeId, int discountId);
 
     ResponseT<List<String>> getDiscountPolicyTypes();
+
+    Response hasPermission(String sessionId, int storeId, PositionDTO.permissionType employeeList);
 }

@@ -5,8 +5,10 @@ import ServiceLayer.DTOs.Discounts.CategoryDiscountDTO;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
 import ServiceLayer.DTOs.Discounts.ProductDiscountDTO;
 import ServiceLayer.DTOs.Discounts.StoreDiscountDTO;
+import ServiceLayer.DTOs.MemberDTO;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
+import ServiceLayer.DTOs.PositionDTO;
 import ServiceLayer.DTOs.ProductDTO;
 import ServiceLayer.Response;
 import ServiceLayer.ResponseT;
@@ -47,13 +49,15 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
     private final MarketController marketController;
     private final Header header;
     private Map<ProductDTO, Integer> productMap;
+    private List<MemberDTO> employeesList;
+    private List<BasePurchasePolicyDTO> purchasePolicyList;
     private Map<DiscountDTO, List<BaseDiscountPolicyDTO>> discountPolicyMap;
     private Grid<ProductDTO> productGrid;
     private Grid<BasePurchasePolicyDTO> purchasePolicyGrid;
+    private Grid<MemberDTO> employeesGrid;
     private Grid<ProductDiscountDTO> productDiscountGrid;
     private Grid<CategoryDiscountDTO> categoryDiscountGrid;
     private Grid<StoreDiscountDTO> storeDiscountGrid;
-    private List<BasePurchasePolicyDTO> purchasePolicyList;
     private int storeId;
 
     @Autowired
@@ -64,13 +68,17 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
 
         VerticalLayout products = initProductGrid();
         VerticalLayout purchasePolicies = initPurchasePolicyGrid();
+        VerticalLayout employees = initEmployeesGrid();
         HorizontalLayout productAndPolicyGrids = new HorizontalLayout();
-        purchasePolicies.setWidth("75%");
-        products.setWidth("100%");
-        productAndPolicyGrids.add(products, purchasePolicies);
+        products.setWidth("50%");
+        productAndPolicyGrids.add(products, purchasePolicies, employees);
+        if (!marketController.hasPermission(MainLayout.getSessionId(), storeId, PositionDTO.permissionType.EmployeeList).getError_occurred()) {
+            purchasePolicies.setWidth("25%");
+            employees.setWidth("25%");
+            productAndPolicyGrids.add(employees);
+        } else
+            purchasePolicies.setWidth("50%");
         productAndPolicyGrids.setWidthFull();
-        productAndPolicyGrids.setFlexGrow(4, products);
-        productAndPolicyGrids.setFlexGrow(1, purchasePolicies);
 
         VerticalLayout productDiscountLayout = initProductDiscountGrid();
         VerticalLayout categoryDiscountLayout = initCategoryDiscountGrid();
@@ -87,6 +95,16 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         getStyle().set("text-align", "center");
     }
 
+    private static void successMessage(Dialog dialog, Label errorSuccessLabel, String msg) {
+        errorSuccessLabel.setText("");
+        dialog.close();
+        Dialog successDialog = new Dialog();
+        VerticalLayout successVl = new VerticalLayout();
+        successVl.add(new Label(msg), new Button("Close", e -> successDialog.close()));
+        successDialog.add(successVl);
+        successDialog.open();
+    }
+
     @Override
     public void setParameter(BeforeEvent beforeEvent, @WildcardParameter String parameter) {
         storeId = Integer.parseInt(parameter);
@@ -95,6 +113,8 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         productGrid.setItems(productMap.keySet().stream().toList());
         purchasePolicyList = marketController.getPurchasePoliciesByStoreId(storeId).value;
         purchasePolicyGrid.setItems(purchasePolicyList);
+        employeesList = marketController.getStoreEmployees(MainLayout.getSessionId(), storeId);
+        employeesGrid.setItems(employeesList);
         discountPolicyMap = marketController.getDiscountPolicyMap(storeId).value;
 
         List<ProductDiscountDTO> productDiscountDTOS = new ArrayList<>();
@@ -150,6 +170,36 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         purchasePolicyGrid.addComponentColumn(purchasePolicy -> new Button("Remove", e -> removePurchasePolicyDialog(purchasePolicy.getPolicyId()))).setFlexGrow(0).setAutoWidth(true);
         purchasePolicies.add(purchasePoliciesHL, purchasePolicyGrid);
         return purchasePolicies;
+    }
+
+    private VerticalLayout initEmployeesGrid() {
+        VerticalLayout employees = new VerticalLayout();
+        HorizontalLayout employeesHL = new HorizontalLayout();
+        Div employeesDiv = new Div();
+        employeesHL.add(new H1("Employees List"), employeesDiv, new Button("+", e -> {
+        }));
+        employeesHL.setFlexGrow(1, employeesDiv);
+        employeesHL.setWidthFull();
+        employeesGrid = new Grid<>(MemberDTO.class, false);
+        employeesGrid.addColumn(memberDTO -> employeesList.indexOf(memberDTO) + 1).setHeader("#").setSortable(true).setTextAlign(ColumnTextAlign.START).setFlexGrow(0);
+        employeesGrid.addColumn(MemberDTO::getUsername).setHeader("Name").setSortable(true).setTextAlign(ColumnTextAlign.START);
+        employeesGrid.addColumn(memberDTO -> memberDTO.getPositions().stream()
+                .filter(position -> position.getStore().getStoreId() == storeId)
+                .map(PositionDTO::getPositionName)
+                .findFirst().orElse("")).setHeader("Position").setSortable(true).setTextAlign(ColumnTextAlign.START);
+        employeesGrid.addComponentColumn(memberDTO -> {
+            if (Objects.equals(memberDTO.getUsername(), marketController.getUsername(MainLayout.getSessionId()))) {
+                Div div = new Div();
+                div.getStyle().set("white-space", "pre-wrap");
+                div.setText("You");
+                return div;
+            } else {
+                return new Button("Modify", e -> {
+                });
+            }
+        }).setTextAlign(ColumnTextAlign.CENTER);
+        employees.add(employeesHL, employeesGrid);
+        return employees;
     }
 
     private VerticalLayout initProductDiscountGrid() {
@@ -1005,16 +1055,6 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         vl.getStyle().set("text-align", "center");
         dialog.open();
 
-    }
-
-    private static void successMessage(Dialog dialog, Label errorSuccessLabel, String msg) {
-        errorSuccessLabel.setText("");
-        dialog.close();
-        Dialog successDialog = new Dialog();
-        VerticalLayout successVl = new VerticalLayout();
-        successVl.add(new Label(msg), new Button("Close", e -> successDialog.close()));
-        successDialog.add(successVl);
-        successDialog.open();
     }
 
     private Span generateColumnHeader() {
