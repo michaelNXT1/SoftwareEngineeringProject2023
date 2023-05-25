@@ -64,6 +64,11 @@ public class MainLayout extends AppLayout {
     }
 
     private void config() {
+        marketController.signUp("Shoham", "1234");
+        marketController.signUp("Alon", "1234");
+        marketController.signUp("Shani", "1234");
+        marketController.signUp("Idan", "1234");
+
         marketController.signUp("Michael", "1234");
         sessionId = marketController.login("Michael", "1234").value;
         marketController.openStore(sessionId, "Shufersal");
@@ -90,7 +95,20 @@ public class MainLayout extends AppLayout {
 
         marketController.addMaxQuantityPolicy(sessionId, 0, productMap.get("Apple"), 5);
         marketController.addCategoryTimeRestrictionPolicy(sessionId, 0, "Snacks", LocalTime.of(7, 0, 0), LocalTime.of(23, 0, 0));
-//        marketController.logout(sessionId);
+
+        marketController.setPositionOfMemberToStoreOwner(sessionId, 0, "Alon");
+        marketController.setPositionOfMemberToStoreManager(sessionId, 0, "Shoham");
+        marketController.addStoreManagerPermissions(sessionId, "Shoham", 0, 4);
+
+        marketController.logout(sessionId);
+
+        sessionId = marketController.login("Alon", "1234").value;
+        marketController.setPositionOfMemberToStoreOwner(sessionId, 0, "Shani");
+        marketController.logout(sessionId);
+
+        sessionId = marketController.login("Michael", "1234").value;
+//
+//        sessionId = marketController.login("Shoham", "1234").value;
     }
 
 

@@ -10,6 +10,7 @@ import ServiceLayer.ResponseT;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface IMarketController {
     boolean signUpSystemManager(String username, String password);
@@ -66,15 +67,15 @@ public interface IMarketController {
 
     Response removeProductFromStore(String sessionId, int storeId, int productId);
 
-    boolean setPositionOfMemberToStoreManager(String sessionId, int storeID, String MemberToBecomeManager);
+    Response setPositionOfMemberToStoreManager(String sessionId, int storeID, String MemberToBecomeManager);
 
-    boolean setPositionOfMemberToStoreOwner(String sessionId, int storeID, String MemberToBecomeOwner);
+    Response setPositionOfMemberToStoreOwner(String sessionId, int storeID, String MemberToBecomeOwner);
 
     boolean addStoreManagerPermissions(String sessionId, String storeManager, int storeID, int newPermission);
 
     boolean removeStoreManagerPermissions(String sessionId, String storeManager, int storeID, int newPermission);
 
-    List<MemberDTO> getStoreEmployees(String sessionId, int storeId);
+    ResponseT<List<MemberDTO>> getStoreEmployees(String sessionId, int storeId);
 
     Response closeStore(String sessionId, int storeId);
 
@@ -133,4 +134,12 @@ public interface IMarketController {
     Response removeDiscount(String sessionId, int storeId, int discountId);
 
     ResponseT<List<String>> getDiscountPolicyTypes();
+
+    ResponseT<Boolean> hasPermission(String sessionId, int storeId, PositionDTO.permissionType employeeList);
+
+    Response removeStoreOwner(String sessionId, int storeId, String username);
+
+    Response setStoreManagerPermissions(String sessionId, int storeId, String username, Set<PositionDTO.permissionType> mapPermissions);
+
+    ResponseT<Set<PositionDTO.permissionType>> getPermissions(String sessionId, int storeId, String username);
 }

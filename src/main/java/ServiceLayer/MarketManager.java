@@ -9,6 +9,7 @@ import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class MarketManager implements IMarketManager {
     private final Market market;
@@ -74,29 +75,28 @@ public class MarketManager implements IMarketManager {
 //        }
 //    }
 
-    @Override
-    public Response removeStoreOwner(String sessionId, String storeOwnerName, int storeId) {
+    public ResponseT<String> logout(String sessionId) {
         try {
-            market.removeStoreOwner(sessionId, storeOwnerName, storeId);
-            return new Response();
-        } catch (Exception e) {
-            return new Response(e.getMessage());
-        }
-    }
-
-    @Override
-    public ResponseT<List<MemberDTO>> getInformationAboutMembers(String sessionId) {
-        try {
-            List<MemberDTO> ret = market.getInformationAboutMembers(sessionId);
-            return ResponseT.fromValue(ret);
+            return ResponseT.fromValue(market.logout(sessionId));
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }
     }
 
-    public ResponseT<String> logout(String sessionId) {
+    @Override
+    public ResponseT<Boolean> isLoggedIn(String sessionId) {
         try {
-            return ResponseT.fromValue(market.logout(sessionId));
+            return ResponseT.fromValue(market.isLoggedIn(sessionId));
+        } catch (Exception e) {
+            return ResponseT.fromError(e.getMessage());
+        }
+    }
+
+    //use case 2.4
+    public ResponseT<List<StoreDTO>> getStores(String sessionId, String storeSubString) {
+        try {
+            List<StoreDTO> ret = market.getStores(sessionId, storeSubString);
+            return ResponseT.fromValue(ret);
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }
@@ -110,16 +110,6 @@ public class MarketManager implements IMarketManager {
 //            return new Response(e.getMessage());
 //        }
 //    }
-
-    //use case 2.4
-    public ResponseT<List<StoreDTO>> getStores(String sessionId, String storeSubString) {
-        try {
-            List<StoreDTO> ret = market.getStores(sessionId, storeSubString);
-            return ResponseT.fromValue(ret);
-        } catch (Exception e) {
-            return ResponseT.fromError(e.getMessage());
-        }
-    }
 
     //use case 2.4
     public ResponseT<StoreDTO> getStore(String sessionId, int storeId) {
@@ -153,6 +143,15 @@ public class MarketManager implements IMarketManager {
     public ResponseT<List<ProductDTO>> getProductsByCategory(String sessionId, String productCategory) {
         try {
             return ResponseT.fromValue(market.getProductsByCategory(sessionId, productCategory));
+        } catch (Exception e) {
+            return ResponseT.fromError(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseT<Map<ProductDTO, Integer>> getProductsByStore(int storeId) {
+        try {
+            return ResponseT.fromValue(market.getProductsByStore(storeId));
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }
@@ -234,6 +233,14 @@ public class MarketManager implements IMarketManager {
         }
     }
 
+    public Response addPaymentMethod(String sessionId, String cardNumber, String month, String year, String cvv) {
+        try {
+            market.addPaymentMethod(sessionId, cardNumber, month, year, cvv, "michael", "208956472");
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
 
     //use case 3.2
     public ResponseT<Integer> openStore(String sessionId, String storeName) {
@@ -245,9 +252,28 @@ public class MarketManager implements IMarketManager {
         }
     }
 
+    //use case 3.2
+    public Response closeStore(String sessionId, int storeId) {
+        try {
+            market.closeStore(sessionId, storeId);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
     public ResponseT<List<PurchaseDTO>> getPurchaseHistory(String sessionId, int storeId) {
         try {
             return ResponseT.fromValue(market.getPurchaseHistory(sessionId, storeId));
+        } catch (Exception e) {
+            return ResponseT.fromError(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseT<List<StoreDTO>> getResponsibleStores(String sessionId) {
+        try {
+            return ResponseT.fromValue(market.ResponsibleStores(sessionId));
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }
@@ -315,9 +341,47 @@ public class MarketManager implements IMarketManager {
         }
     }
 
+    @Override
+    public Response setStoreManagerPermissions(String sessionId, int storeId, String storeManager, Set<PositionDTO.permissionType> permissions) {
+        try {
+            market.setStoreManagerPermissions(sessionId, storeId, storeManager, permissions);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
     public Response addStoreManagerPermissions(String sessionId, String storeManager, int storeID, int newPermission) {
         try {
             market.addStoreManagerPermissions(sessionId, storeManager, storeID, newPermission);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
+    public Response removeStoreManagerPermissions(String sessionId, String storeManager, int storeID, int newPermission) {
+        try {
+            market.removeStoreManagerPermissions(sessionId, storeManager, storeID, newPermission);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseT<Boolean> hasPermission(String sessionId, int storeId, PositionDTO.permissionType employeeList) {
+        try {
+            return ResponseT.fromValue(market.hasPermission(sessionId, storeId, employeeList));
+        } catch (Exception e) {
+            return ResponseT.fromError(e.getMessage());
+        }
+    }
+
+    @Override
+    public Response removeStoreOwner(String sessionId, int storeId, String storeOwnerName) {
+        try {
+            market.removeStoreOwner(sessionId, storeOwnerName, storeId);
             return new Response();
         } catch (Exception e) {
             return new Response(e.getMessage());
@@ -332,36 +396,16 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-
-    public Response removeStoreManagerPermissions(String sessionId, String storeManager, int storeID, int newPermission) {
+    public Response addMaxQuantityPurchasePolicy(String sessionId, int storeId, int productId, int maxQuantity) {
         try {
-            market.removeStoreManagerPermissions(sessionId, storeManager, storeID, newPermission);
+            market.addMaxQuantityPolicy(sessionId, storeId, productId, maxQuantity);
             return new Response();
         } catch (Exception e) {
             return new Response(e.getMessage());
         }
     }
-
-
-    //use case 3.2
-    public Response closeStore(String sessionId, int storeId) {
-        try {
-            market.closeStore(sessionId, storeId);
-            return new Response();
-        } catch (Exception e) {
-            return new Response(e.getMessage());
-        }
-    }
-
-    public ResponseT<Map<StoreDTO, List<PurchaseDTO>>> getStoresPurchases(String sessionId) {
-        try {
-            return ResponseT.fromValue(market.getStoresPurchases(sessionId));
-        } catch (Exception e) {
-            return ResponseT.fromError(e.getMessage());
-        }
-    }
-
-    public Response addMinQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone) {
+  
+    public Response addMinQuantityPurchasePolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone) {
         try {
             market.addMinQuantityPolicy(sessionId, storeId, productId, minQuantity, allowNone);
             return new Response();
@@ -370,16 +414,7 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public Response addMaxQuantityPolicy(String sessionId, int storeId, int productId, int maxQuantity){
-        try {
-            market.addMaxQuantityPolicy(sessionId, storeId, productId, maxQuantity);
-            return new Response();
-        } catch (Exception e) {
-            return new Response(e.getMessage());
-        }
-    }
-
-    public Response addProductTimeRestrictionPolicy(String sessionId, int storeId, int productId, LocalTime startTime, LocalTime endTime) {
+    public Response addProductTimeRestrictionPurchasePolicy(String sessionId, int storeId, int productId, LocalTime startTime, LocalTime endTime) {
         try {
             market.addProductTimeRestrictionPolicy(sessionId, storeId, productId, startTime, endTime);
             return new Response();
@@ -388,7 +423,7 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public Response addCategoryTimeRestrictionPolicy(String sessionId, int storeId, String category, LocalTime startTime, LocalTime endTime) {
+    public Response addCategoryTimeRestrictionPurchasePolicy(String sessionId, int storeId, String category, LocalTime startTime, LocalTime endTime) {
         try {
             market.addCategoryTimeRestrictionPolicy(sessionId, storeId, category, startTime, endTime);
             return new Response();
@@ -397,7 +432,7 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public Response joinPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator) {
+    public Response joinPurchasePolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator) {
         try {
             market.joinPolicies(sessionId, storeId, policyId1, policyId2, operator);
             return new Response();
@@ -406,7 +441,7 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public Response removePolicy(String sessionId, int storeId, int policyId) {
+    public Response removePurchasePolicy(String sessionId, int storeId, int policyId) {
         try {
             market.removePolicy(sessionId, storeId, policyId);
             return new Response();
@@ -415,6 +450,23 @@ public class MarketManager implements IMarketManager {
         }
     }
 
+    @Override
+    public ResponseT<List<BasePurchasePolicyDTO>> getPurchasePoliciesByStoreId(int storeId) {
+        try {
+            return ResponseT.fromValue(market.getPurchasePoliciesByStoreId(storeId));
+        } catch (Exception e) {
+            return ResponseT.fromError(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseT<List<String>> getPurchasePolicyTypes() {
+        try {
+            return ResponseT.fromValue(market.getPurchasePolicyTypes());
+        } catch (Exception e) {
+            return ResponseT.fromError(e.getMessage());
+        }
+    }
 
     public Response addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType) {
         try {
@@ -425,7 +477,6 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-
     public Response addCategoryDiscount(String sessionId, int storeId, String category, double discountPercentage, int compositionType) {
         try {
             market.addCategoryDiscount(sessionId, storeId, category, discountPercentage, compositionType);
@@ -434,7 +485,6 @@ public class MarketManager implements IMarketManager {
             return new Response(e.getMessage());
         }
     }
-
 
     public Response addStoreDiscount(String sessionId, int storeId, double discountPercentage, int compositionType) {
         try {
@@ -455,6 +505,14 @@ public class MarketManager implements IMarketManager {
         }
     }
 
+    @Override
+    public ResponseT<Map<DiscountDTO, List<BaseDiscountPolicyDTO>>> getDiscountPolicyMap(int storeId) {
+        try {
+            return ResponseT.fromValue(market.getDiscountPolicyMap(storeId));
+        } catch (Exception e) {
+            return ResponseT.fromError(e.getMessage());
+        }
+    }
 
     public Response addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone) {
         try {
@@ -464,7 +522,7 @@ public class MarketManager implements IMarketManager {
             return new Response(e.getMessage());
         }
     }
-
+  
     @Override
     public Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity) {
         try {
@@ -475,7 +533,6 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-
     public Response addMinBagTotalDiscountPolicy(String sessionId, int storeId, int discountId, double minTotal) {
         try {
             market.addMinBagTotalDiscountPolicy(sessionId, storeId, discountId, minTotal);
@@ -484,7 +541,6 @@ public class MarketManager implements IMarketManager {
             return new Response(e.getMessage());
         }
     }
-
 
     public Response joinDiscountPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator) {
         try {
@@ -495,7 +551,6 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-
     public Response removeDiscountPolicy(String sessionId, int storeId, int policyId) {
         try {
             market.removeDiscountPolicy(sessionId, storeId, policyId);
@@ -505,12 +560,30 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public Response addPaymentMethod(String sessionId, String cardNumber, String month, String year, String cvv) {
+    @Override
+    public ResponseT<List<String>> getDiscountPolicyTypes() {
         try {
-            market.addPaymentMethod(sessionId, cardNumber, month, year, cvv, "michael", "208956472");
-            return new Response();
+            return ResponseT.fromValue(market.getDiscountPolicyTypes());
         } catch (Exception e) {
-            return new Response(e.getMessage());
+            return ResponseT.fromError(e.getMessage());
+        }
+    }
+
+    public ResponseT<Map<StoreDTO, List<PurchaseDTO>>> getStoresPurchases(String sessionId) {
+        try {
+            return ResponseT.fromValue(market.getStoresPurchases(sessionId));
+        } catch (Exception e) {
+            return ResponseT.fromError(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseT<List<MemberDTO>> getInformationAboutMembers(String sessionId) {
+        try {
+            List<MemberDTO> ret = market.getInformationAboutMembers(sessionId);
+            return ResponseT.fromValue(ret);
+        } catch (Exception e) {
+            return ResponseT.fromError(e.getMessage());
         }
     }
 
@@ -533,15 +606,6 @@ public class MarketManager implements IMarketManager {
     }
 
     @Override
-    public ResponseT<String> getSearchKeyword(String sessionId) {
-        try {
-            return ResponseT.fromValue(market.getSearchKeyword(sessionId));
-        } catch (Exception e) {
-            return ResponseT.fromError(e.getMessage());
-        }
-    }
-
-    @Override
     public ResponseT<String> getUsername(String sessionId) {
         try {
             return ResponseT.fromValue(market.getUsername(sessionId));
@@ -551,63 +615,18 @@ public class MarketManager implements IMarketManager {
     }
 
     @Override
-    public ResponseT<List<StoreDTO>> getResponsibleStores(String sessionId) {
+    public ResponseT<String> getSearchKeyword(String sessionId) {
         try {
-            return ResponseT.fromValue(market.ResponsibleStores(sessionId));
+            return ResponseT.fromValue(market.getSearchKeyword(sessionId));
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }
     }
 
     @Override
-    public ResponseT<Boolean> isLoggedIn(String sessionId) {
+    public ResponseT<Set<PositionDTO.permissionType>> getPermissions(String sessionId, int storeId, String username) {
         try {
-            return ResponseT.fromValue(market.isLoggedIn(sessionId));
-        } catch (Exception e) {
-            return ResponseT.fromError(e.getMessage());
-        }
-    }
-
-    @Override
-    public ResponseT<Map<ProductDTO, Integer>> getProductsByStore(int storeId) {
-        try {
-            return ResponseT.fromValue(market.getProductsByStore(storeId));
-        } catch (Exception e) {
-            return ResponseT.fromError(e.getMessage());
-        }
-    }
-
-    @Override
-    public ResponseT<Map<DiscountDTO, List<BaseDiscountPolicyDTO>>> getDiscountPolicyMap(int storeId) {
-        try {
-            return ResponseT.fromValue(market.getDiscountPolicyMap(storeId));
-        } catch (Exception e) {
-            return ResponseT.fromError(e.getMessage());
-        }
-    }
-
-    @Override
-    public ResponseT<List<BasePurchasePolicyDTO>> getPurchasePoliciesByStoreId(int storeId) {
-        try {
-            return ResponseT.fromValue(market.getPurchasePoliciesByStoreId(storeId));
-        } catch (Exception e) {
-            return ResponseT.fromError(e.getMessage());
-        }
-    }
-
-    @Override
-    public ResponseT<List<String>> getPurchasePolicyTypes() {
-        try {
-            return ResponseT.fromValue(market.getPurchasePolicyTypes());
-        } catch (Exception e) {
-            return ResponseT.fromError(e.getMessage());
-        }
-    }
-
-    @Override
-    public ResponseT<List<String>> getDiscountPolicyTypes() {
-        try {
-            return ResponseT.fromValue(market.getDiscountPolicyTypes());
+            return ResponseT.fromValue(market.getPermissions(sessionId, storeId, username));
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }
