@@ -71,8 +71,8 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         VerticalLayout employees = initEmployeesGrid();
         HorizontalLayout productAndPolicyGrids = new HorizontalLayout();
         products.setWidth("50%");
-        productAndPolicyGrids.add(products, purchasePolicies, employees);
-        if (!marketController.hasPermission(MainLayout.getSessionId(), storeId, PositionDTO.permissionType.EmployeeList).getError_occurred()) {
+        productAndPolicyGrids.add(products, purchasePolicies);
+        if (marketController.hasPermission(MainLayout.getSessionId(), storeId, PositionDTO.permissionType.EmployeeList).value) {
             purchasePolicies.setWidth("25%");
             employees.setWidth("25%");
             productAndPolicyGrids.add(employees);
@@ -113,7 +113,8 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         productGrid.setItems(productMap.keySet().stream().toList());
         purchasePolicyList = marketController.getPurchasePoliciesByStoreId(storeId).value;
         purchasePolicyGrid.setItems(purchasePolicyList);
-        employeesList = marketController.getStoreEmployees(MainLayout.getSessionId(), storeId);
+        ResponseT<List<MemberDTO>> employeeListResponse = marketController.getStoreEmployees(MainLayout.getSessionId(), storeId);
+        employeesList = employeeListResponse.getError_occurred() ? new ArrayList<>() : employeeListResponse.value;
         employeesGrid.setItems(employeesList);
         discountPolicyMap = marketController.getDiscountPolicyMap(storeId).value;
 
@@ -176,8 +177,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         VerticalLayout employees = new VerticalLayout();
         HorizontalLayout employeesHL = new HorizontalLayout();
         Div employeesDiv = new Div();
-        employeesHL.add(new H1("Employees List"), employeesDiv, new Button("+", e -> {
-        }));
+        employeesHL.add(new H1("Employees List"), employeesDiv, new Button("+", e -> addEmployeeDialog()));
         employeesHL.setFlexGrow(1, employeesDiv);
         employeesHL.setWidthFull();
         employeesGrid = new Grid<>(MemberDTO.class, false);
@@ -193,10 +193,15 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
                 div.getStyle().set("white-space", "pre-wrap");
                 div.setText("You");
                 return div;
-            } else {
-                return new Button("Modify", e -> {
-                });
             }
+            PositionDTO position = memberDTO.getPositions().stream().filter(p -> p.getStore().getStoreId() == storeId).findFirst().orElse(null);
+            if (position != null && position.getAssigner().getUsername().equals(marketController.getUsername(MainLayout.getSessionId())))
+                return switch (position.getPositionName()) {
+                    case "Owner" -> new Button("Remove", e -> removeOwnerDialog(memberDTO));
+                    case "Manager" -> new Button("Edit", e -> System.out.println("TODO"));
+                    default -> new Div();
+                };
+            return new Div();
         }).setTextAlign(ColumnTextAlign.CENTER);
         employees.add(employeesHL, employeesGrid);
         return employees;
@@ -673,6 +678,120 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         dialog.open();
     }
 
+    private void addEmployeeDialog() {
+        Dialog dialog = new Dialog();
+        Header header = new Header();
+        header.setText("Add New Employee");
+        Label errorSuccessLabel = new Label();
+        TextField usernameField = new TextField();
+        RadioButtonGroup<String> radioGroup = new RadioButtonGroup<>();
+        radioGroup.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
+        radioGroup.setLabel("Type");
+        radioGroup.setItems("Manager", "Owner");
+
+        Button cancelButton = new Button("Cancel", event -> dialog.close());
+        usernameField.setPlaceholder("Username");
+
+        Button submitButton = new Button("Submit", event -> {
+            switch (radioGroup.getValue()) {
+                case "Manager" -> {
+                    Response response = marketController.setPositionOfMemberToStoreManager(
+                            MainLayout.getSessionId(),
+                            storeId,
+                            usernameField.getValue());
+                    if (response.getError_occurred())
+                        errorSuccessLabel.setText(response.error_message);
+                    else
+                        successMessage(dialog, errorSuccessLabel, "Manager added successfully!");
+                }
+                case "Owner" -> {
+                    Response response = marketController.setPositionOfMemberToStoreOwner(
+                            MainLayout.getSessionId(),
+                            storeId,
+                            usernameField.getValue());
+                    if (response.getError_occurred())
+                        errorSuccessLabel.setText(response.error_message);
+                    else
+                        successMessage(dialog, errorSuccessLabel, "Manager added successfully!");
+                }
+            }
+        });
+
+        VerticalLayout vl = new VerticalLayout();
+        vl.add(header, errorSuccessLabel, usernameField, radioGroup, submitButton, cancelButton);
+        dialog.add(vl);
+        dialog.open();
+    }
+
+    private void removeOwnerDialog(MemberDTO memberDTO) {
+        Dialog dialog = new Dialog();
+        VerticalLayout vl = new VerticalLayout();
+        Label errorSuccessLabel = new Label();
+        Label label = new Label("Are you sure? This cannot be undone.");
+        HorizontalLayout hl = new HorizontalLayout();
+        hl.add(
+                new Button("Remove", e -> {
+                    Response response = marketController.removeStoreOwner(MainLayout.getSessionId(), storeId, memberDTO.getUsername());
+                    if (response.getError_occurred())
+                        errorSuccessLabel.setText(response.error_message);
+                    else
+                        successMessage(dialog, errorSuccessLabel, "Owner removed successfully");
+                }),
+                new Button("Cancel", e -> dialog.close())
+        );
+        vl.add(label, hl);
+        dialog.add(vl);
+        dialog.open();
+    }
+
+//    private void modifyEmployeeDialog(MemberDTO employee) {
+//        Dialog dialog = new Dialog();
+//        Header header = new Header();
+//        header.setText("Modify Employee");
+//        Button addPolicyButton = new Button("Modify Permissions", event -> {
+//            dialog.close();
+//            addDiscountPolicyDialog(employee);
+//        });
+//        Button joinButton = new Button("Join Policies", event -> {
+//            dialog.close();
+//            joinDiscountPolicies(employee);
+//        });
+//        Button removePolicyButton = new Button("Remove Policy", event -> {
+//            dialog.close();
+//            removeDiscountPolicy(employee);
+//        });
+//        Button removeButton = new Button("Remove Discount", event -> {
+//            Dialog dialog2 = new Dialog();
+//            VerticalLayout vl2 = new VerticalLayout();
+//            Label errorSuccessLabel = new Label();
+//            Label label = new Label("Are you sure? This cannot be undone.");
+//            HorizontalLayout hl = new HorizontalLayout();
+//            hl.add(
+//                    new Button("Remove", e -> {
+//                        Response response = marketController.removeDiscount(MainLayout.getSessionId(), storeId, employee.getDiscountId());
+//                        if (response.getError_occurred()) {
+//                            errorSuccessLabel.setText(response.error_message);
+//                        } else
+//                            successMessage(dialog2, errorSuccessLabel, "Discount removed successfully");
+//                        dialog.close();
+//                    }),
+//                    new Button("Cancel", e -> dialog2.close())
+//            );
+//            vl2.add(label, hl);
+//            dialog2.add(vl2);
+//            dialog2.open();
+//        });
+//        Button cancelButton = new Button("Cancel", event -> dialog.close());
+//
+//        VerticalLayout vl = new VerticalLayout();
+//        vl.add(header, addPolicyButton, joinButton, removePolicyButton, removeButton, cancelButton);
+//        dialog.add(vl);
+//        vl.setJustifyContentMode(JustifyContentMode.CENTER);
+//        vl.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+//        vl.getStyle().set("text-align", "center");
+//        dialog.open();
+//    }
+
     private void addProductDiscountDialog() {
         Dialog dialog = new Dialog();
         Header header = new Header();
@@ -813,7 +932,6 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         vl.add(header, errorSuccessLabel, discountPercentageField, radioGroup, submitButton, cancelButton);
         dialog.add(vl);
         dialog.open();
-
     }
 
     private void modifyDiscountDialog(DiscountDTO discount) {

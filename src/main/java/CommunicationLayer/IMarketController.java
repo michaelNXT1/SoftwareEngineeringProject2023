@@ -66,15 +66,15 @@ public interface IMarketController {
 
     Response removeProductFromStore(String sessionId, int storeId, int productId);
 
-    boolean setPositionOfMemberToStoreManager(String sessionId, int storeID, String MemberToBecomeManager);
+    Response setPositionOfMemberToStoreManager(String sessionId, int storeID, String MemberToBecomeManager);
 
-    boolean setPositionOfMemberToStoreOwner(String sessionId, int storeID, String MemberToBecomeOwner);
+    Response setPositionOfMemberToStoreOwner(String sessionId, int storeID, String MemberToBecomeOwner);
 
     boolean addStoreManagerPermissions(String sessionId, String storeManager, int storeID, int newPermission);
 
     boolean removeStoreManagerPermissions(String sessionId, String storeManager, int storeID, int newPermission);
 
-    List<MemberDTO> getStoreEmployees(String sessionId, int storeId);
+    ResponseT<List<MemberDTO>> getStoreEmployees(String sessionId, int storeId);
 
     Response closeStore(String sessionId, int storeId);
 
@@ -134,5 +134,7 @@ public interface IMarketController {
 
     ResponseT<List<String>> getDiscountPolicyTypes();
 
-    Response hasPermission(String sessionId, int storeId, PositionDTO.permissionType employeeList);
+    ResponseT<Boolean> hasPermission(String sessionId, int storeId, PositionDTO.permissionType employeeList);
+
+    Response removeStoreOwner(String sessionId, int storeId, String username);
 }

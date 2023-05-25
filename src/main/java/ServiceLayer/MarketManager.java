@@ -368,7 +368,7 @@ public class MarketManager implements IMarketManager {
     }
 
     @Override
-    public Response removeStoreOwner(String sessionId, String storeOwnerName, int storeId) {
+    public Response removeStoreOwner(String sessionId, int storeId, String storeOwnerName) {
         try {
             market.removeStoreOwner(sessionId, storeOwnerName, storeId);
             return new Response();

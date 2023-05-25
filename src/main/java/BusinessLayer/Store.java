@@ -355,6 +355,10 @@ public class Store {
         employees.add(member);
     }
 
+    public void removeEmployee(Member member) {
+        employees.remove(member);
+    }
+
     public Map<Discount, List<BaseDiscountPolicy>> getProductDiscountPolicyMap() {
         return productDiscountPolicyMap;
     }
@@ -373,9 +377,5 @@ public class Store {
 
     public List<BasePurchasePolicy> getPurchasePolicies() {
         return purchasePolicies;
-    }
-
-    public void addStoreOwner(Member member) {
-        employees.add(member);
     }
 }

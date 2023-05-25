@@ -278,19 +278,19 @@ public class MarketController implements IMarketController {
     @GetMapping("/setPositionOfMemberToStoreManager")
     @ResponseBody
     @Override
-    public boolean setPositionOfMemberToStoreManager(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
-                                                     @RequestParam(value = "storeID", defaultValue = "-1") int storeID,
-                                                     @RequestParam(value = "MemberToBecomeManager", defaultValue = "") String MemberToBecomeManager) {
-        return !marketManager.setPositionOfMemberToStoreManager(sessionId, storeID, MemberToBecomeManager).getError_occurred();
+    public Response setPositionOfMemberToStoreManager(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                                      @RequestParam(value = "storeID", defaultValue = "-1") int storeID,
+                                                      @RequestParam(value = "MemberToBecomeManager", defaultValue = "") String MemberToBecomeManager) {
+        return marketManager.setPositionOfMemberToStoreManager(sessionId, storeID, MemberToBecomeManager);
     }
 
     @GetMapping("/setPositionOfMemberToStoreOwner")
     @ResponseBody
     @Override
-    public boolean setPositionOfMemberToStoreOwner(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
-                                                   @RequestParam(value = "storeID", defaultValue = "-1") int storeID,
-                                                   @RequestParam(value = "MemberToBecomeOwner", defaultValue = "") String MemberToBecomeOwner) {
-        return !marketManager.setPositionOfMemberToStoreOwner(sessionId, storeID, MemberToBecomeOwner).getError_occurred();
+    public Response setPositionOfMemberToStoreOwner(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                                    @RequestParam(value = "storeID", defaultValue = "-1") int storeID,
+                                                    @RequestParam(value = "MemberToBecomeOwner", defaultValue = "") String MemberToBecomeOwner) {
+        return marketManager.setPositionOfMemberToStoreOwner(sessionId, storeID, MemberToBecomeOwner);
     }
 
     @GetMapping("/addStoreManagerPermissions")
@@ -316,9 +316,9 @@ public class MarketController implements IMarketController {
     @GetMapping("/getStoreEmployees")
     @ResponseBody
     @Override
-    public List<MemberDTO> getStoreEmployees(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
-                                             @RequestParam(value = "storeId", defaultValue = "-1") int storeId) {
-        return marketManager.getStoreEmployees(sessionId, storeId).value;
+    public ResponseT<List<MemberDTO>> getStoreEmployees(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                                        @RequestParam(value = "storeId", defaultValue = "-1") int storeId) {
+        return marketManager.getStoreEmployees(sessionId, storeId);
     }
 
     @GetMapping("/closeStore")
@@ -344,7 +344,7 @@ public class MarketController implements IMarketController {
                                                     @RequestParam(value = "productId", defaultValue = "-1") int productId,
                                                     @RequestParam(value = "startTime", defaultValue = "") LocalTime startTime,
                                                     @RequestParam(value = "endTime", defaultValue = "") LocalTime endTime) {
-        return marketManager.addProductTimeRestrictionPolicy(sessionId, storeId, productId, startTime, endTime);
+        return marketManager.addProductTimeRestrictionPurchasePolicy(sessionId, storeId, productId, startTime, endTime);
     }
 
     @GetMapping("/addCategoryTimeRestrictionPolicy")
@@ -355,7 +355,7 @@ public class MarketController implements IMarketController {
                                                      @RequestParam(value = "category", defaultValue = "") String category,
                                                      @RequestParam(value = "startTime", defaultValue = "") LocalTime startTime,
                                                      @RequestParam(value = "endTime", defaultValue = "") LocalTime endTime) {
-        return marketManager.addCategoryTimeRestrictionPolicy(sessionId, storeId, category, startTime, endTime);
+        return marketManager.addCategoryTimeRestrictionPurchasePolicy(sessionId, storeId, category, startTime, endTime);
     }
 
     @GetMapping("/joinPolicies")
@@ -366,7 +366,7 @@ public class MarketController implements IMarketController {
                                  @RequestParam(value = "policyId1", defaultValue = "-1") int policyId1,
                                  @RequestParam(value = "policyId2", defaultValue = "-1") int policyId2,
                                  @RequestParam(value = "operator", defaultValue = "0") int operator) {
-        return marketManager.joinPolicies(sessionId, storeId, policyId1, policyId2, operator);
+        return marketManager.joinPurchasePolicies(sessionId, storeId, policyId1, policyId2, operator);
     }
 
     @GetMapping("/removePolicy")
@@ -375,7 +375,7 @@ public class MarketController implements IMarketController {
     public Response removePolicy(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
                                  @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
                                  @RequestParam(value = "policyId", defaultValue = "-1") int policyId) {
-        return marketManager.removePolicy(sessionId, storeId, policyId);
+        return marketManager.removePurchasePolicy(sessionId, storeId, policyId);
     }
 
     @GetMapping("/addMinQuantityPolicy")
@@ -386,7 +386,7 @@ public class MarketController implements IMarketController {
                                          @RequestParam(value = "productId", defaultValue = "-1") int productId,
                                          @RequestParam(value = "minQuantity", defaultValue = "-1") int minQuantity,
                                          @RequestParam(value = "allowNone", defaultValue = "false") boolean allowNone) {
-        return marketManager.addMinQuantityPolicy(sessionId, storeId, productId, minQuantity, allowNone);
+        return marketManager.addMinQuantityPurchasePolicy(sessionId, storeId, productId, minQuantity, allowNone);
     }
 
     @GetMapping("/addMaxQuantityPolicy")
@@ -396,7 +396,7 @@ public class MarketController implements IMarketController {
                                          @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
                                          @RequestParam(value = "productId", defaultValue = "-1") int productId,
                                          @RequestParam(value = "minQuantity", defaultValue = "-1") int minQuantity) {
-        return marketManager.addMaxQuantityPolicy(sessionId, storeId, productId, minQuantity);
+        return marketManager.addMaxQuantityPurchasePolicy(sessionId, storeId, productId, minQuantity);
     }
 
     @GetMapping("/addProductDiscount")
@@ -424,7 +424,7 @@ public class MarketController implements IMarketController {
     @GetMapping("/getInformationAboutMembers")
     @ResponseBody
     @Override
-    public ResponseT<List<MemberDTO>> getInformationAboutMembers(@RequestParam(value = "sessionId", defaultValue = "") String sessionId){
+    public ResponseT<List<MemberDTO>> getInformationAboutMembers(@RequestParam(value = "sessionId", defaultValue = "") String sessionId) {
         return marketManager.getInformationAboutMembers(sessionId);
     }
 
@@ -536,8 +536,13 @@ public class MarketController implements IMarketController {
     }
 
     @Override
-    public Response hasPermission(String sessionId, int storeId, PositionDTO.permissionType employeeList) {
+    public ResponseT<Boolean> hasPermission(String sessionId, int storeId, PositionDTO.permissionType employeeList) {
         return marketManager.hasPermission(sessionId, storeId, employeeList);
+    }
+
+    @Override
+    public Response removeStoreOwner(String sessionId, int storeId, String username) {
+        return marketManager.removeStoreOwner(sessionId, storeId, username);
     }
 
     @GetMapping("/editProductInCart")

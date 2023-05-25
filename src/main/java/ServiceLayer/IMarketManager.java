@@ -127,7 +127,7 @@ public interface IMarketManager {
     hasPermission(String sessionId, int storeId, PositionDTO.permissionType employeeList);
 
     Response
-    removeStoreOwner(String sessionId, String storeOwnerToRemove, int storeId);
+    removeStoreOwner(String sessionId, int storeId, String storeOwnerToRemove);
 
     ResponseT<List<MemberDTO>>
     getStoreEmployees(String sessionId, int storeId);
