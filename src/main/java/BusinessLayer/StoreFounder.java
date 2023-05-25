@@ -5,6 +5,7 @@ import ServiceLayer.DTOs.PositionDTO;
 
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Set;
 
 public class StoreFounder implements Position {
 
@@ -30,6 +31,11 @@ public class StoreFounder implements Position {
     @Override
     public void setPositionOfMemberToStoreOwner(Store store, Member member, Member assigner) throws Exception {
         member.setToStoreOwner(store, assigner);
+    }
+
+    @Override
+    public void setStoreManagerPermissions(Position storeManagerPosition, Set<PositionDTO.permissionType> permissions) {
+        storeManagerPosition.setPermissions(permissions);
     }
 
     @Override
@@ -150,16 +156,6 @@ public class StoreFounder implements Position {
     @Override
     public void removeDiscountPolicy(int policyId) throws Exception {
         store.removeDiscountPolicy(policyId);
-    }
-
-    @Override
-    public void addPermission(StoreManager.permissionType newPermission) {
-        //TODO: do
-    }
-
-    @Override
-    public void removePermission(StoreManager.permissionType permission) {
-        //TODO: do
     }
 
     @Override

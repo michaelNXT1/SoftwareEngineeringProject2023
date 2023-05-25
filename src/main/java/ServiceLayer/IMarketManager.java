@@ -8,6 +8,7 @@ import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface IMarketManager {
     Response
@@ -118,6 +119,9 @@ public interface IMarketManager {
     setPositionOfMemberToStoreOwner(String sessionId, int storeID, String MemberToBecomeOwner);
 
     Response
+    setStoreManagerPermissions(String sessionId, int storeId, String storeManager, Set<PositionDTO.permissionType> permissions);
+
+    Response
     addStoreManagerPermissions(String sessionId, String storeManager, int storeID, int newPermission);
 
     Response
@@ -138,6 +142,7 @@ public interface IMarketManager {
 
     Response
     addMinQuantityPurchasePolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone);
+
     Response
     addProductTimeRestrictionPurchasePolicy(String sessionId, int storeId, int productId, LocalTime startTime, LocalTime endTime);
 
@@ -210,6 +215,8 @@ public interface IMarketManager {
 
     ResponseT<String>
     getSearchKeyword(String sessionId);
+
+    ResponseT<Set<PositionDTO.permissionType>> getPermissions(String sessionId, int storeId, String username);
 
 
 //        Response

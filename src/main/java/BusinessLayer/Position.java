@@ -4,6 +4,7 @@ import ServiceLayer.DTOs.PositionDTO;
 
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Set;
 
 public interface Position {
 
@@ -12,6 +13,8 @@ public interface Position {
     void setPositionOfMemberToStoreManager(Store store, Member member, Member assigner) throws Exception; //5.9
 
     void setPositionOfMemberToStoreOwner(Store store, Member member, Member assigner) throws Exception;   //5.8
+
+    void setStoreManagerPermissions(Position storeManagerPosition, Set<PositionDTO.permissionType> permissions) throws IllegalAccessException;
 
     void addStoreManagerPermissions(Position storeManagerPosition, StoreManager.permissionType newPermission) throws IllegalAccessException;   //5.10
 
@@ -65,9 +68,18 @@ public interface Position {
     void removeDiscountPolicy(int policyId) throws Exception;
 
     //Permission management
-    void addPermission(StoreManager.permissionType newPermission);
+    default void setPermissions(Set<PositionDTO.permissionType> permissions) {
+    }
 
-    void removePermission(StoreManager.permissionType permission);
+    default Set<PositionDTO.permissionType> getPermissions() {
+        return null;
+    }
+
+    default void addPermission(StoreManager.permissionType newPermission) {
+    }
+
+    default void removePermission(StoreManager.permissionType permission) {
+    }
 
     void closeStore() throws IllegalAccessException;
 

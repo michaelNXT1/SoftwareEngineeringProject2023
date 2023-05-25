@@ -523,6 +523,23 @@ public class Market {
         p.setPositionOfMemberToStoreManager(stores.get(storeID), m, (Member) g);
     }
 
+    public void setStoreManagerPermissions(String sessionId, int storeId, String storeManager, Set<PositionDTO.permissionType> permissions) throws Exception {
+        isMarketOpen();
+        Guest m = sessionManager.getSession(sessionId);
+        logger.info("trying to modify manger permissions");
+        Position p = checkPositionLegal(sessionId, storeId);
+        Position storeManagerPosition = users.get(storeManager).getStorePosition(stores.get(storeId));
+        if (storeManagerPosition == null) {
+            logger.error(String.format("%s has not have that position in this store", storeManager));
+            throw new Exception("the name of the store manager has not have that position in this store");
+        } else if (!storeManagerPosition.getAssigner().equals(m)) {
+            throw new Exception("only the systemManager's assigner can edit his permissions");
+        } else {
+            logger.info(String.format("%s have new permissions to %s", storeManager, getStore(sessionId, storeId)));
+            p.setStoreManagerPermissions(storeManagerPosition, permissions);
+        }
+    }
+
     //use case 5.10
     public void addStoreManagerPermissions(String sessionId, String storeManager, int storeID, int newPermission) throws Exception {
         isMarketOpen();
@@ -975,5 +992,17 @@ public class Market {
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
         return p.hasPermission(employeeList);
+    }
+
+    public Set<PositionDTO.permissionType> getPermissions(String sessionId, int storeId, String username) throws Exception {
+        isMarketOpen();
+        checkStoreExists(storeId);
+        logger.info("trying to get manger permissions");
+        Position storeManagerPosition = users.get(username).getStorePosition(stores.get(storeId));
+        if (storeManagerPosition == null) {
+            logger.error(String.format("%s has not have that position in this store", username));
+            throw new Exception("the name of the store manager has not have that position in this store");
+        }
+        return storeManagerPosition.getPermissions();
     }
 }

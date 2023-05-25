@@ -9,6 +9,7 @@ import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class MarketManager implements IMarketManager {
     private final Market market;
@@ -340,6 +341,16 @@ public class MarketManager implements IMarketManager {
         }
     }
 
+    @Override
+    public Response setStoreManagerPermissions(String sessionId, int storeId, String storeManager, Set<PositionDTO.permissionType> permissions) {
+        try {
+            market.setStoreManagerPermissions(sessionId, storeId, storeManager, permissions);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
     public Response addStoreManagerPermissions(String sessionId, String storeManager, int storeID, int newPermission) {
         try {
             market.addStoreManagerPermissions(sessionId, storeManager, storeID, newPermission);
@@ -606,6 +617,15 @@ public class MarketManager implements IMarketManager {
     public ResponseT<String> getSearchKeyword(String sessionId) {
         try {
             return ResponseT.fromValue(market.getSearchKeyword(sessionId));
+        } catch (Exception e) {
+            return ResponseT.fromError(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseT<Set<PositionDTO.permissionType>> getPermissions(String sessionId, int storeId, String username) {
+        try {
+            return ResponseT.fromValue(market.getPermissions(sessionId, storeId, username));
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }

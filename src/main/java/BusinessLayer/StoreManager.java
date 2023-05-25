@@ -21,7 +21,7 @@ public class StoreManager implements Position {
     private final SystemLogger logger = new SystemLogger();
     private final Store store;
     private final Member assigner;
-    private final Set<permissionType> permissions;
+    private Set<permissionType> permissions;
     private final Object permissionLock = new Object();
 
     public StoreManager(Store store, Member assigner) {
@@ -57,6 +57,19 @@ public class StoreManager implements Position {
             else {
                 logger.error("this store manager hasn't permission to set new position");
                 throw new IllegalAccessException("This member hasn't permission to set new position");
+            }
+        }
+    }
+
+    @Override
+    public void setStoreManagerPermissions(Position storeManagerPosition, Set<PositionDTO.permissionType> permissions) throws IllegalAccessException {
+        //TODO: Check if he has appropriate access permission
+        synchronized (permissionLock) {
+            if (this.permissions.contains(permissionType.setPermissions))
+                storeManagerPosition.setPermissions(permissions);
+            else {
+                logger.error("this store manager hasn't permission to set storeManager's permissions");
+                throw new IllegalAccessException("This member hasn't permission to set storeManager's permissions");
             }
         }
     }
@@ -256,6 +269,21 @@ public class StoreManager implements Position {
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 
+    @Override
+    public void setPermissions(Set<PositionDTO.permissionType> permissions) {
+        this.permissions = new HashSet<>();
+        for (PositionDTO.permissionType permission : permissions)
+            this.permissions.add(permissionType.valueOf(permission.name()));
+    }
+
+    @Override
+    public Set<PositionDTO.permissionType> getPermissions() {
+        Set<PositionDTO.permissionType> ret = new HashSet<>();
+        for (permissionType permission : permissions)
+            ret.add(PositionDTO.permissionType.valueOf(permission.name()));
+        return ret;
+    }
+
     public void addPermission(StoreManager.permissionType newPermission) { //permission for store manager only
         permissions.add(newPermission);
     }
@@ -298,9 +326,5 @@ public class StoreManager implements Position {
     @Override
     public String getPositionName() {
         return "Manager";
-    }
-
-    public Set<permissionType> getPermissions() {
-        return permissions;
     }
 }

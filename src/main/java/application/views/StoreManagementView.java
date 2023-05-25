@@ -15,6 +15,8 @@ import ServiceLayer.ResponseT;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.checkbox.CheckboxGroup;
+import com.vaadin.flow.component.checkbox.CheckboxGroupVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
@@ -37,10 +39,7 @@ import com.vaadin.flow.shared.Registration;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Route(value = "StoreManagementView", layout = MainLayout.class)
@@ -198,7 +197,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
             if (position != null && position.getAssigner().getUsername().equals(marketController.getUsername(MainLayout.getSessionId())))
                 return switch (position.getPositionName()) {
                     case "Owner" -> new Button("Remove", e -> removeOwnerDialog(memberDTO));
-                    case "Manager" -> new Button("Edit", e -> System.out.println("TODO"));
+                    case "Manager" -> new Button("Edit", e -> editManagerPermissions(memberDTO));
                     default -> new Div();
                 };
             return new Div();
@@ -421,7 +420,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
                     components.forEach(component -> component.setVisible(false));
                     descriptionField.setVisible(true);
 //                    clickListener[0] = submitButton.addClickListener(event -> {
-//                        Response response = marketController.editProductDesctiption(
+//                        Response response = marketController.editProductDescription(
 //                                MainLayout.getSessionId(),
 //                                storeId,
 //                                productId,
@@ -460,7 +459,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
                 }),
                 new Button("Cancel", e -> dialog.close())
         );
-        vl.add(label, hl);
+        vl.add(errorSuccessLabel, label, hl);
         dialog.add(vl);
         dialog.open();
     }
@@ -673,7 +672,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
                 }),
                 new Button("Cancel", e -> dialog.close())
         );
-        vl.add(label, hl);
+        vl.add(errorSuccessLabel, label, hl);
         dialog.add(vl);
         dialog.open();
     }
@@ -739,58 +738,49 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
                 }),
                 new Button("Cancel", e -> dialog.close())
         );
-        vl.add(label, hl);
+        vl.add(errorSuccessLabel, label, hl);
         dialog.add(vl);
         dialog.open();
     }
 
-//    private void modifyEmployeeDialog(MemberDTO employee) {
-//        Dialog dialog = new Dialog();
-//        Header header = new Header();
-//        header.setText("Modify Employee");
-//        Button addPolicyButton = new Button("Modify Permissions", event -> {
-//            dialog.close();
-//            addDiscountPolicyDialog(employee);
-//        });
-//        Button joinButton = new Button("Join Policies", event -> {
-//            dialog.close();
-//            joinDiscountPolicies(employee);
-//        });
-//        Button removePolicyButton = new Button("Remove Policy", event -> {
-//            dialog.close();
-//            removeDiscountPolicy(employee);
-//        });
-//        Button removeButton = new Button("Remove Discount", event -> {
-//            Dialog dialog2 = new Dialog();
-//            VerticalLayout vl2 = new VerticalLayout();
-//            Label errorSuccessLabel = new Label();
-//            Label label = new Label("Are you sure? This cannot be undone.");
-//            HorizontalLayout hl = new HorizontalLayout();
-//            hl.add(
-//                    new Button("Remove", e -> {
-//                        Response response = marketController.removeDiscount(MainLayout.getSessionId(), storeId, employee.getDiscountId());
-//                        if (response.getError_occurred()) {
-//                            errorSuccessLabel.setText(response.error_message);
-//                        } else
-//                            successMessage(dialog2, errorSuccessLabel, "Discount removed successfully");
-//                        dialog.close();
-//                    }),
-//                    new Button("Cancel", e -> dialog2.close())
-//            );
-//            vl2.add(label, hl);
-//            dialog2.add(vl2);
-//            dialog2.open();
-//        });
-//        Button cancelButton = new Button("Cancel", event -> dialog.close());
-//
-//        VerticalLayout vl = new VerticalLayout();
-//        vl.add(header, addPolicyButton, joinButton, removePolicyButton, removeButton, cancelButton);
-//        dialog.add(vl);
-//        vl.setJustifyContentMode(JustifyContentMode.CENTER);
-//        vl.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-//        vl.getStyle().set("text-align", "center");
-//        dialog.open();
-//    }
+    private void editManagerPermissions(MemberDTO employee) {
+        Dialog dialog = new Dialog();
+        Header header = new Header();
+        Label errorSuccessLabel = new Label();
+        header.setText("Edit Manager Permissions");
+        CheckboxGroup<String> checkboxGroup = new CheckboxGroup<>();
+        checkboxGroup.setLabel("Export data");
+        checkboxGroup.setItems(PositionDTO.stringToPermMap.keySet());
+        checkboxGroup.select("Order ID", "Customer");
+        checkboxGroup.addThemeVariants(CheckboxGroupVariant.LUMO_VERTICAL);
+
+        ResponseT<Set<PositionDTO.permissionType>> permissions = marketController.getPermissions(MainLayout.getSessionId(), storeId, employee.getUsername());
+        Set<String> stringPermissions=new HashSet<>();
+        if (!permissions.getError_occurred())
+            stringPermissions = PositionDTO.mapStrings(permissions.value);
+        checkboxGroup.setValue(stringPermissions);
+
+        Button submitButton = new Button("Submit", event -> {
+            Response response = marketController.setStoreManagerPermissions(
+                    MainLayout.getSessionId(),
+                    storeId,
+                    employee.getUsername(),
+                    PositionDTO.mapPermissions(checkboxGroup.getSelectedItems()));
+            if (response.getError_occurred())
+                errorSuccessLabel.setText(response.error_message);
+            else
+                successMessage(dialog, errorSuccessLabel, "Permissions set successfully!");
+        });
+
+
+        VerticalLayout vl = new VerticalLayout();
+        vl.add(header, errorSuccessLabel, checkboxGroup, submitButton);
+        dialog.add(vl);
+        vl.setJustifyContentMode(JustifyContentMode.CENTER);
+        vl.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+        vl.getStyle().set("text-align", "center");
+        dialog.open();
+    }
 
     private void addProductDiscountDialog() {
         Dialog dialog = new Dialog();
@@ -967,7 +957,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
                     }),
                     new Button("Cancel", e -> dialog2.close())
             );
-            vl2.add(label, hl);
+            vl2.add(errorSuccessLabel, label, hl);
             dialog2.add(vl2);
             dialog2.open();
         });

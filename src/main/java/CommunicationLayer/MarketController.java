@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 @CrossOrigin()
@@ -543,6 +544,16 @@ public class MarketController implements IMarketController {
     @Override
     public Response removeStoreOwner(String sessionId, int storeId, String username) {
         return marketManager.removeStoreOwner(sessionId, storeId, username);
+    }
+
+    @Override
+    public Response setStoreManagerPermissions(String sessionId, int storeId, String username, Set<PositionDTO.permissionType> mapPermissions) {
+        return marketManager.setStoreManagerPermissions(sessionId, storeId, username, mapPermissions);
+    }
+
+    @Override
+    public ResponseT<Set<PositionDTO.permissionType>> getPermissions(String sessionId, int storeId, String username) {
+        return marketManager.getPermissions(sessionId, storeId, username);
     }
 
     @GetMapping("/editProductInCart")

@@ -10,6 +10,7 @@ import ServiceLayer.ResponseT;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface IMarketController {
     boolean signUpSystemManager(String username, String password);
@@ -137,4 +138,8 @@ public interface IMarketController {
     ResponseT<Boolean> hasPermission(String sessionId, int storeId, PositionDTO.permissionType employeeList);
 
     Response removeStoreOwner(String sessionId, int storeId, String username);
+
+    Response setStoreManagerPermissions(String sessionId, int storeId, String username, Set<PositionDTO.permissionType> mapPermissions);
+
+    ResponseT<Set<PositionDTO.permissionType>> getPermissions(String sessionId, int storeId, String username);
 }
