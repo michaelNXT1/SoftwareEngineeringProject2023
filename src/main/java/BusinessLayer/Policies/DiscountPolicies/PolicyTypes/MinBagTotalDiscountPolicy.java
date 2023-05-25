@@ -4,10 +4,13 @@ import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
 import BusinessLayer.Product;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.PolicyTypes.MinBagTotalDiscountPolicyDTO;
-
+import javax.persistence.*;
 import java.util.Map;
 
+@Entity
+@Table(name = "min_bag_total_discount_policy")
 public class MinBagTotalDiscountPolicy extends BaseDiscountPolicy {
+    @Column(name = "min_total")
     private final double minTotal;
 
     public MinBagTotalDiscountPolicy(int policyId, double minTotal) throws Exception {
@@ -17,6 +20,10 @@ public class MinBagTotalDiscountPolicy extends BaseDiscountPolicy {
             throw new Exception("minimum total must be larger than 0");
         }
         this.minTotal = minTotal;
+    }
+
+    public MinBagTotalDiscountPolicy() {
+        this.minTotal = 0;
     }
 
     @Override

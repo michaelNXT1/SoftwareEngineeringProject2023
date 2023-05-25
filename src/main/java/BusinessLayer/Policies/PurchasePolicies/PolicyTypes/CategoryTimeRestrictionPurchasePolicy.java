@@ -4,14 +4,21 @@ import BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy;
 import BusinessLayer.Product;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.PolicyTypes.CategoryTimeRestrictionPurchasePolicyDTO;
-
+import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.Map;
 import java.util.Objects;
 
+@Entity
+@Table(name = "CategoryTimeRestrictionPurchasePolicy")
 public class CategoryTimeRestrictionPurchasePolicy extends BasePurchasePolicy {
+    @Column(name = "category")
     private final String category;
+
+    @Column(name = "start_time")
     private final LocalTime startTime;
+
+    @Column(name = "end_time")
     private final LocalTime endTime;
 
     public CategoryTimeRestrictionPurchasePolicy(int policyId, String category, LocalTime startTime, LocalTime endTime) throws Exception {
@@ -27,6 +34,13 @@ public class CategoryTimeRestrictionPurchasePolicy extends BasePurchasePolicy {
         this.category = category;
         this.startTime = startTime;
         this.endTime = endTime;
+    }
+
+    public CategoryTimeRestrictionPurchasePolicy() {
+        super();
+        this.category = null;
+        this.startTime = null;
+        this.endTime = null;
     }
 
     @Override

@@ -3,9 +3,10 @@ package BusinessLayer.Policies.DiscountPolicies;
 import BusinessLayer.Product;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.DiscountPolicyOperationDTO;
-
+import javax.persistence.*;
 import java.util.Map;
 
+@Entity
 public class DiscountPolicyOperation extends BaseDiscountPolicy {
 
     public enum JoinOperator {
@@ -13,8 +14,12 @@ public class DiscountPolicyOperation extends BaseDiscountPolicy {
         XOR
     }
 
+    @OneToOne
     private final BaseDiscountPolicy left;
+    @Enumerated(EnumType.STRING)
     private final JoinOperator joinOperator;
+
+    @OneToOne
     private final BaseDiscountPolicy right;
 
     public DiscountPolicyOperation(int policyId, BaseDiscountPolicy left, int joinOperator, BaseDiscountPolicy right) {
@@ -28,6 +33,11 @@ public class DiscountPolicyOperation extends BaseDiscountPolicy {
             throw e;
         }
         this.right = right;
+    }
+    public DiscountPolicyOperation() {
+        left = null;
+        joinOperator = null;
+        right = null;
     }
 
     public boolean evaluate(Map<Product, Integer> productList) {

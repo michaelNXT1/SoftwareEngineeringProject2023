@@ -4,12 +4,19 @@ import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
 import BusinessLayer.Product;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.PolicyTypes.MaxQuantityDiscountPolicyDTO;
+import javax.persistence.*;
 
 import java.util.Map;
 
+@Entity
+@Table(name = "max_quantity_discount_policy")
 public class MaxQuantityDiscountPolicy extends BaseDiscountPolicy {
-    private final Product product;
-    private final int minQuantity;
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
+
+    @Column(name = "min_quantity")
+    private int minQuantity;
 
     public MaxQuantityDiscountPolicy(int policyId, Product product, int maxQuantity) throws Exception {
         super(policyId);
@@ -19,6 +26,10 @@ public class MaxQuantityDiscountPolicy extends BaseDiscountPolicy {
         }
         this.product = product;
         this.minQuantity = maxQuantity;
+    }
+
+    public MaxQuantityDiscountPolicy() {
+        super();
     }
 
     @Override

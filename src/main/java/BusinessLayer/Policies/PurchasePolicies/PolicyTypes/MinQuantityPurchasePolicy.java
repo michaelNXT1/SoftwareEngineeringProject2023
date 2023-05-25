@@ -4,12 +4,19 @@ import BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy;
 import BusinessLayer.Product;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.PolicyTypes.MinQuantityPurchasePolicyDTO;
-
+import javax.persistence.*;
 import java.util.Map;
 
+@Entity
 public class MinQuantityPurchasePolicy extends BasePurchasePolicy {
+    @OneToOne
+    @JoinColumn(name = "product_id")
     private final Product product;
+
+    @Column(name = "min_quantity")
     private final int minQuantity;
+
+    @Column(name = "allow_none")
     private final boolean allowNone;
 
     public MinQuantityPurchasePolicy(int policyId, Product product, int minQuantity, boolean allowNone) throws Exception {
@@ -21,6 +28,12 @@ public class MinQuantityPurchasePolicy extends BasePurchasePolicy {
         this.product = product;
         this.minQuantity = minQuantity;
         this.allowNone = allowNone;
+    }
+
+    public MinQuantityPurchasePolicy() {
+        this.product = null;
+        this.minQuantity = 0;
+        this.allowNone = false;
     }
 
     @Override

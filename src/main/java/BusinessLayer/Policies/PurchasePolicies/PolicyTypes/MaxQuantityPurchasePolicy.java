@@ -4,11 +4,14 @@ import BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy;
 import BusinessLayer.Product;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.PolicyTypes.MaxQuantityPurchasePolicyDTO;
-
+import javax.persistence.*;
 import java.util.Map;
 
+@Entity
 public class MaxQuantityPurchasePolicy extends BasePurchasePolicy {
+    @OneToOne
     private final Product product;
+    @Column(name = "max_quantity")
     private final int maxQuantity;
 
     public MaxQuantityPurchasePolicy(int policyId, Product product, int maxQuantity) throws Exception {
@@ -19,6 +22,11 @@ public class MaxQuantityPurchasePolicy extends BasePurchasePolicy {
         }
         this.product = product;
         this.maxQuantity = maxQuantity;
+    }
+
+    public MaxQuantityPurchasePolicy() {
+        this.product = null;
+        this.maxQuantity = 0;
     }
 
     @Override

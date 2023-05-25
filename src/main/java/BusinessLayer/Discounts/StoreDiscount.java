@@ -4,13 +4,22 @@ import BusinessLayer.Product;
 import BusinessLayer.Store;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
 import ServiceLayer.DTOs.Discounts.StoreDiscountDTO;
+import javax.persistence.*;
 
+@Entity
+@Table(name = "store_discounts")
 public class StoreDiscount extends Discount {
+    @ManyToOne
+    @JoinColumn(name = "store_id")
     private final Store store;
 
     public StoreDiscount(int discountId, double discountPercentage, Store store, int compositionType) throws Exception {
         super(discountId, discountPercentage, compositionType);
         this.store = store;
+    }
+
+    public StoreDiscount() {
+        this.store = null;
     }
 
     public Store getStore() {

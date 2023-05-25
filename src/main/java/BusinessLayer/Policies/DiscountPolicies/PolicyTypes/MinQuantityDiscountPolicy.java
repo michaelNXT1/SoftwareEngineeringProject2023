@@ -5,11 +5,20 @@ import BusinessLayer.Product;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.PolicyTypes.MinQuantityDiscountPolicyDTO;
 
+import javax.persistence.*;
 import java.util.Map;
 
+@Entity
+@Table(name = "min_quantity_discount_policy")
 public class MinQuantityDiscountPolicy extends BaseDiscountPolicy {
+    @ManyToOne
+    @JoinColumn(name = "product_id")
     private final Product product;
+
+    @Column(name = "min_quantity")
     private final int minQuantity;
+
+    @Column(name = "allow_none")
     private final boolean allowNone;
 
     public MinQuantityDiscountPolicy(int policyId, Product product, int minQuantity, boolean allowNone) throws Exception {
@@ -21,6 +30,12 @@ public class MinQuantityDiscountPolicy extends BaseDiscountPolicy {
         this.product = product;
         this.minQuantity = minQuantity;
         this.allowNone = allowNone;
+    }
+
+    public MinQuantityDiscountPolicy() {
+        this.product = null;
+        this.minQuantity = 0;
+        this.allowNone = false;
     }
 
     @Override

@@ -3,15 +3,27 @@ package BusinessLayer.Policies.DiscountPolicies;
 import BusinessLayer.Logger.SystemLogger;
 import BusinessLayer.Product;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
+import javax.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Entity
+@Table(name = "base_discount_policy")
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class BaseDiscountPolicy {
+    @Id
+    @Column(name = "policy_id")
     protected int policyId;
+
+    @Transient
     protected final SystemLogger logger;
+
+    public BaseDiscountPolicy() {
+        logger = new SystemLogger();
+    }
 
     public static List<String> getDiscountPolicyTypes() {
         List<String> ret = new ArrayList<>();
