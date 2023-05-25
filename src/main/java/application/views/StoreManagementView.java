@@ -863,7 +863,8 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
                                 storeId,
                                 discount.getDiscountId(),
                                 productNameMap.get(productField.getValue()),
-                                quantityField.getValue());
+                                quantityField.getValue(),
+                                );
                         if (response.getError_occurred())
                             errorSuccessLabel.setText(response.error_message);
                         else
