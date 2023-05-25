@@ -473,9 +473,9 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public boolean addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity, boolean allowNone) {
+    public boolean addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity) {
         if (real != null) {
-            return real.addMaxQuantityDiscountPolicy(sessionId, storeId, discountId, productId, maxQuantity, allowNone);
+            return real.addMaxQuantityDiscountPolicy(sessionId, storeId, discountId, productId, maxQuantity);
         } else {
             return false;
         }

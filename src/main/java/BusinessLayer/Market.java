@@ -450,12 +450,12 @@ public class Market {
     }
 
     //use case 5.2 - by product price
-    public void editProductPrice(String sessionId, int storeId, int productId, int newPrice) throws Exception {
+    public void editProductPrice(String sessionId, int storeId, int productId, double newPrice) throws Exception {
         isMarketOpen();
         sessionManager.getSession(sessionId);
         logger.info("trying to edit product price");
         checkStoreExists(storeId);
-        logger.info(String.format("edit product price %d to %d in store %s", productId, newPrice, getStore(sessionId, storeId).getStoreName()));
+        logger.info(String.format("edit product price %d to %f in store %s", productId, newPrice, getStore(sessionId, storeId).getStoreName()));
         Position p = checkPositionLegal(sessionId, storeId);
         p.editProductPrice(productId, newPrice);
     }

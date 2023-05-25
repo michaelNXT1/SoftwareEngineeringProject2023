@@ -61,13 +61,13 @@ public interface IMarketController {
 
     ResponseT<ProductDTO> addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description);
 
-    boolean editProductName(String sessionId, int storeId, int productId, String newName);
+    Response editProductName(String sessionId, int storeId, int productId, String newName);
 
-    boolean editProductPrice(String sessionId, int storeId, int productId, int newPrice);
+    Response editProductPrice(String sessionId, int storeId, int productId, double newPrice);
 
-    boolean editProductCategory(String sessionId, int storeId, int productId, String newCategory);
+    Response editProductCategory(String sessionId, int storeId, int productId, String newCategory);
 
-    boolean removeProductFromStore(String sessionId, int storeId, int productId);
+    Response removeProductFromStore(String sessionId, int storeId, int productId);
 
     boolean setPositionOfMemberToStoreManager(String sessionId, int storeID, String MemberToBecomeManager);
 
@@ -103,6 +103,8 @@ public interface IMarketController {
     Response addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType);
 
     Response addCategoryDiscount(String sessionId, int storeId, String category, double discountPercentage, int compositionType);
+
+    ResponseT<List<MemberDTO>> getInformationAboutMembers(String sessionId);
 
     Response addStoreDiscount(String sessionId, int storeId, double discountPercentage, int compositionType);
 
