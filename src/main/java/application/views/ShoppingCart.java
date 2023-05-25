@@ -1,6 +1,5 @@
 package application.views;
 
-import BusinessLayer.Product;
 import CommunicationLayer.MarketController;
 import ServiceLayer.DTOs.ProductDTO;
 import ServiceLayer.DTOs.ShoppingCartDTO;
@@ -16,7 +15,6 @@ import com.vaadin.flow.router.PreserveOnRefresh;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
 import java.util.Map;
 
 @Route(value = "ShoppingCart", layout = MainLayout.class)
@@ -34,7 +32,7 @@ ShoppingCart extends VerticalLayout {
     @Autowired
     public ShoppingCart() {
         this.marketController = MarketController.getInstance();
-        shoppingCart = marketController.getShoppingCart(MainLayout.getSessionId());
+        shoppingCart = marketController.getShoppingCart(MainLayout.getSessionId()).value;
         productDTOList = shoppingCart.getProducts();
         productGrid = new Grid<>(ProductDTO.class, false);
         productGrid.addColumn(ProductDTO::getProductName).setHeader("Product Name");
@@ -83,7 +81,7 @@ ShoppingCart extends VerticalLayout {
             Notification.show(r.error_message);
         else {
             Notification.show("quantity updated successfully");
-            productDTOList = marketController.getShoppingCart(MainLayout.getSessionId()).getProducts();
+            productDTOList = marketController.getShoppingCart(MainLayout.getSessionId()).value.getProducts();
             refreshGrid();
         }
     }
@@ -95,13 +93,13 @@ ShoppingCart extends VerticalLayout {
             Notification.show(r.error_message);
         else {
             Notification.show("product removed successfully");
-            productDTOList = marketController.getShoppingCart(MainLayout.getSessionId()).getProducts();
+            productDTOList = marketController.getShoppingCart(MainLayout.getSessionId()).value.getProducts();
             refreshGrid();
         }
     }
 
     private String getStoreName(ProductDTO p) {
-        return marketController.getStore(MainLayout.getSessionId(), p.getStoreId()).getStoreName();
+        return marketController.getStore(MainLayout.getSessionId(), p.getStoreId()).value.getStoreName();
     }
 
     private void refreshGrid() {

@@ -107,7 +107,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
     @Override
     public void setParameter(BeforeEvent beforeEvent, @WildcardParameter String parameter) {
         storeId = Integer.parseInt(parameter);
-        header.setText("Store Management: " + marketController.getStore(MainLayout.getSessionId(), storeId).getStoreName());
+        header.setText("Store Management: " + marketController.getStore(MainLayout.getSessionId(), storeId).value.getStoreName());
         productMap = marketController.getProductsByStore(storeId).value;
         productGrid.setItems(productMap.keySet().stream().toList());
         purchasePolicyList = marketController.getPurchasePoliciesByStoreId(storeId).value;
@@ -187,14 +187,14 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
                 .map(PositionDTO::getPositionName)
                 .findFirst().orElse("")).setHeader("Position").setSortable(true).setTextAlign(ColumnTextAlign.START);
         employeesGrid.addComponentColumn(memberDTO -> {
-            if (Objects.equals(memberDTO.getUsername(), marketController.getUsername(MainLayout.getSessionId()))) {
+            if (Objects.equals(memberDTO.getUsername(), marketController.getUsername(MainLayout.getSessionId()).value)) {
                 Div div = new Div();
                 div.getStyle().set("white-space", "pre-wrap");
                 div.setText("You");
                 return div;
             }
             PositionDTO position = memberDTO.getPositions().stream().filter(p -> p.getStore().getStoreId() == storeId).findFirst().orElse(null);
-            if (position != null && position.getAssigner().getUsername().equals(marketController.getUsername(MainLayout.getSessionId())))
+            if (position != null && position.getAssigner().getUsername().equals(marketController.getUsername(MainLayout.getSessionId()).value))
                 return switch (position.getPositionName()) {
                     case "Owner" -> new Button("Remove", e -> removeOwnerDialog(memberDTO));
                     case "Manager" -> new Button("Edit", e -> editManagerPermissions(memberDTO));
@@ -295,7 +295,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
 
         List<String> lst = new ArrayList<>();
         lst.add("new");
-        lst.addAll(marketController.getAllCategories());
+        lst.addAll(marketController.getAllCategories().value);
         categoryField.setItems(lst);
         categoryField.addComponents("new", new Hr());
         categoryField.addValueChangeListener(event -> newCategoryField.setVisible(event.getValue().equals("new")));
@@ -335,7 +335,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
 
         List<String> lst = new ArrayList<>();
         lst.add("new");
-        lst.addAll(marketController.getAllCategories());
+        lst.addAll(marketController.getAllCategories().value);
         categoryField.setItems(lst);
         categoryField.addComponents("new", new Hr());
         categoryField.addValueChangeListener(event -> newCategoryField.setVisible(event.getValue().equals("new")));
@@ -482,7 +482,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         TimePicker endTime = new TimePicker();
         IntegerField quantityField = new IntegerField();
         Checkbox allowNone = new Checkbox();
-        categoryField.setItems(marketController.getAllCategories());
+        categoryField.setItems(marketController.getAllCategories().value);
         Map<String, Integer> productNameMap = productMap.keySet().stream().collect(Collectors.toMap(ProductDTO::getProductName, ProductDTO::getProductId));
         productField.setItems(productNameMap.keySet().stream().sorted().collect(Collectors.toList()));
 
@@ -845,7 +845,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         radioGroup.setItems("Addition", "Max Discount");
 
         Button cancelButton = new Button("Cancel", event -> dialog.close());
-        categoryField.setItems(marketController.getAllCategories());
+        categoryField.setItems(marketController.getAllCategories().value);
         categoryField.setPlaceholder("Category Name");
         discountPercentageField.setPlaceholder("Discount Percentage");
 

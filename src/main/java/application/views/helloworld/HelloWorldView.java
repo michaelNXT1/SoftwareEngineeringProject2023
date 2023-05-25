@@ -19,16 +19,13 @@ import com.vaadin.flow.router.*;
 @PreserveOnRefresh
 public class HelloWorldView extends HorizontalLayout {
 
-    private TextField name;
-    private Button sayHello;
+    private final TextField name;
 
     public HelloWorldView() {
         IMarketController marketController = MarketController.getInstance();
         name = new TextField("Your name");
-        sayHello = new Button("Say hello");
-        sayHello.addClickListener(e -> {
-            Notification.show("Hello " + name.getValue());
-        });
+        Button sayHello = new Button("Say hello");
+        sayHello.addClickListener(e -> Notification.show("Hello " + name.getValue()));
         sayHello.addClickShortcut(Key.ENTER);
 
         Button openDialogButton = new Button("Open Dialog");
@@ -43,7 +40,7 @@ public class HelloWorldView extends HorizontalLayout {
         setMargin(true);
         setVerticalComponentAlignment(Alignment.END, name, sayHello);
         add(openDialogButton);
-        add(new H1("Welcome, " + marketController.getUsername(MainLayout.getSessionId()) + "!"));
+        add(new H1("Welcome, " + marketController.getUsername(MainLayout.getSessionId()).value + "!"));
     }
 
 }
