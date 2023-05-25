@@ -132,7 +132,6 @@ public interface IMarketManager {
 
     Response
     removeStoreOwner(String sessionId, int storeId, String storeOwnerToRemove);
-
     ResponseT<List<MemberDTO>>
     getStoreEmployees(String sessionId, int storeId);
 

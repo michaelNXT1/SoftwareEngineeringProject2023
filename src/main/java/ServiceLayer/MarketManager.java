@@ -404,7 +404,7 @@ public class MarketManager implements IMarketManager {
             return new Response(e.getMessage());
         }
     }
-
+  
     public Response addMinQuantityPurchasePolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone) {
         try {
             market.addMinQuantityPolicy(sessionId, storeId, productId, minQuantity, allowNone);
@@ -522,7 +522,8 @@ public class MarketManager implements IMarketManager {
             return new Response(e.getMessage());
         }
     }
-
+  
+    @Override
     public Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity) {
         try {
             market.addMaxQuantityDiscountPolicy(sessionId, storeId, discountId, productId, maxQuantity);
