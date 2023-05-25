@@ -8,23 +8,32 @@ import javax.persistence.*;
 public class Product {
     @Column(name = "store_id")
     private int storeId;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_id")
     private int productId;
+
     @Column(name = "product_name")
     private String productName;
+
     @Column(name = "price")
     private double price;
+
     @Column(name = "category")
     private String category;
+
     @Column(name = "rating")
     private double rating;
+
     @Column(name = "amount")
     private int amount;
+
     @Column(name = "description")
     private String description;
-    @Column(name = "purchase_type")
+
+    @OneToOne
+    @JoinColumn(name = "purchase_type_id")
     private PurchaseType purchaseType;
 
     public Product(int storeId, int productId, String productName, double price, String category, String description) throws Exception {
@@ -48,6 +57,10 @@ public class Product {
         this.category = category;
         this.rating = 0;
         this.description = description;
+    }
+
+    public Product() {
+
     }
 
     public void setPurchaseType(PurchaseType purchaseType) {

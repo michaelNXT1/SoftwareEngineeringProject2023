@@ -1,26 +1,44 @@
 package BusinessLayer;
 import java.time.LocalTime;
 import BusinessLayer.Logger.SystemLogger;
-
+import javax.persistence.*;
+import javax.persistence.Transient;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
+@Entity
+@Table(name = "store_managers")
 public class StoreManager implements Position {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Transient //Marks a property or field as transient, indicating that it should not be persisted in the database.
     private final SystemLogger logger = new SystemLogger();
     public enum permissionType {setPermissions, setNewPosition, Inventory, Purchases, EmployeeList}
-
+    @OneToOne
+    @JoinColumn(name = "store_id")
     private final Store store;
+    @ManyToOne
+    @JoinColumn(name = "store_owners")
     private final Member assigner;
-
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "store_manager_permissions", joinColumns = @JoinColumn(name = "store_manager_id"))
+    @Enumerated(EnumType.STRING)
     private final Set<permissionType> permissions;
 
     private final Object permissionLock = new Object();
 
     public StoreManager(Store store, Member assigner) {
+        this.id = 0L; // Initializing with a default value
         this.store = store;
         this.assigner = assigner;
+        permissions = new HashSet<>();
+    }
+
+    public StoreManager() {
+        this.id = 0L; // Initializing with a default value
+        this.store = null;
+        this.assigner = null;
         permissions = new HashSet<>();
     }
 

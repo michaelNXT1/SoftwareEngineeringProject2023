@@ -4,22 +4,25 @@ import BusinessLayer.Logger.SystemLogger;
 import Security.SecurityUtils;
 import ServiceLayer.DTOs.StoreDTO;
 
-
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
 @Entity
-@Table(name = "members")
 public class Member extends Guest {
+
     @Id
-    @Column(name = "username")
+    @Column(unique = true)
     private String username;
-    @Column(name = "hashed_password")
+
+    @Column
     private String hashedPassword;
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Position> positions = new LinkedList<>();//all the positions of this member, note that position act as a state
+    @Transient
     private SystemLogger logger;
-    @Column(name = "positions")
-    private List<Position> positions = new LinkedList<>(); //all the positions of this member, note that position act as a state
 
     public Member(String username, String hashedPassword) {
         super();
@@ -27,6 +30,11 @@ public class Member extends Guest {
         this.hashedPassword = hashedPassword;
         this.logger = new SystemLogger();
     }
+
+    public Member() {
+
+    }
+
 
     // getter, setter
     public void setPosition(Position newPosition) {

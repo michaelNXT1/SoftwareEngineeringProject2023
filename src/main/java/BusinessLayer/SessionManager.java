@@ -1,5 +1,7 @@
 package BusinessLayer;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.*;
@@ -15,7 +17,6 @@ public class SessionManager {
     private final Map<String, Guest> sessions;
     private final Map<String, SystemManager> systemManagerSessions;
     private static final int SESSION_ID_LENGTH = 16;
-
     public SessionManager() {
         this.systemManagerSessions = new ConcurrentHashMap<>();
         this.sessions = new ConcurrentHashMap<>();

@@ -6,6 +6,9 @@ import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 import ServiceLayer.Response;
 import ServiceLayer.ResponseT;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -90,7 +93,12 @@ public interface IMarketController {
 
     Response addMinQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone);
 
-    Response addMaxQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity);
+    @GetMapping("/addMaxQuantityPolicy")
+    @ResponseBody
+    Response addMaxQuantityPolicy(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                  @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
+                                  @RequestParam(value = "productId", defaultValue = "-1") int productId,
+                                  @RequestParam(value = "minQuantity", defaultValue = "-1") int minQuantity);
 
     Response addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType);
 
@@ -100,7 +108,7 @@ public interface IMarketController {
 
     Response addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone);
 
-    Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity);
+    Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity, boolean allowNone);
 
     Response addMinBagTotalDiscountPolicy(String sessionId, int storeId, int discountId, double minTotal);
 

@@ -2,6 +2,7 @@ package BusinessLayer;
 
 import Utils.Pair;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,15 +10,36 @@ import java.util.Map;
 
 import static org.atmosphere.annotation.AnnotationUtil.logger;
 
+@Entity
+@Table(name = "shopping_bag")
 public class ShoppingBag {
-    private final Store store;
-    private final Map<Integer, Integer> productList;
-    private final Purchase bagPurchase;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "store_id")
+    private Store store;
+
+    @ElementCollection
+    @CollectionTable(name = "product_list_mapping", joinColumns = @JoinColumn(name = "shopping_bag_id"))
+    @MapKeyColumn(name = "product_id")
+    @Column(name = "quantity")
+    private Map<Integer, Integer> productList;
+
+    @OneToOne(mappedBy = "shoppingBag", cascade = CascadeType.ALL)
+    private Purchase bagPurchase;
+
 
     public ShoppingBag(Store store) {
+        this.id = 0L; // Initializing with a default value
         this.store = store;
         this.productList = new HashMap<>();
         bagPurchase = new Purchase(new ArrayList<>());
+    }
+
+    public ShoppingBag() {
+
     }
 
     //Use case 2.10 & Use case 2.12

@@ -1,5 +1,5 @@
 package BusinessLayer;
-
+import javax.persistence.*;
 public class PaymentDetails {
     @Id
     @Column(name = "creditCardNumber")
