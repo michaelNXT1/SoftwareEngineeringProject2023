@@ -98,7 +98,7 @@ public interface IMarketManager {
 
     Response addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone);
 
-    Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity);
+    Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity, boolean allowNone);
 
     Response addMinBagTotalDiscountPolicy(String sessionId, int storeId, int discountId, double minTotal);
 

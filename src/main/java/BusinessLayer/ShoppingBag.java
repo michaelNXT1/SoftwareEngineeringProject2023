@@ -14,6 +14,7 @@ import static org.atmosphere.annotation.AnnotationUtil.logger;
 @Table(name = "shopping_bag")
 public class ShoppingBag {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
@@ -31,6 +32,7 @@ public class ShoppingBag {
 
 
     public ShoppingBag(Store store) {
+        this.id = 0L; // Initializing with a default value
         this.store = store;
         this.productList = new HashMap<>();
         bagPurchase = new Purchase(new ArrayList<>());

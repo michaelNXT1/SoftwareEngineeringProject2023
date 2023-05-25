@@ -1,18 +1,36 @@
 package BusinessLayer;
 
 import BusinessLayer.Logger.SystemLogger;
-
+import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.List;
 
+@Entity
 public class StoreFounder implements Position {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    private final Store store;
-    private final Member assigner;
+    @OneToOne
+    @JoinColumn(name = "store_id")
+    private Store store;
+
+    @ManyToOne
+    @JoinColumn(name = "store_owners")
+    private Member assigner;
+    @Transient //Marks a property or field as transient, indicating that it should not be persisted in the database.
     private final SystemLogger logger;
 
     public StoreFounder(Store store) {
+        this.id = 0L; // Initializing with a default value
         this.store = store;
+        this.assigner = null;
+        this.logger = new SystemLogger();
+    }
+
+    public StoreFounder() {
+        this.id = 0L; // Initializing with a default value
+        this.store = null;
         this.assigner = null;
         this.logger = new SystemLogger();
     }

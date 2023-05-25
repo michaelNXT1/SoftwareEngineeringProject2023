@@ -8,28 +8,44 @@ import BusinessLayer.Policies.DiscountPolicies.PolicyTypes.*;
 import BusinessLayer.Policies.PurchasePolicies.PurchasePolicyOperation;
 import BusinessLayer.Policies.PurchasePolicies.*;
 import BusinessLayer.Policies.PurchasePolicies.PolicyTypes.*;
-
+import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-
+@Entity
+@Table(name = "stores")
 public class Store {
+    @Id
+    @Column(name = "store_id")
     private final int storeId;
+    @Column(name = "store_name")
     private final String storeName;
+    @ElementCollection
     private final Set<String> categories;
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
     private final Map<Product, Integer> products;
+    @OneToMany
     private final List<Purchase> purchaseList;
+    @ManyToMany(mappedBy = "stores")
     private final List<Member> employees;
+    @ElementCollection
     private final List<String> storeOwners = new LinkedList<>();
+    @ManyToMany
     private final List<BasePurchasePolicy> purchasePolicies;
+    @OneToMany
     private final Map<Discount, List<BaseDiscountPolicy>> productDiscountPolicyMap;
+    @Column(name = "purchase_policy_counter")
     private int purchasePolicyCounter;
+    @Column(name = "discount_policy_counter")
     private int discountPolicyCounter;
+    @Column(name = "discount_counter")
     private int discountCounter;
+    @Column(name = "open")
     private boolean isOpen;
+    @Transient //Marks a property or field as transient, indicating that it should not be persisted in the database.
     private final AtomicInteger productIdCounter;
-
+    @Transient //Marks a property or field as transient, indicating that it should not be persisted in the database.
     private final SystemLogger logger;
 
     public Store(int storeId, String storeName, Member storeFounder) {
@@ -49,6 +65,23 @@ public class Store {
         discountPolicyCounter = 0;
         discountCounter = 0;
     }
+
+    public Store() {
+        this.storeId = 0;
+        this.storeName = "";
+        this.categories = new HashSet<>();
+        this.products = new ConcurrentHashMap<>();
+        this.purchaseList = new ArrayList<>();
+        this.employees = new ArrayList<>();
+        this.logger = new SystemLogger();
+        this.productIdCounter = new AtomicInteger(0);
+        purchasePolicies = new ArrayList<>();
+        purchasePolicyCounter = 0;
+        productDiscountPolicyMap = new HashMap<>();
+        discountPolicyCounter = 0;
+        discountCounter = 0;
+    }
+
 
     public String getStoreName() {
         return storeName;

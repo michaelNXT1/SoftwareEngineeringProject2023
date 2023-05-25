@@ -35,6 +35,7 @@ public class Member extends Guest {
 
     }
 
+
     // getter, setter
     public void setPosition(Position newPosition) {
         boolean found = false;

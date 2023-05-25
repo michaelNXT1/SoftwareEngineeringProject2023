@@ -466,7 +466,7 @@ public class MarketManager implements IMarketManager {
     }
 
 
-    public Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity) {
+    public Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity, boolean allowNone) {
         try {
             market.addMaxQuantityDiscountPolicy(sessionId, storeId, discountId, productId, maxQuantity);
             return new Response();

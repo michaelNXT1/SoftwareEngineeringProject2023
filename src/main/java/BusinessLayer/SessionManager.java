@@ -1,5 +1,7 @@
 package BusinessLayer;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.*;
@@ -9,20 +11,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static org.atmosphere.annotation.AnnotationUtil.logger;
 
-@Entity
 public class SessionManager {
 
-    @Id
-    private Long id;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    private Map<String, Guest> sessions;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    private Map<String, SystemManager> systemManagerSessions;
-
+    private Object sessionLock = new Object();
+    private final Map<String, Guest> sessions;
+    private final Map<String, SystemManager> systemManagerSessions;
     private static final int SESSION_ID_LENGTH = 16;
-
     public SessionManager() {
         this.systemManagerSessions = new ConcurrentHashMap<>();
         this.sessions = new ConcurrentHashMap<>();
