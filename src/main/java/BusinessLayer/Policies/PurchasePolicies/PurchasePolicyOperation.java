@@ -3,17 +3,23 @@ package BusinessLayer.Policies.PurchasePolicies;
 import BusinessLayer.Product;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.PurchasePolicyOperationDTO;
-
+import javax.persistence.*;
 import java.util.Map;
 
+@Entity
 public class PurchasePolicyOperation extends BasePurchasePolicy {
 
     public enum JoinOperator {
         OR,
         COND
     }
+
+    @OneToOne
     private final BasePurchasePolicy left;
+
+    @Enumerated(EnumType.STRING)
     private final JoinOperator joinOperator;
+    @OneToOne
     private final BasePurchasePolicy right;
 
     public PurchasePolicyOperation(int policyId, BasePurchasePolicy left, int joinOperator, BasePurchasePolicy right) {
@@ -26,6 +32,12 @@ public class PurchasePolicyOperation extends BasePurchasePolicy {
             throw e;
         }
         this.right = right;
+    }
+    public PurchasePolicyOperation() {
+
+        left = null;
+        joinOperator = null;
+        right = null;
     }
 
     public boolean evaluate(Map<Product, Integer> productList) {

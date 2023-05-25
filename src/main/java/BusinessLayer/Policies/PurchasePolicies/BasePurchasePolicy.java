@@ -3,15 +3,26 @@ package BusinessLayer.Policies.PurchasePolicies;
 import BusinessLayer.Logger.SystemLogger;
 import BusinessLayer.Product;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
-
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class BasePurchasePolicy {
+    @Id
+    @GeneratedValue(strategy = GenerationType.TABLE)
+    @Column(name = "policy_id")
     protected int policyId;
+
+    @Transient
     protected SystemLogger logger;
+
+    public BasePurchasePolicy() {
+
+    }
 
     public static List<String> getPurchasePolicyTypes() {
         List<String> ret = new ArrayList<>();

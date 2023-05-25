@@ -2,22 +2,30 @@ package BusinessLayer.Discounts;
 
 import BusinessLayer.Logger.SystemLogger;
 import BusinessLayer.Product;
-import ServiceLayer.DTOs.Discounts.CategoryDiscountDTO;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
-import ServiceLayer.DTOs.Discounts.ProductDiscountDTO;
-import ServiceLayer.DTOs.Discounts.StoreDiscountDTO;
+import javax.persistence.*;
 
-import java.util.logging.Logger;
-
+@Entity
+@Table(name = "discounts")
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 abstract public class Discount {
+
     public enum CompositionType {
         ADDITION,
         MAX
     }
-
+    @Id
+    @Column(name = "discount_id")
     protected final int discountId;
+
+    @Column(name = "discount_percentage")
     protected final double discountPercentage;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "composition_type")
     protected final CompositionType compositionType;
+
+    @Transient
     protected final SystemLogger logger;
 
     public Discount(int discountId, double discountPercentage, int compositionType) throws Exception {
@@ -29,6 +37,12 @@ abstract public class Discount {
         }
         this.discountPercentage = discountPercentage;
         this.compositionType = CompositionType.values()[compositionType];
+    }
+    public Discount() {
+        logger = new SystemLogger();
+        this.discountId = 0;
+        this.discountPercentage = 0;
+        this.compositionType = null;
     }
 
     public int getDiscountId() {
@@ -51,6 +65,6 @@ abstract public class Discount {
     public CompositionType getCompositionType() {
         return compositionType;
     }
-    
+
     public abstract DiscountDTO copyConstruct();
 }
