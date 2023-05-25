@@ -370,7 +370,7 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public Response addMaxQuantityPolicy(String sessionId, int storeId, int productId, int maxQuantity) {
+    public Response addMaxQuantityPolicy(String sessionId, int storeId, int productId, int maxQuantity){
         try {
             market.addMaxQuantityPolicy(sessionId, storeId, productId, maxQuantity);
             return new Response();
@@ -465,7 +465,7 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-
+    @Override
     public Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity) {
         try {
             market.addMaxQuantityDiscountPolicy(sessionId, storeId, discountId, productId, maxQuantity);
