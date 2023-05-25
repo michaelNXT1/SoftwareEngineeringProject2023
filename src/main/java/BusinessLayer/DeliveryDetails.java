@@ -1,8 +1,16 @@
 package BusinessLayer;
+import javax.persistence.*;
 
+@Embeddable
 public class DeliveryDetails {
+
+    @Column
     private String street;
+
+    @Column
     private int number;
+
+    @Column
     private String zipcode;
 
     public DeliveryDetails(String street, int number, String zipcode) {

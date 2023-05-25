@@ -397,8 +397,8 @@ public class MarketController implements IMarketController {
     }
 
     @Override
-    public Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity, boolean allowNone) {
-        return marketManager.addMaxQuantityDiscountPolicy(sessionId, storeId, discountId, productId, maxQuantity, allowNone);
+    public Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity) {
+        return marketManager.addMaxQuantityDiscountPolicy(sessionId, storeId, discountId, productId, maxQuantity);
     }
 
     @Override

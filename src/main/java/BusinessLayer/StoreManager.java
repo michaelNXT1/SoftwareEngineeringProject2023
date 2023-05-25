@@ -21,8 +21,6 @@ public class StoreManager implements Position {
         Purchases,
         EmployeeList
     }
-
-    public enum permissionType {setPermissions, setNewPosition, Inventory, Purchases, EmployeeList}
     @OneToOne
     @JoinColumn(name = "store_id")
     private final Store store;
