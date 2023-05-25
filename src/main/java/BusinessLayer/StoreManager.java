@@ -14,7 +14,13 @@ public class StoreManager implements Position {
     private Long id;
     @Transient //Marks a property or field as transient, indicating that it should not be persisted in the database.
     private final SystemLogger logger = new SystemLogger();
-    public enum permissionType {setPermissions, setNewPosition, Inventory, Purchases, EmployeeList}
+    public enum permissionType {
+        setPermissions,
+        setNewPosition,
+        Inventory,
+        Purchases,
+        EmployeeList
+    }
     @OneToOne
     @JoinColumn(name = "store_id")
     private final Store store;
@@ -213,6 +219,11 @@ public class StoreManager implements Position {
     public void removeStoreOwner(Member systemManagerToRemove, Guest m) throws Exception {
         logger.error("store manager hasn't permission to perform this action");
         throw new IllegalAccessException("This member hasn't permission to perform this action");
+    }
+
+    @Override
+    public String getPositionName() {
+        return "Manager";
     }
 
     @Override

@@ -1,11 +1,25 @@
 package BusinessLayer;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "Purchase_product")
 public class PurchaseProduct {
+    @Id
+    @Column(name = "product_id")
     private int productId;
+    @Column(name = "store_id")
     private int storeId;
+    @Column(name = "product_name")
     private String productName;
+    @Column(name = "product_category")
     private String productCategory;
+    @Column(name = "price")
     private double price;
+    @Column(name = "quantity")
     private int quantity;
 
     public PurchaseProduct(Product p, int quantity, int storeId) {

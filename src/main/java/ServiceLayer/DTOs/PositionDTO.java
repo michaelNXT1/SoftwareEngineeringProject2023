@@ -8,28 +8,25 @@ import BusinessLayer.Store;
 import java.util.stream.Collectors;
 
 public class PositionDTO {
-    private Store store;
-
-    private Member assigner;
+    private final StoreDTO store;
+    private final MemberDTO assigner;
+    private final String positionName;
 
     public PositionDTO(Position p) {
-        this.store = p.getStore();
-        this.assigner = p.getAssigner();
+        this.store = new StoreDTO(p.getStore());
+        this.assigner = p.getAssigner() == null ? null : new MemberDTO(p.getAssigner());
+        this.positionName = p.getPositionName();
     }
-    public Store getStore() {
+
+    public StoreDTO getStore() {
         return store;
     }
 
-    public Member getAssigner() {
+    public MemberDTO getAssigner() {
         return assigner;
     }
-    @Override
-    public String toString() {
-        return "PositionDTO{" +
-                "store=" + store.getStoreName() +
-                ", assigner=" + assigner.getUsername() +
-                '}';
+
+    public String getPositionName() {
+        return positionName;
     }
-
-
 }

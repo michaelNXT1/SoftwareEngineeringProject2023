@@ -4,19 +4,28 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-
+import javax.persistence.*;
 import static org.atmosphere.annotation.AnnotationUtil.logger;
 
+@Entity
 public class Guest {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @OneToOne(cascade = CascadeType.ALL)
     private ShoppingCart shoppingCart;
     private String searchKeyword;
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Product> searchResults;
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Purchase> purchaseHistory;
+    @OneToOne(cascade = CascadeType.ALL)
     private PaymentDetails paymentDetails;
+    @OneToOne(cascade = CascadeType.ALL)
     private SupplyDetails supplyDetails;
 
     public Guest() {
+        this.id = 0L; // Initializing with a default value
         shoppingCart = new ShoppingCart();
         searchResults = new ArrayList<>();
         purchaseHistory = new ArrayList<>();

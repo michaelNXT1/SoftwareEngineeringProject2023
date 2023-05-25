@@ -11,7 +11,7 @@ import java.util.Map;
 public class ShoppingCartDTO {
     public List<ShoppingBagDTO> shoppingBags;
 
-    public ShoppingCartDTO(ShoppingCart shoppingCart) throws Exception {
+    public ShoppingCartDTO(ShoppingCart shoppingCart) {
         List<ShoppingBagDTO> list = new ArrayList<>();
         for (ShoppingBag shoppingBag : shoppingCart.shoppingBags) {
             ShoppingBagDTO shoppingBagDTO = new ShoppingBagDTO(shoppingBag);
