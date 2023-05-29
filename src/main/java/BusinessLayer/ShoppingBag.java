@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.atmosphere.annotation.AnnotationUtil.logger;
+
 public class ShoppingBag {
     private final Store store;
     private final Map<Integer, Integer> productList;
@@ -23,8 +25,10 @@ public class ShoppingBag {
         Product p = store.getProduct(productId);
         if (store.getProducts().get(p) >= quantity)
             productList.put(productId, quantity);
-        else
+        else {
+            logger.error("Requested product quantity not available.");
             throw new Exception("Requested product quantity not available.");
+        }
     }
 
     //Use case 2.13
@@ -36,11 +40,9 @@ public class ShoppingBag {
     //Use case 2.14
     public Pair<PurchaseProduct, Boolean> purchaseProduct(int productId) {
         try {
-            //TODO: lock store
             PurchaseProduct pp = store.subtractForPurchase(productId, productList.get(productId));
             double discountPercentage = store.getProductDiscountPercentage(productId, productList);
             pp.setPrice(pp.getPrice() * (1.0 - discountPercentage));
-            //TODO: release store
             this.productList.remove(productId);
             return new Pair<>(pp, true);
         } catch (Exception e) {
@@ -49,8 +51,10 @@ public class ShoppingBag {
     }
 
     public Pair<List<PurchaseProduct>, Boolean> purchaseShoppingBag() throws Exception {
-        if (!store.checkPoliciesFulfilled(productList))
+        if (!store.checkPoliciesFulfilled(productList)) {
+            logger.error("Store purchase policies are not fulfilled in this cart");
             throw new Exception("Store purchase policies are not fulfilled in this cart");
+        }
         store.checkPoliciesFulfilled(productList);
         List<PurchaseProduct> retList = new ArrayList<>();
         for (Map.Entry<Integer, Integer> e : productList.entrySet()) {

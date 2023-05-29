@@ -2,11 +2,10 @@ package application.views;
 
 
 import CommunicationLayer.MarketController;
+import ServiceLayer.ResponseT;
 import application.components.AppNav;
 import application.components.AppNavItem;
 import application.views.about.AboutView;
-import application.views.addStoreManger.AddStoreManager;
-import application.views.addStoreOwner.AddStoreOwner;
 import application.views.category.CategoryView;
 import application.views.helloworld.HelloWorldView;
 import application.views.login.LoginView;
@@ -16,18 +15,25 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Footer;
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.theme.lumo.LumoUtility;
-import com.vaadin.flow.theme.lumo.LumoUtility.*;
+import com.vaadin.flow.theme.lumo.LumoUtility.AlignItems;
+import com.vaadin.flow.theme.lumo.LumoUtility.Display;
+import com.vaadin.flow.theme.lumo.LumoUtility.FontSize;
+import com.vaadin.flow.theme.lumo.LumoUtility.Padding;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,45 +47,65 @@ public class MainLayout extends AppLayout {
 
     MarketController marketController = MarketController.getInstance();
     private TextField searchBox;
-    private Map<String, Runnable> searchActionMap = new HashMap<>();
+    private final Map<String, Runnable> searchActionMap = new HashMap<>();
     private Select<String> searchType;
-
-    /**
-     * A simple navigation item component, based on ListItem element.
-     */
-    public static class MenuItemInfo extends ListItem {
-
-        private final Class<? extends Component> view;
-
-        public MenuItemInfo(String menuTitle, Component icon, Class<? extends Component> view) {
-            this.view = view;
-            RouterLink link = new RouterLink();
-            // Use Lumo classnames for various styling
-            link.addClassNames(Display.FLEX, Gap.XSMALL, Height.MEDIUM, AlignItems.CENTER, Padding.Horizontal.SMALL,
-                    TextColor.BODY);
-            link.setRoute(view);
-
-            Span text = new Span(menuTitle);
-            // Use Lumo classnames for various styling
-            text.addClassNames(FontWeight.MEDIUM, FontSize.MEDIUM, Whitespace.NOWRAP);
-
-            if (icon != null) {
-                link.add(icon);
-            }
-            link.add(text);
-            add(link);
-        }
-
-        public Class<?> getView() {
-            return view;
-        }
-
-    }
+    private Button loginButton;
+    private Button signUpButton;
+    private Button logoutButton;
 
     public MainLayout() {
+        sessionId = marketController.enterMarket().value;
+        config();
         addToNavbar(createHeaderContent());
         addDrawerContent();
-        sessionId = marketController.enterMarket();
+    }
+
+    private void config() {
+        marketController.signUp("Shoham", "1234");
+        marketController.signUp("Alon", "1234");
+        marketController.signUp("Shani", "1234");
+        marketController.signUp("Idan", "1234");
+
+        marketController.signUp("Michael", "1234");
+        sessionId = marketController.login("Michael", "1234").value;
+        marketController.openStore(sessionId, "Shufersal");
+        marketController.openStore(sessionId, "Ebay");
+        Map<String, Integer> productMap = new HashMap<>();
+        productMap.put("Klik Marbles", marketController.addProduct(sessionId, 0, "Klik Marbles", 6.8, "Snacks", 50, "").value.getProductId());
+        productMap.put("Banana", marketController.addProduct(sessionId, 0, "Banana", 7.9, "Fruit", 50, "").value.getProductId());
+        productMap.put("Bread", marketController.addProduct(sessionId, 0, "Bread", 10.0, "Pastries", 50, "").value.getProductId());
+        productMap.put("Watermelon", marketController.addProduct(sessionId, 0, "Watermelon", 35.4, "Fruit", 50, "").value.getProductId());
+        productMap.put("Milk", marketController.addProduct(sessionId, 0, "Milk", 6.75, "Dairy", 50, "").value.getProductId());
+        productMap.put("Bamba", marketController.addProduct(sessionId, 0, "Bamba", 4.3, "Snacks", 50, "").value.getProductId());
+        productMap.put("Yogurt", marketController.addProduct(sessionId, 0, "Yogurt", 5.3, "Dairy", 50, "").value.getProductId());
+        productMap.put("Lay's", marketController.addProduct(sessionId, 0, "Lay's", 4.0, "Snacks", 50, "").value.getProductId());
+        productMap.put("Apple", marketController.addProduct(sessionId, 0, "Apple", 11.9, "Fruit", 50, "").value.getProductId());
+        productMap.put("Bun", marketController.addProduct(sessionId, 0, "Bun", 4.0, "Pastries", 50, "").value.getProductId());
+
+        marketController.addProductDiscount(sessionId, 0, productMap.get("Apple"), 0.1, 0);
+        marketController.addCategoryDiscount(sessionId, 0, "Dairy", 0.5, 0);
+        marketController.addCategoryDiscount(sessionId, 0, "Pastries", 0.05, 0);
+        marketController.addStoreDiscount(sessionId, 0, 0.2, 0);
+        marketController.addMinBagTotalDiscountPolicy(sessionId, 0, 0, 200.0);
+        marketController.addMinQuantityDiscountPolicy(sessionId, 0, 2, productMap.get("Bread"), 5, true);
+        marketController.addMinQuantityDiscountPolicy(sessionId, 0, 2, productMap.get("Bun"), 5, true);
+
+        marketController.addMaxQuantityPolicy(sessionId, 0, productMap.get("Apple"), 5);
+        marketController.addCategoryTimeRestrictionPolicy(sessionId, 0, "Snacks", LocalTime.of(7, 0, 0), LocalTime.of(23, 0, 0));
+
+        marketController.setPositionOfMemberToStoreOwner(sessionId, 0, "Alon");
+        marketController.setPositionOfMemberToStoreManager(sessionId, 0, "Shoham");
+        marketController.addStoreManagerPermissions(sessionId, "Shoham", 0, 4);
+
+        marketController.logout(sessionId);
+
+        sessionId = marketController.login("Alon", "1234").value;
+        marketController.setPositionOfMemberToStoreOwner(sessionId, 0, "Shani");
+        marketController.logout(sessionId);
+
+        sessionId = marketController.login("Michael", "1234").value;
+//
+//        sessionId = marketController.login("Shoham", "1234").value;
     }
 
 
@@ -119,23 +145,28 @@ public class MainLayout extends AppLayout {
 
         Button homeButton = new Button("Home", e -> UI.getCurrent().navigate(HelloWorldView.class));
         Button aboutButton = new Button("About", e -> UI.getCurrent().navigate(AboutView.class));
-        Button optionsButton = new Button("Options");
         Select<String> select = initActionSelect();
         searchBox = new TextField();
         searchBox.setPlaceholder("Search product");
         searchType = initSearchSelect();
         Button searchButton = new Button("", VaadinIcon.SEARCH.create(), e -> SearchProducts());
-        Button cartButton = new Button("Cart", VaadinIcon.CART.create());
+        Button cartButton = new Button("Cart", VaadinIcon.CART.create(), e -> UI.getCurrent().navigate(ShoppingCart.class));
 
-        Button loginButton = new Button("Login", e -> UI.getCurrent().navigate(LoginView.class));
-        Button signUpButton = new Button("Sign Up", e -> UI.getCurrent().navigate(RegistrationView.class));
+        loginButton = new Button("Login", e -> UI.getCurrent().navigate(LoginView.class));
+        signUpButton = new Button("Sign Up", e -> UI.getCurrent().navigate(RegistrationView.class));
+        logoutButton = new Button("Logout", e -> logout());
+        boolean isLoggedIn = marketController.isLoggedIn(sessionId).value;
+        loginButton.setVisible(!isLoggedIn);
+        signUpButton.setVisible(!isLoggedIn);
+        logoutButton.setVisible(isLoggedIn);
 
         Div div1 = new Div(), div2 = new Div(), div3 = new Div();
         leftLayout.add(appName);
         centerLayout.add(div1, homeButton, aboutButton, select, searchBox, searchType, searchButton, cartButton, div2);
         centerLayout.setFlexGrow(1, div1);
         centerLayout.setFlexGrow(1, div2);
-        rightLayout.add(div3, loginButton, signUpButton);
+
+        rightLayout.add(div3, loginButton, signUpButton, logoutButton);
         rightLayout.setFlexGrow(1, div3);
         layout.add(leftLayout, centerLayout, rightLayout);
         layout.setFlexGrow(1, leftLayout);
@@ -145,8 +176,27 @@ public class MainLayout extends AppLayout {
         return vl;
     }
 
+    private void logout() {
+
+        ResponseT<String> r = marketController.logout(sessionId);
+        sessionId = r.value;
+        if (r.getError_occurred())
+            Notification.show(r.error_message, 3000, Notification.Position.MIDDLE);
+        else {
+            Notification.show("you logged out successfully", 3000, Notification.Position.MIDDLE);
+            UI.getCurrent().navigate(HelloWorldView.class);
+            boolean isLoggedIn = marketController.isLoggedIn(sessionId).value;
+            loginButton.setVisible(!isLoggedIn);
+            signUpButton.setVisible(!isLoggedIn);
+            logoutButton.setVisible(isLoggedIn);
+        }
+
+        if (sessionId != null)
+            UI.getCurrent().navigate(HelloWorldView.class);
+    }
+
     private void SearchProducts() {
-        if (searchType.getValue() != null){
+        if (searchType.getValue() != null) {
             searchActionMap.get(searchType.getValue()).run();
             UI.getCurrent().navigate(SearchResultView.class);
         }
@@ -155,19 +205,15 @@ public class MainLayout extends AppLayout {
     private Select<String> initActionSelect() {
         Select<String> select = new Select<>();
         Map<String, Runnable> actionsMap = new HashMap<>();
-        actionsMap.put("Add Store Manager", () -> UI.getCurrent().navigate(AddStoreManager.class));
-        actionsMap.put("Add Store Owner", () -> UI.getCurrent().navigate(AddStoreOwner.class));
         actionsMap.put("Add Payment Method", () -> UI.getCurrent().navigate(AddPaymentMethod.class));
-        actionsMap.put("Add Product", () -> UI.getCurrent().navigate(AddProduct.class));
-        actionsMap.put("remove Product", () -> UI.getCurrent().navigate(RemoveProductFromStore.class));
-        actionsMap.put("Open new Store", () -> UI.getCurrent().navigate(OpenStore.class));
-        actionsMap.put("Add Discount", () -> UI.getCurrent().navigate(AddDiscount.class));
-        actionsMap.put("Edit Product", () -> UI.getCurrent().navigate(EditProduct.class));
-        actionsMap.put("add Store Manager Permission", () -> UI.getCurrent().navigate(addStoreManagerPermissions.class));
-        actionsMap.put("remove Store Manager Permission", () -> UI.getCurrent().navigate(removeStoreManagerPermissions.class));
-        actionsMap.put("close store", () -> UI.getCurrent().navigate(CloseStore.class));
+        actionsMap.put("Open a New Store", () -> UI.getCurrent().navigate(OpenStore.class));
+        actionsMap.put("Close Store", () -> UI.getCurrent().navigate(CloseStore.class));
+        actionsMap.put("My Stores", () -> UI.getCurrent().navigate(ManagerStoresView.class));
 
-        select.setItems(actionsMap.keySet());
+        actionsMap.put("Get information about members", () -> UI.getCurrent().navigate(GetInformationAboutMembers.class));
+        actionsMap.put("System Manager Registration", () -> UI.getCurrent().navigate(SignUpSystemManager.class));
+
+        select.setItems(actionsMap.keySet().stream().sorted().collect(Collectors.toList()));
         select.addValueChangeListener(event -> actionsMap.get(event.getValue()).run());
         select.setPlaceholder("Actions");
         return select;
@@ -183,34 +229,18 @@ public class MainLayout extends AppLayout {
         return searchType;
     }
 
-    private void addStoreOwner() {
-        UI.getCurrent().navigate(AddStoreOwner.class);
-    }
-
     private Footer createFooter() {
-        Footer layout = new Footer();
 
-        return layout;
+        return new Footer();
     }
 
     private AppNav createCategoryNev() {
         AppNav nav = new AppNav();
 
-        List<String> catego = this.marketController.getAllCategories();
+        List<String> catego = this.marketController.getAllCategories().value;
         for (String cat : catego) {
             nav.addItem(new AppNavItem(cat, CategoryView.class, LineAwesomeIcon.EMPIRE.create()));
         }
         return nav;
     }
-
-    private MenuItemInfo[] createMenuItems() {
-        return new MenuItemInfo[]{ //
-                new MenuItemInfo("Hello World", LineAwesomeIcon.GLOBE_SOLID.create(), HelloWorldView.class), //
-                new MenuItemInfo("Sign Up", LineAwesomeIcon.CODEPEN.create(), RegistrationView.class), //
-                new MenuItemInfo("Log In", LineAwesomeIcon.CAPSULES_SOLID.create(), LoginView.class), //
-                new MenuItemInfo("About", LineAwesomeIcon.FILE.create(), AboutView.class), //
-
-        };
-    }
-
 }

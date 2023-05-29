@@ -1,6 +1,5 @@
 package BusinessLayer;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -15,12 +14,14 @@ public class Guest {
     private List<Product> searchResults;
     private List<Purchase> purchaseHistory;
     private PaymentDetails paymentDetails;
+    private SupplyDetails supplyDetails;
 
     public Guest() {
         shoppingCart = new ShoppingCart();
         searchResults = new ArrayList<>();
         purchaseHistory = new ArrayList<>();
         paymentDetails = null;
+        supplyDetails = null;
     }
 
     public void addProductToShoppingCart(Store s, int productId, int itemsAmount) throws Exception { //2.10
@@ -39,6 +40,10 @@ public class Guest {
         if (paymentDetails == null) {
             logger.error(String.format("no payment details exist"));
             throw new Exception("no payment details exist");
+        }
+        if (supplyDetails == null) {
+            logger.error(String.format("no supply details exist"));
+            throw new Exception("no supply details exist");
         }
         Purchase p = shoppingCart.purchaseShoppingCart();
         purchaseHistory.add(p);
@@ -65,13 +70,20 @@ public class Guest {
         return searchResults.stream().filter(p -> minPrice <= p.getPrice() && p.getPrice() <= maxPrice).collect(Collectors.toList());
     }
 
-    public void addPaymentMethod(String cardNumber, String month, String year, String cvv) {
-        paymentDetails = new PaymentDetails(cardNumber, month, year, cvv);
+    public void addPaymentMethod(String cardNumber, String month, String year, String cvv, String holder, String cardId) {
+        paymentDetails = new PaymentDetails(cardNumber, month, year, cvv, holder, cardId);
+    }
+    public void addSupplyDetails(String name , String address, String city, String country, String zip) {
+        supplyDetails = new SupplyDetails(name, address, city, country, zip);
     }
 
     public Store openStore(String storeName, int storeId) throws Exception {
         logger.error(String.format("Cannot perform action when not a member"));
         throw new Exception("Cannot perform action when not a member");
+    }
+
+    public boolean isLoggedIn(){
+        return false;
     }
 
     public String getUsername() throws Exception {
@@ -101,5 +113,9 @@ public class Guest {
 
     public ShoppingCart getShoppingCart() {
         return shoppingCart;
+    }
+
+    public SupplyDetails getSupplyDetails() {
+        return supplyDetails;
     }
 }

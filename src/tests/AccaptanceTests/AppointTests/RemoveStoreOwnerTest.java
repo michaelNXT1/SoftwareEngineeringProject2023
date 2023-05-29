@@ -42,7 +42,7 @@ public class RemoveStoreOwnerTest extends ServiceTests {
     public void testRemoveStoreOwnerFailStoreOwnerIsNotTheAssigner(){
         register("shoham", "sh20754");
         String sessionIdNotAssigner = login("shoham", "sh20754");
-        int store = openStore(sessionIdNotAssigner, "megaSport");
+        int store = openStore(sessionIdNotAssigner, "megaSport1");
         assertFalse(removeStoreOwner(sessionIdNotAssigner, storeOwnerToRemove, store));
     }
     public void testRemoveStoreOwnerFailStoreNotExist(){
@@ -51,7 +51,7 @@ public class RemoveStoreOwnerTest extends ServiceTests {
     public void testRemoveStoreOwnerFailStoreOwnerIsNotTheOwnerOfTheStore(){
         register("shoham", "sh20754");
         String sessionIdNotAssigner = login("shoham", "sh20754");
-        int store = openStore(sessionIdNotAssigner, "megaSport");
+        int store = openStore(sessionIdNotAssigner, "megaSport1");
         assertFalse(removeStoreOwner(sessionId1, storeOwnerToRemove, store));
     }
 

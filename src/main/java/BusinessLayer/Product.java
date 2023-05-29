@@ -1,5 +1,7 @@
 package BusinessLayer;
 
+import static org.atmosphere.annotation.AnnotationUtil.logger;
+
 public class Product {
     private int storeId;
     private int productId;
@@ -13,12 +15,18 @@ public class Product {
     private PurchaseType purchaseType;
 
     public Product(int storeId, int productId, String productName, double price, String category, String description) throws Exception {
-        if (price < 0)
+        if (price < 0) {
+            logger.error("cannot add product with negative price");
             throw new Exception("cannot add product with negative price");
-        if (stringIsEmpty(productName))
+        }
+        if (stringIsEmpty(productName)) {
+            logger.error("product name is empty");
             throw new Exception("product name is empty");
-        if (stringIsEmpty(category))
+        }
+        if (stringIsEmpty(category)) {
+            logger.error("product category is empty");
             throw new Exception("product category is empty");
+        }
         this.storeId = storeId;
         this.purchaseType = new BuyItNow(this);
         this.productId = productId;
@@ -60,8 +68,10 @@ public class Product {
     }
 
     public void setPrice(double price) throws Exception {
-        if (price < 0)
+        if (price < 0) {
+            logger.error("cannot set product with negative price");
             throw new Exception("cannot set product with negative price");
+        }
         this.price = price;
     }
 
@@ -70,8 +80,10 @@ public class Product {
     }
 
     public void setCategory(String category) throws Exception {
-        if (stringIsEmpty(category))
+        if (stringIsEmpty(category)) {
+            logger.error("product category is empty");
             throw new Exception("product category is empty");
+        }
         this.category = category;
     }
 

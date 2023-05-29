@@ -1,8 +1,8 @@
 package AccaptanceTests.bridge;
 
 import ServiceLayer.DTOs.PurchaseDTO;
+import ServiceLayer.DTOs.ShoppingCartDTO;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class ProxyBridge implements Bridge {
@@ -138,7 +138,7 @@ public class ProxyBridge implements Bridge {
     }
 
 
-    public String showCart(String sessionId) {
+    public ShoppingCartDTO showCart(String sessionId) {
         if (real != null) {
             return real.showCart(sessionId);
         } else {
@@ -428,9 +428,9 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public boolean addMaxQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone) {
+    public boolean addMaxQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity) {
         if (real != null) {
-            return real.addMaxQuantityPolicy(sessionId, storeId, productId, minQuantity, allowNone);
+            return real.addMaxQuantityPolicy(sessionId, storeId, productId, minQuantity);
         } else {
             return false;
         }
@@ -473,9 +473,9 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public boolean addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity, boolean allowNone) {
+    public boolean addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity) {
         if (real != null) {
-            return real.addMaxQuantityDiscountPolicy(sessionId, storeId, discountId, productId, maxQuantity, allowNone);
+            return real.addMaxQuantityDiscountPolicy(sessionId, storeId, discountId, productId, maxQuantity);
         } else {
             return false;
         }

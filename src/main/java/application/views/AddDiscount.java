@@ -10,6 +10,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.router.PreserveOnRefresh;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,6 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @Route(value = "addDiscount", layout = MainLayout.class)
+@PreserveOnRefresh
 public class AddDiscount extends VerticalLayout {
     private final Select<String> compositionType;
     private final TextField storeIdField;

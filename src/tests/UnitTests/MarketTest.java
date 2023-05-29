@@ -1,17 +1,17 @@
 package UnitTests;
 
-import BusinessLayer.Market;
-import BusinessLayer.Product;
-import BusinessLayer.Store;
-import BusinessLayer.StoreManager;
+import BusinessLayer.*;
 import ServiceLayer.DTOs.ProductDTO;
+import ServiceLayer.DTOs.PurchaseDTO;
+import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class MarketTest {
+class MarketTest extends TestCase {
     private Market market;
 
     private String sessionID1;
@@ -38,8 +38,8 @@ class MarketTest {
         market.openStore(sessionID1, "Mamtakim");
 //        product1 = new Product(111, "milk", 6.14, "milk");
 //        product2 = new Product(123, "Carlsberg beer", 10.5, "alcohol");
-        market.getStore(sessionID1,0).addProduct("milk", 50, "milk", 15,"aa");
-        market.getStore(sessionID1,1).addProduct("beer", 50, "alcohol", 100,"bb");
+        market.getStore(sessionID1, 0).addProduct("milk", 50, "milk", 15,"aa");
+        market.getStore(sessionID1, 1).addProduct("beer", 50, "alcohol", 100,"bb");
     }
 
     @org.junit.jupiter.api.Test
@@ -79,16 +79,16 @@ class MarketTest {
 
     @org.junit.jupiter.api.Test
     void getStore() throws Exception {
-        assertEquals("Candy Shop", market.getStore(sessionID1,0).getStoreName());
-        assertEquals("Mamtakim", market.getStore(sessionID1,1).getStoreName());
+        assertEquals("Candy Shop", market.getStore(sessionID1, 0).getStoreName());
+        assertEquals("Mamtakim", market.getStore(sessionID1, 1).getStoreName());
     }
     @org.junit.jupiter.api.Test
     private void getStoreOutOfBound() throws Exception {
-        assertNull(market.getStore(sessionID1,4));
+        assertNull(market.getStore(sessionID1, 4));
     }
     @org.junit.jupiter.api.Test
     private void getNegativeStoreID() throws Exception {
-        assertNull(market.getStore(sessionID1,-1));
+        assertNull(market.getStore(sessionID1, -1));
     }
 
     @org.junit.jupiter.api.Test
@@ -125,7 +125,7 @@ class MarketTest {
     void addStoreManagerPermissions() throws Exception {
         market.addStoreManagerPermissions( sessionID1,"Idan111", 1, 1);
         boolean storeManagerPosition = false;
-        Store store1 = market.getStore(sessionID1,1);
+        Store store1 = market.getStore(sessionID1, 1);
         assertEquals(StoreManager.class , store1.getEmployees().get(0).getStorePosition(store1).getClass());
     }
     @org.junit.jupiter.api.Test
@@ -142,7 +142,7 @@ class MarketTest {
     void setPositionOfMemberToStoreManager() throws Exception {
         market.setPositionOfMemberToStoreManager(sessionID1,0, "Michael987");
         boolean storeManagerPosition = false;
-        Store store0 = market.getStore(sessionID1,0);
+        Store store0 = market.getStore(sessionID1, 0);
         assertEquals(StoreManager.class , store0.getEmployees().get(1).getStorePosition(store0).getClass());
     }
     @Test
@@ -172,5 +172,6 @@ class MarketTest {
         market.removeMember(sessionID1,userName2);
         assertTrue(market.getUsers().get(userName2) == null);
     }
+
 
 }

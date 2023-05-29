@@ -2,7 +2,6 @@ package AccaptanceTests.MemberTest;
 
 import AccaptanceTests.ServiceTests;
 import org.junit.Before;
-import org.junit.Test;
 
 
 public class RemoveMemberTest extends ServiceTests {
@@ -12,11 +11,12 @@ public class RemoveMemberTest extends ServiceTests {
     public void setUp(){
         super.setUp();
         register("shoham", "sh20754");
-        sessionID1 = loginSystemManager("shoham", "sh20754");
+        register("alon1","alal");
+        sessionID1 = loginSystemManager("admin", "admin");
     }
 
     public void testRemoveMemberSuccessful(){
-        assertTrue(removeMember(sessionID1, "shoham"));
+        assertTrue(removeMember(sessionID1, "alon1"));
     }
     public void testRemoveMemberFailureNotSystemManager(){
         register("Efrat", "ef20754");

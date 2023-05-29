@@ -1,0 +1,70 @@
+[ERROR] 2023-05-11 10:54:34 SystemLogger - Username already exists :yohane
+[ERROR] 2023-05-11 10:54:34 SystemLogger - yohariko have Invalid username or password
+[ERROR] 2023-05-11 10:54:34 SystemLogger - hanamaru have Invalid username or password
+[ERROR] 2023-05-11 10:54:34 SystemLogger - 2 product doesnt exist
+[ERROR] 2023-05-11 10:54:34 SystemLogger - 2 product doesnt exist
+[ERROR] 2023-05-11 10:54:34 SystemLogger - this quantity -2 is less then 0
+[ERROR] 2023-05-11 10:54:34 SystemLogger - this store is not exist : -1
+[ERROR] 2023-05-11 10:54:34 SystemLogger - 1 product doesnt exist
+[ERROR] 2023-05-11 10:54:34 SystemLogger - this store newStore is not existing in this cart
+[ERROR] 2023-05-11 10:54:35 SystemLogger - this quantity -5 is less then 0
+[ERROR] 2023-05-11 10:54:35 SystemLogger - Purchase failed, cart is empty
+[ERROR] 2023-05-11 10:54:35 SystemLogger - this store is not exist : 4
+[ERROR] 2023-05-11 10:54:35 SystemLogger - 4 product doesnt exist
+[ERROR] 2023-05-11 10:54:35 SystemLogger - alon12 not has a position in newStore store
+[ERROR] 2023-05-11 10:54:35 SystemLogger - this store -1 is not existing
+[ERROR] 2023-05-11 10:54:35 SystemLogger - Success to remove alon1 from market
+[ERROR] 2023-05-11 10:54:35 SystemLogger - michael123 is not a member
+[ERROR] 2023-05-11 10:54:35 SystemLogger - Success to remove shoham from market
+[ERROR] 2023-05-11 10:54:35 SystemLogger - shoham is not a member
+[ERROR] 2023-05-11 10:54:35 SystemLogger - alon12 not has a position in newStore store
+[ERROR] 2023-05-11 10:54:35 SystemLogger - this store is not exist : 34432
+[ERROR] 2023-05-11 10:54:35 SystemLogger - test already exist
+[ERROR] 2023-05-11 10:54:35 SystemLogger - alon12 not has a position in newStore store
+[ERROR] 2023-05-11 10:54:35 SystemLogger - 1 product doesnt exist
+[ERROR] 2023-05-11 10:54:35 SystemLogger - alon12 not has a position in newStore3 store
+[ERROR] 2023-05-11 10:54:35 SystemLogger - alon12 not has a position in newStore store
+[ERROR] 2023-05-11 10:54:35 SystemLogger - 1 product doesnt exist
+[ERROR] 2023-05-11 10:54:35 SystemLogger - 1 product doesnt exist
+[ERROR] 2023-05-11 10:54:35 SystemLogger - 1 product doesnt exist
+[ERROR] 2023-05-11 10:54:35 SystemLogger - this store is not exist : 3
+[ERROR] 2023-05-11 10:54:35 SystemLogger - alon12 not has a position in newStore store
+[ERROR] 2023-05-11 10:54:35 SystemLogger - this store is not exist : 1
+[ERROR] 2023-05-11 10:54:35 SystemLogger - 2 product doesnt exist
+[ERROR] 2023-05-11 10:54:35 SystemLogger - Min quantity must be larger than 0 but is -1
+[ERROR] 2023-05-11 10:54:35 SystemLogger - 2 product doesnt exist
+[ERROR] 2023-05-11 10:54:35 SystemLogger - this store is not exist : 1
+[ERROR] 2023-05-11 10:54:35 SystemLogger - discount percentage illegal: 0.0
+[ERROR] 2023-05-11 10:54:35 SystemLogger - this store is not exist : 1
+[ERROR] 2023-05-11 10:54:35 SystemLogger - discount percentage illegal: 0.0
+[ERROR] 2023-05-11 10:54:35 SystemLogger - discount percentage illegal: 1.1
+[ERROR] 2023-05-11 10:54:36 SystemLogger - category doesn't exist
+[ERROR] 2023-05-11 10:54:36 SystemLogger - this store is not exist : 1
+[ERROR] 2023-05-11 10:54:36 SystemLogger - discount percentage illegal: 0.0
+[ERROR] 2023-05-11 10:54:36 SystemLogger - alon12 not has a position in newStore store
+[ERROR] 2023-05-11 10:54:36 SystemLogger - alon123 is not a member
+[ERROR] 2023-05-11 10:54:36 SystemLogger - the member is already have a different position in this store : newStore2
+[ERROR] 2023-05-11 10:54:36 SystemLogger - alon12 not has a position in newStore store
+[ERROR] 2023-05-11 10:54:36 SystemLogger - shoham not has a position in megaShop store
+[ERROR] 2023-05-11 10:54:36 SystemLogger - store manager hasn't permission to perform this action
+[ERROR] 2023-05-11 10:54:36 SystemLogger - shoham is not the assigner of alon123
+[ERROR] 2023-05-11 10:54:36 SystemLogger - alon12 not has a position in megaSport1 store
+[ERROR] 2023-05-11 10:54:36 SystemLogger - alon12 is not store owner of shofersal store
+[ERROR] 2023-05-11 10:54:36 SystemLogger - shoham is not a store owner
+[ERROR] 2023-05-11 10:54:36 SystemLogger - this store is not exist : -1
+[ERROR] 2023-05-11 10:54:36 SystemLogger - alon1234 is not a member
+[ERROR] 2023-05-11 10:54:36 SystemLogger - the member is already have a different position in this store : newStore
+[ERROR] 2023-05-11 10:54:36 SystemLogger - alon12 not has a position in newStore store
+[ERROR] 2023-05-11 10:54:36 SystemLogger - alon12 have Invalid username or password
+[ERROR] 2023-05-11 11:21:13 SystemLogger - shani have Invalid username or password
+[ERROR] 2023-05-11 11:22:07 SystemLogger - shani have Invalid username or password
+[ERROR] 2023-05-11 11:43:38 SystemLogger - this store is not exist : 1
+[ERROR] 2023-05-11 11:43:46 SystemLogger - this store is not exist : 1
+[ERROR] 2023-05-11 11:50:05 SystemLogger - shahaf not has a position in shahaf_store store
+[ERROR] 2023-05-11 11:54:24 SystemLogger - Username already exists :Michael
+[ERROR] 2023-05-11 11:55:10 SystemLogger - Username already exists :Michael
+[ERROR] 2023-05-11 11:55:23 SystemLogger - Username already exists :Michael
+[ERROR] 2023-05-11 11:55:37 SystemLogger - Username already exists :Michael
+[ERROR] 2023-05-11 11:56:06 SystemLogger - Username already exists :Michael
+[ERROR] 2023-05-11 11:56:13 SystemLogger - Username already exists :Michael
+[ERROR] 2023-05-11 12:00:48 SystemLogger - shoham is not the assigner of alon123

@@ -2,8 +2,8 @@ package AccaptanceTests.bridge;
 
 
 import ServiceLayer.DTOs.PurchaseDTO;
+import ServiceLayer.DTOs.ShoppingCartDTO;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 
 public interface Bridge {
@@ -42,7 +42,7 @@ public interface Bridge {
 
     PurchaseDTO buyCart(String sessionId);
 
-    String showCart(String sessionId);
+    ShoppingCartDTO showCart(String sessionId);
 
     boolean logout(String sessionId);
 
@@ -104,7 +104,7 @@ public interface Bridge {
 
     boolean addMinQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone);
 
-    boolean addMaxQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone);
+    boolean addMaxQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity);
 
     boolean addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType);
 
@@ -114,7 +114,7 @@ public interface Bridge {
 
     boolean addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone);
 
-    boolean addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity, boolean allowNone);
+    boolean addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity);
 
     boolean addMinBagTotalDiscountPolicy(String sessionId, int storeId, int discountId, double minTotal);
 

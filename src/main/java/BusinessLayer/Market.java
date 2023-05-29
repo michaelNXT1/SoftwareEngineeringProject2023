@@ -1,38 +1,40 @@
 package BusinessLayer;
 
+import BusinessLayer.Discounts.Discount;
+import BusinessLayer.ExternalSystems.IPaymentSystem;
+import BusinessLayer.ExternalSystems.ISupplySystem;
+import BusinessLayer.ExternalSystems.PaymentSystem;
+import BusinessLayer.ExternalSystems.SupplySystem;
 import BusinessLayer.Logger.SystemLogger;
+import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
+import BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy;
 import Security.ProxyScurity;
 import Security.SecurityAdapter;
+import ServiceLayer.DTOs.Discounts.DiscountDTO;
 import ServiceLayer.DTOs.*;
+import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
+import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 
-
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 
 public class Market {
-    private Map<Integer, Store> stores;
+    public static final Object purchaseLock = new Object();
+    final Object userLock = new Object();
+    private final Map<Integer, Store> stores;
+    PaymentSystemProxy paymentSystem;
+    SupplySystemProxy supplySystem;
+    SessionManager sessionManager = new SessionManager();
     private Map<String, SystemManager> systemManagers;
     private Map<String, Member> users;
     private MessageDigest passwordEncoder;
-
     private SecurityAdapter securityUtils = new ProxyScurity(null);
-    Object userLock = new Object();
-
-
     private SystemLogger logger;
     private boolean marketOpen;
-
-    public static Object purchaseLock = new Object();
-    FundDemander fd;
-    SessionManager sessionManager = new SessionManager();
 
 
     public Market() {
@@ -46,10 +48,17 @@ public class Market {
         }
         marketOpen = true;
         this.logger = new SystemLogger();
-        fd = new FundDemander();
+        supplySystem = new SupplySystemProxy();
+        supplySystem.setSupplySystem(new SupplySystem());
+        paymentSystem = new PaymentSystemProxy();
+        paymentSystem.setPaymentSystem(new PaymentSystem());
         SystemManager sm = new SystemManager("admin", new String(passwordEncoder.digest("admin".getBytes())));
         marketOpen = true;
         systemManagers.put(sm.getUsername(), sm);
+    }
+
+    private static boolean stringIsEmpty(String value) {
+        return value == null || value.equals("");
     }
 
     public Map<String, Member> getUsers() {
@@ -81,7 +90,7 @@ public class Market {
         systemManagers.put(username, sm);
         logger.info(String.format("new manager added to the system: %s", username));
         if (!marketOpen) {
-            logger.info(String.format("The Market now open"));
+            logger.info("The Market now open");
             marketOpen = true;
         }
 
@@ -94,14 +103,17 @@ public class Market {
     //use case 1.1
     public String enterMarket() throws Exception {
         Guest guest = new Guest();
+        logger.info("new guest try to entered the system");
         String sessionId = sessionManager.createSession(guest);
         logger.info(String.format("new guest entered the system with sessionID: %s", sessionId));
         return sessionId;
     }
 
     public void exitMarket(String sessionId) throws Exception {
+        logger.info(String.format("sessionId %s try to exit the system", sessionId));
         checkMarketOpen();
         sessionManager.deleteSession(sessionId);
+        logger.info(String.format("%s exit the system", sessionId));
     }
 
     //Use case 2.2
@@ -116,71 +128,60 @@ public class Market {
         }
         // hash password using password encoder
         String hashedPassword = new String(passwordEncoder.digest(password.getBytes()));
-
+        logger.info(String.format("get the hash password of %s", username));
         // create new Member's object with hashed password
         Member newMember = new Member(username, hashedPassword);
         synchronized (userLock) {
             // store new Member's object in users map
-            logger.info(String.format("%s signed up to the system", username));
             users.put(username, newMember);
+            logger.info(String.format("%s signed up to the system", username));
         }
     }
 
     //use case 2.3
     //use case 2.3
     public String login(String username, String password) throws Exception {
+        logger.info(String.format("%s try to logg in to the system", username));
         SystemManager sm = systemManagers.get(username);
-        if (sm != null) {
-            String hashedPassword = new String(passwordEncoder.digest(password.getBytes()));
-            // If the Member doesn't exist or the password is incorrect, return false
-            if (!hashedPassword.equals(sm.getPassword())) {
-                logger.error(String.format("%s has Invalid username or password", username));
-                throw new Error("Invalid username or password");
+        synchronized (username.intern()) {
+            if (sm != null) {
+                String hashedPassword = new String(passwordEncoder.digest(password.getBytes()));
+                // If the Member doesn't exist or the password is incorrect, return false
+                if (!hashedPassword.equals(sm.getPassword())) {
+                    logger.error(String.format("%s has Invalid username or password", username));
+                    throw new Error("Invalid username or password");
+                }
+                // If the credentials are correct, authenticate the user and return true
+                boolean res = securityUtils.authenticate(username, password);
+                if (res) {
+                    logger.info(String.format("%s the user passed authenticate check and logged in to the systemManager", username));
+                    return sessionManager.createSessionForSystemManager(sm);
+                }
+                return null;
             }
+            isMarketOpen();
+            // Retrieve the stored Member's object for the given username
+            Member member;
+            synchronized (username.intern()) {
+                member = users.get(username);
+            }
+
+            String hashedPassword = new String(passwordEncoder.digest(password.getBytes()));
+            // If the Member doesn't exist or the password is incorrect, throw exception
+            if (member == null || !hashedPassword.equals(member.getPassword())) {
+                logger.error(String.format("%s have Invalid username or password", username));
+                throw new Exception("Invalid username or password");
+            }
+
             // If the credentials are correct, authenticate the user and return true
             boolean res = securityUtils.authenticate(username, password);
             if (res) {
-                logger.info(String.format("%s the user passed authenticate check and logged in to the systemManager", username));
-                String sessionId = sessionManager.createSessionForSystemManager(sm);
-                return sessionId;
+                logger.info(String.format("%s passed authenticate check and logged in to the system", username));
+                return sessionManager.createSession(member);
             }
-            return null;
+            logger.error(String.format("%s did not passed authenticate check and logged in to the system", username));
         }
-        isMarketOpen();
-        // Retrieve the stored Member's object for the given username
-        Member member = null;
-        synchronized (username.intern()) {
-            member = users.get(username);
-        }
-
-        String hashedPassword = new String(passwordEncoder.digest(password.getBytes()));
-        // If the Member doesn't exist or the password is incorrect, throw exception
-        if (member == null || !hashedPassword.equals(member.getPassword())) {
-            logger.error(String.format("%s have Invalid username or password", username));
-            throw new Exception("Invalid username or password");
-        }
-
-        // If the credentials are correct, authenticate the user and return true
-        boolean res = securityUtils.authenticate(username, password);
-        if (res) {
-            logger.info(String.format("%s passed authenticate check and logged in to the system", username));
-            String sessionId = sessionManager.createSession(member);
-            return sessionId;
-        }
-        logger.error(String.format("%s did not passed authenticate check and logged in to the system", username));
         return null;
-    }
-
-
-    //use case 3.1
-    public void logout(String sessionId) throws Exception {
-        try {
-            sessionManager.deleteSessionForSystemManager(sessionId);
-            logger.info(String.format("logged out of the system"));
-        } catch (Exception e) {
-            isMarketOpen();
-            sessionManager.deleteSession(sessionId);
-        }
     }
 
 //    //use case 2.3
@@ -211,14 +212,27 @@ public class Market {
 //        sessionManager.deleteSessionForSystemManager(sessionId);
 //    }
 
+    //use case 3.1
+    public String logout(String sessionId) throws Exception {
+        logger.info(String.format("%s try to logout from the system", sessionId));
+        try {
+            sessionManager.deleteSessionForSystemManager(sessionId);
+            logger.info("logged out of the system");
+            return enterMarket();
+        } catch (Exception e) {
+            isMarketOpen();
+            sessionManager.deleteSession(sessionId);
+            logger.info(String.format("%s logged out of the system as member", sessionId));
+            return enterMarket();
+        }
+    }
 
     //use case 2.4 - store name
     public List<StoreDTO> getStores(String sessionId, String storeSubString) throws Exception {
         isMarketOpen();
         logger.info(String.format("get all stores including this sub string %s", storeSubString));
         sessionManager.getSession(sessionId);
-        if (stringIsEmpty(storeSubString))
-            return new ArrayList<>();
+        if (stringIsEmpty(storeSubString)) return new ArrayList<>();
         return stores.values().stream().filter(s -> s.getStoreName().contains(storeSubString)).toList().stream().map(StoreDTO::new).toList();
     }
 
@@ -226,7 +240,7 @@ public class Market {
     public StoreDTO getStoreDTO(String sessionId, int storeId) throws Exception {
         isMarketOpen();
         logger.info(String.format("get the store with specific storeID : %d", storeId));
-        Guest g = sessionManager.getSession(sessionId);
+        sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         return new StoreDTO(stores.get(storeId));
     }
@@ -245,9 +259,9 @@ public class Market {
         isMarketOpen();
         Guest g = sessionManager.getSession(sessionId);
         List<Product> list = new ArrayList<>();
-        logger.info(String.format("gettig product by name : %s", productName));
+        logger.info(String.format("getting product by name : %s", productName));
         if (!stringIsEmpty(productName))
-            stores.values().forEach(s -> list.addAll(s.getProducts().keySet().stream().filter(p -> p.getProductName().equals(productName)).collect(Collectors.toList())));
+            stores.values().forEach(s -> list.addAll(s.getProducts().keySet().stream().filter(p -> p.getProductName().equals(productName)).toList()));
         g.setSearchResults(list);
         g.setSearchKeyword(productName);
         return list.stream().map(ProductDTO::new).toList();
@@ -260,7 +274,7 @@ public class Market {
         Guest g = sessionManager.getSession(sessionId);
         List<Product> list = new ArrayList<>();
         if (!stringIsEmpty(productCategory))
-            stores.values().forEach(s -> list.addAll(s.getProducts().keySet().stream().filter(p -> p.getCategory().equals(productCategory)).collect(Collectors.toList())));
+            stores.values().forEach(s -> list.addAll(s.getProducts().keySet().stream().filter(p -> p.getCategory().equals(productCategory)).toList()));
         g.setSearchResults(list);
         g.setSearchKeyword(productCategory);
         return list.stream().map(ProductDTO::new).toList();
@@ -269,11 +283,11 @@ public class Market {
     //use case 2.8
     public List<ProductDTO> getProductsBySubstring(String sessionId, String productSubstring) throws Exception {
         isMarketOpen();
-        logger.info(String.format("gettig products by sub string : %s", productSubstring));
+        logger.info(String.format("getting products by sub string : %s", productSubstring));
         Guest g = sessionManager.getSession(sessionId);
         List<Product> list = new ArrayList<>();
         if (!stringIsEmpty(productSubstring))
-            stores.values().forEach(s -> list.addAll(s.getProducts().keySet().stream().filter(p -> p.getProductName().contains(productSubstring)).collect(Collectors.toList())));
+            stores.values().forEach(s -> list.addAll(s.getProducts().keySet().stream().filter(p -> p.getProductName().contains(productSubstring)).toList()));
         g.setSearchResults(list);
         g.setSearchKeyword(productSubstring);
         return list.stream().map(ProductDTO::new).toList();
@@ -283,6 +297,7 @@ public class Market {
     public List<ProductDTO> getSearchResults(String sessionId) throws Exception {
         isMarketOpen();
         Guest g = sessionManager.getSession(sessionId);
+        logger.info(String.format("%s getting Search results", sessionId));
         return g.getSearchResults().stream().map(ProductDTO::new).toList();
     }
 
@@ -307,7 +322,7 @@ public class Market {
         isMarketOpen();
         Guest g = sessionManager.getSession(sessionId);
         Store s = getStore(sessionId, storeId);
-        logger.info(String.format("adding product %d to the %d store with %d amount", productId, storeId, quantity));
+        logger.info(String.format("adding product %d with the %d store with %d amount", productId, storeId, quantity));
         g.addProductToShoppingCart(s, productId, quantity);
     }
 
@@ -344,15 +359,30 @@ public class Market {
         Guest g = sessionManager.getSession(sessionId);
         Purchase purchase;
         synchronized (purchaseLock) {
+            PaymentDetails payDetails = g.getPaymentDetails();
+            if (payDetails == null) {
+                logger.info("Purchase failed, need to add payment Details first");
+                throw new Exception("Purchase failed, need to add payment Details first");
+            }
+            SupplyDetails supplyDetails = g.getSupplyDetails();
+            if (supplyDetails == null) {
+                logger.info("Purchase failed, need to add supply Details first");
+                throw new Exception("Purchase failed, need to add supply Details first");
+            }
+            if (supplySystem.supply(supplyDetails.getName(), supplyDetails.getAddress(), supplyDetails.getCity(), supplyDetails.getCountry(), supplyDetails.getZip()) == -1) {
+                logger.info("Purchase failed, supply system charge failed");
+                throw new Exception("Purchase failed, supply system hasn't managed to charge");
+            }
+            if (paymentSystem.pay(payDetails.getCreditCardNumber(), payDetails.getMonth(), payDetails.getYear(), payDetails.getHolder(), payDetails.getCvv(), payDetails.getCardId()) == -1) { //purchase.getTotalPrice())) {
+                logger.info("Purchase failed, payment system charge failed");
+                throw new Exception("Purchase failed, payment system hasn't managed to charge");
+            }
             purchase = g.purchaseShoppingCart();
-            if (!fd.charge(g.getPaymentDetails(), purchase.getTotalPrice())) {
-                logger.info("Purchase failed, fund demander charge failed, reverting purchase.");
-                g.revertPurchase(purchase);
-                for (PurchaseProduct pp : purchase.getProductList())
-                    stores.get(pp.getStoreId()).addToProductQuantity(pp.getProductId(), pp.getQuantity());
-                throw new Exception("Purchase failed, fund demander hasn't managed to charge.");
+            for (PurchaseProduct p : purchase.getProductList()) {
+                logger.info(String.format("purchase completed you just bought %d from %s", p.getQuantity(), p.getProductName()));
             }
         }
+
         return new PurchaseDTO(purchase);
     }
 
@@ -360,13 +390,20 @@ public class Market {
     public int openStore(String sessionId, String storeName) throws Exception {
         isMarketOpen();
         Guest g = sessionManager.getSession(sessionId);
-        logger.info(String.format("open new store with this name: %s", storeName));
+        logger.info(String.format("try to open new store with this name: %s", storeName));
         //TODO: lock stores variable
         int storeId;
         synchronized (stores) {
-            storeId = stores.keySet().stream().mapToInt(v -> v).max().orElse(0);
-            stores.put(storeId, g.openStore(storeName, storeId));
+            storeId = stores.keySet().isEmpty() ? 0 : stores.keySet().stream().mapToInt(Integer::intValue).max().getAsInt() + 1;
+            boolean isStoreExist = stores.values().stream().filter(x -> Objects.equals(x.getStoreName(), storeName)).toList().size() > 0;
+            if (!isStoreExist) {
+                stores.put(storeId, g.openStore(storeName, storeId));
+            } else {
+                logger.error(String.format("%s already exist", storeName));
+                throw new Exception("this store already exist");
+            }
         }
+        logger.info(String.format("%s store is now open", storeName));
         return storeId;
         //TODO: release stores variable
     }
@@ -376,7 +413,7 @@ public class Market {
         isMarketOpen();
         sessionManager.getSession(sessionId);
         logger.info(String.format("trying to get all purchase history of store : %d", storeId));
-        if (!storeExists(storeId)) {
+        if (storeExists(storeId)) {
             logger.error(String.format("this store %d is not existing", storeId));
             throw new Exception("Store id doesn't exist");
         }
@@ -387,11 +424,14 @@ public class Market {
     //use case 5.1
     public ProductDTO addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description) throws Exception {
         isMarketOpen();
-        sessionManager.getSession(sessionId);
-        logger.info("trying adding new product");
-        checkStoreExists(storeId);
-        logger.info(String.format("adding product to store %s new product name %s price %.02f category %s quantity %d description %s", getStore(sessionId, storeId).getStoreName(), productName, price, category, quantity, description));
-        Position p = checkPositionLegal(sessionId, storeId);
+        Position p;
+        synchronized (purchaseLock) {
+            sessionManager.getSession(sessionId);
+            logger.info("trying adding new product");
+            checkStoreExists(storeId);
+            logger.info(String.format("adding product to store %s new product name %s price %.02f category %s quantity %d description %s", getStore(sessionId, storeId).getStoreName(), productName, price, category, quantity, description));
+            p = checkPositionLegal(sessionId, storeId);
+        }
         return new ProductDTO(p.addProduct(stores.get(storeId), productName, price, category, quantity, description));
     }
 
@@ -407,15 +447,22 @@ public class Market {
     }
 
     //use case 5.2 - by product price
-    public void editProductPrice(String sessionId, int storeId, int productId, int newPrice) throws Exception {
+    public void editProductPrice(String sessionId, int storeId, int productId, double newPrice) throws Exception {
         isMarketOpen();
         sessionManager.getSession(sessionId);
         logger.info("trying to edit product price");
         checkStoreExists(storeId);
-        logger.info(String.format("edit product price %d to %d in store %s", productId, newPrice, getStore(sessionId, storeId).getStoreName()));
+        logger.info(String.format("edit product price %d to %f in store %s", productId, newPrice, getStore(sessionId, storeId).getStoreName()));
         Position p = checkPositionLegal(sessionId, storeId);
         p.editProductPrice(productId, newPrice);
     }
+
+    //use case 5.2 - by product description (currently not necessary)
+//    public void editProductDescription(int storeId, int productId, String newDescription) throws Exception {
+//        checkStoreExists(storeId);
+//        Position p = checkPositionLegal(storeId);
+//        p.editProductDescription(productId, newDescription);
+//    }
 
     //use case 5.2 - by product category
     public void editProductCategory(String sessionId, int storeId, int productId, String newCategory) throws Exception {
@@ -427,13 +474,6 @@ public class Market {
         Position p = checkPositionLegal(sessionId, storeId);
         p.editProductCategory(productId, newCategory);
     }
-
-    //use case 5.2 - by product description (currently not necessary)
-//    public void editProductDescription(int storeId, int productId, String newDescription) throws Exception {
-//        checkStoreExists(storeId);
-//        Position p = checkPositionLegal(storeId);
-//        p.editProductDescription(productId, newDescription);
-//    }
 
     public String getSessionID(String name) throws Exception {
         isMarketOpen();
@@ -483,20 +523,38 @@ public class Market {
         p.setPositionOfMemberToStoreManager(stores.get(storeID), m, (Member) g);
     }
 
+    public void setStoreManagerPermissions(String sessionId, int storeId, String storeManager, Set<PositionDTO.permissionType> permissions) throws Exception {
+        isMarketOpen();
+        Guest m = sessionManager.getSession(sessionId);
+        logger.info("trying to modify manger permissions");
+        Position p = checkPositionLegal(sessionId, storeId);
+        Position storeManagerPosition = users.get(storeManager).getStorePosition(stores.get(storeId));
+        if (storeManagerPosition == null) {
+            logger.error(String.format("%s has not have that position in this store", storeManager));
+            throw new Exception("the name of the store manager has not have that position in this store");
+        } else if (!storeManagerPosition.getAssigner().equals(m)) {
+            throw new Exception("only the systemManager's assigner can edit his permissions");
+        } else {
+            logger.info(String.format("%s have new permissions to %s", storeManager, getStore(sessionId, storeId)));
+            p.setStoreManagerPermissions(storeManagerPosition, permissions);
+        }
+    }
+
     //use case 5.10
     public void addStoreManagerPermissions(String sessionId, String storeManager, int storeID, int newPermission) throws Exception {
         isMarketOpen();
         logger.info("trying to add manger permissions");
-        Member m = (Member) sessionManager.getSession(sessionId);
         StoreManager.permissionType perm = StoreManager.permissionType.values()[newPermission];
         Position p = checkPositionLegal(sessionId, storeID);
         Position storeManagerPosition = users.get(storeManager).getStorePosition(stores.get(storeID));
         if (storeManagerPosition == null) {
             logger.error(String.format("%s has not have that position in this store", storeManager));
             throw new Exception("the name of the store manager has not have that position in this store");
-        } else if (storeManagerPosition.getAssigner().equals(m)) {
-            throw new Exception("only the systemManager's assigner can edit his permissions");
-        } else {
+        }
+//        else if (storeManagerPosition.getAssigner().equals(m)) {
+//            throw new Exception("only the systemManager's assigner can edit his permissions");
+//        }
+        else {
             logger.info(String.format("%s have new permissions %d to %s", storeManager, newPermission, getStore(sessionId, storeID)));
             p.addStoreManagerPermissions(storeManagerPosition, perm);
         }
@@ -521,50 +579,53 @@ public class Market {
         }
     }
 
-
     //use case 5.11
     public List<MemberDTO> getStoreEmployees(String sessionId, int storeId) throws Exception {
         isMarketOpen();
+        logger.info(String.format("try to get the employees of %d store", storeId));
         sessionManager.getSession(sessionId);
         Position p = checkPositionLegal(sessionId, storeId);
         List<Member> employees = p.getStoreEmployees();
         if (employees == null) {
             // handle the case where the list of employees is null, e.g. throw an exception
-            logger.error("The list of employees is null");
+            logger.error(String.format("There is not employees in %s store", p.getStore()));
             throw new Exception("The list of employees is null.");
         }
         List<MemberDTO> ret = new ArrayList<>();
-        for (Member e : employees
-        ) {
+        for (Member e : employees) {
             ret.add(new MemberDTO(e));
         }
+        logger.info(String.format("get the employees of %s store", p.getStore()));
         return ret;
     }
 
-
     //use case 6.1
     public void closeStore(String sessionId, int storeId) throws Exception {
+        logger.info(String.format("%s try to close %d store", sessionId, storeId));
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
         p.closeStore();
+        logger.info(String.format("%s close %d store", sessionId, storeId));
     }
 
     //use case 7.1
     public Map<StoreDTO, List<PurchaseDTO>> getStoresPurchases(String sessionId) throws Exception {
+        logger.info(String.format("%s try to get his purchases", sessionId));
         checkMarketOpen();
         sessionManager.getSessionForSystemManager(sessionId);
         Map<StoreDTO, List<PurchaseDTO>> ret = new HashMap<>();
         for (Store s : stores.values()) {
+            StoreDTO sDTO = new StoreDTO(s);
             ret.put(new StoreDTO(s), new ArrayList<>());
             for (Purchase p : s.getPurchaseList()) {
-                ret.get(s).add(new PurchaseDTO(p));
+                ret.get(sDTO).add(new PurchaseDTO(p));
             }
         }
+        logger.info(String.format("%s get his purchases", sessionId));
         return ret;
     }
-
 
     public void addMinQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone) throws Exception {
         isMarketOpen();
@@ -572,16 +633,18 @@ public class Market {
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
-        p.addMinQuantityPolicy(productId, minQuantity, allowNone);
+        p.addMinQuantityPurchasePolicy(productId, minQuantity, allowNone);
+        logger.info(String.format("minQuantityPolicy is added to %d store by %s", storeId, sessionId));
     }
 
-    public void addMaxQuantityPolicy(String sessionId, int storeId, int productId, int maxQuantity, boolean allowNone) throws Exception {
+    public void addMaxQuantityPolicy(String sessionId, int storeId, int productId, int maxQuantity) throws Exception {
         isMarketOpen();
         logger.info("trying to add maxQuantityPolicy");
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
-        p.addMaxQuantityPolicy(productId, maxQuantity, allowNone);
+        p.addMaxQuantityPurchasePolicy(productId, maxQuantity);
+        logger.info(String.format("maxQuantityPolicy is added to %d store by %s", storeId, sessionId));
     }
 
     public void addProductTimeRestrictionPolicy(String sessionId, int storeId, int productId, LocalTime startTime, LocalTime endTime) throws Exception {
@@ -590,16 +653,18 @@ public class Market {
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
-        p.addProductTimeRestrictionPolicy(productId, startTime, endTime);
+        p.addProductTimeRestrictionPurchasePolicy(productId, startTime, endTime);
+        logger.info(String.format("addProductTimeRestrictionPolicy is added to %d store by %s", storeId, sessionId));
     }
 
     public void addCategoryTimeRestrictionPolicy(String sessionId, int storeId, String category, LocalTime startTime, LocalTime endTime) throws Exception {
         isMarketOpen();
-        logger.info("trying to add CategoryTimeRestrictionPolicy");
+        logger.info("trying to add CategoryTimeRestrictionPurchasePolicyDTO");
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
-        p.addCategoryTimeRestrictionPolicy(category, startTime, endTime);
+        p.addCategoryTimeRestrictionPurchasePolicy(category, startTime, endTime);
+        logger.info(String.format("CategoryTimeRestrictionPurchasePolicyDTO is added to %d store by %s", storeId, sessionId));
     }
 
     public void joinPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator) throws Exception {
@@ -608,7 +673,8 @@ public class Market {
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
-        p.joinPolicies(policyId1, policyId2, operator);
+        p.joinPurchasePolicies(policyId1, policyId2, operator);
+        logger.info(String.format("%d and %d policies joined with %d operator in %s", policyId1, policyId2, storeId, sessionId));
     }
 
     public void removePolicy(String sessionId, int storeId, int policyId) throws Exception {
@@ -617,7 +683,8 @@ public class Market {
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
-        p.removePolicy(policyId);
+        p.removePurchasePolicy(policyId);
+        logger.info(String.format("%s remove %d policy from %s store", sessionId, policyId, storeId));
     }
 
     public void addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType) throws Exception {
@@ -627,6 +694,7 @@ public class Market {
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
         p.addProductDiscount(productId, discountPercentage, compositionType);
+        logger.info(String.format("%s added product discount to %d store", sessionId, storeId));
     }
 
     public void addCategoryDiscount(String sessionId, int storeId, String category, double discountPercentage, int compositionType) throws Exception {
@@ -636,6 +704,7 @@ public class Market {
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
         p.addCategoryDiscount(category, discountPercentage, compositionType);
+        logger.info(String.format("%s added category discount %s to %d store", sessionId, category, storeId));
     }
 
     public void addStoreDiscount(String sessionId, int storeId, double discountPercentage, int compositionType) throws Exception {
@@ -645,6 +714,17 @@ public class Market {
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
         p.addStoreDiscount(discountPercentage, compositionType);
+        logger.info(String.format("%s added store discount of %f percentage to %d store", sessionId, discountPercentage, storeId));
+    }
+
+    public void removeDiscount(String sessionId, int storeId, int discountId) throws Exception {
+        logger.info("Trying to remove discount of id " + discountId);
+        isMarketOpen();
+        sessionManager.getSession(sessionId);
+        checkStoreExists(storeId);
+        Position p = checkPositionLegal(sessionId, storeId);
+        p.removeDiscount(discountId);
+        logger.info("successfully removed discount");
     }
 
     public void addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone) throws Exception {
@@ -654,15 +734,18 @@ public class Market {
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
         p.addMinQuantityDiscountPolicy(discountId, productId, minQuantity, allowNone);
+        logger.info(String.format("%s added min quantity discount policy to %d store", sessionId, storeId));
     }
 
-    public void addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity, boolean allowNone) throws Exception {
+    public void addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity) throws Exception {
         logger.info("trying to addMaxQuantityDiscountPolicy");
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
-        p.addMaxQuantityDiscountPolicy(discountId, productId, maxQuantity, allowNone);
+        p.addMaxQuantityDiscountPolicy(discountId, productId, maxQuantity);
+        logger.info(String.format("%s added max quantity discount policy to %d store", sessionId, storeId));
+
     }
 
     public void addMinBagTotalDiscountPolicy(String sessionId, int storeId, int discountId, double minTotal) throws Exception {
@@ -672,6 +755,7 @@ public class Market {
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
         p.addMinBagTotalDiscountPolicy(discountId, minTotal);
+        logger.info(String.format("%s added min total bag discount policy to %d store", sessionId, storeId));
     }
 
     public void joinDiscountPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator) throws Exception {
@@ -681,6 +765,7 @@ public class Market {
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
         p.joinDiscountPolicies(policyId1, policyId2, operator);
+        logger.info(String.format("%d and %d DiscountPolicies joined with %d operator in %s", policyId1, policyId2, operator, sessionId));
     }
 
     public void removeDiscountPolicy(String sessionId, int storeId, int policyId) throws Exception {
@@ -690,27 +775,37 @@ public class Market {
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
         p.removeDiscountPolicy(policyId);
+        logger.info(String.format("%d DiscountPolicies is removed from %d store by %s", policyId, storeId, sessionId));
     }
 
-    public void addPaymentMethod(String sessionId, String cardNumber, String month, String year, String cvv) throws Exception {
-        logger.info("trying to addPaymentMethod");
+    public void addPaymentMethod(String sessionId, String cardNumber, String month, String year, String cvv, String holder, String cardId) throws Exception {
+        logger.info("trying to Payment details");
         isMarketOpen();
         Guest g = sessionManager.getSession(sessionId);
-        g.addPaymentMethod(cardNumber, month, year, cvv);
+        g.addPaymentMethod(cardNumber, month, year, cvv, holder, cardId);
+        logger.info(String.format("Payment details of %s are added", sessionId));
+    }
+
+    public void addSupplyDetails(String sessionId, String name, String address, String city, String country, String zip) throws Exception {
+        logger.info("trying to add Supply details");
+        isMarketOpen();
+        Guest g = sessionManager.getSession(sessionId);
+        g.addSupplyDetails(name, address, city, country, zip);
+        logger.info(String.format("Supply details of %s are added", sessionId));
     }
 
     //PRIVATE METHODS
     public Store getStore(String sessionId, int storeId) throws Exception {
         isMarketOpen();
-        logger.info(String.format("get the store with specific storeID : %d", storeId));
-        Guest g = sessionManager.getSession(sessionId);
+        sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
+        logger.info(String.format("get the store with specific storeID : %d", storeId));
         return stores.get(storeId);
     }
 
     private void isMarketOpen() throws Exception {
         if (!checkMarketOpen()) {
-            logger.error("marker is not open yet");
+            logger.error("market is not open yet");
             throw new Exception("Market is not open yet");
         }
     }
@@ -720,15 +815,11 @@ public class Market {
     }
 
     private boolean storeExists(int storeId) {
-        return storeId >= 0 && stores.containsKey(storeId);
-    }
-
-    private static boolean stringIsEmpty(String value) {
-        return value == null || value.equals("");
+        return storeId < 0 || !stores.containsKey(storeId);
     }
 
     private void checkStoreExists(int storeId) throws Exception {
-        if (!storeExists(storeId)) {
+        if (storeExists(storeId)) {
             logger.error(String.format("this store is not exist : %d", storeId));
             throw new Exception("this store is not exist");
         }
@@ -744,7 +835,7 @@ public class Market {
         return p;
     }
 
-    private boolean checkMarketOpen() throws Exception {
+    private boolean checkMarketOpen() {
         return marketOpen;
     }
 
@@ -758,11 +849,11 @@ public class Market {
             throw new Exception("The member's name is not a name of a member");
         }
         if (mToRemove.hasPositions()) { //partial implantation - remove in full one
-            logger.error(String.format("cannot remove member with positions in the market"));
+            logger.error("cannot remove member with positions in the market");
             throw new Exception("cannot remove member with positions in the market");
         }
         if (systemManagers.get(mToRemove.getUsername()) != null) { //partial implantation - remove in full one
-            logger.error(String.format("cannot remove member with positions in the market"));
+            logger.error("cannot remove member with positions in the market");
             throw new Exception("cannot remove member with positions in the market");
         }
         users.remove(memberName);
@@ -771,16 +862,12 @@ public class Market {
     }
 
     public List<String> getAllCategories() {
-        logger.info("getting all categories");
         Set<String> allCat = new HashSet<>();
         for (Store store : this.stores.values())
             allCat.addAll(store.getCategories());
-        allCat.add("Zebra");
-        allCat.add("Ant");
-        allCat.add("Dog");
-        allCat.add("Cat");
         List<String> retList = new ArrayList<>(allCat);
         Collections.sort(retList);
+        logger.info("getting all categories");
         return retList;
     }
 
@@ -794,15 +881,15 @@ public class Market {
             throw new Exception("storeManagerName is not a member");
         }
         checkStoreExists(storeId);
-        Store s = stores.get(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
         p.removeStoreOwner(storeOwnerToRemove, m);
-
+        logger.info(String.format("%s removed from being storeManager", storeOwnerName));
     }
 
     public Object getSearchKeyword(String sessionId) throws Exception {
         isMarketOpen();
         Guest g = sessionManager.getSession(sessionId);
+        logger.info(String.format("getting search result of %s user", g.getUsername()));
         return g.getSearchKeyword();
     }
 
@@ -811,10 +898,111 @@ public class Market {
         SystemManager sm = sessionManager.getSessionForSystemManager(sessionId);
         logger.info(String.format("%s try to get information about members", sm.getUsername()));
         List<MemberDTO> ret = new ArrayList<>();
-        for (Member u : users.values()
-        ) {
+        for (Member u : users.values()) {
             ret.add(new MemberDTO(u));
         }
+        logger.info(String.format("system manager %s get information about members", sm.getUsername()));
         return ret;
+    }
+
+    public String getUsername(String sessionId) throws Exception {
+        isMarketOpen();
+        Guest g = sessionManager.getSession(sessionId);
+        try {
+            return g.getUsername();
+        } catch (Exception e) {
+            return "guest";
+        }
+
+    }
+
+    public List<StoreDTO> ResponsibleStores(String sessionId) throws Exception {
+        isMarketOpen();
+        Guest g = sessionManager.getSession(sessionId);
+        if (g.isLoggedIn()) {
+            Member m = (Member) g;
+            return m.getResponsibleStores();
+        }
+        return new ArrayList<>();
+    }
+
+    public boolean isLoggedIn(String sessionId) throws Exception {
+        isMarketOpen();
+        try {
+            Guest g = sessionManager.getSession(sessionId);
+            return g.isLoggedIn();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public Map<ProductDTO, Integer> getProductsByStore(int storeId) throws Exception {
+        checkMarketOpen();
+        checkStoreExists(storeId);
+        Map<ProductDTO, Integer> newMap = new HashMap<>();
+        for (Map.Entry<Product, Integer> entry : stores.get(storeId).getProducts().entrySet())
+            newMap.put(new ProductDTO(entry.getKey()), entry.getValue());
+        return newMap;
+    }
+
+    public Map<DiscountDTO, List<BaseDiscountPolicyDTO>> getDiscountPolicyMap(int storeId) throws Exception {
+        checkMarketOpen();
+        checkStoreExists(storeId);
+        Map<Discount, List<BaseDiscountPolicy>> discountMap = stores.get(storeId).getProductDiscountPolicyMap();
+        Map<DiscountDTO, List<BaseDiscountPolicyDTO>> retMap = new HashMap<>();
+        for (Discount d : discountMap.keySet()) {
+            DiscountDTO discountDTO = d.copyConstruct();
+            retMap.put(discountDTO, new ArrayList<>());
+            List<BaseDiscountPolicy> policyList = discountMap.get(d);
+            for (BaseDiscountPolicy bdp : policyList)
+                retMap.get(discountDTO).add(bdp.copyConstruct());
+        }
+        return retMap;
+    }
+
+    public List<BasePurchasePolicyDTO> getPurchasePoliciesByStoreId(int storeId) throws Exception {
+        checkMarketOpen();
+        checkStoreExists(storeId);
+        List<BasePurchasePolicyDTO> ret = new ArrayList<>();
+        for (BasePurchasePolicy bpp : stores.get(storeId).getPurchasePolicies()) {
+            ret.add(bpp.copyConstruct());
+        }
+        return ret;
+    }
+
+    public List<String> getPurchasePolicyTypes() {
+        return BasePurchasePolicy.getPurchasePolicyTypes();
+    }
+
+    public List<String> getDiscountPolicyTypes() {
+        return BaseDiscountPolicy.getDiscountPolicyTypes();
+    }
+
+    public void setPaymentSystem(IPaymentSystem ps) {
+        paymentSystem.setPaymentSystem(ps);
+    }
+
+    public void setSupplySystem(ISupplySystem ps) {
+        supplySystem.setSupplySystem(ps);
+    }
+
+    public boolean hasPermission(String sessionId, int storeId, PositionDTO.permissionType employeeList) throws Exception {
+        checkMarketOpen();
+        Guest m = sessionManager.getSession(sessionId);
+        checkStoreExists(storeId);
+        Position p = checkPositionLegal(sessionId, storeId);
+        return p.hasPermission(employeeList);
+    }
+
+    public Set<PositionDTO.permissionType> getPermissions(String sessionId, int storeId, String username) throws Exception {
+        isMarketOpen();
+        checkStoreExists(storeId);
+        logger.info("trying to get manger permissions");
+        Position storeManagerPosition = users.get(username).getStorePosition(stores.get(storeId));
+        if (storeManagerPosition == null) {
+            logger.error(String.format("%s has not have that position in this store", username));
+            throw new Exception("the name of the store manager has not have that position in this store");
+        }
+        return storeManagerPosition.getPermissions();
     }
 }

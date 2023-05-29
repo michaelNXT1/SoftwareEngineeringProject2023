@@ -1,10 +1,18 @@
 package BusinessLayer.Policies.DiscountPolicies;
 
 import BusinessLayer.Product;
+import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
+import ServiceLayer.DTOs.Policies.DiscountPolicies.DiscountPolicyOperationDTO;
 
 import java.util.Map;
 
 public class DiscountPolicyOperation extends BaseDiscountPolicy {
+
+    public enum JoinOperator {
+        OR,
+        XOR
+    }
+
     private final BaseDiscountPolicy left;
     private final JoinOperator joinOperator;
     private final BaseDiscountPolicy right;
@@ -27,10 +35,25 @@ public class DiscountPolicyOperation extends BaseDiscountPolicy {
         boolean rightValue = right.evaluate(productList);
 
         return switch (joinOperator) {
-            case AND -> leftValue && rightValue;
             case OR -> leftValue || rightValue;
-//            case XOR-> //TODO figure it out.
-            default -> throw new IllegalArgumentException("Invalid operator: " + joinOperator);
+            case XOR -> leftValue || rightValue && !(leftValue && rightValue);
         };
+    }
+
+    @Override
+    public BaseDiscountPolicyDTO copyConstruct() throws Exception {
+        return new DiscountPolicyOperationDTO(this);
+    }
+
+    public BaseDiscountPolicy getLeft() {
+        return left;
+    }
+
+    public JoinOperator getJoinOperator() {
+        return joinOperator;
+    }
+
+    public BaseDiscountPolicy getRight() {
+        return right;
     }
 }

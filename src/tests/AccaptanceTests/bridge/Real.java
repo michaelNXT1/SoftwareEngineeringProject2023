@@ -3,10 +3,10 @@ package AccaptanceTests.bridge;
 import ServiceLayer.DTOs.MemberDTO;
 import ServiceLayer.DTOs.ProductDTO;
 import ServiceLayer.DTOs.PurchaseDTO;
+import ServiceLayer.DTOs.ShoppingCartDTO;
 import ServiceLayer.IMarketManager;
 import ServiceLayer.MarketManager;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -79,8 +79,8 @@ public class Real implements Bridge {
     }
 
 
-    public String showCart(String sessionId) {
-        return manager.getShoppingCart(sessionId).value.toString();
+    public ShoppingCartDTO showCart(String sessionId) {
+        return manager.getShoppingCart(sessionId).value;
     }
 
     public boolean updateAmount(String sessionId, int storeId, int productId, int amount) {
@@ -257,8 +257,8 @@ public class Real implements Bridge {
     }
 
     @Override
-    public boolean addMaxQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone) {
-        return !this.manager.addMaxQuantityPolicy(sessionId, storeId, productId, minQuantity, allowNone).getError_occurred();
+    public boolean addMaxQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity) {
+        return !this.manager.addMaxQuantityPolicy(sessionId, storeId, productId, minQuantity).getError_occurred();
     }
 
     @Override
@@ -282,8 +282,8 @@ public class Real implements Bridge {
     }
 
     @Override
-    public boolean addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity, boolean allowNone) {
-        return !this.manager.addMaxQuantityDiscountPolicy(sessionId, storeId, discountId, productId, maxQuantity, allowNone).getError_occurred();
+    public boolean addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity) {
+        return !this.manager.addMaxQuantityDiscountPolicy(sessionId, storeId, discountId, productId, maxQuantity).getError_occurred();
     }
 
     @Override

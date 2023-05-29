@@ -2,6 +2,8 @@ package BusinessLayer.Policies.DiscountPolicies.PolicyTypes;
 
 import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
 import BusinessLayer.Product;
+import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
+import ServiceLayer.DTOs.Policies.DiscountPolicies.PolicyTypes.MinBagTotalDiscountPolicyDTO;
 
 import java.util.Map;
 
@@ -23,5 +25,14 @@ public class MinBagTotalDiscountPolicy extends BaseDiscountPolicy {
                 .stream()
                 .mapToDouble(entry -> entry.getKey().getPrice() * entry.getValue())
                 .sum() >= minTotal;
+    }
+
+    @Override
+    public BaseDiscountPolicyDTO copyConstruct() throws Exception {
+        return new MinBagTotalDiscountPolicyDTO(this);
+    }
+
+    public double getMinTotal() {
+        return minTotal;
     }
 }

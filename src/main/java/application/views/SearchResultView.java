@@ -1,40 +1,32 @@
 package application.views;
 
-import BusinessLayer.Product;
 import CommunicationLayer.MarketController;
 import ServiceLayer.DTOs.ProductDTO;
 import ServiceLayer.Response;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.IntegerField;
-import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.router.PreserveOnRefresh;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 @Route(value = "SearchResultView", layout = MainLayout.class)
+@PreserveOnRefresh
 public class SearchResultView extends VerticalLayout {
-    private TextField cardNumberField;
-    private Select<String> monthSelect;
-    private Select<String> yearSelect;
-    private TextField cvvField;
-    private TextField storeIdField;
-    private Button submitButton;
-    private MarketController marketController;
-    private Header header;
+    private final MarketController marketController;
+    private final Header header;
 
     @Autowired
     public SearchResultView() {
         this.marketController = MarketController.getInstance();
         this.header = new Header();
-        this.header.setText("Search results for " + marketController.getSearchKeyword(MainLayout.getSessionId()));
+        this.header.setText("Search results for " + marketController.getSearchKeyword(MainLayout.getSessionId()).value);
         add(header);
         Grid<ProductDTO> grid = new Grid<>(ProductDTO.class, false);
         grid.addColumn(ProductDTO::getProductName).setHeader("Product Name");
@@ -45,15 +37,15 @@ public class SearchResultView extends VerticalLayout {
             IntegerField quantity = new IntegerField();
             quantity.setValue(1);
             quantity.setStepButtonsVisible(true);
-            quantity.setMin(0);
+            quantity.setMin(1);
             Button addToCartButton = new Button("Add to Cart", e -> addToCart(product, quantity.getValue()));
             hl.add(quantity, addToCartButton);
             return hl;
         }).setHeader("Add to Cart");
 
-        List<ProductDTO> people = marketController.getSearchResults(MainLayout.getSessionId());
+        List<ProductDTO> people = marketController.getSearchResults(MainLayout.getSessionId()).value;
         grid.setItems(people);
-        grid.setVisible(people.isEmpty());
+        grid.setVisible(!people.isEmpty());
         add(grid);
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
@@ -62,7 +54,7 @@ public class SearchResultView extends VerticalLayout {
     }
 
     private String getStoreName(ProductDTO p){
-        return marketController.getStore(MainLayout.getSessionId(), p.getStoreId()).getStoreName();
+        return marketController.getStore(MainLayout.getSessionId(), p.getStoreId()).value.getStoreName();
     }
 
     private void addToCart(ProductDTO p, int quantity) {
@@ -71,17 +63,5 @@ public class SearchResultView extends VerticalLayout {
             Notification.show(r.error_message);
         else
             Notification.show("Product added to cart successfully");
-    }
-
-    private void getProducts() {
-        List<ProductDTO> products = marketController.getSearchResults(MainLayout.getSessionId());
-    }
-
-    private void addPaymentMethod() {
-        String cardNumber = cardNumberField.getValue();
-        String month = monthSelect.getValue();
-        String year = yearSelect.getValue();
-        String cvv = cvvField.getValue();
-        Notification.show(Boolean.toString(marketController.addPaymentMethod(MainLayout.getSessionId(), cardNumber, month, year, cvv)));
     }
 }

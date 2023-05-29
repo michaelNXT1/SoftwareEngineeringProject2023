@@ -5,6 +5,7 @@ import AccaptanceTests.bridge.Bridge;
 
 import AccaptanceTests.bridge.*;
 import ServiceLayer.DTOs.PurchaseDTO;
+import ServiceLayer.DTOs.ShoppingCartDTO;
 import junit.framework.TestCase;
 import org.junit.After;
 
@@ -153,7 +154,7 @@ public abstract class ServiceTests extends TestCase {
 //        return this.bridge.searchProducts(sessionId, productName, category, keywords, productRating, storeRating, priceFrom, priceTo); }
 
 
-    public String viewCart(String sessionId) {
+    public ShoppingCartDTO viewCart(String sessionId) {
         return this.bridge.showCart(sessionId);
     }
 
@@ -205,8 +206,8 @@ public abstract class ServiceTests extends TestCase {
         return this.bridge.addMinQuantityPolicy(sessionId, storeId, productId, minQuantity, allowNone);
     }
 
-    public boolean addMaxQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone) {
-        return this.bridge.addMaxQuantityPolicy(sessionId, storeId, productId, minQuantity, allowNone);
+    public boolean addMaxQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity) {
+        return this.bridge.addMaxQuantityPolicy(sessionId, storeId, productId, minQuantity);
     }
 //    public int startSession() { return this.bridge.startSession(); }
     public boolean removeMember(String sessionId, String memberName){
@@ -238,8 +239,8 @@ public abstract class ServiceTests extends TestCase {
     }
 
 
-    public boolean addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity, boolean allowNone) {
-        return this.bridge.addMaxQuantityDiscountPolicy(sessionId, storeId, discountId, productId, maxQuantity, allowNone);
+    public boolean addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity) {
+        return this.bridge.addMaxQuantityDiscountPolicy(sessionId, storeId, discountId, productId, maxQuantity);
     }
 
 
