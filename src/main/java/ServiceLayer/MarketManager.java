@@ -1,6 +1,7 @@
 package ServiceLayer;
 
 import BusinessLayer.Market;
+import CommunicationLayer.NotificationBroker;
 import ServiceLayer.DTOs.*;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
@@ -56,9 +57,9 @@ public class MarketManager implements IMarketManager {
     }
 
     //use case 2.3
-    public ResponseT<String> login(String username, String password) {
+    public ResponseT<String> login(String username, String password, NotificationBroker notificationBroker) {
         try {
-            String ret = market.login(username, password);
+            String ret = market.login(username, password,notificationBroker);
             return ResponseT.fromValue(ret);
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());

@@ -22,6 +22,7 @@ public class MarketController implements IMarketController {
 
     private final MarketManager marketManager;
     private static MarketController instance = null;
+    private final NotificationController notificationBroker;
 
     public static MarketController getInstance() {
         if (instance == null) {
@@ -31,7 +32,8 @@ public class MarketController implements IMarketController {
     }
 
     private MarketController() {
-        marketManager = new MarketManager();
+        this.marketManager = new MarketManager();
+        this.notificationBroker = new NotificationController();
     }
 
     @GetMapping("/login")
@@ -39,7 +41,7 @@ public class MarketController implements IMarketController {
     public ResponseT<String> login(
             @RequestParam(value = "username", defaultValue = "") String username,
             @RequestParam(value = "password", defaultValue = "") String password) {
-        return marketManager.login(username, password);
+        return marketManager.login(username, password,notificationBroker);
     }
 
     @GetMapping("/logout")

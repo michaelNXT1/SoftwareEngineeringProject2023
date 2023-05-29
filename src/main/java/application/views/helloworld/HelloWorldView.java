@@ -2,6 +2,7 @@ package application.views.helloworld;
 
 import CommunicationLayer.IMarketController;
 import CommunicationLayer.MarketController;
+import CommunicationLayer.NotificationController;
 import application.views.MainLayout;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.Text;

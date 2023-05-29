@@ -1,6 +1,7 @@
 package application.views;
 
 import CommunicationLayer.MarketController;
+import CommunicationLayer.NotificationController;
 import ServiceLayer.DTOs.StoreDTO;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
