@@ -32,8 +32,8 @@ class MarketTest extends TestCase {
         market = new Market();
         market.signUp(userName1, password1);
         market.signUp(userName2, password2);
-        sessionID1 = market.login(userName1,password1,null);
-        sessionID2 = market.login(userName2,password2,null);
+        sessionID1 = market.login(userName1,password1);
+        sessionID2 = market.login(userName2,password2);
         market.openStore(sessionID1, "Candy Shop");
         market.openStore(sessionID1, "Mamtakim");
 //        product1 = new Product(111, "milk", 6.14, "milk");
@@ -64,7 +64,7 @@ class MarketTest extends TestCase {
 
     @org.junit.jupiter.api.Test
     void login() throws Exception {
-        assertNotNull(market.login(userName1, password1,null),"session string");
+        assertNotNull(market.login(userName1, password1),"session string");
     }
 
     @org.junit.jupiter.api.Test

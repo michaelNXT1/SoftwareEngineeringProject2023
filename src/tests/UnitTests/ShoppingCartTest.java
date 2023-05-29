@@ -34,7 +34,7 @@ class ShoppingCartTest extends TestCase {
         market.signUp(userName1, password1);
         market.signUpSystemManager(userName1, password1);
         market.signUp("idan123",  "wswsad32");
-        sessionId1 =market.login("idan123",  "wswsad32",null);
+        sessionId1 =market.login("idan123",  "wswsad32");
         storeId1 = market.openStore(sessionId1, "storeName");
         //shoppingCart.addProduct(product2, 2, store1);
     }
