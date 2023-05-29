@@ -13,6 +13,8 @@ import static org.atmosphere.annotation.AnnotationUtil.logger;
 @Entity
 @Table(name = "shopping_bag")
 public class ShoppingBag {
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -40,6 +42,10 @@ public class ShoppingBag {
 
     public ShoppingBag() {
 
+    }
+
+    public Long getId() {
+        return id;
     }
 
     //Use case 2.10 & Use case 2.12

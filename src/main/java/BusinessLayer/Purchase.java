@@ -18,6 +18,10 @@ public class Purchase {
         this.productList = productList;
     }
 
+    public Purchase() {
+
+    }
+
     public void addProduct(PurchaseProduct p) {
         productList.add(p);
     }

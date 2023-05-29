@@ -24,7 +24,7 @@ public class Store {
     @ElementCollection
     private final Set<String> categories;
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
-    private final Map<Product, Integer> products;
+
     @OneToMany
     private final List<Purchase> purchaseList;
     @ManyToMany(mappedBy = "stores")
