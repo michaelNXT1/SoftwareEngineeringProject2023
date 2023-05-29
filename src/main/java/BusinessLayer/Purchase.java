@@ -25,4 +25,8 @@ public class Purchase {
     public double getTotalPrice() {
         return productList.stream().mapToDouble(PurchaseProduct::getPrice).sum();
     }
+
+    public List<PurchaseProduct> getProductList() {
+        return this.productList;
+    }
 }
