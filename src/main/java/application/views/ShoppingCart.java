@@ -2,6 +2,7 @@ package application.views;
 
 import BusinessLayer.Product;
 import CommunicationLayer.MarketController;
+import CommunicationLayer.NotificationController;
 import ServiceLayer.DTOs.ProductDTO;
 import ServiceLayer.DTOs.ShoppingCartDTO;
 import ServiceLayer.Response;
