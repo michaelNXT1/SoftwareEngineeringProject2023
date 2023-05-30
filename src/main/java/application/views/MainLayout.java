@@ -2,13 +2,10 @@ package application.views;
 
 
 import CommunicationLayer.MarketController;
-import ServiceLayer.Response;
 import ServiceLayer.ResponseT;
 import application.components.AppNav;
 import application.components.AppNavItem;
 import application.views.about.AboutView;
-import application.views.addStoreManger.AddStoreManager;
-import application.views.addStoreOwner.AddStoreOwner;
 import application.views.category.CategoryView;
 import application.views.helloworld.HelloWorldView;
 import application.views.login.LoginView;
@@ -57,13 +54,18 @@ public class MainLayout extends AppLayout {
     private Button logoutButton;
 
     public MainLayout() {
-        sessionId = marketController.enterMarket();
+        sessionId = marketController.enterMarket().value;
         config();
         addToNavbar(createHeaderContent());
         addDrawerContent();
     }
 
     private void config() {
+        marketController.signUp("Shoham", "1234");
+        marketController.signUp("Alon", "1234");
+        marketController.signUp("Shani", "1234");
+        marketController.signUp("Idan", "1234");
+
         marketController.signUp("Michael", "1234");
         sessionId = marketController.login("Michael", "1234").value;
         marketController.openStore(sessionId, "Shufersal");
@@ -90,7 +92,20 @@ public class MainLayout extends AppLayout {
 
         marketController.addMaxQuantityPolicy(sessionId, 0, productMap.get("Apple"), 5);
         marketController.addCategoryTimeRestrictionPolicy(sessionId, 0, "Snacks", LocalTime.of(7, 0, 0), LocalTime.of(23, 0, 0));
-//        marketController.logout(sessionId);
+
+        marketController.setPositionOfMemberToStoreOwner(sessionId, 0, "Alon");
+        marketController.setPositionOfMemberToStoreManager(sessionId, 0, "Shoham");
+        marketController.addStoreManagerPermissions(sessionId, "Shoham", 0, 4);
+
+        marketController.logout(sessionId);
+
+        sessionId = marketController.login("Alon", "1234").value;
+        marketController.setPositionOfMemberToStoreOwner(sessionId, 0, "Shani");
+        marketController.logout(sessionId);
+
+        sessionId = marketController.login("Michael", "1234").value;
+//
+//        sessionId = marketController.login("Shoham", "1234").value;
     }
 
 
@@ -163,8 +178,8 @@ public class MainLayout extends AppLayout {
 
     private void logout() {
 
-        Response r = marketController.logout(sessionId);
-        sessionId = ((ResponseT<String>) r).value;
+        ResponseT<String> r = marketController.logout(sessionId);
+        sessionId = r.value;
         if (r.getError_occurred())
             Notification.show(r.error_message, 3000, Notification.Position.MIDDLE);
         else {
@@ -190,12 +205,8 @@ public class MainLayout extends AppLayout {
     private Select<String> initActionSelect() {
         Select<String> select = new Select<>();
         Map<String, Runnable> actionsMap = new HashMap<>();
-        actionsMap.put("Add Store Manager", () -> UI.getCurrent().navigate(AddStoreManager.class));
-        actionsMap.put("Add Store Owner", () -> UI.getCurrent().navigate(AddStoreOwner.class));
         actionsMap.put("Add Payment Method", () -> UI.getCurrent().navigate(AddPaymentMethod.class));
         actionsMap.put("Open a New Store", () -> UI.getCurrent().navigate(OpenStore.class));
-        actionsMap.put("Add Store Manager Permission", () -> UI.getCurrent().navigate(addStoreManagerPermissions.class));
-        actionsMap.put("Remove Store Manager Permission", () -> UI.getCurrent().navigate(removeStoreManagerPermissions.class));
         actionsMap.put("Close Store", () -> UI.getCurrent().navigate(CloseStore.class));
         actionsMap.put("My Stores", () -> UI.getCurrent().navigate(ManagerStoresView.class));
 
@@ -226,7 +237,7 @@ public class MainLayout extends AppLayout {
     private AppNav createCategoryNev() {
         AppNav nav = new AppNav();
 
-        List<String> catego = this.marketController.getAllCategories();
+        List<String> catego = this.marketController.getAllCategories().value;
         for (String cat : catego) {
             nav.addItem(new AppNavItem(cat, CategoryView.class, LineAwesomeIcon.EMPIRE.create()));
         }

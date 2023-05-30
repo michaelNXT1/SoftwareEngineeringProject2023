@@ -1,91 +1,38 @@
 package BusinessLayer;
-import java.time.LocalTime;
+
 import BusinessLayer.Logger.SystemLogger;
-import javax.persistence.*;
-import javax.persistence.Transient;
+import ServiceLayer.DTOs.PositionDTO;
+
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-@Entity
-@Table(name = "store_managers")
-public class StoreManager implements Position {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Transient //Marks a property or field as transient, indicating that it should not be persisted in the database.
-    private final SystemLogger logger = new SystemLogger();
-    public enum permissionType {
-        setPermissions,
-        setNewPosition,
-        Inventory,
-        Purchases,
-        EmployeeList
-    }
-    @OneToOne
-    @JoinColumn(name = "store_id")
-    private final Store store;
-    @ManyToOne
-    @JoinColumn(name = "store_owners")
-    private final Member assigner;
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "store_manager_permissions", joinColumns = @JoinColumn(name = "store_manager_id"))
-    @Enumerated(EnumType.STRING)
-    private final Set<permissionType> permissions;
 
+public class StoreManager implements Position {
+
+    public enum permissionType {
+        setNewPosition, //setPositionOfMemberToStoreManager, setPositionOfMemberToStoreOwner - all actions of setting new position
+        setPermissions, //addStoreManagerPermissions, removeStoreManagerPermissions - all actions refer to set another store manager permission
+        Inventory, //removeProduct, addProduct, editProduct (Name, price, category, description)
+        Purchases, // getPurchaseHistory
+        EmployeeList // getStoreEmployees
+    }
+
+    private final SystemLogger logger = new SystemLogger();
+    private final Store store;
+    private final Member assigner;
+    private Set<permissionType> permissions;
     private final Object permissionLock = new Object();
 
     public StoreManager(Store store, Member assigner) {
-        this.id = 0L; // Initializing with a default value
         this.store = store;
         this.assigner = assigner;
         permissions = new HashSet<>();
     }
 
-    public StoreManager() {
-        this.id = 0L; // Initializing with a default value
-        this.store = null;
-        this.assigner = null;
-        permissions = new HashSet<>();
-    }
-
-    @Override
-    public Store getStore() {
-        return store;
-    }
-
     @Override
     public Member getAssigner() {
         return assigner;
-    }
-
-    public Set<permissionType> getPermissions() {
-        return permissions;
-    }
-
-    @Override
-    public void addStoreManagerPermissions(Position storeManagerPosition, permissionType newPermission) throws IllegalAccessException {
-        //TODO: Check if he has appropriate access permission
-        synchronized (permissionLock) {
-            if (permissions.contains(permissionType.setPermissions))
-                storeManagerPosition.addPermission(newPermission);
-            else {
-                logger.error("this store manager hasn't permission to set storeManager's permissions");
-                throw new IllegalAccessException("This member hasn't permission to set storeManager's permissions");
-            }
-        }
-    }
-
-    @Override
-    public void removeStoreManagerPermissions(Position storeManagerPosition, StoreManager.permissionType Permission) throws IllegalAccessException {
-        //TODO: Check if he has appropriate access permission
-        synchronized (permissionLock) {
-            if (permissions.contains(permissionType.setPermissions))
-                storeManagerPosition.removePermission(Permission);
-            else {
-                logger.error("this store manager hasn't permission to set storeManager's permissions");
-                throw new IllegalAccessException("This member hasn't permission to set storeManager's permissions");
-            }
-        }
     }
 
     @Override
@@ -115,13 +62,52 @@ public class StoreManager implements Position {
     }
 
     @Override
-    public void removeProductFromStore(int productID) throws Exception {
+    public void setStoreManagerPermissions(Position storeManagerPosition, Set<PositionDTO.permissionType> permissions) throws IllegalAccessException {
+        //TODO: Check if he has appropriate access permission
+        synchronized (permissionLock) {
+            if (this.permissions.contains(permissionType.setPermissions))
+                storeManagerPosition.setPermissions(permissions);
+            else {
+                logger.error("this store manager hasn't permission to set storeManager's permissions");
+                throw new IllegalAccessException("This member hasn't permission to set storeManager's permissions");
+            }
+        }
+    }
+
+    @Override
+    public void addStoreManagerPermissions(Position storeManagerPosition, permissionType newPermission) throws IllegalAccessException {
+        //TODO: Check if he has appropriate access permission
+        synchronized (permissionLock) {
+            if (permissions.contains(permissionType.setPermissions))
+                storeManagerPosition.addPermission(newPermission);
+            else {
+                logger.error("this store manager hasn't permission to set storeManager's permissions");
+                throw new IllegalAccessException("This member hasn't permission to set storeManager's permissions");
+            }
+        }
+    }
+
+    @Override
+    public void removeStoreManagerPermissions(Position storeManagerPosition, StoreManager.permissionType Permission) throws IllegalAccessException {
+        //TODO: Check if he has appropriate access permission
+        synchronized (permissionLock) {
+            if (permissions.contains(permissionType.setPermissions))
+                storeManagerPosition.removePermission(Permission);
+            else {
+                logger.error("this store manager hasn't permission to set storeManager's permissions");
+                throw new IllegalAccessException("This member hasn't permission to set storeManager's permissions");
+            }
+        }
+    }
+
+    @Override
+    public Product addProduct(Store store, String productName, double price, String category, int quantity, String description) throws Exception {
         //TODO: Check if he has appropriate access permission
         if (permissions.contains(permissionType.Inventory))
-            store.removeProduct(productID);
+            return store.addProduct(productName, price, category, quantity, description);
         else {
-            logger.error("this store manager hasn't permission to remove product from the store");
-            throw new Exception("This member hasn't permission to remove product from the store");
+            logger.error("this store manager hasn't permission to add product to the store");
+            throw new IllegalAccessException("This member hasn't permission to add product to the store");
         }
     }
 
@@ -138,8 +124,8 @@ public class StoreManager implements Position {
 
     @Override
     public void editProductPrice(int productId, double newPrice) throws Exception {
-        if(newPrice <= 0){
-            logger.error(String.format("the price %.02f is negative",newPrice));
+        if (newPrice <= 0) {
+            logger.error(String.format("the price %.02f is negative", newPrice));
             throw new Exception("the price of a product has to be negative");
         }
         //TODO: Check if he has appropriate access permission
@@ -173,13 +159,14 @@ public class StoreManager implements Position {
         }
     }
 
-    public Product addProduct(Store store, String productName, double price, String category, int quantity, String description) throws Exception {
+    @Override
+    public void removeProductFromStore(int productID) throws Exception {
         //TODO: Check if he has appropriate access permission
         if (permissions.contains(permissionType.Inventory))
-            return store.addProduct(productName, price, category, quantity, description);
+            store.removeProduct(productID);
         else {
-            logger.error("this store manager hasn't permission to add product to the store");
-            throw new IllegalAccessException("This member hasn't permission to add product to the store");
+            logger.error("this store manager hasn't permission to remove product from the store");
+            throw new Exception("This member hasn't permission to remove product from the store");
         }
     }
 
@@ -192,72 +179,38 @@ public class StoreManager implements Position {
         throw new IllegalAccessException("This member hasn't permission to get the purchase's History");
     }
 
-    public void addPermission(StoreManager.permissionType newPermission) { //permission for store manager only
-        permissions.add(newPermission);
-    }
-
     @Override
-    public void removePermission(permissionType permission) {
-        permissions.remove(permission);
-    }
-
-    @Override
-    public void closeStore() throws IllegalAccessException {
-        logger.error("this store manager hasn't permission to close store");
-        throw new IllegalAccessException("This member hasn't permission to close store");
-    }
-
-    @Override
-    public List<Member> getStoreEmployees() throws IllegalAccessException {
-        if (permissions.contains(permissionType.EmployeeList))
-            return store.getEmployees();
-        logger.error("this store manager hasn't permission to get the purchase's History");
-        throw new IllegalAccessException("This member hasn't permission to get the purchase's History");
-    }
-
-    @Override
-    public void removeStoreOwner(Member systemManagerToRemove, Guest m) throws Exception {
+    public void addMinQuantityPurchasePolicy(int productId, int minQuantity, boolean allowNone) throws Exception {
         logger.error("store manager hasn't permission to perform this action");
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 
     @Override
-    public String getPositionName() {
-        return "Manager";
-    }
-
-    @Override
-    public void addMinQuantityPolicy(int productId, int minQuantity, boolean allowNone) throws Exception {
+    public void addMaxQuantityPurchasePolicy(int productId, int maxQuantity) throws Exception {
         logger.error("store manager hasn't permission to perform this action");
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 
     @Override
-    public void addMaxQuantityPolicy(int productId, int maxQuantity) throws Exception {
+    public void addProductTimeRestrictionPurchasePolicy(int productId, LocalTime startTime, LocalTime endTime) throws Exception {
         logger.error("store manager hasn't permission to perform this action");
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 
     @Override
-    public void addProductTimeRestrictionPolicy(int productId, LocalTime startTime, LocalTime endTime) throws Exception {
+    public void addCategoryTimeRestrictionPurchasePolicy(String category, LocalTime startTime, LocalTime endTime) throws Exception {
         logger.error("store manager hasn't permission to perform this action");
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 
     @Override
-    public void addCategoryTimeRestrictionPolicy(String category, LocalTime startTime, LocalTime endTime) throws Exception {
+    public void joinPurchasePolicies(int policyId1, int policyId2, int operator) throws Exception {
         logger.error("store manager hasn't permission to perform this action");
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 
     @Override
-    public void joinPolicies(int policyId1, int policyId2, int operator) throws Exception {
-        logger.error("store manager hasn't permission to perform this action");
-        throw new IllegalAccessException("This member hasn't permission to perform this action");
-    }
-
-    @Override
-    public void removePolicy(int policyId) throws Exception {
+    public void removePurchasePolicy(int policyId) throws Exception {
         logger.error("store manager hasn't permission to perform this action");
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
@@ -314,5 +267,64 @@ public class StoreManager implements Position {
     public void removeDiscountPolicy(int policyId) throws Exception {
         logger.error("store manager hasn't permission to perform this action");
         throw new IllegalAccessException("This member hasn't permission to perform this action");
+    }
+
+    @Override
+    public void setPermissions(Set<PositionDTO.permissionType> permissions) {
+        this.permissions = new HashSet<>();
+        for (PositionDTO.permissionType permission : permissions)
+            this.permissions.add(permissionType.valueOf(permission.name()));
+    }
+
+    @Override
+    public Set<PositionDTO.permissionType> getPermissions() {
+        Set<PositionDTO.permissionType> ret = new HashSet<>();
+        for (permissionType permission : permissions)
+            ret.add(PositionDTO.permissionType.valueOf(permission.name()));
+        return ret;
+    }
+
+    public void addPermission(StoreManager.permissionType newPermission) { //permission for store manager only
+        permissions.add(newPermission);
+    }
+
+    @Override
+    public void removePermission(permissionType permission) {
+        permissions.remove(permission);
+    }
+
+    @Override
+    public void closeStore() throws IllegalAccessException {
+        logger.error("this store manager hasn't permission to close store");
+        throw new IllegalAccessException("This member hasn't permission to close store");
+    }
+
+    @Override
+    public List<Member> getStoreEmployees() throws IllegalAccessException {
+        if (permissions.contains(permissionType.EmployeeList))
+            return store.getEmployees();
+        logger.error("this store manager hasn't permission to get the purchase's History");
+        throw new IllegalAccessException("This member hasn't permission to get the purchase's History");
+    }
+
+    @Override
+    public void removeStoreOwner(Member systemManagerToRemove, Guest m) throws Exception {
+        logger.error("store manager hasn't permission to perform this action");
+        throw new IllegalAccessException("This member hasn't permission to perform this action");
+    }
+
+    @Override
+    public Store getStore() {
+        return store;
+    }
+
+    @Override
+    public boolean hasPermission(PositionDTO.permissionType employeeList) {
+        return permissions.contains(permissionType.valueOf(employeeList.name()));
+    }
+
+    @Override
+    public String getPositionName() {
+        return "Manager";
     }
 }
