@@ -3,6 +3,8 @@ package BusinessLayer;
 import BusinessLayer.Logger.SystemLogger;
 
 import CommunicationLayer.NotificationBroker;
+import DAOs.PositionDAO;
+import Repositories.IPositionRepository;
 import Security.SecurityUtils;
 import ServiceLayer.DTOs.StoreDTO;
 
@@ -27,7 +29,7 @@ public class Member extends Guest {
     private String hashedPassword;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<Position> positions = new LinkedList<>();//all the positions of this member, note that position act as a state
+    private IPositionRepository positions = new PositionDAO();//all the positions of this member, note that position act as a state
     @Transient
     private SystemLogger logger;
 
@@ -50,14 +52,15 @@ public class Member extends Guest {
     }
     public void setPosition(Position newPosition) {
         boolean found = false;
-        for (int i = 0; i < positions.size() && !found; i++) {
-            if (positions.get(i).getStore().equals(newPosition.getStore())) {
-                positions.set(i, newPosition);
+        for (Position p : positions.getAllPositions()) {
+            if (p.getStore().equals(newPosition.getStore())) {
+                positions.removePosition(p);
+                positions.addPosition(newPosition);
                 found = true;
             }
-        }
-        if (!found) {
-            positions.add(newPosition);
+            if (!found) {
+                positions.addPosition(newPosition);
+            }
         }
     }
 
@@ -81,7 +84,7 @@ public class Member extends Guest {
 
     public Position getStorePosition(Store store) {
         synchronized (positions) {
-            for (Position position : positions) {
+            for (Position position : positions.getAllPositions()) {
                 if (position.getStore().equals(store)) {
                     return position;
                 }
@@ -96,7 +99,7 @@ public class Member extends Guest {
             logger.error(String.format("the member is already have a different position in this store : %s", store.getStoreName()));
             throw new Exception("the member is already have a different position in this store");
         } else {
-            positions.add(new StoreManager(store, assigner));
+            positions.addPosition(new StoreManager(store, assigner));
             store.addEmployee(this);
         }
     }
@@ -124,7 +127,7 @@ public class Member extends Guest {
             throw new Exception("the member is already have a different position in this store");
         } else {
             logger.info(String.format("%s promote to be the owner of %s", getUsername(), store.getStoreName()));
-            positions.add(new StoreOwner(store, assigner));
+            positions.addPosition(new StoreOwner(store, assigner));
             store.addEmployee(this);
         }
     }
@@ -135,22 +138,22 @@ public class Member extends Guest {
         StoreFounder newStoreFounder = new StoreFounder(newStore);
         newStore.setOpen(true);
         try {
-            positions.add(newStoreFounder);
+            positions.addPosition(newStoreFounder);
         } catch (Exception e) {
             // Rollback if either operation fails
-            positions.remove(newStoreFounder);
+            positions.removePosition(newStoreFounder);
             throw e;
         }
         return newStore;
     }
 
     public boolean hasPositions() {
-        return !positions.isEmpty();
+        return !positions.getAllPositions().isEmpty();
     }
 
     public void notBeingStoreOwner(Guest m, Store store) throws Exception {
         Position storeOwnerP = null;
-        for (Position p : positions)
+        for (Position p : positions.getAllPositions())
             if (p instanceof StoreOwner && p.getStore().equals(store))
                 storeOwnerP = p;
         if (storeOwnerP == null) {
@@ -162,12 +165,12 @@ public class Member extends Guest {
             throw new Exception("can remove only store owner assigned by him");
         }
         store.removeEmployee(this);
-        positions.remove(storeOwnerP);
+        positions.removePosition(storeOwnerP);
         logger.info(String.format("remove %s from being store owner", getUsername()));
     }
 
     public List<Position> getPositions() {
-        return positions;
+        return positions.getAllPositions();
     }
 
     @Override
@@ -177,7 +180,7 @@ public class Member extends Guest {
 
     public List<StoreDTO> getResponsibleStores() {
         List<StoreDTO> ret = new ArrayList<>();
-        for (Position p : positions) {
+        for (Position p : positions.getAllPositions()) {
             ret.add(new StoreDTO(p.getStore()));
         }
         return ret;

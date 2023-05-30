@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "store_managers")
+@Table(name = "positions")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "position_type", discriminatorType = DiscriminatorType.STRING)
 public class StoreManager implements Position {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +25,8 @@ public class StoreManager implements Position {
         Purchases, // getPurchaseHistory
         EmployeeList // getStoreEmployees
     }
+    @Column(name = "position_type", insertable = false, updatable = false)
+    private String positionType;
 
     @Transient //Marks a property or field as transient, indicating that it should not be persisted in the database.
     private final SystemLogger logger = new SystemLogger();    private final Store store;
