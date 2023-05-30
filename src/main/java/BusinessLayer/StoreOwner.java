@@ -2,18 +2,28 @@ package BusinessLayer;
 
 import BusinessLayer.Logger.SystemLogger;
 import ServiceLayer.DTOs.PositionDTO;
-
+import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
 
+@Entity
+@Table(name = "store_owners")
 public class StoreOwner implements Position {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @ManyToOne
+    @JoinColumn(name = "store_id")
     private final Store store;
+    @ManyToOne
+    @JoinColumn(name = "store_owners")
     private final Member assigner;
+    @Transient
     private final SystemLogger logger;
 
     public StoreOwner(Store store, Member assigner) {
+        this.id = 0L; // Initializing with a default value
         this.store = store;
         this.assigner = assigner;
         logger = new SystemLogger();
