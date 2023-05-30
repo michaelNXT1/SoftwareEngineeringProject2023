@@ -1,5 +1,6 @@
 package ServiceLayer;
 
+import CommunicationLayer.NotificationBroker;
 import ServiceLayer.DTOs.*;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
@@ -24,8 +25,8 @@ public interface IMarketManager {
     Response
     signUp(String username, String password);
 
-    ResponseT<String>
-    login(String username, String password);
+    public ResponseT<String>
+    login(String username, String password, NotificationBroker notificationBroker);
 
     Response
     logout(String sessionId);

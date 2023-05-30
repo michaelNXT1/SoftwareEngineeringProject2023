@@ -8,6 +8,7 @@ import BusinessLayer.ExternalSystems.SupplySystem;
 import BusinessLayer.Logger.SystemLogger;
 import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
 import BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy;
+import CommunicationLayer.NotificationBroker;
 import Security.ProxyScurity;
 import Security.SecurityAdapter;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
@@ -140,7 +141,7 @@ public class Market {
 
     //use case 2.3
     //use case 2.3
-    public String login(String username, String password) throws Exception {
+    public String login(String username, String password, NotificationBroker notificationBroker) throws Exception {
         logger.info(String.format("%s try to logg in to the system", username));
         SystemManager sm = systemManagers.get(username);
         synchronized (username.intern()) {
