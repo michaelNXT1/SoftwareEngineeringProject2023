@@ -9,7 +9,9 @@ import BusinessLayer.Policies.PurchasePolicies.PurchasePolicyOperation;
 import BusinessLayer.Policies.PurchasePolicies.*;
 import BusinessLayer.Policies.PurchasePolicies.PolicyTypes.*;
 import DAOs.BaseDiscountPolicyDAO;
+import DAOs.PurchaseDAO;
 import Repositories.IBaseDiscountPolicyRepository;
+import Repositories.IPurchaseRepository;
 
 import javax.persistence.*;
 import java.time.LocalTime;
@@ -29,7 +31,7 @@ public class Store {
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
     private final Map<Product, Integer> products;
     @OneToMany
-    private final List<Purchase> purchaseList;
+    private final IPurchaseRepository purchaseList;
     @ManyToMany(mappedBy = "stores")
     private final List<Member> employees;
     @ElementCollection
@@ -57,7 +59,7 @@ public class Store {
         this.storeOwners.add(storeFounder.getUsername());
         this.categories = new HashSet<>();
         this.products = new ConcurrentHashMap<>();
-        this.purchaseList = new ArrayList<>();
+        this.purchaseList = new PurchaseDAO();
         this.employees = new ArrayList<>();
         employees.add(storeFounder);
         this.logger = new SystemLogger();
@@ -74,7 +76,7 @@ public class Store {
         this.storeName = "";
         this.categories = new HashSet<>();
         this.products = new ConcurrentHashMap<>();
-        this.purchaseList = new ArrayList<>();
+        this.purchaseList = new PurchaseDAO();
         this.employees = new ArrayList<>();
         this.logger = new SystemLogger();
         this.productIdCounter = new AtomicInteger(0);
@@ -117,14 +119,15 @@ public class Store {
     //Use case 2.14
     public void addPurchase(Purchase p) {
         synchronized (Market.purchaseLock) {
-            purchaseList.add(p);
+            purchaseList.savePurchase(p);
         }
     }
 
     //use case 4.1
     public List<Purchase> getPurchaseList() {
-        return purchaseList;
+        return purchaseList.getAllPurchases();
     }
+
 
     //use case 5.1
     public Product addProduct(String productName, double price, String category, int quantity, String description) throws Exception {
