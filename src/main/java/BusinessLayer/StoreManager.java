@@ -3,12 +3,18 @@ package BusinessLayer;
 import BusinessLayer.Logger.SystemLogger;
 import ServiceLayer.DTOs.PositionDTO;
 
+import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Entity
+@Table(name = "store_managers")
 public class StoreManager implements Position {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     public enum permissionType {
         setNewPosition, //setPositionOfMemberToStoreManager, setPositionOfMemberToStoreOwner - all actions of setting new position
@@ -18,13 +24,19 @@ public class StoreManager implements Position {
         EmployeeList // getStoreEmployees
     }
 
-    private final SystemLogger logger = new SystemLogger();
-    private final Store store;
+    @Transient //Marks a property or field as transient, indicating that it should not be persisted in the database.
+    private final SystemLogger logger = new SystemLogger();    private final Store store;
+    @ManyToOne
+    @JoinColumn(name = "store_owners")
     private final Member assigner;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "store_manager_permissions", joinColumns = @JoinColumn(name = "store_manager_id"))
+    @Enumerated(EnumType.STRING)
     private Set<permissionType> permissions;
     private final Object permissionLock = new Object();
 
     public StoreManager(Store store, Member assigner) {
+        this.id = 0L; // Initializing with a default value
         this.store = store;
         this.assigner = assigner;
         permissions = new HashSet<>();
