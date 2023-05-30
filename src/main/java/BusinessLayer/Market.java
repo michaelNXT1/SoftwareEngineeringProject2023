@@ -9,6 +9,8 @@ import BusinessLayer.Logger.SystemLogger;
 import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
 import BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy;
 import CommunicationLayer.NotificationBroker;
+import DAOs.ProductDAO;
+import Repositories.IProductRepository;
 import Security.ProxyScurity;
 import Security.SecurityAdapter;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
@@ -21,6 +23,7 @@ import java.security.NoSuchAlgorithmException;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 
 public class Market {
@@ -259,40 +262,73 @@ public class Market {
     public List<ProductDTO> getProductsByName(String sessionId, String productName) throws Exception {
         isMarketOpen();
         Guest g = sessionManager.getSession(sessionId);
-        List<Product> list = new ArrayList<>();
-        logger.info(String.format("getting product by name : %s", productName));
-        if (!stringIsEmpty(productName))
-            stores.values().forEach(s -> list.addAll(s.getProducts().keySet().stream().filter(p -> p.getProductName().equals(productName)).toList()));
-        g.setSearchResults(list);
+        List<Product> productList = new ArrayList<>();
+        logger.info(String.format("Getting product by name: %s", productName));
+        if (!stringIsEmpty(productName)) {
+            for (Store store : stores.values()) {
+                productList.addAll(store.getProducts().keySet().stream()
+                        .filter(p -> p.getProductName().equals(productName))
+                        .collect(Collectors.toList()));
+            }
+        }
+        IProductRepository productRepository = new ProductDAO();
+        productRepository.addAllProducts(productList);
+        g.setSearchResults(productRepository);
         g.setSearchKeyword(productName);
-        return list.stream().map(ProductDTO::new).toList();
+        return productList.stream()
+                .map(ProductDTO::new)
+                .collect(Collectors.toList());
     }
+
+
 
     //use case 2.7
     public List<ProductDTO> getProductsByCategory(String sessionId, String productCategory) throws Exception {
         isMarketOpen();
-        logger.info(String.format("getting product by category : %s", productCategory));
+        logger.info(String.format("Getting products by category: %s", productCategory));
         Guest g = sessionManager.getSession(sessionId);
-        List<Product> list = new ArrayList<>();
-        if (!stringIsEmpty(productCategory))
-            stores.values().forEach(s -> list.addAll(s.getProducts().keySet().stream().filter(p -> p.getCategory().equals(productCategory)).toList()));
-        g.setSearchResults(list);
+        List<Product> productList = new ArrayList<>();
+        if (!stringIsEmpty(productCategory)) {
+            for (Store store : stores.values()) {
+                productList.addAll(store.getProducts().keySet().stream()
+                        .filter(p -> p.getCategory().equals(productCategory))
+                        .collect(Collectors.toList()));
+            }
+        }
+        IProductRepository productRepository = new ProductDAO();
+        productRepository.addAllProducts(productList);
+        g.setSearchResults(productRepository);
         g.setSearchKeyword(productCategory);
-        return list.stream().map(ProductDTO::new).toList();
+        return productList.stream()
+                .map(ProductDTO::new)
+                .collect(Collectors.toList());
     }
+
+
 
     //use case 2.8
     public List<ProductDTO> getProductsBySubstring(String sessionId, String productSubstring) throws Exception {
         isMarketOpen();
-        logger.info(String.format("getting products by sub string : %s", productSubstring));
+        logger.info(String.format("Getting products by substring: %s", productSubstring));
         Guest g = sessionManager.getSession(sessionId);
-        List<Product> list = new ArrayList<>();
-        if (!stringIsEmpty(productSubstring))
-            stores.values().forEach(s -> list.addAll(s.getProducts().keySet().stream().filter(p -> p.getProductName().contains(productSubstring)).toList()));
-        g.setSearchResults(list);
+        List<Product> productList = new ArrayList<>();
+        if (!stringIsEmpty(productSubstring)) {
+            for (Store store : stores.values()) {
+                productList.addAll(store.getProducts().keySet().stream()
+                        .filter(p -> p.getProductName().contains(productSubstring))
+                        .collect(Collectors.toList()));
+            }
+        }
+        IProductRepository productRepository = new ProductDAO();
+        productRepository.addAllProducts(productList);
+        g.setSearchResults(productRepository);
         g.setSearchKeyword(productSubstring);
-        return list.stream().map(ProductDTO::new).toList();
+        return productList.stream()
+                .map(ProductDTO::new)
+                .collect(Collectors.toList());
     }
+
+
 
     //use case __.__
     public List<ProductDTO> getSearchResults(String sessionId) throws Exception {

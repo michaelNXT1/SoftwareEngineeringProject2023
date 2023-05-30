@@ -2,13 +2,14 @@ package DAOs;
 
 import DataAccessLayer.DAOs.HibernateUtil;
 import BusinessLayer.Product;
+import Repositories.IProductRepository;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import java.util.List;
 
-public class ProductDAO{
+public class ProductDAO implements IProductRepository {
 
-    public void save(Product product) {
+    public void saveProduct(Product product) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
         try {
@@ -25,7 +26,7 @@ public class ProductDAO{
         }
     }
 
-    public void delete(Product product) {
+    public void deleteProduct(Product product) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
         try {
@@ -42,7 +43,7 @@ public class ProductDAO{
         }
     }
 
-    public Product getById(int productId) {
+    public Product getProductById(int productId) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Product product = null;
         try {
@@ -55,7 +56,7 @@ public class ProductDAO{
         return product;
     }
 
-    public List<Product> getAll() {
+    public List<Product> getAllProducts() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         List<Product> productList = null;
         try {
@@ -66,5 +67,25 @@ public class ProductDAO{
             session.close();
         }
         return productList;
+    }
+
+    @Override
+    public void addAllProducts(List<Product> productList) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+        try {
+            transaction = session.beginTransaction();
+            for (Product product : productList) {
+                session.save(product);
+            }
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
     }
 }
