@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
+@Table(name = "positions")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "position_type", discriminatorType = DiscriminatorType.STRING)
 public class StoreFounder implements Position {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +26,9 @@ public class StoreFounder implements Position {
     private Member assigner;
     @Transient //Marks a property or field as transient, indicating that it should not be persisted in the database.
     private final SystemLogger logger;
+
+    @Column(name = "position_type", insertable = false, updatable = false)
+    private String positionType;
 
     public StoreFounder(Store store) {
         this.id = 0L; // Initializing with a default value

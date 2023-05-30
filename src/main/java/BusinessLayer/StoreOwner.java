@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "store_owners")
+@Table(name = "positions")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "position_type", discriminatorType = DiscriminatorType.STRING)
 public class StoreOwner implements Position {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +23,9 @@ public class StoreOwner implements Position {
     private final Member assigner;
     @Transient
     private final SystemLogger logger;
+
+    @Column(name = "position_type", insertable = false, updatable = false)
+    private String positionType;
 
     public StoreOwner(Store store, Member assigner) {
         this.id = 0L; // Initializing with a default value
