@@ -20,14 +20,14 @@ import java.util.List;
 @Route(value = "SearchResultView", layout = MainLayout.class)
 @PreserveOnRefresh
 public class SearchResultView extends VerticalLayout {
-    private MarketController marketController;
-    private Header header;
+    private final MarketController marketController;
+    private final Header header;
 
     @Autowired
     public SearchResultView() {
         this.marketController = MarketController.getInstance();
         this.header = new Header();
-        this.header.setText("Search results for " + marketController.getSearchKeyword(MainLayout.getSessionId()));
+        this.header.setText("Search results for " + marketController.getSearchKeyword(MainLayout.getSessionId()).value);
         add(header);
         Grid<ProductDTO> grid = new Grid<>(ProductDTO.class, false);
         grid.addColumn(ProductDTO::getProductName).setHeader("Product Name");
@@ -44,7 +44,7 @@ public class SearchResultView extends VerticalLayout {
             return hl;
         }).setHeader("Add to Cart");
 
-        List<ProductDTO> people = marketController.getSearchResults(MainLayout.getSessionId());
+        List<ProductDTO> people = marketController.getSearchResults(MainLayout.getSessionId()).value;
         grid.setItems(people);
         grid.setVisible(!people.isEmpty());
         add(grid);
@@ -55,7 +55,7 @@ public class SearchResultView extends VerticalLayout {
     }
 
     private String getStoreName(ProductDTO p){
-        return marketController.getStore(MainLayout.getSessionId(), p.getStoreId()).getStoreName();
+        return marketController.getStore(MainLayout.getSessionId(), p.getStoreId()).value.getStoreName();
     }
 
     private void addToCart(ProductDTO p, int quantity) {
@@ -64,9 +64,5 @@ public class SearchResultView extends VerticalLayout {
             Notification.show(r.error_message);
         else
             Notification.show("Product added to cart successfully");
-    }
-
-    private void getProducts() {
-        List<ProductDTO> products = marketController.getSearchResults(MainLayout.getSessionId());
     }
 }

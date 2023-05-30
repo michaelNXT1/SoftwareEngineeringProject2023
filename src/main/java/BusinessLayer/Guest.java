@@ -1,5 +1,8 @@
 package BusinessLayer;
 
+import DAOs.ProductDAO;
+import Repositories.IProductRepository;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -16,7 +19,7 @@ public class Guest {
     private ShoppingCart shoppingCart;
     private String searchKeyword;
     @OneToMany(cascade = CascadeType.ALL)
-    private List<Product> searchResults;
+    private IProductRepository searchResults;
     @OneToMany(cascade = CascadeType.ALL)
     private List<Purchase> purchaseHistory;
     @OneToOne(cascade = CascadeType.ALL)
@@ -27,7 +30,7 @@ public class Guest {
     public Guest() {
         this.id = 0L; // Initializing with a default value
         shoppingCart = new ShoppingCart();
-        searchResults = new ArrayList<>();
+        searchResults = new ProductDAO();
         purchaseHistory = new ArrayList<>();
         paymentDetails = null;
         supplyDetails = null;
@@ -64,20 +67,23 @@ public class Guest {
     }
 
     public List<Product> getSearchResults() {
-        return searchResults;
+        return searchResults.getAllProducts();
     }
 
-    public void setSearchResults(List<Product> searchResults) {
+    public void setSearchResults(IProductRepository searchResults) {
         this.searchResults = searchResults;
     }
 
     public List<Product> filterSearchResultsByCategory(String category) {
-        return searchResults.stream().filter(p -> p.getCategory().equals(category)).collect(Collectors.toList());
+        List<Product> allProducts = searchResults.getAllProducts();
+        return allProducts.stream().filter(p -> p.getCategory().equals(category)).collect(Collectors.toList());
     }
 
     public List<Product> filterSearchResultsByPrice(double minPrice, double maxPrice) {
-        return searchResults.stream().filter(p -> minPrice <= p.getPrice() && p.getPrice() <= maxPrice).collect(Collectors.toList());
+        List<Product> allProducts = searchResults.getAllProducts();
+        return allProducts.stream().filter(p -> minPrice <= p.getPrice() && p.getPrice() <= maxPrice).collect(Collectors.toList());
     }
+
 
     public void addPaymentMethod(String cardNumber, String month, String year, String cvv, String holder, String cardId) {
         paymentDetails = new PaymentDetails(cardNumber, month, year, cvv, holder, cardId);

@@ -2,7 +2,6 @@ package application.views.helloworld;
 
 import CommunicationLayer.IMarketController;
 import CommunicationLayer.MarketController;
-import CommunicationLayer.NotificationController;
 import application.views.MainLayout;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.Text;
@@ -20,16 +19,13 @@ import com.vaadin.flow.router.*;
 @PreserveOnRefresh
 public class HelloWorldView extends HorizontalLayout {
 
-    private TextField name;
-    private Button sayHello;
+    private final TextField name;
 
     public HelloWorldView() {
         IMarketController marketController = MarketController.getInstance();
         name = new TextField("Your name");
-        sayHello = new Button("Say hello");
-        sayHello.addClickListener(e -> {
-            Notification.show("Hello " + name.getValue() + ", welcome to Version 3!");
-        });
+        Button sayHello = new Button("Say hello");
+        sayHello.addClickListener(e -> Notification.show("Hello " + name.getValue()));
         sayHello.addClickShortcut(Key.ENTER);
 
         Button openDialogButton = new Button("Open Dialog");
@@ -44,7 +40,7 @@ public class HelloWorldView extends HorizontalLayout {
         setMargin(true);
         setVerticalComponentAlignment(Alignment.END, name, sayHello);
         add(openDialogButton);
-        add(new H1("Welcome, " + marketController.getUsername(MainLayout.getSessionId()) + "!"));
+        add(new H1("Welcome, " + marketController.getUsername(MainLayout.getSessionId()).value + "!"));
     }
 
 }

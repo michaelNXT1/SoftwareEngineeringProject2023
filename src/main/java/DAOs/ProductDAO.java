@@ -1,34 +1,20 @@
 package DAOs;
 
-import ServiceLayer.DTOs.ProductDTO;
+import DataAccessLayer.DAOs.HibernateUtil;
+import BusinessLayer.Product;
+import Repositories.IProductRepository;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
+import java.util.List;
 
-public class ProductDAO {
+public class ProductDAO implements IProductRepository {
 
-    private SessionFactory sessionFactory;
-
-    public ProductDAO() {
-        // Create the Hibernate configuration
-        Configuration configuration = new Configuration().configure();
-
-        // Build the session factory
-        sessionFactory = configuration.buildSessionFactory();
-    }
-
-    public void addProduct(ProductDTO product) {
-        Session session = null;
+    public void saveProduct(Product product) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
-
         try {
-            session = sessionFactory.openSession();
             transaction = session.beginTransaction();
-
-            // Save or update the product
-            session.saveOrUpdate(product);
-
+            session.save(product);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -36,23 +22,16 @@ public class ProductDAO {
             }
             e.printStackTrace();
         } finally {
-            if (session != null) {
-                session.close();
-            }
+            session.close();
         }
     }
 
-    public void updateProduct(ProductDTO product) {
-        Session session = null;
+    public void deleteProduct(Product product) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
-
         try {
-            session = sessionFactory.openSession();
             transaction = session.beginTransaction();
-
-            // Save or update the product
-            session.saveOrUpdate(product);
-
+            session.delete(product);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -60,11 +39,53 @@ public class ProductDAO {
             }
             e.printStackTrace();
         } finally {
-            if (session != null) {
-                session.close();
+            session.close();
+        }
+    }
+
+    public Product getProductById(int productId) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Product product = null;
+        try {
+            product = session.get(Product.class, productId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return product;
+    }
+
+    public List<Product> getAllProducts() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        List<Product> productList = null;
+        try {
+            productList = session.createQuery("FROM products", Product.class).list();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return productList;
+    }
+
+    @Override
+    public void addAllProducts(List<Product> productList) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+        try {
+            transaction = session.beginTransaction();
+            for (Product product : productList) {
+                session.save(product);
             }
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
         }
     }
 }
-
-

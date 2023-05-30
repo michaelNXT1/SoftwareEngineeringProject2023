@@ -1,41 +1,22 @@
 package BusinessLayer;
 
 import BusinessLayer.Logger.SystemLogger;
-import javax.persistence.*;
+import ServiceLayer.DTOs.PositionDTO;
+
 import java.time.LocalTime;
 import java.util.List;
-@Entity
-@Table(name = "store_owners")
+import java.util.Set;
+
 public class StoreOwner implements Position {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @ManyToOne
-    @JoinColumn(name = "store_id")
+
     private final Store store;
-    @ManyToOne
-    @JoinColumn(name = "store_owners")
     private final Member assigner;
-    @Transient
     private final SystemLogger logger;
 
     public StoreOwner(Store store, Member assigner) {
-        this.id = 0L; // Initializing with a default value
         this.store = store;
         this.assigner = assigner;
         logger = new SystemLogger();
-    }
-
-    public StoreOwner() {
-        this.id = 0L; // Initializing with a default value
-        this.store = null;
-        this.assigner = null;
-        logger = new SystemLogger();
-    }
-
-    @Override
-    public Store getStore() {
-        return store;
     }
 
     @Override
@@ -43,6 +24,20 @@ public class StoreOwner implements Position {
         return assigner;
     }
 
+    @Override
+    public void setPositionOfMemberToStoreManager(Store store, Member member, Member assigner) throws Exception {
+        member.setToStoreManager(store, assigner);
+    }
+
+    @Override
+    public void setPositionOfMemberToStoreOwner(Store store, Member member, Member assigner) throws Exception {
+        member.setToStoreOwner(store, assigner);
+    }
+
+    @Override
+    public void setStoreManagerPermissions(Position storeManagerPosition, Set<PositionDTO.permissionType> permissions) {
+        storeManagerPosition.setPermissions(permissions);
+    }
 
     @Override
     public void addStoreManagerPermissions(Position storeManagerPosition, StoreManager.permissionType newPermission) {
@@ -55,20 +50,8 @@ public class StoreOwner implements Position {
 
     }
 
-    @Override
-    public void setPositionOfMemberToStoreManager(Store store, Member member, Member assigner) throws Exception {
-        member.setToStoreManager(store, assigner);
-    }
-
-
-    @Override
-    public void setPositionOfMemberToStoreOwner(Store store, Member member, Member assigner) throws Exception {
-        member.setToStoreOwner(store, assigner);
-    }
-
-    @Override
-    public void removeProductFromStore(int productID) throws Exception {
-        store.removeProduct(productID);
+    public Product addProduct(Store store, String productName, double price, String category, int quantity, String description) throws Exception {
+        return store.addProduct(productName, price, category, quantity, description);
     }
 
     @Override
@@ -91,8 +74,9 @@ public class StoreOwner implements Position {
         store.editProductDescription(productId, newDescription);
     }
 
-    public Product addProduct(Store store, String productName, double price, String category, int quantity, String description) throws Exception {
-        return store.addProduct(productName, price, category, quantity, description);
+    @Override
+    public void removeProductFromStore(int productID) throws Exception {
+        store.removeProduct(productID);
     }
 
     @Override
@@ -101,57 +85,32 @@ public class StoreOwner implements Position {
     }
 
     @Override
-    public void closeStore() throws IllegalAccessException {
-        logger.error("This member hasn't permission to close store");
-        throw new IllegalAccessException("This member hasn't permission to close store");
-    }
-
-    @Override
-    public List<Member> getStoreEmployees() {
-        return store.getEmployees();
-    }
-
-    @Override
-    public void removeStoreOwner(Member storeOwnerToRemove, Guest m) throws Exception {
-        if (!assigner.equals(m)) {
-            logger.error(String.format("%s is not the assigner of %s", m.getUsername(), storeOwnerToRemove.getUsername()));
-            throw new Exception("can remove only store owner assigned by him");
-        }
-        storeOwnerToRemove.notBeingStoreOwner(m, getStore());
-    }
-
-    @Override
-    public String getPositionName() {
-        return "Owner";
-    }
-
-    @Override
-    public void addMinQuantityPolicy(int productId, int minQuantity, boolean allowNone) throws Exception {
+    public void addMinQuantityPurchasePolicy(int productId, int minQuantity, boolean allowNone) throws Exception {
         store.addMinQuantityPolicy(productId, minQuantity, allowNone);
     }
 
     @Override
-    public void addMaxQuantityPolicy(int productId, int maxQuantity) throws Exception {
+    public void addMaxQuantityPurchasePolicy(int productId, int maxQuantity) throws Exception {
         store.addMaxQuantityPolicy(productId, maxQuantity);
     }
 
     @Override
-    public void addProductTimeRestrictionPolicy(int productId, LocalTime startTime, LocalTime endTime) throws Exception {
+    public void addProductTimeRestrictionPurchasePolicy(int productId, LocalTime startTime, LocalTime endTime) throws Exception {
         store.addProductTimeRestrictionPolicy(productId, startTime, endTime);
     }
 
     @Override
-    public void addCategoryTimeRestrictionPolicy(String category, LocalTime startTime, LocalTime endTime) throws Exception {
+    public void addCategoryTimeRestrictionPurchasePolicy(String category, LocalTime startTime, LocalTime endTime) throws Exception {
         store.addCategoryTimeRestrictionPolicy(category, startTime, endTime);
     }
 
     @Override
-    public void joinPolicies(int policyId1, int policyId2, int operator) throws Exception {
+    public void joinPurchasePolicies(int policyId1, int policyId2, int operator) throws Exception {
         store.joinPolicies(policyId1, policyId2, operator);
     }
 
     @Override
-    public void removePolicy(int policyId) throws Exception {
+    public void removePurchasePolicy(int policyId) throws Exception {
         store.removePolicy(policyId);
     }
 
@@ -200,7 +159,39 @@ public class StoreOwner implements Position {
         store.removeDiscountPolicy(policyId);
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    @Override
+    public void closeStore() throws IllegalAccessException {
+        logger.error("This member hasn't permission to close store");
+        throw new IllegalAccessException("This member hasn't permission to close store");
     }
+
+    @Override
+    public List<Member> getStoreEmployees() {
+        return store.getEmployees();
+    }
+
+    @Override
+    public void removeStoreOwner(Member storeOwnerToRemove, Guest m) throws Exception {
+        if (!assigner.equals(m)) {
+            logger.error(String.format("%s is not the assigner of %s", m.getUsername(), storeOwnerToRemove.getUsername()));
+            throw new Exception("can remove only store owner assigned by him");
+        }
+        storeOwnerToRemove.notBeingStoreOwner(m, getStore());
+    }
+
+    @Override
+    public Store getStore() {
+        return store;
+    }
+
+    @Override
+    public boolean hasPermission(PositionDTO.permissionType employeeList) {
+        return true;
+    }
+
+    @Override
+    public String getPositionName() {
+        return "Owner";
+    }
+
 }
