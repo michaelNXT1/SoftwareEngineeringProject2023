@@ -1,4 +1,7 @@
 package BusinessLayer;
+import DAOs.PurchaseProductDAO;
+import Repositories.IPurchaseProductRepository;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -10,23 +13,25 @@ public class Purchase {
     private Long id;
 
     @OneToMany(mappedBy = "bagPurchase", cascade = CascadeType.ALL)
-    private List<PurchaseProduct> productList;
+    private IPurchaseProductRepository productList;
     private PaymentDetails paymentDetails;
 
-    public Purchase(List<PurchaseProduct> productList) {
+    public Purchase(IPurchaseProductRepository productList) {
         this.id = 0L; // Initializing with a default value
         this.productList = productList;
     }
 
     public void addProduct(PurchaseProduct p) {
-        productList.add(p);
+        productList.addPurchaseProduct(p);
     }
 
     public double getTotalPrice() {
-        return productList.stream().mapToDouble(PurchaseProduct::getPrice).sum();
+        List<PurchaseProduct> purchaseProducts = productList.getAllPurchaseProducts();
+        return purchaseProducts.stream().mapToDouble(PurchaseProduct::getPrice).sum();
     }
 
+
     public List<PurchaseProduct> getProductList() {
-        return this.productList;
+        return this.productList.getAllPurchaseProducts();
     }
 }

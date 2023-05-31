@@ -8,6 +8,11 @@ import BusinessLayer.Policies.DiscountPolicies.PolicyTypes.*;
 import BusinessLayer.Policies.PurchasePolicies.PurchasePolicyOperation;
 import BusinessLayer.Policies.PurchasePolicies.*;
 import BusinessLayer.Policies.PurchasePolicies.PolicyTypes.*;
+import DAOs.BaseDiscountPolicyDAO;
+import DAOs.PurchaseDAO;
+import Repositories.IBaseDiscountPolicyRepository;
+import Repositories.IPurchaseRepository;
+
 import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.*;
@@ -26,7 +31,7 @@ public class Store {
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
     private final Map<Product, Integer> products;
     @OneToMany
-    private final List<Purchase> purchaseList;
+    private final IPurchaseRepository purchaseList;
     @ManyToMany(mappedBy = "stores")
     private final List<Member> employees;
     @ElementCollection
@@ -34,7 +39,7 @@ public class Store {
     @ManyToMany
     private final List<BasePurchasePolicy> purchasePolicies;
     @OneToMany
-    private final Map<Discount, List<BaseDiscountPolicy>> productDiscountPolicyMap;
+    private final Map<Discount, IBaseDiscountPolicyRepository> productDiscountPolicyMap;
     @Column(name = "purchase_policy_counter")
     private int purchasePolicyCounter;
     @Column(name = "discount_policy_counter")
@@ -54,7 +59,7 @@ public class Store {
         this.storeOwners.add(storeFounder.getUsername());
         this.categories = new HashSet<>();
         this.products = new ConcurrentHashMap<>();
-        this.purchaseList = new ArrayList<>();
+        this.purchaseList = new PurchaseDAO();
         this.employees = new ArrayList<>();
         employees.add(storeFounder);
         this.logger = new SystemLogger();
@@ -71,7 +76,7 @@ public class Store {
         this.storeName = "";
         this.categories = new HashSet<>();
         this.products = new ConcurrentHashMap<>();
-        this.purchaseList = new ArrayList<>();
+        this.purchaseList = new PurchaseDAO();
         this.employees = new ArrayList<>();
         this.logger = new SystemLogger();
         this.productIdCounter = new AtomicInteger(0);
@@ -114,14 +119,15 @@ public class Store {
     //Use case 2.14
     public void addPurchase(Purchase p) {
         synchronized (Market.purchaseLock) {
-            purchaseList.add(p);
+            purchaseList.savePurchase(p);
         }
     }
 
     //use case 4.1
     public List<Purchase> getPurchaseList() {
-        return purchaseList;
+        return purchaseList.getAllPurchases();
     }
+
 
     //use case 5.1
     public Product addProduct(String productName, double price, String category, int quantity, String description) throws Exception {
@@ -256,7 +262,7 @@ public class Store {
     public void addProductDiscount(int productId, double discountPercentage, int compositionType) throws Exception {
         checkProductExists(productId);
         Discount discount = new ProductDiscount(discountCounter++, discountPercentage, productId, compositionType);
-        productDiscountPolicyMap.put(discount, new ArrayList<>());
+        productDiscountPolicyMap.put(discount, new BaseDiscountPolicyDAO());
     }
 
     public void addCategoryDiscount(String category, double discountPercentage, int compositionType) throws Exception {
@@ -265,12 +271,12 @@ public class Store {
             throw new Exception("Category doesn't exist");
         }
         Discount discount = new CategoryDiscount(discountCounter++, discountPercentage, category, compositionType);
-        productDiscountPolicyMap.put(discount, new ArrayList<>());
+        productDiscountPolicyMap.put(discount, new BaseDiscountPolicyDAO());
     }
 
     public void addStoreDiscount(double discountPercentage, int compositionType) throws Exception {
         Discount discount = new StoreDiscount(discountCounter++, discountPercentage, this, compositionType);
-        productDiscountPolicyMap.put(discount, new ArrayList<>());
+        productDiscountPolicyMap.put(discount, new BaseDiscountPolicyDAO());
     }
 
     public void removeDiscount(int discountId) throws Exception {
@@ -290,33 +296,33 @@ public class Store {
     //Discount policies
     public void addMinQuantityDiscountPolicy(int discountId, int productId, int minQuantity, boolean allowNone) throws Exception {
         Discount d = findDiscount(discountId);
-        productDiscountPolicyMap.get(d).add(new MinQuantityDiscountPolicy(purchasePolicyCounter++, checkProductExists(productId), minQuantity, allowNone));
+        productDiscountPolicyMap.get(d).addDiscountPolicy(new MinQuantityDiscountPolicy(purchasePolicyCounter++, checkProductExists(productId), minQuantity, allowNone));
     }
 
     public void addMaxQuantityDiscountPolicy(int discountId, int productId, int maxQuantity) throws Exception {
         Discount d = findDiscount(discountId);
-        productDiscountPolicyMap.get(d).add(new MaxQuantityDiscountPolicy(purchasePolicyCounter++, checkProductExists(productId), maxQuantity));
+        productDiscountPolicyMap.get(d).addDiscountPolicy(new MaxQuantityDiscountPolicy(purchasePolicyCounter++, checkProductExists(productId), maxQuantity));
     }
 
     public void addMinBagTotalDiscountPolicy(int discountId, double minTotal) throws Exception {
         Discount d = findDiscount(discountId);
-        productDiscountPolicyMap.get(d).add(new MinBagTotalDiscountPolicy(purchasePolicyCounter++, minTotal));
+        productDiscountPolicyMap.get(d).addDiscountPolicy(new MinBagTotalDiscountPolicy(purchasePolicyCounter++, minTotal));
     }
 
     public void joinDiscountPolicies(int policyId1, int policyId2, int operator) throws Exception {
         BaseDiscountPolicy found_1 = null, found_2 = null;
         for (Discount discount : productDiscountPolicyMap.keySet()) {
-            List<BaseDiscountPolicy> baseDiscountPolicies = productDiscountPolicyMap.get(discount);
-            for (BaseDiscountPolicy bdp : baseDiscountPolicies) {
+            IBaseDiscountPolicyRepository baseDiscountPolicies = productDiscountPolicyMap.get(discount);
+            for (BaseDiscountPolicy bdp : baseDiscountPolicies.getAllDiscountPolicies()) {
                 if (bdp.getPolicyId() == policyId1)
                     found_1 = bdp;
                 if (bdp.getPolicyId() == policyId2)
                     found_2 = bdp;
             }
             if (found_1 != null && found_2 != null) {
-                baseDiscountPolicies.add(new DiscountPolicyOperation(discountPolicyCounter++, found_1, operator, found_2));
-                baseDiscountPolicies.remove(found_1);
-                baseDiscountPolicies.remove(found_2);
+                baseDiscountPolicies.addDiscountPolicy(new DiscountPolicyOperation(discountPolicyCounter++, found_1, operator, found_2));
+                baseDiscountPolicies.removeDiscountPolicy(found_1);
+                baseDiscountPolicies.removeDiscountPolicy(found_2);
                 return;
             }
         }
@@ -330,32 +336,44 @@ public class Store {
 
     public void removeDiscountPolicy(int policyId) throws Exception {
         BaseDiscountPolicy bdp = findDiscountPolicy(policyId);
-        for (List<BaseDiscountPolicy> baseDiscountPolicies : productDiscountPolicyMap.values())
-            if (baseDiscountPolicies.remove(bdp))
+        for (IBaseDiscountPolicyRepository baseDiscountPolicies : productDiscountPolicyMap.values())
+            if (baseDiscountPolicies.removeDiscountPolicy(bdp))
                 break;
     }
 
     private BaseDiscountPolicy findDiscountPolicy(int policyId) throws Exception {
-        BaseDiscountPolicy bp = productDiscountPolicyMap.values().stream().flatMap(Collection::stream).toList().stream().filter(p -> p.getPolicyId() == policyId).findFirst().orElse(null);
-        if (bp == null) {
-            logger.error("couldn't find discount policy of id" + policyId);
-            throw new Exception("couldn't find discount policy of id" + policyId);
+        for (IBaseDiscountPolicyRepository repository : productDiscountPolicyMap.values()) {
+            BaseDiscountPolicy bp = repository.getDiscountPolicyById(policyId);
+            if (bp != null) {
+                return bp;
+            }
         }
-        return bp;
+
+        logger.error("Couldn't find discount policy of id: " + policyId);
+        throw new Exception("Couldn't find discount policy of id: " + policyId);
     }
+
 
     public double getProductDiscountPercentage(int productId, Map<Integer, Integer> productIdList) throws Exception {
         double discountPercentage = 0.0;
         Map<Product, Integer> productList = new HashMap<>();
-        for (Integer i : productIdList.keySet())
+        for (Integer i : productIdList.keySet()) {
             productList.put(getProduct(i), productIdList.get(i));
+        }
         Product product = checkProductExists(productId);
-        for (Discount d : productDiscountPolicyMap.keySet())
-            if (d.checkApplies(product))
-                if (productDiscountPolicyMap.get(d).stream().allMatch(pdp -> pdp.evaluate(productList)))
-                    discountPercentage = d.calculateNewPercentage(discountPercentage);
+
+        for (Map.Entry<Discount, IBaseDiscountPolicyRepository> entry : productDiscountPolicyMap.entrySet()) {
+            Discount discount = entry.getKey();
+            IBaseDiscountPolicyRepository discountPolicyRepository = entry.getValue();
+
+            if (discount.checkApplies(product) && discountPolicyRepository.getAllDiscountPolicies().stream().allMatch(pdp -> pdp.evaluate(productList))) {
+                discountPercentage = discount.calculateNewPercentage(discountPercentage);
+            }
+        }
+
         return discountPercentage;
     }
+
 
     private Map<Product, Integer> getProductIntegerMap(Map<Integer, Integer> productIdList) throws Exception {
         Map<Product, Integer> productList = new HashMap<>();
@@ -388,9 +406,24 @@ public class Store {
         employees.add(member);
     }
 
-    public Map<Discount, List<BaseDiscountPolicy>> getProductDiscountPolicyMap() {
-        return productDiscountPolicyMap;
+    public void removeEmployee(Member member) {
+        employees.remove(member);
     }
+
+    public Map<Discount, List<BaseDiscountPolicy>> getProductDiscountPolicyMap() {
+        Map<Discount, List<BaseDiscountPolicy>> discountPolicyMap = new HashMap<>();
+
+        for (Map.Entry<Discount, IBaseDiscountPolicyRepository> entry : productDiscountPolicyMap.entrySet()) {
+            Discount discount = entry.getKey();
+            IBaseDiscountPolicyRepository discountPolicyRepository = entry.getValue();
+
+            List<BaseDiscountPolicy> discountPolicies = discountPolicyRepository.getAllDiscountPolicies();
+            discountPolicyMap.put(discount, discountPolicies);
+        }
+
+        return discountPolicyMap;
+    }
+
 
     public List<Member> getEmployees() {
         return employees;
@@ -406,9 +439,5 @@ public class Store {
 
     public List<BasePurchasePolicy> getPurchasePolicies() {
         return purchasePolicies;
-    }
-
-    public void addStoreOwner(Member member) {
-        storeOwners.add(member.getUsername());
     }
 }

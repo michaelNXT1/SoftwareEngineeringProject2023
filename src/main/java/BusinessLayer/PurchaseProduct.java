@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "Purchase_product")
+@Table(name = "Purchase_products")
 public class PurchaseProduct {
     @Id
     @Column(name = "product_id")

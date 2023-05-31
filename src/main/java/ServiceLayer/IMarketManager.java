@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 public interface IMarketManager {
     Response signUpSystemManager(String username, String password);
 
@@ -137,6 +139,7 @@ public interface IMarketManager {
 
     Response removeDiscount(String sessionId, int storeId, int discountId);
 
+    ResponseT<Set<PositionDTO.permissionType>> getPermissions(String sessionId, int storeId, String username);
 
 //        Response logoutSystemManager(String sessionId);
 

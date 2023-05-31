@@ -1,19 +1,18 @@
 package DAOs;
 
-import BusinessLayer.Product;
-import Repositories.IProductRepository;
+import BusinessLayer.PurchaseProduct;
+import Repositories.IPurchaseProductRepository;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import java.util.List;
 
-public class ProductDAO implements IProductRepository {
-
-    public void saveProduct(Product product) {
+public class PurchaseProductDAO implements IPurchaseProductRepository {
+    public void addPurchaseProduct(PurchaseProduct purchaseProduct) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
-            session.persist(product);
+            session.persist(purchaseProduct);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -25,12 +24,13 @@ public class ProductDAO implements IProductRepository {
         }
     }
 
-    public void deleteProduct(Product product) {
+    public void removePurchaseProduct(PurchaseProduct purchaseProduct) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
+
         try {
             transaction = session.beginTransaction();
-            session.remove(product);
+            session.remove(purchaseProduct);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -42,40 +42,28 @@ public class ProductDAO implements IProductRepository {
         }
     }
 
-    public Product getProductById(int productId) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Product product = null;
-        try {
-            product = session.get(Product.class, productId);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            session.close();
-        }
-        return product;
-    }
 
-    public List<Product> getAllProducts() {
+    public List<PurchaseProduct> getAllPurchaseProducts() {
         Session session = HibernateUtil.getSessionFactory().openSession();
-        List<Product> productList = null;
+        List<PurchaseProduct> purchaseProducts = null;
         try {
-            productList = session.createQuery("FROM products", Product.class).list();
+            purchaseProducts = session.createQuery("FROM Purchase_products", PurchaseProduct.class).list();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             session.close();
         }
-        return productList;
+        return purchaseProducts;
     }
 
     @Override
-    public void addAllProducts(List<Product> productList) {
+    public void addAllPurchaseProducts(List<PurchaseProduct> purchaseProducts) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
-            for (Product product : productList) {
-                session.persist(product);
+            for (PurchaseProduct purchaseProduct : purchaseProducts) {
+                session.persist(purchaseProduct);
             }
             transaction.commit();
         } catch (Exception e) {
@@ -87,4 +75,5 @@ public class ProductDAO implements IProductRepository {
             session.close();
         }
     }
+
 }

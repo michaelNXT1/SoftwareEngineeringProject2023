@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 @Service
 public class MarketManager implements IMarketManager {
     private final Market market;
@@ -161,6 +163,7 @@ public class MarketManager implements IMarketManager {
         }
     }
 
+
     //use case 2.8
     public ResponseT<List<ProductDTO>> getProductsBySubstring(String sessionId, String productSubstring) {
         try {
@@ -248,6 +251,8 @@ public class MarketManager implements IMarketManager {
         }
     }
 
+
+
     public ResponseT<List<PurchaseDTO>> getPurchaseHistory(String sessionId, int storeId) {
         try {
             return ResponseT.fromValue(market.getPurchaseHistory(sessionId, storeId));
@@ -255,6 +260,7 @@ public class MarketManager implements IMarketManager {
             return ResponseT.fromError(e.getMessage());
         }
     }
+
 
     public ResponseT<ProductDTO> addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description) {
         try {
@@ -459,6 +465,7 @@ public class MarketManager implements IMarketManager {
     }
 
 
+
     public Response addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone) {
         try {
             market.addMinQuantityDiscountPolicy(sessionId, storeId, discountId, productId, minQuantity, allowNone);
@@ -611,6 +618,15 @@ public class MarketManager implements IMarketManager {
     public ResponseT<List<String>> getDiscountPolicyTypes() {
         try {
             return ResponseT.fromValue(market.getDiscountPolicyTypes());
+        } catch (Exception e) {
+            return ResponseT.fromError(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseT<Set<PositionDTO.permissionType>> getPermissions(String sessionId, int storeId, String username) {
+        try {
+            return ResponseT.fromValue(market.getPermissions(sessionId, storeId, username));
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }
