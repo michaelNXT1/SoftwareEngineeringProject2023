@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Entity
+@Table(name = "members")
 public class Member extends Guest {
 
     private ConcurrentLinkedQueue<Notification> notifications;
