@@ -9,13 +9,14 @@ import BusinessLayer.Logger.SystemLogger;
 import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
 import BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy;
 import CommunicationLayer.NotificationBroker;
+import DAOs.UserRepository;
 import Security.ProxyScurity;
 import Security.SecurityAdapter;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
 import ServiceLayer.DTOs.*;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+
 
 import Notification.Notification;
 import java.security.MessageDigest;
@@ -34,6 +35,7 @@ public class Market {
     private SecurityAdapter securityUtils = new ProxyScurity(null);
     final Object userLock = new Object();
 
+    private UserRepository userRepository;
 
     private SystemLogger logger;
     private boolean marketOpen;
@@ -137,6 +139,7 @@ public class Market {
         synchronized (userLock) {
             // store new Member's object in users map
             users.put(username, newMember);
+            userRepository.save(newMember);
             logger.info(String.format("%s signed up to the system", username));
         }
     }
@@ -146,46 +149,49 @@ public class Market {
     public String login(String username, String password, NotificationBroker notificationBroker) throws Exception {
         logger.info(String.format("%s try to logg in to the system", username));
         SystemManager sm = systemManagers.get(username);
-        synchronized (username.intern()) {
-            if (sm != null) {
-                String hashedPassword = new String(passwordEncoder.digest(password.getBytes()));
-                // If the Member doesn't exist or the password is incorrect, return false
-                if (!hashedPassword.equals(sm.getPassword())) {
-                    logger.error(String.format("%s has Invalid username or password", username));
-                    throw new Error("Invalid username or password");
+        synchronized (userLock) {
+            synchronized (username.intern()) {
+                if (sm != null) {
+                    String hashedPassword = new String(passwordEncoder.digest(password.getBytes()));
+                    // If the Member doesn't exist or the password is incorrect, return false
+                    if (!hashedPassword.equals(sm.getPassword())) {
+                        logger.error(String.format("%s has Invalid username or password", username));
+                        throw new Error("Invalid username or password");
+                    }
+                    // If the credentials are correct, authenticate the user and return true
+                    boolean res = securityUtils.authenticate(username, password);
+                    if (res) {
+                        logger.info(String.format("%s the user passed authenticate check and logged in to the systemManager", username));
+                        return sessionManager.createSessionForSystemManager(sm);
+                    }
+                    return null;
                 }
+            }
+            isMarketOpen();
+            // Retrieve the stored Member's object for the given username
+            Member member;
+            synchronized (username.intern()) {
+                member = users.get(username);
+                String hashedPassword = new String(passwordEncoder.digest(password.getBytes()));
+                // If the Member doesn't exist or the password is incorrect, throw exception
+                if (member == null || !hashedPassword.equals(member.getPassword())) {
+                    logger.error(String.format("%s have Invalid username or password", username));
+                    throw new Exception("Invalid username or password");
+                }
+
                 // If the credentials are correct, authenticate the user and return true
                 boolean res = securityUtils.authenticate(username, password);
                 if (res) {
-                    logger.info(String.format("%s the user passed authenticate check and logged in to the systemManager", username));
-                    return sessionManager.createSessionForSystemManager(sm);
+                    logger.info(String.format("%s passed authenticate check and logged in to the system", username));
+                    member.setNotificationBroker(notificationBroker);
+                    member.sendRealTimeNotification();
+                    return sessionManager.createSession(member);
                 }
+                logger.error(String.format("%s did not passed authenticate check and logged in to the system", username));
                 return null;
             }
         }
-        isMarketOpen();
-        // Retrieve the stored Member's object for the given username
-        Member member;
-        synchronized (username.intern()) {
-            member = users.get(username);
-            String hashedPassword = new String(passwordEncoder.digest(password.getBytes()));
-            // If the Member doesn't exist or the password is incorrect, throw exception
-            if (member == null || !hashedPassword.equals(member.getPassword())) {
-                logger.error(String.format("%s have Invalid username or password", username));
-                throw new Exception("Invalid username or password");
-            }
 
-            // If the credentials are correct, authenticate the user and return true
-            boolean res = securityUtils.authenticate(username, password);
-            if (res) {
-                logger.info(String.format("%s passed authenticate check and logged in to the system", username));
-                member.setNotificationBroker(notificationBroker);
-                member.sendRealTimeNotification();
-                return sessionManager.createSession(member);
-            }
-            logger.error(String.format("%s did not passed authenticate check and logged in to the system", username));
-            return null;
-        }
 }
 
 

@@ -2,7 +2,6 @@ package ConcurrencyTests;
 
 
 import BusinessLayer.Market;
-import CommunicationLayer.NotificationController;
 import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.Before;

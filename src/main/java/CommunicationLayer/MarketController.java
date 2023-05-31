@@ -18,6 +18,7 @@ import java.util.Map;
 @CrossOrigin()
 @RestController
 @Component
+@RequestMapping("/market")
 public class MarketController implements IMarketController {
 
     private final MarketManager marketManager;

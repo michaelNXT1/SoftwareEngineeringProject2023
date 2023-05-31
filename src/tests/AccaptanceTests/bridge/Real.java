@@ -15,7 +15,7 @@ public class Real implements Bridge {
     private IMarketManager manager;
 
     public Real() {
-        this.manager = new MarketManager();
+        this.manager = new MarketManager(null);
     }
 
     public boolean setupSystem(String managerUName, String managerPass) {

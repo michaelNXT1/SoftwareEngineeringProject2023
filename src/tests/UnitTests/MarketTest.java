@@ -2,13 +2,11 @@ package UnitTests;
 
 import BusinessLayer.*;
 import ServiceLayer.DTOs.ProductDTO;
-import ServiceLayer.DTOs.PurchaseDTO;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MarketTest extends TestCase {

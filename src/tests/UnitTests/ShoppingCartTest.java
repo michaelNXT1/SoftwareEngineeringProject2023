@@ -1,11 +1,9 @@
 package UnitTests;
 
 import BusinessLayer.*;
-import ServiceLayer.DTOs.PurchaseDTO;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 
 import static org.junit.jupiter.api.Assertions.*;
 

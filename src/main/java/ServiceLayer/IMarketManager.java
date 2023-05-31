@@ -5,11 +5,11 @@ import ServiceLayer.DTOs.*;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
-
 public interface IMarketManager {
     Response signUpSystemManager(String username, String password);
 
