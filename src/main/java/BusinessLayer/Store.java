@@ -9,8 +9,10 @@ import BusinessLayer.Policies.PurchasePolicies.PurchasePolicyOperation;
 import BusinessLayer.Policies.PurchasePolicies.*;
 import BusinessLayer.Policies.PurchasePolicies.PolicyTypes.*;
 import DAOs.BaseDiscountPolicyDAO;
+import DAOs.MemberDAO;
 import DAOs.PurchaseDAO;
 import Repositories.IBaseDiscountPolicyRepository;
+import Repositories.IMemberRepository;
 import Repositories.IPurchaseRepository;
 
 import javax.persistence.*;
@@ -33,7 +35,7 @@ public class Store {
     @OneToMany
     private final IPurchaseRepository purchaseList;
     @ManyToMany(mappedBy = "stores")
-    private final List<Member> employees;
+    private final IMemberRepository employees;
     @ElementCollection
     private final List<String> storeOwners = new LinkedList<>();
     @ManyToMany
@@ -60,8 +62,8 @@ public class Store {
         this.categories = new HashSet<>();
         this.products = new ConcurrentHashMap<>();
         this.purchaseList = new PurchaseDAO();
-        this.employees = new ArrayList<>();
-        employees.add(storeFounder);
+        this.employees = new MemberDAO();
+        employees.addMember(storeFounder);
         this.logger = new SystemLogger();
         this.productIdCounter = new AtomicInteger(0);
         purchasePolicies = new ArrayList<>();
@@ -77,7 +79,7 @@ public class Store {
         this.categories = new HashSet<>();
         this.products = new ConcurrentHashMap<>();
         this.purchaseList = new PurchaseDAO();
-        this.employees = new ArrayList<>();
+        this.employees = new MemberDAO();
         this.logger = new SystemLogger();
         this.productIdCounter = new AtomicInteger(0);
         purchasePolicies = new ArrayList<>();
@@ -394,7 +396,7 @@ public class Store {
 
     public List<Member> getManagers() {
         List<Member> manager = new ArrayList<>();
-        for (Member m : this.employees) {
+        for (Member m : this.employees.getAllMember()) {
             if (m.getStorePosition(this) instanceof StoreManager) {
                 manager.add(m);
             }
@@ -403,11 +405,11 @@ public class Store {
     }
 
     public void addEmployee(Member member) {
-        employees.add(member);
+        employees.addMember(member);
     }
 
     public void removeEmployee(Member member) {
-        employees.remove(member);
+        employees.removeMember(member);
     }
 
     public Map<Discount, List<BaseDiscountPolicy>> getProductDiscountPolicyMap() {
@@ -426,7 +428,7 @@ public class Store {
 
 
     public List<Member> getEmployees() {
-        return employees;
+        return employees.getAllMember();
     }
 
     public Set<String> getCategories() {
