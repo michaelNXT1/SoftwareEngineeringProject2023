@@ -1,7 +1,6 @@
 package DAOs;
 
 import BusinessLayer.Position;
-import DataAccessLayer.DAOs.HibernateUtil;
 import Repositories.IPositionRepository;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -15,7 +14,7 @@ public class PositionDAO implements IPositionRepository {
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
-            session.saveOrUpdate(position);
+            session.persist(position);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -32,7 +31,7 @@ public class PositionDAO implements IPositionRepository {
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
-            session.delete(position);
+            session.remove(position);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
