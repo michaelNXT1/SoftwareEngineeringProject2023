@@ -1,7 +1,6 @@
 package DAOs;
 
 import BusinessLayer.Purchase;
-import DataAccessLayer.DAOs.HibernateUtil;
 import Repositories.IPurchaseRepository;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -15,7 +14,7 @@ public class PurchaseDAO implements IPurchaseRepository {
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
-            session.save(purchase);
+            session.persist(purchase);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {

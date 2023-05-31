@@ -1,5 +1,6 @@
 package BusinessLayer;
 
+import DAOs.PurchaseProductDAO;
 import Utils.Pair;
 
 import javax.persistence.*;
@@ -35,7 +36,7 @@ public class ShoppingBag {
         this.id = 0L; // Initializing with a default value
         this.store = store;
         this.productList = new HashMap<>();
-        bagPurchase = new Purchase(new ArrayList<>());
+        bagPurchase = new Purchase(new PurchaseProductDAO());
     }
 
     public ShoppingBag() {

@@ -1,6 +1,8 @@
 package BusinessLayer;
 
 import BusinessLayer.Logger.SystemLogger;
+import DAOs.PurchaseProductDAO;
+import Repositories.IPurchaseProductRepository;
 import Utils.Pair;
 
 import java.util.ArrayList;
@@ -73,9 +75,14 @@ public class ShoppingCart {
                 .stream()
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
-        logger.info("this shipping bag has cleaned");
-        return new Purchase(flattenedList);
+        logger.info("This shopping bag has been cleaned");
+
+        IPurchaseProductRepository purchaseProductDAO = new PurchaseProductDAO();
+        purchaseProductDAO.addAllPurchaseProducts(flattenedList); // Add the purchase products to the database
+
+        return new Purchase(purchaseProductDAO);
     }
+
 
     private ShoppingBag getShoppingBag(Store s) {
         return shoppingBags.stream()

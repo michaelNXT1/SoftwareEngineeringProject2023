@@ -1,6 +1,5 @@
 package DAOs;
 
-import DataAccessLayer.DAOs.HibernateUtil;
 import BusinessLayer.Product;
 import Repositories.IProductRepository;
 import org.hibernate.Session;
@@ -14,7 +13,7 @@ public class ProductDAO implements IProductRepository {
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
-            session.save(product);
+            session.persist(product);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -31,7 +30,7 @@ public class ProductDAO implements IProductRepository {
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
-            session.delete(product);
+            session.remove(product);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -76,7 +75,7 @@ public class ProductDAO implements IProductRepository {
         try {
             transaction = session.beginTransaction();
             for (Product product : productList) {
-                session.save(product);
+                session.persist(product);
             }
             transaction.commit();
         } catch (Exception e) {
