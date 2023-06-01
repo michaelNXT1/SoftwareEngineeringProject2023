@@ -18,7 +18,7 @@ public class Guest {
     @OneToOne(cascade = CascadeType.ALL)
     private ShoppingCart shoppingCart;
     private String searchKeyword;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     private IProductRepository searchResults;
     @OneToMany(cascade = CascadeType.ALL)
     private List<Purchase> purchaseHistory;

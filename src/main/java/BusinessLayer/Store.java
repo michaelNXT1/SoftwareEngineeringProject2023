@@ -32,9 +32,9 @@ public class Store {
     private final Set<String> categories;
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
     private final Map<Product, Integer> products;
-    @OneToMany
+    @OneToOne(cascade = CascadeType.ALL)
     private final IPurchaseRepository purchaseList;
-    @ManyToMany(mappedBy = "stores")
+    @OneToOne(cascade = CascadeType.ALL)
     private final IMemberRepository employees;
     @ElementCollection
     private final List<String> storeOwners = new LinkedList<>();

@@ -12,7 +12,7 @@ public class Purchase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "bagPurchase", cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     private IPurchaseProductRepository productList;
     private PaymentDetails paymentDetails;
 

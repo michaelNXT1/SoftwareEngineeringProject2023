@@ -13,7 +13,7 @@ public class ShoppingCartDTO {
 
     public ShoppingCartDTO(ShoppingCart shoppingCart) {
         List<ShoppingBagDTO> list = new ArrayList<>();
-        for (ShoppingBag shoppingBag : shoppingCart.shoppingBags) {
+        for (ShoppingBag shoppingBag : shoppingCart.shoppingBags.getAllShoppingBags()) {
             ShoppingBagDTO shoppingBagDTO = new ShoppingBagDTO(shoppingBag);
             list.add(shoppingBagDTO);
         }

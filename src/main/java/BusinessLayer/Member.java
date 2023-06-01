@@ -29,7 +29,7 @@ public class Member extends Guest {
     @Column
     private String hashedPassword;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     private IPositionRepository positions = new PositionDAO();//all the positions of this member, note that position act as a state
     @Transient
     private SystemLogger logger;
