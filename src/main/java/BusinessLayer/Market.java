@@ -901,7 +901,7 @@ public class Market {
     public List<String> getAllCategories() {
         Set<String> allCat = new HashSet<>();
         for (Store store : this.stores.values())
-            allCat.addAll(store.getCategories());
+            allCat.addAll(store.getCategories().getAllStrings());
         List<String> retList = new ArrayList<>(allCat);
         Collections.sort(retList);
         logger.info("getting all categories");

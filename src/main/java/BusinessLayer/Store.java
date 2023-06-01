@@ -11,9 +11,11 @@ import BusinessLayer.Policies.PurchasePolicies.PolicyTypes.*;
 import DAOs.BaseDiscountPolicyDAO;
 import DAOs.MemberDAO;
 import DAOs.PurchaseDAO;
+import DAOs.SetStringDAO;
 import Repositories.IBaseDiscountPolicyRepository;
 import Repositories.IMemberRepository;
 import Repositories.IPurchaseRepository;
+import Repositories.IStringSetRepository;
 
 import javax.persistence.*;
 import java.time.LocalTime;
@@ -28,8 +30,8 @@ public class Store {
     private final int storeId;
     @Column(name = "store_name")
     private final String storeName;
-    @ElementCollection
-    private final Set<String> categories;
+    @Transient
+    private final IStringSetRepository categories;
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
     private final Map<Product, Integer> products;
     @OneToOne(cascade = CascadeType.ALL)
@@ -59,7 +61,7 @@ public class Store {
         this.storeId = storeId;
         this.storeName = storeName;
         this.storeOwners.add(storeFounder.getUsername());
-        this.categories = new HashSet<>();
+        this.categories = new SetStringDAO();
         this.products = new ConcurrentHashMap<>();
         this.purchaseList = new PurchaseDAO();
         this.employees = new MemberDAO();
@@ -76,7 +78,7 @@ public class Store {
     public Store() {
         this.storeId = 0;
         this.storeName = "";
-        this.categories = new HashSet<>();
+        this.categories = new SetStringDAO();
         this.products = new ConcurrentHashMap<>();
         this.purchaseList = new PurchaseDAO();
         this.employees = new MemberDAO();
@@ -144,7 +146,7 @@ public class Store {
                 throw new Exception("cannot set quantity to less then 0");
             }
             p = new Product(storeId, this.productIdCounter.getAndIncrement(), productName, price, category, description);
-            categories.add(category);
+            categories.addString(category);
             products.put(p, quantity);
         }
         return p;
@@ -268,13 +270,16 @@ public class Store {
     }
 
     public void addCategoryDiscount(String category, double discountPercentage, int compositionType) throws Exception {
-        if (!categories.contains(category)) {
-            logger.error("category doesn't exist");
+        Set<String> categoryStrings = categories.getAllStrings();
+        if (!categoryStrings.contains(category)) {
+            logger.error("Category doesn't exist");
             throw new Exception("Category doesn't exist");
         }
+
         Discount discount = new CategoryDiscount(discountCounter++, discountPercentage, category, compositionType);
         productDiscountPolicyMap.put(discount, new BaseDiscountPolicyDAO());
     }
+
 
     public void addStoreDiscount(double discountPercentage, int compositionType) throws Exception {
         Discount discount = new StoreDiscount(discountCounter++, discountPercentage, this, compositionType);
@@ -431,7 +436,11 @@ public class Store {
         return employees.getAllMember();
     }
 
-    public Set<String> getCategories() {
+    @ElementCollection
+    @CollectionTable(name = "store_categories",
+            joinColumns = @JoinColumn(name = "store_id"))
+    @Column(name = "category")
+    public IStringSetRepository getCategories() {
         return categories;
     }
 
