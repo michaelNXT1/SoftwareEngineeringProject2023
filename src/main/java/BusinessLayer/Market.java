@@ -10,8 +10,10 @@ import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
 import BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy;
 import CommunicationLayer.NotificationBroker;
 import DAOs.MapIntegerStoreDAO;
+import DAOs.MapStringSystemManagerDAO;
 import DAOs.ProductDAO;
 import Repositories.IMapIntegerStoreRepository;
+import Repositories.IMapStringSystemManagerRepository;
 import Repositories.IProductRepository;
 import Security.ProxyScurity;
 import Security.SecurityAdapter;
@@ -35,7 +37,7 @@ public class Market {
     PaymentSystemProxy paymentSystem;
     SupplySystemProxy supplySystem;
     SessionManager sessionManager = new SessionManager();
-    private Map<String, SystemManager> systemManagers;
+    private IMapStringSystemManagerRepository systemManagers;
     private Map<String, Member> users;
     private MessageDigest passwordEncoder;
     private SecurityAdapter securityUtils = new ProxyScurity(null);
@@ -45,7 +47,7 @@ public class Market {
 
     public Market() {
         stores = new MapIntegerStoreDAO();
-        systemManagers = new ConcurrentHashMap<>();
+        systemManagers = new MapStringSystemManagerDAO();
         users = new ConcurrentHashMap<>();
         try {
             passwordEncoder = MessageDigest.getInstance("MD5");
@@ -60,7 +62,7 @@ public class Market {
         paymentSystem.setPaymentSystem(new PaymentSystem());
         SystemManager sm = new SystemManager("admin", new String(passwordEncoder.digest("admin".getBytes())));
         marketOpen = true;
-        systemManagers.put(sm.getUsername(), sm);
+        systemManagers.addSystemManager(sm.getUsername(), sm);
     }
 
     private static boolean stringIsEmpty(String value) {
@@ -93,7 +95,7 @@ public class Market {
 
         SystemManager sm = new SystemManager(username, hashedPassword);
 
-        systemManagers.put(username, sm);
+        systemManagers.addSystemManager(username, sm);
         logger.info(String.format("new manager added to the system: %s", username));
         if (!marketOpen) {
             logger.info("The Market now open");
@@ -103,7 +105,7 @@ public class Market {
     }
 
     private boolean systemManagerUsernameExists(String username) {
-        return systemManagers.values().stream().anyMatch(m -> m.getUsername().equals(username));
+        return systemManagers.getAllSystemManagers().values().stream().anyMatch(m -> m.getUsername().equals(username));
     }
 
     //use case 1.1
@@ -148,7 +150,7 @@ public class Market {
     //use case 2.3
     public String login(String username, String password, NotificationBroker notificationBroker) throws Exception {
         logger.info(String.format("%s try to logg in to the system", username));
-        SystemManager sm = systemManagers.get(username);
+        SystemManager sm = systemManagers.getSystemManager(username);
         synchronized (username.intern()) {
             if (sm != null) {
                 String hashedPassword = new String(passwordEncoder.digest(password.getBytes()));
@@ -891,7 +893,7 @@ public class Market {
             logger.error("cannot remove member with positions in the market");
             throw new Exception("cannot remove member with positions in the market");
         }
-        if (systemManagers.get(mToRemove.getUsername()) != null) { //partial implantation - remove in full one
+        if (systemManagers.getSystemManager(mToRemove.getUsername()) != null) { //partial implantation - remove in full one
             logger.error("cannot remove member with positions in the market");
             throw new Exception("cannot remove member with positions in the market");
         }
