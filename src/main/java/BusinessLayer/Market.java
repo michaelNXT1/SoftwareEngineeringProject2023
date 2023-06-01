@@ -9,7 +9,9 @@ import BusinessLayer.Logger.SystemLogger;
 import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
 import BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy;
 import CommunicationLayer.NotificationBroker;
+import DAOs.MapIntegerStoreDAO;
 import DAOs.ProductDAO;
+import Repositories.IMapIntegerStoreRepository;
 import Repositories.IProductRepository;
 import Security.ProxyScurity;
 import Security.SecurityAdapter;
@@ -29,7 +31,7 @@ import java.util.stream.Collectors;
 public class Market {
     public static final Object purchaseLock = new Object();
     final Object userLock = new Object();
-    private final Map<Integer, Store> stores;
+    private final IMapIntegerStoreRepository stores;
     PaymentSystemProxy paymentSystem;
     SupplySystemProxy supplySystem;
     SessionManager sessionManager = new SessionManager();
@@ -42,7 +44,7 @@ public class Market {
 
 
     public Market() {
-        stores = new ConcurrentHashMap<>();
+        stores = new MapIntegerStoreDAO();
         systemManagers = new ConcurrentHashMap<>();
         users = new ConcurrentHashMap<>();
         try {
@@ -71,13 +73,13 @@ public class Market {
 
     public List<String> getStoreOwners(int storeId) throws Exception {
         checkStoreExists(storeId);
-        Store s = stores.get(storeId);
+        Store s = stores.getStore(storeId);
         logger.info(String.format("try to get %s owners", s.getStoreName()));
         return s.getStoreOwners();
     }
 
     public Map<Integer, Store> getStores() {
-        return stores;
+        return stores.getAllStores();
     }
 
     public void signUpSystemManager(String username, String password) throws Exception {
@@ -237,7 +239,7 @@ public class Market {
         logger.info(String.format("get all stores including this sub string %s", storeSubString));
         sessionManager.getSession(sessionId);
         if (stringIsEmpty(storeSubString)) return new ArrayList<>();
-        return stores.values().stream().filter(s -> s.getStoreName().contains(storeSubString)).toList().stream().map(StoreDTO::new).toList();
+        return stores.getAllStores().values().stream().filter(s -> s.getStoreName().contains(storeSubString)).toList().stream().map(StoreDTO::new).toList();
     }
 
     //use case 2.4 - store id
@@ -246,7 +248,7 @@ public class Market {
         logger.info(String.format("get the store with specific storeID : %d", storeId));
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
-        return new StoreDTO(stores.get(storeId));
+        return new StoreDTO(stores.getStore(storeId));
     }
 
     //use case 2.5
@@ -255,7 +257,7 @@ public class Market {
         isMarketOpen();
         logger.info(String.format("getting product by product id : %d and store id : %d", productId, storeId));
         checkStoreExists(storeId);
-        return new ProductDTO(stores.get(storeId).getProduct(productId));
+        return new ProductDTO(stores.getStore(storeId).getProduct(productId));
     }
 
     //use case 2.6
@@ -265,7 +267,7 @@ public class Market {
         List<Product> productList = new ArrayList<>();
         logger.info(String.format("Getting product by name: %s", productName));
         if (!stringIsEmpty(productName)) {
-            for (Store store : stores.values()) {
+            for (Store store : stores.getAllStores().values()) {
                 productList.addAll(store.getProducts().keySet().stream()
                         .filter(p -> p.getProductName().equals(productName))
                         .collect(Collectors.toList()));
@@ -289,7 +291,7 @@ public class Market {
         Guest g = sessionManager.getSession(sessionId);
         List<Product> productList = new ArrayList<>();
         if (!stringIsEmpty(productCategory)) {
-            for (Store store : stores.values()) {
+            for (Store store : stores.getAllStores().values()) {
                 productList.addAll(store.getProducts().keySet().stream()
                         .filter(p -> p.getCategory().equals(productCategory))
                         .collect(Collectors.toList()));
@@ -313,7 +315,7 @@ public class Market {
         Guest g = sessionManager.getSession(sessionId);
         List<Product> productList = new ArrayList<>();
         if (!stringIsEmpty(productSubstring)) {
-            for (Store store : stores.values()) {
+            for (Store store : stores.getAllStores().values()) {
                 productList.addAll(store.getProducts().keySet().stream()
                         .filter(p -> p.getProductName().contains(productSubstring))
                         .collect(Collectors.toList()));
@@ -431,10 +433,10 @@ public class Market {
         //TODO: lock stores variable
         int storeId;
         synchronized (stores) {
-            storeId = stores.keySet().isEmpty() ? 0 : stores.keySet().stream().mapToInt(Integer::intValue).max().getAsInt() + 1;
-            boolean isStoreExist = stores.values().stream().filter(x -> Objects.equals(x.getStoreName(), storeName)).toList().size() > 0;
+            storeId = stores.getAllStores().keySet().isEmpty() ? 0 : stores.getAllStores().keySet().stream().mapToInt(Integer::intValue).max().getAsInt() + 1;
+            boolean isStoreExist = stores.getAllStores().values().stream().filter(x -> Objects.equals(x.getStoreName(), storeName)).toList().size() > 0;
             if (!isStoreExist) {
-                stores.put(storeId, g.openStore(storeName, storeId));
+                stores.addStore(storeId, g.openStore(storeName, storeId));
             } else {
                 logger.error(String.format("%s already exist", storeName));
                 throw new Exception("this store already exist");
@@ -455,7 +457,7 @@ public class Market {
             throw new Exception("Store id doesn't exist");
         }
         Position p = checkPositionLegal(sessionId, storeId);
-        return p.getPurchaseHistory(stores.get(storeId)).stream().map(PurchaseDTO::new).toList();
+        return p.getPurchaseHistory(stores.getStore(storeId)).stream().map(PurchaseDTO::new).toList();
     }
 
     //use case 5.1
@@ -469,7 +471,7 @@ public class Market {
             logger.info(String.format("adding product to store %s new product name %s price %.02f category %s quantity %d description %s", getStore(sessionId, storeId).getStoreName(), productName, price, category, quantity, description));
             p = checkPositionLegal(sessionId, storeId);
         }
-        return new ProductDTO(p.addProduct(stores.get(storeId), productName, price, category, quantity, description));
+        return new ProductDTO(p.addProduct(stores.getStore(storeId), productName, price, category, quantity, description));
     }
 
     //use case 5.2 - by product name
@@ -533,7 +535,7 @@ public class Market {
     public void setPositionOfMemberToStoreOwner(String sessionId, int storeID, String MemberToBecomeOwner) throws Exception {
         isMarketOpen();
         Guest g = sessionManager.getSession(sessionId);
-        logger.info(String.format("%s trying to appoint %s to new owner of the %s", g.getUsername(), MemberToBecomeOwner, stores.get(storeID).getStoreName()));
+        logger.info(String.format("%s trying to appoint %s to new owner of the %s", g.getUsername(), MemberToBecomeOwner, stores.getStore(storeID).getStoreName()));
         checkStoreExists(storeID);
         Position p = checkPositionLegal(sessionId, storeID);
         Member m = users.get(MemberToBecomeOwner);
@@ -541,7 +543,7 @@ public class Market {
             logger.error(String.format("%s is not a member", MemberToBecomeOwner));
             throw new Exception(MemberToBecomeOwner + " is not a member");
         }
-        p.setPositionOfMemberToStoreOwner(stores.get(storeID), m, (Member) g);
+        p.setPositionOfMemberToStoreOwner(stores.getStore(storeID), m, (Member) g);
     }
 
     //use case 5.9
@@ -557,7 +559,7 @@ public class Market {
             logger.error(String.format("%s is not a member", MemberToBecomeManager));
             throw new Exception("MemberToBecomeManager is not a member ");
         }
-        p.setPositionOfMemberToStoreManager(stores.get(storeID), m, (Member) g);
+        p.setPositionOfMemberToStoreManager(stores.getStore(storeID), m, (Member) g);
     }
 
     public void setStoreManagerPermissions(String sessionId, int storeId, String storeManager, Set<PositionDTO.permissionType> permissions) throws Exception {
@@ -565,7 +567,7 @@ public class Market {
         Guest m = sessionManager.getSession(sessionId);
         logger.info("trying to modify manger permissions");
         Position p = checkPositionLegal(sessionId, storeId);
-        Position storeManagerPosition = users.get(storeManager).getStorePosition(stores.get(storeId));
+        Position storeManagerPosition = users.get(storeManager).getStorePosition(stores.getStore(storeId));
         if (storeManagerPosition == null) {
             logger.error(String.format("%s has not have that position in this store", storeManager));
             throw new Exception("the name of the store manager has not have that position in this store");
@@ -583,7 +585,7 @@ public class Market {
         logger.info("trying to add manger permissions");
         StoreManager.permissionType perm = StoreManager.permissionType.values()[newPermission];
         Position p = checkPositionLegal(sessionId, storeID);
-        Position storeManagerPosition = users.get(storeManager).getStorePosition(stores.get(storeID));
+        Position storeManagerPosition = users.get(storeManager).getStorePosition(stores.getStore(storeID));
         if (storeManagerPosition == null) {
             logger.error(String.format("%s has not have that position in this store", storeManager));
             throw new Exception("the name of the store manager has not have that position in this store");
@@ -604,7 +606,7 @@ public class Market {
         Member m = (Member) sessionManager.getSession(sessionId);
         StoreManager.permissionType perm = StoreManager.permissionType.values()[permission];
         Position p = checkPositionLegal(sessionId, storeID);
-        Position storeManagerPosition = users.get(storeManager).getStorePosition(stores.get(storeID));
+        Position storeManagerPosition = users.get(storeManager).getStorePosition(stores.getStore(storeID));
         if (storeManagerPosition == null) {
             logger.error(String.format("%s has not have that position in this store", storeManager));
             throw new Exception("the name of the store manager has not have that position in this store");
@@ -653,7 +655,7 @@ public class Market {
         checkMarketOpen();
         sessionManager.getSessionForSystemManager(sessionId);
         Map<StoreDTO, List<PurchaseDTO>> ret = new HashMap<>();
-        for (Store s : stores.values()) {
+        for (Store s : stores.getAllStores().values()) {
             StoreDTO sDTO = new StoreDTO(s);
             ret.put(new StoreDTO(s), new ArrayList<>());
             for (Purchase p : s.getPurchaseList()) {
@@ -837,7 +839,7 @@ public class Market {
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         logger.info(String.format("get the store with specific storeID : %d", storeId));
-        return stores.get(storeId);
+        return stores.getStore(storeId);
     }
 
     private void isMarketOpen() throws Exception {
@@ -852,7 +854,7 @@ public class Market {
     }
 
     private boolean storeExists(int storeId) {
-        return storeId < 0 || !stores.containsKey(storeId);
+        return storeId < 0 || !stores.getAllStores().containsKey(storeId);
     }
 
     private void checkStoreExists(int storeId) throws Exception {
@@ -864,7 +866,7 @@ public class Market {
 
     private Position checkPositionLegal(String sessionId, int storeId) throws Exception {
         Guest g = sessionManager.getSession(sessionId);
-        Position p = users.get(g.getUsername()).getStorePosition(stores.get(storeId));
+        Position p = users.get(g.getUsername()).getStorePosition(stores.getStore(storeId));
         if (p == null) {
             logger.error(String.format("%s not has a position in %s store", g.getUsername(), getStore(sessionId, storeId).getStoreName()));
             throw new Exception("Member not has a position in this store");
@@ -900,7 +902,7 @@ public class Market {
 
     public List<String> getAllCategories() {
         Set<String> allCat = new HashSet<>();
-        for (Store store : this.stores.values())
+        for (Store store : this.stores.getAllStores().values())
             allCat.addAll(store.getCategories().getAllStrings());
         List<String> retList = new ArrayList<>(allCat);
         Collections.sort(retList);
@@ -977,7 +979,7 @@ public class Market {
         checkMarketOpen();
         checkStoreExists(storeId);
         Map<ProductDTO, Integer> newMap = new HashMap<>();
-        for (Map.Entry<Product, Integer> entry : stores.get(storeId).getProducts().entrySet())
+        for (Map.Entry<Product, Integer> entry : stores.getStore(storeId).getProducts().entrySet())
             newMap.put(new ProductDTO(entry.getKey()), entry.getValue());
         return newMap;
     }
@@ -985,7 +987,7 @@ public class Market {
     public Map<DiscountDTO, List<BaseDiscountPolicyDTO>> getDiscountPolicyMap(int storeId) throws Exception {
         checkMarketOpen();
         checkStoreExists(storeId);
-        Map<Discount, List<BaseDiscountPolicy>> discountMap = stores.get(storeId).getProductDiscountPolicyMap();
+        Map<Discount, List<BaseDiscountPolicy>> discountMap = stores.getStore(storeId).getProductDiscountPolicyMap();
         Map<DiscountDTO, List<BaseDiscountPolicyDTO>> retMap = new HashMap<>();
         for (Discount d : discountMap.keySet()) {
             DiscountDTO discountDTO = d.copyConstruct();
@@ -1001,7 +1003,7 @@ public class Market {
         checkMarketOpen();
         checkStoreExists(storeId);
         List<BasePurchasePolicyDTO> ret = new ArrayList<>();
-        for (BasePurchasePolicy bpp : stores.get(storeId).getPurchasePolicies()) {
+        for (BasePurchasePolicy bpp : stores.getStore(storeId).getPurchasePolicies()) {
             ret.add(bpp.copyConstruct());
         }
         return ret;
@@ -1035,7 +1037,7 @@ public class Market {
         isMarketOpen();
         checkStoreExists(storeId);
         logger.info("trying to get manger permissions");
-        Position storeManagerPosition = users.get(username).getStorePosition(stores.get(storeId));
+        Position storeManagerPosition = users.get(username).getStorePosition(stores.getStore(storeId));
         if (storeManagerPosition == null) {
             logger.error(String.format("%s has not have that position in this store", username));
             throw new Exception("the name of the store manager has not have that position in this store");
