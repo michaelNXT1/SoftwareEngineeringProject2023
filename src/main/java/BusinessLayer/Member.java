@@ -29,7 +29,7 @@ public class Member extends Guest {
     @Column
     private String hashedPassword;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @Transient
     private IPositionRepository positions = new PositionDAO();//all the positions of this member, note that position act as a state
     @Transient
     private SystemLogger logger;
@@ -170,9 +170,14 @@ public class Member extends Guest {
         logger.info(String.format("remove %s from being store owner", getUsername()));
     }
 
-    public List<Position> getPositions() {
-        return positions.getAllPositions();
+    public IPositionRepository getPositions() {
+        return positions;
     }
+
+    public void setPositions(IPositionRepository positions) {
+        this.positions = positions;
+    }
+
 
     @Override
     public boolean isLoggedIn() {
