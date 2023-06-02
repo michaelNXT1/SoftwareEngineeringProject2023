@@ -27,14 +27,14 @@ public class Store {
     private final int storeId;
     @Column(name = "store_name", columnDefinition = "text")
     private final String storeName;
-    @ElementCollection
-    private final Set<String> categories;
+    @Transient
+    private final IStringSetRepository categories;
     @OneToOne(cascade = CascadeType.ALL)
-    private final Map<Product, Integer> products;
+    private IMapProductIntegerRepository products;
     @OneToOne(cascade = CascadeType.ALL)
     private final IPurchaseRepository purchaseList;
-    @ManyToMany(mappedBy = "stores")
-    private final List<Member> employees;
+    @OneToOne(cascade = CascadeType.ALL)
+    private final IMemberRepository employees;
     @ElementCollection
     private final List<String> storeOwners = new LinkedList<>();
     @ManyToMany
@@ -58,11 +58,11 @@ public class Store {
         this.storeId = storeId;
         this.storeName = storeName;
         this.storeOwners.add(storeFounder.getUsername());
-        this.categories = new HashSet<>();
-        this.products = new ConcurrentHashMap<>();
+        this.categories = new SetStringDAO();
+        this.products = new MapProductIntegerDAO(new HashMap<>(), this);
         this.purchaseList = new PurchaseDAO();
-        this.employees = new ArrayList<>();
-        employees.add(storeFounder);
+        this.employees = new MemberDAO();
+        employees.addMember(storeFounder);
         this.logger = new SystemLogger();
         this.productIdCounter = new AtomicInteger(0);
         purchasePolicies = new ArrayList<>();
@@ -75,10 +75,10 @@ public class Store {
     public Store() {
         this.storeId = 0;
         this.storeName = "";
-        this.categories = new HashSet<>();
-        this.products = new ConcurrentHashMap<>();
+        this.categories = new SetStringDAO();
+        this.products = new MapProductIntegerDAO(new HashMap<>(), this);
         this.purchaseList = new PurchaseDAO();
-        this.employees = new ArrayList<>();
+        this.employees = new MemberDAO();
         this.logger = new SystemLogger();
         this.productIdCounter = new AtomicInteger(0);
         purchasePolicies = new ArrayList<>();
@@ -93,7 +93,7 @@ public class Store {
         return storeName;
     }
 
-    public Map<Product, Integer> getProducts() {
+    public IMapProductIntegerRepository getProducts() {
         return products;
     }
 
@@ -102,8 +102,8 @@ public class Store {
         synchronized (Market.purchaseLock) {
             Product p = getProduct(productId);
             synchronized (p) {
-                if (products.get(p) + amountToAdd >= 0)
-                    products.put(p, products.get(p) + amountToAdd);
+                if (products.getProductQuantity(p) + amountToAdd >= 0)
+                    products.addProduct(p, products.getProductQuantity(p) + amountToAdd);
             }
         }
     }
@@ -111,8 +111,8 @@ public class Store {
     public PurchaseProduct subtractForPurchase(int productId, int quantity) throws Exception {
         Product p = getProduct(productId);
         synchronized (p) {
-            if (products.get(p) - quantity >= 0)
-                products.put(p, products.get(p) - quantity);
+            if (products.getProductQuantity(p) - quantity >= 0)
+                products.addProduct(p, products.getProductQuantity(p) - quantity);
         }
         return new PurchaseProduct(p, quantity, storeId);
     }
@@ -132,7 +132,7 @@ public class Store {
 
     //use case 5.1
     public Product addProduct(String productName, double price, String category, int quantity, String description) throws Exception {
-        if (products.keySet().stream().anyMatch(p -> p.getProductName().equals(productName))) {
+        if (products.getAllProducts().keySet().stream().anyMatch(p -> p.getProductName().equals(productName))) {
             logger.error(String.format("%s already exist", productName));
             throw new Exception("Product name already exists");
         }
@@ -143,8 +143,8 @@ public class Store {
                 throw new Exception("cannot set quantity to less then 0");
             }
             p = new Product(storeId, this.productIdCounter.getAndIncrement(), productName, price, category, description);
-            categories.add(category);
-            products.put(p, quantity);
+            categories.addString(category);
+            products.addProduct(p, quantity);
         }
         return p;
     }
@@ -155,7 +155,7 @@ public class Store {
     public void removeProduct(int productId) throws Exception {
         synchronized (Market.purchaseLock) {
             Product p = getProduct(productId);
-            products.remove(p);
+            products.removeProduct(p);
         }
     }
 
@@ -172,7 +172,7 @@ public class Store {
     }
 
     public Product getProduct(int productId) throws Exception {
-        Product ret = products.keySet().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null);
+        Product ret = products.getAllProducts().keySet().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null);
         if (ret == null) {
             logger.error(String.format("%d product doesnt exist", productId));
             throw new Exception("Product doesn't exist");
@@ -182,7 +182,7 @@ public class Store {
 
     public void editProductName(int productId, String newName) throws Exception {
         checkProductExists(productId);
-        if (products.keySet().stream().anyMatch(p -> p.getProductName().equals(newName))) {
+        if (products.getAllProducts().keySet().stream().anyMatch(p -> p.getProductName().equals(newName))) {
             logger.error(String.format("%s already exist", newName));
             throw new Exception("Product name already exists");
         }
@@ -267,13 +267,16 @@ public class Store {
     }
 
     public void addCategoryDiscount(String category, double discountPercentage, int compositionType) throws Exception {
-        if (!categories.contains(category)) {
-            logger.error("category doesn't exist");
+        Set<String> categoryStrings = categories.getAllStrings();
+        if (!categoryStrings.contains(category)) {
+            logger.error("Category doesn't exist");
             throw new Exception("Category doesn't exist");
         }
+
         Discount discount = new CategoryDiscount(discountCounter++, discountPercentage, category, compositionType);
         productDiscountPolicyMap.put(discount, new BaseDiscountPolicyDAO());
     }
+
 
     public void addStoreDiscount(double discountPercentage, int compositionType) throws Exception {
         Discount discount = new StoreDiscount(discountCounter++, discountPercentage, this, compositionType);
@@ -385,7 +388,7 @@ public class Store {
 
 
     private Product checkProductExists(int productId) throws Exception {
-        Product product = products.keySet().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null);
+        Product product = products.getAllProducts().keySet().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null);
         if (product == null) {
             logger.error(String.format("%d product doesnt exist", productId));
             throw new Exception("product id doesn't exist");
@@ -395,7 +398,7 @@ public class Store {
 
     public List<Member> getManagers() {
         List<Member> manager = new ArrayList<>();
-        for (Member m : this.employees) {
+        for (Member m : this.employees.getAllMember()) {
             if (m.getStorePosition(this) instanceof StoreManager) {
                 manager.add(m);
             }
@@ -404,11 +407,11 @@ public class Store {
     }
 
     public void addEmployee(Member member) {
-        employees.add(member);
+        employees.addMember(member);
     }
 
     public void removeEmployee(Member member) {
-        employees.remove(member);
+        employees.removeMember(member);
     }
 
     public Map<Discount, List<BaseDiscountPolicy>> getProductDiscountPolicyMap() {
@@ -427,10 +430,14 @@ public class Store {
 
 
     public List<Member> getEmployees() {
-        return employees;
+        return employees.getAllMember();
     }
 
-    public Set<String> getCategories() {
+    @ElementCollection
+    @CollectionTable(name = "store_categories",
+            joinColumns = @JoinColumn(name = "store_id"))
+    @Column(name = "category")
+    public IStringSetRepository getCategories() {
         return categories;
     }
 
@@ -440,5 +447,9 @@ public class Store {
 
     public List<BasePurchasePolicy> getPurchasePolicies() {
         return purchasePolicies;
+    }
+
+    public void setProducts(IMapProductIntegerRepository mapProductIntegerRepository) {
+        products = mapProductIntegerRepository;
     }
 }

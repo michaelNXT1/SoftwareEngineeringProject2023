@@ -9,4 +9,6 @@ public interface IPurchaseRepository {
     public Purchase getPurchaseById(Long id);
 
     List<Purchase> getAllPurchases();
+
+    void removePurchase(Purchase purchase);
 }

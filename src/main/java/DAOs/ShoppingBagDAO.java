@@ -1,22 +1,22 @@
 package DAOs;
 
-import BusinessLayer.Member;
-import Repositories.IMemberRepository;
+import BusinessLayer.ShoppingBag;
+import Repositories.IShoppingBagRepository;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
-
 import java.util.List;
 
-public class MemberDAO implements IMemberRepository {
+public class ShoppingBagDAO implements IShoppingBagRepository {
 
-    public void addMember(Member member) {
+    @Override
+    public void addShoppingBag(ShoppingBag shoppingBag) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
-            session.persist(member);
+            session.persist(shoppingBag);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -26,60 +26,71 @@ public class MemberDAO implements IMemberRepository {
         } finally {
             session.close();
         }
-    }
-
-    public void removeMember(Member member) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction transaction = null;
-        try {
-            transaction = session.beginTransaction();
-            Member managedMember = session.get(Member.class, member.getUsername());
-            if (managedMember != null) {
-                session.remove(managedMember);
-            }
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            e.printStackTrace();
-        } finally {
-            session.close();
-        }
-    }
-
-
-    public Member getMember(String key) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Member member = null;
-        try {
-            member = session.get(Member.class, key);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            session.close();
-        }
-        return member;
     }
 
     @Override
-    public List<Member> getAllMember() {
+    public void removeShoppingBag(ShoppingBag shoppingBag) {
         Session session = HibernateUtil.getSessionFactory().openSession();
-        List<Member> members = null;
+        Transaction transaction = null;
         try {
-            String hql = "FROM members";
-            Query<Member> query = session.createQuery(hql, Member.class);
-            members = query.list();
+            transaction = session.beginTransaction();
+            session.remove(shoppingBag);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
+
+    @Override
+    public ShoppingBag getShoppingBagById(int id) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        ShoppingBag shoppingBag = null;
+        try {
+            shoppingBag = session.get(ShoppingBag.class, id);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             session.close();
         }
-        return members;
+        return shoppingBag;
     }
 
+    @Override
+    public List<ShoppingBag> getAllShoppingBags() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        List<ShoppingBag> shoppingBags = null;
+        try {
+            shoppingBags = session.createQuery("FROM shopping_bag", ShoppingBag.class).list();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return shoppingBags;
+    }
 
-
+    public void clearShoppingBags() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+        try {
+            transaction = session.beginTransaction();
+            Query<ShoppingBag> query = session.createQuery("DELETE FROM shopping_bag", ShoppingBag.class);
+            query.executeUpdate();
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
 
 
 }

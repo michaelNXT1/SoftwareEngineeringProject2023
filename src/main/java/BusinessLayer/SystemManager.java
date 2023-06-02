@@ -3,7 +3,7 @@ package BusinessLayer;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "store_owners")
+@Table(name = "system_managers")
 public class SystemManager {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -31,14 +31,14 @@ class storeTests {
 
     @org.junit.jupiter.api.Test
     void testGetProducts() {
-        assertEquals(50, store.getProducts().get(product));
+        assertEquals(50, store.getProducts().getAllProducts().get(product));
     }
 
     @org.junit.jupiter.api.Test
     void testUpdateProductQuantity() {
 //        assertFalse(store.addToProductQuantity(product, -11));
 //        assertTrue(store.addToProductQuantity(product, -9));
-        assertEquals(41, store.getProducts().get(product));
+        assertEquals(41, store.getProducts().getAllProducts().get(product));
     }
 
     @org.junit.jupiter.api.Test
@@ -51,14 +51,14 @@ class storeTests {
     @org.junit.jupiter.api.Test
     void testAddProduct() throws Exception {
         assertThrows(Exception.class, () -> store.addProduct("bratz", 60.9, "toy", 7,"vv"));
-        assertEquals("bratz", store.getProducts().keySet().stream().filter(p -> p.getProductId() == product.getProductId()).findFirst().orElse(null).getProductName());
+        assertEquals("bratz", store.getProducts().getAllProducts().keySet().stream().filter(p -> p.getProductId() == product.getProductId()).findFirst().orElse(null).getProductName());
     }
 
     @org.junit.jupiter.api.Test
     void testRemoveProduct() throws Exception {
         int productId = product.getProductId();
         store.removeProduct(productId);
-        assertNull(store.getProducts().keySet().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null));
+        assertNull(store.getProducts().getAllProducts().keySet().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null));
     }
 
     @org.junit.jupiter.api.Test
@@ -83,7 +83,7 @@ class storeTests {
     void testEditProductName() throws Exception {
         int productId = product.getProductId();
         store.editProductName(productId, "New Name");
-        assertEquals("New Name", store.getProducts().keySet().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null).getProductName());
+        assertEquals("New Name", store.getProducts().getAllProducts().keySet().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null).getProductName());
         assertThrows(Exception.class, () -> store.editProductName(0, "Invalid Product"));
         assertThrows(Exception.class, () -> store.editProductName(productId, "barbi"));
     }
@@ -93,7 +93,7 @@ class storeTests {
     void testEditProductPrice() throws Exception {
         int productId = product.getProductId();
         store.editProductPrice(productId, 20);
-        assertEquals(19.99, store.getProducts().keySet().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null).getPrice());
+        assertEquals(19.99, store.getProducts().getAllProducts().keySet().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null).getPrice());
         assertThrows(Exception.class, () -> store.editProductPrice(0, 20));
 
     }

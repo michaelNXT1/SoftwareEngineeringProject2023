@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Entity
+@Table(name = "members")
 public class Member extends Guest {
     @Transient
     private ConcurrentLinkedQueue<Notification> notifications;
@@ -170,9 +171,14 @@ public class Member extends Guest {
         logger.info(String.format("remove %s from being store owner", getUsername()));
     }
 
-    public List<Position> getPositions() {
-        return positions.getAllPositions();
+    public IPositionRepository getPositions() {
+        return positions;
     }
+
+    public void setPositions(IPositionRepository positions) {
+        this.positions = positions;
+    }
+
 
     @Override
     public boolean isLoggedIn() {

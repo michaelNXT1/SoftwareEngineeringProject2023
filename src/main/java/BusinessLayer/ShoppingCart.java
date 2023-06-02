@@ -2,7 +2,9 @@ package BusinessLayer;
 
 import BusinessLayer.Logger.SystemLogger;
 import DAOs.PurchaseProductDAO;
+import DAOs.ShoppingBagDAO;
 import Repositories.IPurchaseProductRepository;
+import Repositories.IShoppingBagRepository;
 import Utils.Pair;
 
 import java.util.ArrayList;
@@ -21,15 +23,15 @@ public class ShoppingCart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "cart_id")
-    public List<ShoppingBag> shoppingBags;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "shopping_bag_id")
+    public IShoppingBagRepository shoppingBags;
     @Transient //Marks a property or field as transient, indicating that it should not be persisted in the database.
     private SystemLogger logger;
 
     public ShoppingCart() {
         this.id = 0L; // Initializing with a default value
-        shoppingBags = new ArrayList<>();
+        shoppingBags = new ShoppingBagDAO();
         this.logger = new SystemLogger();
     }
 
@@ -46,10 +48,14 @@ public class ShoppingCart {
 
     //Use case 2.13
     public void removeProduct(Store s, int productId) throws Exception {
-        ShoppingBag shoppingBag = shoppingBags.stream().filter(sb -> sb.getStore().equals(s)).findFirst().orElse(null);
+        List<ShoppingBag> allShoppingBags = shoppingBags.getAllShoppingBags();
+        ShoppingBag shoppingBag = allShoppingBags.stream()
+                .filter(sb -> sb.getStore().equals(s))
+                .findFirst()
+                .orElse(null);
         if (shoppingBag == null) {
-            logger.error(String.format("this store %s is not existing in this cart",s.getStoreName()));
-            throw new Exception("store doesn't exist in cart");
+            logger.error(String.format("This store %s is not existing in this cart", s.getStoreName()));
+            throw new Exception("Store doesn't exist in cart");
         }
         shoppingBag.removeProduct(productId);
     }
@@ -61,7 +67,7 @@ public class ShoppingCart {
             throw new Exception("Purchase failed, cart is empty");
         }
         Map<ShoppingBag, List<PurchaseProduct>> shoppingBagMap = new HashMap<>();
-        for (ShoppingBag sb : shoppingBags) {
+        for (ShoppingBag sb : shoppingBags.getAllShoppingBags()) {
             Pair<List<PurchaseProduct>, Boolean> sbp = sb.purchaseShoppingBag();
             if (sbp.getSecond()) {
                 shoppingBagMap.put(sb, sbp.getFirst());
@@ -72,7 +78,7 @@ public class ShoppingCart {
                 throw new Exception("Purchase failed, not all products were in stock as requested.");
             }
         }
-        shoppingBags.clear();
+        shoppingBags.clearShoppingBags();
         List<PurchaseProduct> flattenedList = shoppingBagMap.values()
                 .stream()
                 .flatMap(List::stream)
@@ -87,19 +93,20 @@ public class ShoppingCart {
 
 
     private ShoppingBag getShoppingBag(Store s) {
-        return shoppingBags.stream()
+        return shoppingBags.getAllShoppingBags().stream()
                 .filter(sb -> sb.getStore().equals(s))
                 .findFirst()
                 .orElseGet(() -> {
                     ShoppingBag newBag = new ShoppingBag(s);
-                    shoppingBags.add(newBag);
+                    shoppingBags.addShoppingBag(newBag);
                     return newBag;
                 });
     }
 
     private boolean isEmpty() {
-        return shoppingBags.stream().allMatch(ShoppingBag::isEmpty);
+        return shoppingBags.getAllShoppingBags().stream().allMatch(ShoppingBag::isEmpty);
     }
+
 
     public void revertPurchase(Purchase purchase) {
     }

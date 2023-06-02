@@ -1,9 +1,16 @@
 package Repositories;
 
 import BusinessLayer.Member;
-import org.springframework.stereotype.Repository;
+import BusinessLayer.Position;
 
-@Repository
+import java.util.List;
+import java.util.Map;
+
 public interface IMemberRepository {
-    void addMember(Member memberDTO);
+    void addMember(Member member);
+    void removeMember(Member member);
+    Member getMember(String key);
+    List<Member> getAllMember();
+
+    // Add other methods as needed
 }
