@@ -79,4 +79,11 @@ public class MapStringSystemManagerDAO implements IMapStringSystemManagerReposit
         }
         return systemManagerMap;
     }
+
+    @Override
+    public boolean containsValue(SystemManager sm) {
+        Map<String, SystemManager> systemManagerMap = getAllSystemManagers();
+        return systemManagerMap.containsValue(sm);
+    }
+
 }
