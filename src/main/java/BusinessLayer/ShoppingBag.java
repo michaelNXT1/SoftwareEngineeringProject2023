@@ -1,13 +1,15 @@
 package BusinessLayer;
 
+import DAOs.MapIntegerIntegerDAO;
 import DAOs.PurchaseProductDAO;
+import Repositories.IMapIntegerIntegerRepository;
 import Utils.Pair;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.atmosphere.annotation.AnnotationUtil.logger;
 
@@ -22,11 +24,8 @@ public class ShoppingBag {
     @JoinColumn(name = "store_id")
     private Store store;
 
-    @ElementCollection
-    @CollectionTable(name = "product_list_mapping", joinColumns = @JoinColumn(name = "shopping_bag_id"))
-    @MapKeyColumn(name = "product_id")
-    @Column(name = "quantity")
-    private Map<Integer, Integer> productList;
+    @Transient
+    private IMapIntegerIntegerRepository productList;
 
     @OneToOne(mappedBy = "shoppingBag", cascade = CascadeType.ALL)
     private Purchase bagPurchase;
@@ -35,7 +34,7 @@ public class ShoppingBag {
     public ShoppingBag(Store store) {
         this.id = 0L; // Initializing with a default value
         this.store = store;
-        this.productList = new HashMap<>();
+        this.productList = new MapIntegerIntegerDAO(new ConcurrentHashMap<>());
         bagPurchase = new Purchase(new PurchaseProductDAO());
     }
 
@@ -64,7 +63,7 @@ public class ShoppingBag {
     public Pair<PurchaseProduct, Boolean> purchaseProduct(int productId) {
         try {
             PurchaseProduct pp = store.subtractForPurchase(productId, productList.get(productId));
-            double discountPercentage = store.getProductDiscountPercentage(productId, productList);
+            double discountPercentage = store.getProductDiscountPercentage(productId, productList.getAllItems());
             pp.setPrice(pp.getPrice() * (1.0 - discountPercentage));
             this.productList.remove(productId);
             return new Pair<>(pp, true);
@@ -74,13 +73,13 @@ public class ShoppingBag {
     }
 
     public Pair<List<PurchaseProduct>, Boolean> purchaseShoppingBag() throws Exception {
-        if (!store.checkPoliciesFulfilled(productList)) {
+        if (!store.checkPoliciesFulfilled(productList.getAllItems())) {
             logger.error("Store purchase policies are not fulfilled in this cart");
             throw new Exception("Store purchase policies are not fulfilled in this cart");
         }
-        store.checkPoliciesFulfilled(productList);
+        store.checkPoliciesFulfilled(productList.getAllItems());
         List<PurchaseProduct> retList = new ArrayList<>();
-        for (Map.Entry<Integer, Integer> e : productList.entrySet()) {
+        for (Map.Entry<Integer, Integer> e : productList.getAllItems().entrySet()) {
             Pair<PurchaseProduct, Boolean> ppp = purchaseProduct(e.getKey());
             if (ppp.getSecond()) {
                 retList.add(ppp.getFirst());
@@ -103,11 +102,15 @@ public class ShoppingBag {
         return store;
     }
 
-    public Map<Integer, Integer> getProductList() {
+    public IMapIntegerIntegerRepository getProductList() {
         return productList;
+    }
+    public void setProductList(IMapIntegerIntegerRepository productList) {
+        this.productList.getAllItems().clear(); // Clear existing items in the in-memory map
+        this.productList.getAllItems().putAll(productList.getAllItems()); // Copy items from the new map
     }
 
     public boolean isEmpty() {
-        return productList.values().stream().allMatch(integer -> integer == 0);
+        return productList.getAllItems().values().stream().allMatch(integer -> integer == 0);
     }
 }

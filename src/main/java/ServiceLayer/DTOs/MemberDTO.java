@@ -22,7 +22,7 @@ public class MemberDTO {
             this.searchResults = member.getSearchResults().stream()
                     .map(ProductDTO::new)
                     .collect(Collectors.toList());
-            this.purchaseHistory = member.getPpurchaseHistory().stream()
+            this.purchaseHistory = member.getPurchaseHistory().stream()
                     .map(PurchaseDTO::new)
                     .collect(Collectors.toList());
     }

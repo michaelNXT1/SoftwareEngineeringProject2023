@@ -53,5 +53,23 @@ public class PurchaseDAO implements IPurchaseRepository {
         return purchaseList;
     }
 
+    @Override
+    public void removePurchase(Purchase purchase) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+        try {
+            transaction = session.beginTransaction();
+            session.remove(purchase);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
+
     // Add other methods as needed
 }
