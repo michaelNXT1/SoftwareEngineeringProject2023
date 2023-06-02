@@ -1,7 +1,14 @@
 package BusinessLayer;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
 public class SupplyDetails {
-    private final String name;
+    @Id
+    @Column(name = "name", columnDefinition = "text")
+    private String name;
 
     public String getName() {
         return name;

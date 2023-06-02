@@ -1,24 +1,31 @@
 package BusinessLayer;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-
-//import javax.persistence.*;
+import jakarta.persistence.*;
+@Entity
+@Table(name = "PaymentDetails")
 public class PaymentDetails {
-    @Id
-    @Column(name = "creditCardNumber", columnDefinition = "text")
-    private final String creditCardNumber;
-    @Column(name = "month", columnDefinition = "text")
-    private final String month;
-    @Column(name = "year", columnDefinition = "text")
-    private final String year;
-    @Column(name = "cvv", columnDefinition = "text")
-    private final String cvv;
-    @Column(name = "holder", columnDefinition = "text")
-    private final String holder;
-    @Column(name = "cardId", columnDefinition = "text")
-    private final String cardId;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "creditCardNumber")
+    private String creditCardNumber;
+
+    @Column(name = "month")
+    private String month;
+
+    @Column(name = "year")
+    private String year;
+
+    @Column(name = "cvv")
+    private String cvv;
+
+    @Column(name = "holder")
+    private String holder;
+
+    @Column(name = "cardId")
+    private String cardId;
 
 
     public PaymentDetails(String cardNumber, String month, String year, String cvv, String holder, String cardId) {
@@ -30,6 +37,9 @@ public class PaymentDetails {
         this.cardId = cardId;
     }
 
+    public PaymentDetails() {
+        // JPA requires a default constructor
+    }
     public String getCreditCardNumber() {
         return creditCardNumber;
     }

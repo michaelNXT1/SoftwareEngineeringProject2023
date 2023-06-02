@@ -51,7 +51,6 @@ public class Market {
     private final SystemLogger logger;
     private boolean marketOpen;
 
-
     public Market() {
         stores = new MapIntegerStoreDAO();
         systemManagers = new MapStringSystemManagerDAO();
@@ -61,7 +60,6 @@ public class Market {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
-        this.memberDAO = new MemberDAO();
         marketOpen = true;
         this.logger = new SystemLogger();
         supplySystem = new SupplySystemProxy();
@@ -150,7 +148,6 @@ public class Market {
         synchronized (userLock) {
             // store new Member's object in users map
             users.put(username, newMember);
-            memberDAO.addMember(newMember);
             logger.info(String.format("%s signed up to the system", username));
         }
     }
@@ -202,7 +199,7 @@ public class Market {
         }
     }
 
-}
+
 
 
     //use case 3.1
@@ -321,7 +318,7 @@ public class Market {
         isMarketOpen();
         Guest g = sessionManager.getSession(sessionId);
         logger.info(String.format("%s getting Search results", sessionId));
-        return g.getSearchResults().stream().map(ProductDTO::new).toList();
+        return g.getSearchResults().getAllProducts().stream().map(ProductDTO::new).toList();
     }
 
     //use case 2.9 - by category
@@ -401,7 +398,7 @@ public class Market {
                 throw new Exception("Purchase failed, payment system hasn't managed to charge");
             }
             purchase = g.purchaseShoppingCart();
-            for (PurchaseProduct p : purchase.getProductList()) {
+            for (PurchaseProduct p : purchase.getProductList().getAllPurchaseProducts()) {
                 logger.info(String.format("purchase completed you just bought %d from %s", p.getQuantity(), p.getProductName()));
             }
         }
@@ -455,7 +452,7 @@ public class Market {
             logger.info(String.format("adding product to store %s new product name %s price %.02f category %s quantity %d description %s", getStore(sessionId, storeId).getStoreName(), productName, price, category, quantity, description));
             p = checkPositionLegal(sessionId, storeId);
         }
-        Store s = stores.get(storeId);
+        Store s = stores.getStore(storeId);
         Product product = p.addProduct(s,productName, price, category, quantity, description);
         List<Member> managers = s.getEmployees();
         for(Member manager: managers){
@@ -562,7 +559,7 @@ public class Market {
             logger.error(String.format("%s is not a member", MemberToBecomeOwner));
             throw new Exception(MemberToBecomeOwner + " is not a member");
         }
-        p.setPositionOfMemberToStoreOwner(stores.get(storeID), m, (Member) g);
+        p.setPositionOfMemberToStoreOwner(stores.getStore(storeID), m, (Member) g);
         List<Member> employees = s.getEmployees();
         for(Member employee: employees){
             employee.sendNotification(new Notification(String.format("%s appoint %s to be new owner of %s",g.getUsername(),MemberToBecomeOwner,s.getStoreName())));
@@ -583,7 +580,7 @@ public class Market {
             logger.error(String.format("%s is not a member", MemberToBecomeManager));
             throw new Exception("MemberToBecomeManager is not a member ");
         }
-        p.setPositionOfMemberToStoreManager(stores.get(storeID), m, (Member) g);
+        p.setPositionOfMemberToStoreManager(stores.getStore(storeID), m, (Member) g);
         List<Member> employees = s.getEmployees();
         for(Member employee: employees){
             employee.sendNotification(new Notification(String.format("%s appoint %s to be new manager of %s",g.getUsername(),MemberToBecomeManager,s.getStoreName())));

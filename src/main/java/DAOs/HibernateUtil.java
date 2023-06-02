@@ -21,9 +21,10 @@ public class HibernateUtil {
             configuration.addAnnotatedClass(BusinessLayer.Purchase.class);
             configuration.addAnnotatedClass(BusinessLayer.ShoppingCart.class);
             configuration.addAnnotatedClass(BusinessLayer.PurchaseProduct.class);
-            configuration.addAnnotatedClass(Repositories.IPositionRepository.class);
-
-
+            configuration.addAnnotatedClass(BusinessLayer.PaymentDetails.class);
+            configuration.addAnnotatedClass(BusinessLayer.SupplyDetails.class);
+            configuration.addAnnotatedClass(BusinessLayer.PurchaseType.class);
+            configuration.addAnnotatedClass(BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy.class);
             sessionFactory = configuration.configure().buildSessionFactory();
         } catch (Throwable ex) {
             System.err.println("Initial SessionFactory creation failed: " + ex);

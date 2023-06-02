@@ -23,8 +23,7 @@ public class ShoppingCart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "shopping_bag_id")
+    @Transient
     public IShoppingBagRepository shoppingBags;
     @Transient //Marks a property or field as transient, indicating that it should not be persisted in the database.
     private SystemLogger logger;

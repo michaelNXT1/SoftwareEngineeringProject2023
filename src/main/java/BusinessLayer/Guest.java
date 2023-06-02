@@ -22,9 +22,9 @@ public class Guest {
     private ShoppingCart shoppingCart;
     @Transient
     private String searchKeyword;
-    @OneToOne(cascade = CascadeType.ALL)
+    @Transient
     private IProductRepository searchResults;
-    @OneToMany(cascade = CascadeType.ALL)
+    @Transient
     private IPurchaseRepository purchaseHistory;
     @OneToOne(cascade = CascadeType.ALL)
     private PaymentDetails paymentDetails;
@@ -47,7 +47,12 @@ public class Guest {
     public ShoppingCart displayShoppingCart() {  //2.11
         return shoppingCart;
     }
-
+    public IPurchaseRepository getPurchaseHistory(){
+        return this.purchaseHistory;
+    }
+    public void setPurchaseHistory(IPurchaseRepository purchaseHistory){
+        this.purchaseHistory = purchaseHistory;
+    }
     public void changeProductQuantity(int productId, int newQuantity, Store s) throws Exception {    //2.12
         shoppingCart.setProductQuantity(s, productId, newQuantity);
     }
@@ -70,8 +75,8 @@ public class Guest {
         shoppingCart.removeProduct(s, productId);
     }
 
-    public List<Product> getSearchResults() {
-        return searchResults.getAllProducts();
+    public IProductRepository getSearchResults() {
+        return searchResults;
     }
 
     public void setSearchResults(IProductRepository searchResults) {
@@ -126,9 +131,6 @@ public class Guest {
         purchaseHistory.removePurchase(purchase);
     }
 
-    public Collection<Purchase> getPurchaseHistory() {
-        return purchaseHistory.getAllPurchases();
-    }
 
     public ShoppingCart getShoppingCart() {
         return shoppingCart;

@@ -8,10 +8,8 @@ import BusinessLayer.Policies.DiscountPolicies.PolicyTypes.*;
 import BusinessLayer.Policies.PurchasePolicies.PurchasePolicyOperation;
 import BusinessLayer.Policies.PurchasePolicies.*;
 import BusinessLayer.Policies.PurchasePolicies.PolicyTypes.*;
-import DAOs.BaseDiscountPolicyDAO;
-import DAOs.PurchaseDAO;
-import Repositories.IBaseDiscountPolicyRepository;
-import Repositories.IPurchaseRepository;
+import DAOs.*;
+import Repositories.*;
 import jakarta.persistence.*;
 
 //import javax.persistence.*;
@@ -29,18 +27,19 @@ public class Store {
     private final String storeName;
     @Transient
     private final IStringSetRepository categories;
-    @OneToOne(cascade = CascadeType.ALL)
+    @Transient
     private IMapProductIntegerRepository products;
-    @OneToOne(cascade = CascadeType.ALL)
+    @Transient
     private final IPurchaseRepository purchaseList;
-    @OneToOne(cascade = CascadeType.ALL)
+    @Transient
     private final IMemberRepository employees;
+    @Transient
+    private final Map<Discount, IBaseDiscountPolicyRepository> productDiscountPolicyMap;
     @ElementCollection
     private final List<String> storeOwners = new LinkedList<>();
     @ManyToMany
     private final List<BasePurchasePolicy> purchasePolicies;
-    @OneToMany
-    private final Map<Discount, IBaseDiscountPolicyRepository> productDiscountPolicyMap;
+
     @Column(name = "purchase_policy_counter")
     private int purchasePolicyCounter;
     @Column(name = "discount_policy_counter")

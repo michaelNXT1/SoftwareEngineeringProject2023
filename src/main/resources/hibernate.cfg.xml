@@ -30,7 +30,11 @@
         <mapping class="BusinessLayer.PurchaseProduct"/>
         <mapping class="BusinessLayer.StoreFounder"/>
         <mapping class="BusinessLayer.ShoppingCart"/>
-        <mapping class="Repositories.IPositionRepository"/>
+        <mapping class="BusinessLayer.PaymentDetails"/>
+        <mapping class="BusinessLayer.SupplyDetails"/>
+        <mapping class="BusinessLayer.PurchaseType"/>
+        <mapping class="BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy"/>
+
 
     </session-factory>
 </hibernate-configuration>
