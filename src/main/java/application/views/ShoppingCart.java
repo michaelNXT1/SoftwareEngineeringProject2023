@@ -37,7 +37,7 @@ ShoppingCart extends VerticalLayout {
         productGrid = new Grid<>(ProductDTO.class, false);
         productGrid.addColumn(ProductDTO::getProductName).setHeader("Product Name");
         productGrid.addColumn(this::getStoreName).setHeader("Store Name");
-        productGrid.addColumn(ProductDTO::getPrice).setHeader("Price per item");
+        productGrid.addColumn(productDTO -> String.format("%.2f", productDTO.getPrice())).setHeader("Price per item");
         productGrid.addComponentColumn(product -> {
             HorizontalLayout hl = new HorizontalLayout();
             IntegerField quantity = new IntegerField();
@@ -49,30 +49,24 @@ ShoppingCart extends VerticalLayout {
             hl.add(quantity, updateButton, removeButton);
             return hl;
         }).setHeader("Quantity");
-        productGrid.addColumn(p -> p.getPrice() * productDTOList.get(p)).setHeader("Total");
-
-//        productGrid.addColumn(ProductDTO::getProductName).setHeader("Product Name");
-//        productGrid.addColumn(ProductDTO::getProductId).setHeader("ProductId");
-//        productGrid.addColumn(ProductDTO::getPrice).setHeader("Price");
-//        productGrid.addColumn(ProductDTO::getCategory).setHeader("Category");
-//        productGrid.addColumn(ProductDTO::getAmount).setHeader("Amount");
-//        productGrid.addColumn(this::getStoreName).setHeader("Store Name");
-//        productGrid.addColumn(ProductDTO::getDescription).setHeader("Description");
-//        productGrid.addColumn(
-//                new ComponentRenderer<>(Button::new, (button, product) -> {
-//                    button.addThemeVariants(ButtonVariant.LUMO_ICON,
-//                            ButtonVariant.LUMO_ERROR,
-//                            ButtonVariant.LUMO_TERTIARY);
-//                    button.addClickListener(e -> this.removeProduct(product));
-//                    button.setIcon(new Icon(VaadinIcon.TRASH));
-//                })).setHeader("Manage");
+        productGrid.addColumn(p -> p.getPrice() * productDTOList.get(p)).setHeader("Total").setFooter("Total: " + String.format("%.2f", calculateTotalPrice()));
 
         productGrid.setItems(productDTOList.keySet());
-        add(productGrid);
-        setSizeFull();
+
+        Button purchaseButton = new Button("Purchase cart");
+        setHorizontalComponentAlignment(Alignment.END, purchaseButton);
+        add(productGrid, purchaseButton);
+        setWidthFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         getStyle().set("text-align", "center");
+    }
+
+    private double calculateTotalPrice() {
+        double ret = 0;
+        for (Map.Entry<ProductDTO, Integer> e : productDTOList.entrySet())
+            ret += e.getKey().getPrice() * e.getValue();
+        return ret;
     }
 
     private void updateQuantity(ProductDTO product, Integer value) {
@@ -105,7 +99,8 @@ ShoppingCart extends VerticalLayout {
     private void refreshGrid() {
         if (productDTOList.size() > 0) {
             productGrid.setVisible(true);
-            productGrid.getDataProvider().refreshAll();
+//            productGrid.getDataProvider().refreshAll();
+            productGrid.setItems(productDTOList.keySet());
         } else {
             productGrid.setVisible(false);
         }

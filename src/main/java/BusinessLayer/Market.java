@@ -287,7 +287,7 @@ public class Market {
         Guest g = sessionManager.getSession(sessionId);
         List<Product> list = new ArrayList<>();
         if (!stringIsEmpty(productSubstring))
-            stores.values().forEach(s -> list.addAll(s.getProducts().keySet().stream().filter(p -> p.getProductName().contains(productSubstring)).toList()));
+            stores.values().forEach(s -> list.addAll(s.getProducts().keySet().stream().filter(p -> p.getProductName().toLowerCase().contains(productSubstring.toLowerCase())).toList()));
         g.setSearchResults(list);
         g.setSearchKeyword(productSubstring);
         return list.stream().map(ProductDTO::new).toList();
