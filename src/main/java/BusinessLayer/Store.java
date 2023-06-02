@@ -8,6 +8,7 @@ import BusinessLayer.Policies.DiscountPolicies.PolicyTypes.*;
 import BusinessLayer.Policies.PurchasePolicies.PurchasePolicyOperation;
 import BusinessLayer.Policies.PurchasePolicies.*;
 import BusinessLayer.Policies.PurchasePolicies.PolicyTypes.*;
+import BusinessLayer.Repositories.*;
 import DAOs.*;
 import Repositories.*;
 
@@ -33,8 +34,8 @@ public class Store {
     private final IMemberRepository employees;
     @ElementCollection
     private final List<String> storeOwners = new LinkedList<>();
-    @ManyToMany
-    private final List<BasePurchasePolicy> purchasePolicies;
+    @OneToOne(cascade = CascadeType.ALL)
+    private final IPurchasePolicyRepository purchasePolicies;
     @OneToMany
     private final Map<Discount, IBaseDiscountPolicyRepository> productDiscountPolicyMap;
     @Column(name = "purchase_policy_counter")
@@ -61,7 +62,7 @@ public class Store {
         employees.addMember(storeFounder);
         this.logger = new SystemLogger();
         this.productIdCounter = new AtomicInteger(0);
-        purchasePolicies = new ArrayList<>();
+        purchasePolicies = new PurchasePolicyDAO();
         purchasePolicyCounter = 0;
         productDiscountPolicyMap = new HashMap<>();
         discountPolicyCounter = 0;
@@ -77,7 +78,7 @@ public class Store {
         this.employees = new MemberDAO();
         this.logger = new SystemLogger();
         this.productIdCounter = new AtomicInteger(0);
-        purchasePolicies = new ArrayList<>();
+        purchasePolicies = new PurchasePolicyDAO();
         purchasePolicyCounter = 0;
         productDiscountPolicyMap = new HashMap<>();
         discountPolicyCounter = 0;
@@ -214,35 +215,35 @@ public class Store {
 
     //Purchase policies
     public void addMinQuantityPolicy(int productId, int minQuantity, boolean allowNone) throws Exception {
-        purchasePolicies.add(new MinQuantityPurchasePolicy(purchasePolicyCounter++, checkProductExists(productId), minQuantity, allowNone));
+        purchasePolicies.addPurchasePolicy(new MinQuantityPurchasePolicy(purchasePolicyCounter++, checkProductExists(productId), minQuantity, allowNone));
     }
 
     public void addMaxQuantityPolicy(int productId, int maxQuantity) throws Exception {
-        purchasePolicies.add(new MaxQuantityPurchasePolicy(purchasePolicyCounter++, checkProductExists(productId), maxQuantity));
+        purchasePolicies.addPurchasePolicy(new MaxQuantityPurchasePolicy(purchasePolicyCounter++, checkProductExists(productId), maxQuantity));
     }
 
     public void addProductTimeRestrictionPolicy(int productId, LocalTime startTime, LocalTime endTime) throws Exception {
-        purchasePolicies.add(new ProductTimeRestrictionPurchasePolicy(purchasePolicyCounter++, checkProductExists(productId), startTime, endTime));
+        purchasePolicies.addPurchasePolicy(new ProductTimeRestrictionPurchasePolicy(purchasePolicyCounter++, checkProductExists(productId), startTime, endTime));
     }
 
     public void addCategoryTimeRestrictionPolicy(String category, LocalTime startTime, LocalTime endTime) throws Exception {
-        purchasePolicies.add(new CategoryTimeRestrictionPurchasePolicy(purchasePolicyCounter++, category, startTime, endTime));
+        purchasePolicies.addPurchasePolicy(new CategoryTimeRestrictionPurchasePolicy(purchasePolicyCounter++, category, startTime, endTime));
     }
 
     public void joinPolicies(int policyId1, int policyId2, int operator) throws Exception {
         BasePurchasePolicy bp1 = findPolicy(policyId1);
         BasePurchasePolicy bp2 = findPolicy(policyId2);
-        purchasePolicies.add(new PurchasePolicyOperation(purchasePolicyCounter++, bp1, operator, bp2));
-        purchasePolicies.remove(bp1);
-        purchasePolicies.remove(bp2);
+        purchasePolicies.addPurchasePolicy(new PurchasePolicyOperation(purchasePolicyCounter++, bp1, operator, bp2));
+        purchasePolicies.removePurchasePolicy(bp1);
+        purchasePolicies.removePurchasePolicy(bp2);
     }
 
     public void removePolicy(int policyId) throws Exception {
-        purchasePolicies.remove(findPolicy(policyId));
+        purchasePolicies.removePurchasePolicy(findPolicy(policyId));
     }
 
     private BasePurchasePolicy findPolicy(int policyId) throws Exception {
-        BasePurchasePolicy bp = purchasePolicies.stream().filter(p -> p.getPolicyId() == policyId).findFirst().orElse(null);
+        BasePurchasePolicy bp = purchasePolicies.getAllPurchasePolicies().stream().filter(p -> p.getPolicyId() == policyId).findFirst().orElse(null);
         if (bp == null) {
             logger.error("couldn't find purchase policy of id" + policyId);
             throw new Exception("couldn't find purchase policy of id" + policyId);
@@ -252,7 +253,7 @@ public class Store {
 
     public boolean checkPoliciesFulfilled(Map<Integer, Integer> productIdList) throws Exception {
         Map<Product, Integer> productList = getProductIntegerMap(productIdList);
-        return purchasePolicies.stream().allMatch(policy -> policy.evaluate(productList));
+        return purchasePolicies.getAllPurchasePolicies().stream().allMatch(policy -> policy.evaluate(productList));
     }
 
     //Discounts
@@ -442,7 +443,7 @@ public class Store {
     }
 
     public List<BasePurchasePolicy> getPurchasePolicies() {
-        return purchasePolicies;
+        return purchasePolicies.getAllPurchasePolicies();
     }
 
     public void setProducts(IMapProductIntegerRepository mapProductIntegerRepository) {

@@ -4,7 +4,7 @@ import BusinessLayer.Logger.SystemLogger;
 
 import CommunicationLayer.NotificationBroker;
 import DAOs.PositionDAO;
-import Repositories.IPositionRepository;
+import BusinessLayer.Repositories.IPositionRepository;
 import Security.SecurityUtils;
 import ServiceLayer.DTOs.StoreDTO;
 
@@ -12,7 +12,6 @@ import ServiceLayer.DTOs.StoreDTO;
 import Notification.Notification;
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 

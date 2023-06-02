@@ -1,6 +1,5 @@
 package BusinessLayer;
-import DAOs.PurchaseProductDAO;
-import Repositories.IPurchaseProductRepository;
+import BusinessLayer.Repositories.IPurchaseProductRepository;
 
 import javax.persistence.*;
 import java.util.List;

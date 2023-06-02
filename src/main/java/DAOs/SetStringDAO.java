@@ -1,7 +1,7 @@
 package DAOs;
 
 import BusinessLayer.Store;
-import Repositories.IStringSetRepository;
+import BusinessLayer.Repositories.IStringSetRepository;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;

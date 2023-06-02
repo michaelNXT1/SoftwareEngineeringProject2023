@@ -1,8 +1,7 @@
 package DAOs;
 
 import BusinessLayer.SystemManager;
-import DAOs.HibernateUtil;
-import Repositories.IMapStringSystemManagerRepository;
+import BusinessLayer.Repositories.IMapStringSystemManagerRepository;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 

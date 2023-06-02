@@ -1,7 +1,6 @@
 package DAOs;
 
-import BusinessLayer.Member;
-import Repositories.IMapIntegerIntegerRepository;
+import BusinessLayer.Repositories.IMapIntegerIntegerRepository;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 

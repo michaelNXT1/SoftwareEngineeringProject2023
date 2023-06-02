@@ -1,7 +1,7 @@
 package DAOs;
 
 import BusinessLayer.Member;
-import Repositories.IMemberRepository;
+import BusinessLayer.Repositories.IMemberRepository;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;

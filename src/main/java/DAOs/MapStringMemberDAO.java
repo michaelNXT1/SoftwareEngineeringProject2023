@@ -1,7 +1,7 @@
 package DAOs;
 
 import BusinessLayer.Member;
-import Repositories.IMapStringMemberRepository;
+import BusinessLayer.Re
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 

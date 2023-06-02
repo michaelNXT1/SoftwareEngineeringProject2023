@@ -1,7 +1,7 @@
 package DAOs;
 
 import BusinessLayer.Purchase;
-import Repositories.IPurchaseRepository;
+import BusinessLayer.Repositories.IPurchaseRepository;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
