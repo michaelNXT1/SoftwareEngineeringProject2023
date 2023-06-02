@@ -133,4 +133,8 @@ public class Guest {
     public SupplyDetails getSupplyDetails() {
         return supplyDetails;
     }
+
+    public Long getId() {
+        return id;
+    }
 }
