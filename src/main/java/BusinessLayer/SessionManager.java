@@ -7,8 +7,8 @@ import Repositories.IMapStringSystemManagerRepository;
 
 import java.security.SecureRandom;
 import java.util.Base64;
-import java.util.*;
 import java.util.Map.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.atmosphere.annotation.AnnotationUtil.logger;
 
@@ -20,7 +20,7 @@ public class SessionManager {
     private static final int SESSION_ID_LENGTH = 16;
     public SessionManager() {
         this.systemManagerSessions = new MapStringSystemManagerDAO();
-        this.sessions = new MapStringGuestDAO(new HashMap<>());
+        this.sessions = new MapStringGuestDAO(new ConcurrentHashMap<>());
     }
 
     public String createSession(Guest user) throws Exception {
