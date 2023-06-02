@@ -10,7 +10,7 @@ import BusinessLayer.Policies.PurchasePolicies.*;
 import BusinessLayer.Policies.PurchasePolicies.PolicyTypes.*;
 import BusinessLayer.Repositories.*;
 import DAOs.*;
-import Repositories.*;
+import BusinessLayer.Repositories.*;
 
 import javax.persistence.*;
 import java.time.LocalTime;
