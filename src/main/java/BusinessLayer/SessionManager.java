@@ -1,7 +1,6 @@
 package BusinessLayer;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.*;

@@ -3,10 +3,13 @@ package BusinessLayer.Discounts;
 import BusinessLayer.Product;
 import ServiceLayer.DTOs.Discounts.CategoryDiscountDTO;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
-import javax.persistence.*;
+//import javax.persistence.*;
+import jakarta.persistence.*;
+
 
 @Entity
 @Table(name = "category_discounts")
+@DiscriminatorValue("CHILD")
 public class CategoryDiscount extends Discount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

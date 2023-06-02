@@ -2,7 +2,6 @@ package ServiceLayer;
 
 import BusinessLayer.Market;
 import CommunicationLayer.NotificationBroker;
-import DAOs.UserRepository;
 import ServiceLayer.DTOs.*;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
@@ -370,7 +369,7 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public Response addMinQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone) {
+    public Response addMinQuantityPurchasePolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone) {
         try {
             market.addMinQuantityPolicy(sessionId, storeId, productId, minQuantity, allowNone);
             return new Response();
@@ -378,8 +377,24 @@ public class MarketManager implements IMarketManager {
             return new Response(e.getMessage());
         }
     }
-
-    public Response addMaxQuantityPolicy(String sessionId, int storeId, int productId, int maxQuantity){
+    @Override
+    public Response setStoreManagerPermissions(String sessionId, int storeId, String storeManager, Set<PositionDTO.permissionType> permissions) {
+        try {
+            market.setStoreManagerPermissions(sessionId, storeId, storeManager, permissions);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+    @Override
+    public ResponseT<Boolean> hasPermission(String sessionId, int storeId, PositionDTO.permissionType employeeList) {
+        try {
+            return ResponseT.fromValue(market.hasPermission(sessionId, storeId, employeeList));
+        } catch (Exception e) {
+            return ResponseT.fromError(e.getMessage());
+        }
+    }
+    public Response addMaxQuantityPurchasePolicy(String sessionId, int storeId, int productId, int maxQuantity){
         try {
             market.addMaxQuantityPolicy(sessionId, storeId, productId, maxQuantity);
             return new Response();
@@ -388,7 +403,7 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public Response addProductTimeRestrictionPolicy(String sessionId, int storeId, int productId, LocalTime startTime, LocalTime endTime) {
+    public Response addProductTimeRestrictionPurchasePolicy(String sessionId, int storeId, int productId, LocalTime startTime, LocalTime endTime) {
         try {
             market.addProductTimeRestrictionPolicy(sessionId, storeId, productId, startTime, endTime);
             return new Response();
@@ -397,7 +412,7 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public Response addCategoryTimeRestrictionPolicy(String sessionId, int storeId, String category, LocalTime startTime, LocalTime endTime) {
+    public Response addCategoryTimeRestrictionPurchasePolicy(String sessionId, int storeId, String category, LocalTime startTime, LocalTime endTime) {
         try {
             market.addCategoryTimeRestrictionPolicy(sessionId, storeId, category, startTime, endTime);
             return new Response();
@@ -406,7 +421,7 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public Response joinPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator) {
+    public Response joinPurchasePolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator) {
         try {
             market.joinPolicies(sessionId, storeId, policyId1, policyId2, operator);
             return new Response();
@@ -415,7 +430,7 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public Response removePolicy(String sessionId, int storeId, int policyId) {
+    public Response removePurchasePolicy(String sessionId, int storeId, int policyId) {
         try {
             market.removePolicy(sessionId, storeId, policyId);
             return new Response();

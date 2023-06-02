@@ -1,6 +1,6 @@
 package ServiceLayer.DTOs;
 
-import BusinessLayer.*;
+import BusinessLayer.Member;
 
 import java.util.LinkedList;
 import java.util.List;

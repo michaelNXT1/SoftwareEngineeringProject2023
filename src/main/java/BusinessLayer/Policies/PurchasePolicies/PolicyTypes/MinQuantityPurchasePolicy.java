@@ -4,10 +4,13 @@ import BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy;
 import BusinessLayer.Product;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.PolicyTypes.MinQuantityPurchasePolicyDTO;
-import javax.persistence.*;
+import jakarta.persistence.*;
+
 import java.util.Map;
 
 @Entity
+@Table(name = "MinQuantityPurchasePolicy")
+@DiscriminatorValue("CHILD")
 public class MinQuantityPurchasePolicy extends BasePurchasePolicy {
     @OneToOne
     @JoinColumn(name = "product_id")

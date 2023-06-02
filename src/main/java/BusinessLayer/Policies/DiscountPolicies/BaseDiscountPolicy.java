@@ -3,7 +3,8 @@ package BusinessLayer.Policies.DiscountPolicies;
 import BusinessLayer.Logger.SystemLogger;
 import BusinessLayer.Product;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
-import javax.persistence.*;
+import jakarta.persistence.*;
+//import javax.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "base_discount_policy")
 @Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "BaseDiscountPolicy", discriminatorType = DiscriminatorType.STRING)
 public abstract class BaseDiscountPolicy {
     @Id
     @Column(name = "policy_id")

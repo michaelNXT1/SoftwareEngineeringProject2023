@@ -2,7 +2,9 @@ package BusinessLayer;
 import DAOs.PurchaseProductDAO;
 import Repositories.IPurchaseProductRepository;
 
-import javax.persistence.*;
+//import javax.persistence.*;
+import jakarta.persistence.*;
+
 import java.util.List;
 
 @Entity
@@ -12,7 +14,7 @@ public class Purchase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "bagPurchase", cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     private IPurchaseProductRepository productList;
     private PaymentDetails paymentDetails;
 

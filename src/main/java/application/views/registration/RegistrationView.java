@@ -13,8 +13,6 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PreserveOnRefresh;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
-
-
     @Route(value = "Registration",layout = MainLayout.class)
     @PreserveOnRefresh
     public class RegistrationView extends VerticalLayout{

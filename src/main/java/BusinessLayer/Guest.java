@@ -2,29 +2,31 @@ package BusinessLayer;
 
 import DAOs.ProductDAO;
 import Repositories.IProductRepository;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.persistence.*;
 import static org.atmosphere.annotation.AnnotationUtil.logger;
 
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Guest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @OneToOne(cascade = CascadeType.ALL)
     private ShoppingCart shoppingCart;
+    @Transient
     private String searchKeyword;
-    @OneToMany(cascade = CascadeType.ALL)
+//    @OneToMany(cascade = CascadeType.ALL)
     private IProductRepository searchResults;
     @OneToMany(cascade = CascadeType.ALL)
     private List<Purchase> purchaseHistory;
-    @OneToOne(cascade = CascadeType.ALL)
+//    @OneToOne(cascade = CascadeType.ALL)
     private PaymentDetails paymentDetails;
-    @OneToOne(cascade = CascadeType.ALL)
+//    @OneToOne(cascade = CascadeType.ALL)
     private SupplyDetails supplyDetails;
 
     public Guest() {

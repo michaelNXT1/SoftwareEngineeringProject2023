@@ -2,8 +2,9 @@ package BusinessLayer;
 
 import DAOs.PurchaseProductDAO;
 import Utils.Pair;
+import jakarta.persistence.*;
 
-import javax.persistence.*;
+//import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

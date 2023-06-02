@@ -3,11 +3,14 @@ package BusinessLayer.Discounts;
 import BusinessLayer.Logger.SystemLogger;
 import BusinessLayer.Product;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
-import javax.persistence.*;
+//import javax.persistence.*;
+import jakarta.persistence.*;
+
 
 @Entity
 @Table(name = "discounts")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@DiscriminatorColumn(name = "Discount", discriminatorType = DiscriminatorType.STRING)
 abstract public class Discount {
 
     public enum CompositionType {

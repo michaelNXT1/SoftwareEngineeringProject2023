@@ -1,9 +1,11 @@
 package BusinessLayer;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+//import javax.persistence.Column;
+//import javax.persistence.Entity;
+//import javax.persistence.Id;
+//import javax.persistence.Table;
+import jakarta.persistence.*;
+
 
 @Entity
 @Table(name = "Purchase_products")
@@ -13,9 +15,9 @@ public class PurchaseProduct {
     private int productId;
     @Column(name = "store_id")
     private int storeId;
-    @Column(name = "product_name")
+    @Column(name = "product_name", columnDefinition = "text")
     private String productName;
-    @Column(name = "product_category")
+    @Column(name = "product_category", columnDefinition = "text")
     private String productCategory;
     @Column(name = "price")
     private double price;

@@ -3,10 +3,14 @@ package BusinessLayer.Policies.PurchasePolicies;
 import BusinessLayer.Product;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.PurchasePolicyOperationDTO;
-import javax.persistence.*;
+//import javax.persistence.*;
+import jakarta.persistence.*;
+
 import java.util.Map;
 
 @Entity
+@Table(name = "ProductTimeRestrictionPurchasePolicy")
+@DiscriminatorValue("CHILD")
 public class PurchasePolicyOperation extends BasePurchasePolicy {
 
     public enum JoinOperator {

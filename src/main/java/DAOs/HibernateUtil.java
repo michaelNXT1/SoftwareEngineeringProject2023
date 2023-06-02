@@ -1,7 +1,9 @@
 package DAOs;
 
+import BusinessLayer.Member;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+
 
 public class HibernateUtil {
 
@@ -9,7 +11,20 @@ public class HibernateUtil {
 
     static {
         try {
-            sessionFactory = new Configuration().configure().buildSessionFactory();
+            Configuration configuration = new Configuration();
+            // register annotated classes
+            configuration.addAnnotatedClass(Member.class);
+            configuration.addAnnotatedClass(BusinessLayer.StoreManager.class);
+            configuration.addAnnotatedClass(BusinessLayer.Product.class);
+            configuration.addAnnotatedClass(BusinessLayer.StoreFounder.class);
+            configuration.addAnnotatedClass(BusinessLayer.StoreOwner.class);
+            configuration.addAnnotatedClass(BusinessLayer.Purchase.class);
+            configuration.addAnnotatedClass(BusinessLayer.ShoppingCart.class);
+            configuration.addAnnotatedClass(BusinessLayer.PurchaseProduct.class);
+            configuration.addAnnotatedClass(Repositories.IPositionRepository.class);
+
+
+            sessionFactory = configuration.configure().buildSessionFactory();
         } catch (Throwable ex) {
             System.err.println("Initial SessionFactory creation failed: " + ex);
             throw new ExceptionInInitializerError(ex);

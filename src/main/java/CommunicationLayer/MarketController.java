@@ -343,7 +343,7 @@ public class MarketController implements IMarketController {
         return marketManager.getStoresPurchases(sessionId);
     }
 
-    @GetMapping("/addProductTimeRestrictionPolicy")
+    @GetMapping("/addProductTimeRestrictionPurchasePolicy")
     @ResponseBody
     @Override
     public Response addProductTimeRestrictionPolicy(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
@@ -354,7 +354,7 @@ public class MarketController implements IMarketController {
         return marketManager.addProductTimeRestrictionPurchasePolicy(sessionId, storeId, productId, startTime, endTime);
     }
 
-    @GetMapping("/addCategoryTimeRestrictionPolicy")
+    @GetMapping("/addCategoryTimeRestrictionPurchasePolicy")
     @ResponseBody
     @Override
     public Response addCategoryTimeRestrictionPolicy(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
@@ -365,7 +365,7 @@ public class MarketController implements IMarketController {
         return marketManager.addCategoryTimeRestrictionPurchasePolicy(sessionId, storeId, category, startTime, endTime);
     }
 
-    @GetMapping("/joinPolicies")
+    @GetMapping("/joinPurchasePolicies")
     @ResponseBody
     @Override
     public Response joinPolicies(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
@@ -376,7 +376,7 @@ public class MarketController implements IMarketController {
         return marketManager.joinPurchasePolicies(sessionId, storeId, policyId1, policyId2, operator);
     }
 
-    @GetMapping("/removePolicy")
+    @GetMapping("/removePurchasePolicy")
     @ResponseBody
     @Override
     public Response removePolicy(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
@@ -385,7 +385,7 @@ public class MarketController implements IMarketController {
         return marketManager.removePurchasePolicy(sessionId, storeId, policyId);
     }
 
-    @GetMapping("/addMinQuantityPolicy")
+    @GetMapping("/addMinQuantityPurchasePolicy")
     @ResponseBody
     @Override
     public Response addMinQuantityPolicy(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
@@ -396,7 +396,7 @@ public class MarketController implements IMarketController {
         return marketManager.addMinQuantityPurchasePolicy(sessionId, storeId, productId, minQuantity, allowNone);
     }
 
-    @GetMapping("/addMaxQuantityPolicy")
+    @GetMapping("/addMaxQuantityPurchasePolicy")
     @ResponseBody
     @Override
     public Response addMaxQuantityPolicy(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
@@ -549,7 +549,7 @@ public class MarketController implements IMarketController {
 
     @Override
     public Response removeStoreOwner(String sessionId, int storeId, String username) {
-        return marketManager.removeStoreOwner(sessionId, storeId, username);
+        return marketManager.removeStoreOwner(sessionId, username,storeId);
     }
 
     @Override

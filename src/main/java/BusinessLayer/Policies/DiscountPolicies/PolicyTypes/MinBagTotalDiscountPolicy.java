@@ -4,11 +4,14 @@ import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
 import BusinessLayer.Product;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.PolicyTypes.MinBagTotalDiscountPolicyDTO;
-import javax.persistence.*;
+//import javax.persistence.*;
+import jakarta.persistence.*;
+
 import java.util.Map;
 
 @Entity
 @Table(name = "min_bag_total_discount_policy")
+@DiscriminatorValue("CHILD")
 public class MinBagTotalDiscountPolicy extends BaseDiscountPolicy {
     @Column(name = "min_total")
     private final double minTotal;

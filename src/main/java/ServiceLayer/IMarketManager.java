@@ -5,7 +5,6 @@ import ServiceLayer.DTOs.*;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -81,17 +80,17 @@ public interface IMarketManager {
 
     ResponseT<Map<StoreDTO, List<PurchaseDTO>>> getStoresPurchases(String sessionId);
 
-    Response addProductTimeRestrictionPolicy(String sessionId, int storeId, int productId, LocalTime startTime, LocalTime endTime);
+    Response addProductTimeRestrictionPurchasePolicy(String sessionId, int storeId, int productId, LocalTime startTime, LocalTime endTime);
 
-    Response addCategoryTimeRestrictionPolicy(String sessionId, int storeId, String category, LocalTime startTime, LocalTime endTime);
+    Response addCategoryTimeRestrictionPurchasePolicy(String sessionId, int storeId, String category, LocalTime startTime, LocalTime endTime);
 
-    Response joinPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator);
+    Response joinPurchasePolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator);
 
-    Response removePolicy(String sessionId, int storeId, int policyId);
+    Response removePurchasePolicy(String sessionId, int storeId, int policyId);
 
-    Response addMaxQuantityPolicy(String sessionId, int storeId, int productId, int maxQuantity);
+    Response addMaxQuantityPurchasePolicy(String sessionId, int storeId, int productId, int maxQuantity);
 
-    Response addMinQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNote);
+    Response addMinQuantityPurchasePolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNote);
 
     Response addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType);
 
@@ -128,6 +127,8 @@ public interface IMarketManager {
     ResponseT<Boolean> isLoggedIn(String sessionId);
 
     ResponseT<Map<ProductDTO, Integer>> getProductsByStore(int storeId);
+    ResponseT<Boolean> hasPermission(String sessionId, int storeId, PositionDTO.permissionType employeeList);
+    Response setStoreManagerPermissions(String sessionId, int storeId, String storeManager, Set<PositionDTO.permissionType> permissions);
 
     ResponseT<Map<DiscountDTO, List<BaseDiscountPolicyDTO>>> getDiscountPolicyMap(int storeId);
 

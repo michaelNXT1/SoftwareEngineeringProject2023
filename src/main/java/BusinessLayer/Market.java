@@ -9,7 +9,10 @@ import BusinessLayer.Logger.SystemLogger;
 import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
 import BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy;
 import CommunicationLayer.NotificationBroker;
-import DAOs.UserRepository;
+import DAOs.MemberDAO;
+import DAOs.ProductDAO;
+import Repositories.IMemberRepository;
+import Repositories.IProductRepository;
 import Security.ProxyScurity;
 import Security.SecurityAdapter;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
@@ -19,6 +22,7 @@ import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 
 
 import Notification.Notification;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalTime;
@@ -34,13 +38,14 @@ public class Market {
     PaymentSystemProxy paymentSystem;
     SupplySystemProxy supplySystem;
     SessionManager sessionManager = new SessionManager();
+    private MemberDAO memberDAO;
     private Map<String, SystemManager> systemManagers;
     private Map<String, Member> users;
     private MessageDigest passwordEncoder;
     private SecurityAdapter securityUtils = new ProxyScurity(null);
     private SystemLogger logger;
     private boolean marketOpen;
-    private UserRepository userRepository;
+    private IMemberRepository userRepository;
     public Market() {
         stores = new ConcurrentHashMap<>();
         systemManagers = new ConcurrentHashMap<>();
@@ -50,6 +55,7 @@ public class Market {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
+        this.memberDAO = new MemberDAO();
         marketOpen = true;
         this.logger = new SystemLogger();
         supplySystem = new SupplySystemProxy();
@@ -138,7 +144,7 @@ public class Market {
         synchronized (userLock) {
             // store new Member's object in users map
             users.put(username, newMember);
-            userRepository.save(newMember);
+            memberDAO.addMember(newMember);
             logger.info(String.format("%s signed up to the system", username));
         }
     }
@@ -715,12 +721,12 @@ public class Market {
 
     public void addProductTimeRestrictionPolicy(String sessionId, int storeId, int productId, LocalTime startTime, LocalTime endTime) throws Exception {
         isMarketOpen();
-        logger.info("trying to add addProductTimeRestrictionPolicy");
+        logger.info("trying to add addProductTimeRestrictionPurchasePolicy");
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
         p.addProductTimeRestrictionPurchasePolicy(productId, startTime, endTime);
-        logger.info(String.format("addProductTimeRestrictionPolicy is added to %d store by %s", storeId, sessionId));
+        logger.info(String.format("addProductTimeRestrictionPurchasePolicy is added to %d store by %s", storeId, sessionId));
     }
 
     public void addCategoryTimeRestrictionPolicy(String sessionId, int storeId, String category, LocalTime startTime, LocalTime endTime) throws Exception {
@@ -735,7 +741,7 @@ public class Market {
 
     public void joinPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator) throws Exception {
         isMarketOpen();
-        logger.info("trying to joinPolicies");
+        logger.info("trying to joinPurchasePolicies");
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
@@ -882,10 +888,6 @@ public class Market {
 
     private boolean storeExists(int storeId) {
         return storeId < 0 || !stores.containsKey(storeId);
-    }
-
-    private static boolean stringIsEmpty(String value) {
-        return value == null || value.equals("");
     }
 
     private void checkStoreExists(int storeId) throws Exception {

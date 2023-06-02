@@ -15,7 +15,7 @@ public class Real implements Bridge {
     private IMarketManager manager;
 
     public Real() {
-        this.manager = new MarketManager(null);
+        this.manager = new MarketManager();
     }
 
     public boolean setupSystem(String managerUName, String managerPass) {
@@ -333,7 +333,7 @@ public class Real implements Bridge {
 
     @Override
     public boolean removeStoreOwner(String sessionId, String storeOwnerToRemove, int storeId) {
-        return !manager.removeStoreOwner(sessionId, storeId, storeOwnerToRemove).getError_occurred();
+        return !manager.removeStoreOwner(sessionId,  storeOwnerToRemove,storeId).getError_occurred();
     }
 
     @Override

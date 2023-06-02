@@ -4,13 +4,14 @@ import BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy;
 import BusinessLayer.Product;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.PolicyTypes.CategoryTimeRestrictionPurchasePolicyDTO;
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalTime;
 import java.util.Map;
 import java.util.Objects;
 
 @Entity
 @Table(name = "CategoryTimeRestrictionPurchasePolicy")
+@DiscriminatorValue("CHILD")
 public class CategoryTimeRestrictionPurchasePolicy extends BasePurchasePolicy {
     @Column(name = "category")
     private final String category;

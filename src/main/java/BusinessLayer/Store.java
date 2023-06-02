@@ -12,8 +12,9 @@ import DAOs.BaseDiscountPolicyDAO;
 import DAOs.PurchaseDAO;
 import Repositories.IBaseDiscountPolicyRepository;
 import Repositories.IPurchaseRepository;
+import jakarta.persistence.*;
 
-import javax.persistence.*;
+//import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,13 +25,13 @@ public class Store {
     @Id
     @Column(name = "store_id")
     private final int storeId;
-    @Column(name = "store_name")
+    @Column(name = "store_name", columnDefinition = "text")
     private final String storeName;
     @ElementCollection
     private final Set<String> categories;
-    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     private final Map<Product, Integer> products;
-    @OneToMany
+    @OneToOne(cascade = CascadeType.ALL)
     private final IPurchaseRepository purchaseList;
     @ManyToMany(mappedBy = "stores")
     private final List<Member> employees;

@@ -1,14 +1,16 @@
 package BusinessLayer;
-import javax.persistence.*;
+//import javax.persistence.*;
+import jakarta.persistence.*;
+
 @Entity
 @Table(name = "store_owners")
 public class SystemManager {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "user_name")
+    @Column(name = "user_name", columnDefinition = "text")
     private String username;
-    @Column(name = "hash_password")
+    @Column(name = "hash_password", columnDefinition = "text")
     private String hashedPassword;
 
     public SystemManager(String username, String hashedPassword) {

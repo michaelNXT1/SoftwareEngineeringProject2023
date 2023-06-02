@@ -1,18 +1,22 @@
 package BusinessLayer;
-import javax.persistence.*;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Id;
+
+//import javax.persistence.*;
 public class PaymentDetails {
     @Id
-    @Column(name = "creditCardNumber")
+    @Column(name = "creditCardNumber", columnDefinition = "text")
     private final String creditCardNumber;
-    @Column(name = "month")
+    @Column(name = "month", columnDefinition = "text")
     private final String month;
-    @Column(name = "year")
+    @Column(name = "year", columnDefinition = "text")
     private final String year;
-    @Column(name = "cvv")
+    @Column(name = "cvv", columnDefinition = "text")
     private final String cvv;
-    @Column(name = "holder")
+    @Column(name = "holder", columnDefinition = "text")
     private final String holder;
-    @Column(name = "cardId")
+    @Column(name = "cardId", columnDefinition = "text")
     private final String cardId;
 
 

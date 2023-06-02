@@ -4,12 +4,14 @@ import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
 import BusinessLayer.Product;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.PolicyTypes.MaxQuantityDiscountPolicyDTO;
-import javax.persistence.*;
+import jakarta.persistence.*;
+//import javax.persistence.*;
 
 import java.util.Map;
 
 @Entity
 @Table(name = "max_quantity_discount_policy")
+@DiscriminatorValue("CHILD")
 public class MaxQuantityDiscountPolicy extends BaseDiscountPolicy {
     @ManyToOne
     @JoinColumn(name = "product_id")

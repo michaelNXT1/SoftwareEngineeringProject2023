@@ -10,27 +10,26 @@ import ServiceLayer.DTOs.StoreDTO;
 
 
 import Notification.Notification;
-import javax.persistence.*;
+import jakarta.persistence.*;
+
+//import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Entity
-@Table(name = "members")
 public class Member extends Guest {
     @Transient
     private ConcurrentLinkedQueue<Notification> notifications;
     @Transient
     private NotificationBroker notificationBroker;
-    @Id
-    @Column(unique = true)
+    @Column(unique = true, columnDefinition = "text")
     private String username;
 
-    @Column
+    @Column(columnDefinition = "text")
     private String hashedPassword;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @Transient
     private IPositionRepository positions = new PositionDAO();//all the positions of this member, note that position act as a state
     @Transient
     private SystemLogger logger;

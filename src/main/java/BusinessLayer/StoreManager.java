@@ -2,8 +2,9 @@ package BusinessLayer;
 
 import BusinessLayer.Logger.SystemLogger;
 import ServiceLayer.DTOs.PositionDTO;
+import jakarta.persistence.*;
 
-import javax.persistence.*;
+//import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.List;
@@ -11,8 +12,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "positions")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "position_type", discriminatorType = DiscriminatorType.STRING)
+//@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+//@DiscriminatorColumn(name = "position_type", discriminatorType = DiscriminatorType.STRING)
 public class StoreManager implements Position {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +26,7 @@ public class StoreManager implements Position {
         Purchases, // getPurchaseHistory
         EmployeeList // getStoreEmployees
     }
-    @Column(name = "position_type", insertable = false, updatable = false)
+    @Column(name = "position_type", insertable = false, updatable = false, columnDefinition = "text")
     private String positionType;
 
     @Transient //Marks a property or field as transient, indicating that it should not be persisted in the database.

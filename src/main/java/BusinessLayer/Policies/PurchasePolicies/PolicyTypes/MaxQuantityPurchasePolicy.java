@@ -4,10 +4,12 @@ import BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy;
 import BusinessLayer.Product;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.PolicyTypes.MaxQuantityPurchasePolicyDTO;
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.Map;
 
 @Entity
+@Table(name = "MaxQuantityPurchasePolicy")
+@DiscriminatorValue("CHILD")
 public class MaxQuantityPurchasePolicy extends BasePurchasePolicy {
     @OneToOne
     private final Product product;
