@@ -10,9 +10,11 @@ import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
 import BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy;
 import CommunicationLayer.NotificationBroker;
 import DAOs.MapIntegerStoreDAO;
+import DAOs.MapStringMemberDAO;
 import DAOs.MapStringSystemManagerDAO;
 import DAOs.ProductDAO;
 import Repositories.IMapIntegerStoreRepository;
+import Repositories.IMapStringMemberRepository;
 import Repositories.IMapStringSystemManagerRepository;
 import Repositories.IProductRepository;
 import Security.ProxyScurity;
@@ -37,18 +39,18 @@ public class Market {
     PaymentSystemProxy paymentSystem;
     SupplySystemProxy supplySystem;
     SessionManager sessionManager = new SessionManager();
-    private IMapStringSystemManagerRepository systemManagers;
-    private Map<String, Member> users;
-    private MessageDigest passwordEncoder;
-    private SecurityAdapter securityUtils = new ProxyScurity(null);
-    private SystemLogger logger;
+    private final IMapStringSystemManagerRepository systemManagers;
+    private final IMapStringMemberRepository users;
+    private final MessageDigest passwordEncoder;
+    private final SecurityAdapter securityUtils = new ProxyScurity(null);
+    private final SystemLogger logger;
     private boolean marketOpen;
 
 
     public Market() {
         stores = new MapIntegerStoreDAO();
         systemManagers = new MapStringSystemManagerDAO();
-        users = new ConcurrentHashMap<>();
+        users = new MapStringMemberDAO(new ConcurrentHashMap<>());
         try {
             passwordEncoder = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
@@ -70,7 +72,7 @@ public class Market {
     }
 
     public Map<String, Member> getUsers() {
-        return users;
+        return users.getAllMembers();
     }
 
     public List<String> getStoreOwners(int storeId) throws Exception {
@@ -194,7 +196,7 @@ public class Market {
 
 //    //use case 2.3
 //    public String loginSystemManager(String username, String password) throws Exception {
-//        logger.info(String.format("%s trying to log in to the systemMnager", username));
+//        logger.info(String.format("%s trying to log in to the systemManager", username));
 //        // Retrieve the stored Member's object for the given username
 //        SystemManager sm = systemManagers.get(username);
 //
@@ -271,8 +273,7 @@ public class Market {
         if (!stringIsEmpty(productName)) {
             for (Store store : stores.getAllStores().values()) {
                 productList.addAll(store.getProducts().getAllProducts().keySet().stream()
-                        .filter(p -> p.getProductName().equals(productName))
-                        .collect(Collectors.toList()));
+                        .filter(p -> p.getProductName().equals(productName)).toList());
             }
         }
         IProductRepository productRepository = new ProductDAO();
@@ -295,8 +296,7 @@ public class Market {
         if (!stringIsEmpty(productCategory)) {
             for (Store store : stores.getAllStores().values()) {
                 productList.addAll(store.getProducts().getAllProducts().keySet().stream()
-                        .filter(p -> p.getCategory().equals(productCategory))
-                        .collect(Collectors.toList()));
+                        .filter(p -> p.getCategory().equals(productCategory)).toList());
             }
         }
         IProductRepository productRepository = new ProductDAO();
@@ -319,8 +319,7 @@ public class Market {
         if (!stringIsEmpty(productSubstring)) {
             for (Store store : stores.getAllStores().values()) {
                 productList.addAll(store.getProducts().getAllProducts().keySet().stream()
-                        .filter(p -> p.getProductName().contains(productSubstring))
-                        .collect(Collectors.toList()));
+                        .filter(p -> p.getProductName().contains(productSubstring)).toList());
             }
         }
         IProductRepository productRepository = new ProductDAO();
@@ -852,7 +851,7 @@ public class Market {
     }
 
     public boolean usernameExists(String username) {
-        return users.values().stream().anyMatch(m -> m.getUsername().equals(username));
+        return users.getAllMembers().values().stream().anyMatch(m -> m.getUsername().equals(username));
     }
 
     private boolean storeExists(int storeId) {
@@ -939,7 +938,7 @@ public class Market {
         SystemManager sm = sessionManager.getSessionForSystemManager(sessionId);
         logger.info(String.format("%s try to get information about members", sm.getUsername()));
         List<MemberDTO> ret = new ArrayList<>();
-        for (Member u : users.values()) {
+        for (Member u : users.getAllMembers().values()) {
             ret.add(new MemberDTO(u));
         }
         logger.info(String.format("system manager %s get information about members", sm.getUsername()));
@@ -1029,7 +1028,6 @@ public class Market {
 
     public boolean hasPermission(String sessionId, int storeId, PositionDTO.permissionType employeeList) throws Exception {
         checkMarketOpen();
-        Guest m = sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
         return p.hasPermission(employeeList);
