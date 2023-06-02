@@ -46,7 +46,7 @@ public class ShoppingBag {
     //Use case 2.10 & Use case 2.12
     public void setProductQuantity(int productId, int quantity) throws Exception {
         Product p = store.getProduct(productId);
-        if (store.getProducts().get(p) >= quantity)
+        if (store.getProducts().getAllProducts().get(p) >= quantity)
             productList.put(productId, quantity);
         else {
             logger.error("Requested product quantity not available.");

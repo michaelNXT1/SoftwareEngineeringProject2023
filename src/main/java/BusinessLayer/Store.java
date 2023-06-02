@@ -8,19 +8,12 @@ import BusinessLayer.Policies.DiscountPolicies.PolicyTypes.*;
 import BusinessLayer.Policies.PurchasePolicies.PurchasePolicyOperation;
 import BusinessLayer.Policies.PurchasePolicies.*;
 import BusinessLayer.Policies.PurchasePolicies.PolicyTypes.*;
-import DAOs.BaseDiscountPolicyDAO;
-import DAOs.MemberDAO;
-import DAOs.PurchaseDAO;
-import DAOs.SetStringDAO;
-import Repositories.IBaseDiscountPolicyRepository;
-import Repositories.IMemberRepository;
-import Repositories.IPurchaseRepository;
-import Repositories.IStringSetRepository;
+import DAOs.*;
+import Repositories.*;
 
 import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 @Entity
 @Table(name = "stores")
@@ -32,8 +25,8 @@ public class Store {
     private final String storeName;
     @Transient
     private final IStringSetRepository categories;
-    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
-    private final Map<Product, Integer> products;
+    @OneToOne(cascade = CascadeType.ALL)
+    private IMapProductIntegerRepository products;
     @OneToOne(cascade = CascadeType.ALL)
     private final IPurchaseRepository purchaseList;
     @OneToOne(cascade = CascadeType.ALL)
@@ -62,7 +55,7 @@ public class Store {
         this.storeName = storeName;
         this.storeOwners.add(storeFounder.getUsername());
         this.categories = new SetStringDAO();
-        this.products = new ConcurrentHashMap<>();
+        this.products = new MapProductIntegerDAO(new HashMap<>(), this);
         this.purchaseList = new PurchaseDAO();
         this.employees = new MemberDAO();
         employees.addMember(storeFounder);
@@ -79,7 +72,7 @@ public class Store {
         this.storeId = 0;
         this.storeName = "";
         this.categories = new SetStringDAO();
-        this.products = new ConcurrentHashMap<>();
+        this.products = new MapProductIntegerDAO(new HashMap<>(), this);
         this.purchaseList = new PurchaseDAO();
         this.employees = new MemberDAO();
         this.logger = new SystemLogger();
@@ -96,7 +89,7 @@ public class Store {
         return storeName;
     }
 
-    public Map<Product, Integer> getProducts() {
+    public IMapProductIntegerRepository getProducts() {
         return products;
     }
 
@@ -105,8 +98,8 @@ public class Store {
         synchronized (Market.purchaseLock) {
             Product p = getProduct(productId);
             synchronized (p) {
-                if (products.get(p) + amountToAdd >= 0)
-                    products.put(p, products.get(p) + amountToAdd);
+                if (products.getProductQuantity(p) + amountToAdd >= 0)
+                    products.addProduct(p, products.getProductQuantity(p) + amountToAdd);
             }
         }
     }
@@ -114,8 +107,8 @@ public class Store {
     public PurchaseProduct subtractForPurchase(int productId, int quantity) throws Exception {
         Product p = getProduct(productId);
         synchronized (p) {
-            if (products.get(p) - quantity >= 0)
-                products.put(p, products.get(p) - quantity);
+            if (products.getProductQuantity(p) - quantity >= 0)
+                products.addProduct(p, products.getProductQuantity(p) - quantity);
         }
         return new PurchaseProduct(p, quantity, storeId);
     }
@@ -135,7 +128,7 @@ public class Store {
 
     //use case 5.1
     public Product addProduct(String productName, double price, String category, int quantity, String description) throws Exception {
-        if (products.keySet().stream().anyMatch(p -> p.getProductName().equals(productName))) {
+        if (products.getAllProducts().keySet().stream().anyMatch(p -> p.getProductName().equals(productName))) {
             logger.error(String.format("%s already exist", productName));
             throw new Exception("Product name already exists");
         }
@@ -147,7 +140,7 @@ public class Store {
             }
             p = new Product(storeId, this.productIdCounter.getAndIncrement(), productName, price, category, description);
             categories.addString(category);
-            products.put(p, quantity);
+            products.addProduct(p, quantity);
         }
         return p;
     }
@@ -158,7 +151,7 @@ public class Store {
     public void removeProduct(int productId) throws Exception {
         synchronized (Market.purchaseLock) {
             Product p = getProduct(productId);
-            products.remove(p);
+            products.removeProduct(p);
         }
     }
 
@@ -175,7 +168,7 @@ public class Store {
     }
 
     public Product getProduct(int productId) throws Exception {
-        Product ret = products.keySet().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null);
+        Product ret = products.getAllProducts().keySet().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null);
         if (ret == null) {
             logger.error(String.format("%d product doesnt exist", productId));
             throw new Exception("Product doesn't exist");
@@ -185,7 +178,7 @@ public class Store {
 
     public void editProductName(int productId, String newName) throws Exception {
         checkProductExists(productId);
-        if (products.keySet().stream().anyMatch(p -> p.getProductName().equals(newName))) {
+        if (products.getAllProducts().keySet().stream().anyMatch(p -> p.getProductName().equals(newName))) {
             logger.error(String.format("%s already exist", newName));
             throw new Exception("Product name already exists");
         }
@@ -391,7 +384,7 @@ public class Store {
 
 
     private Product checkProductExists(int productId) throws Exception {
-        Product product = products.keySet().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null);
+        Product product = products.getAllProducts().keySet().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null);
         if (product == null) {
             logger.error(String.format("%d product doesnt exist", productId));
             throw new Exception("product id doesn't exist");
@@ -450,5 +443,9 @@ public class Store {
 
     public List<BasePurchasePolicy> getPurchasePolicies() {
         return purchasePolicies;
+    }
+
+    public void setProducts(IMapProductIntegerRepository mapProductIntegerRepository) {
+        products = mapProductIntegerRepository;
     }
 }

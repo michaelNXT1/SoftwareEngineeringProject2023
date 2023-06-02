@@ -270,7 +270,7 @@ public class Market {
         logger.info(String.format("Getting product by name: %s", productName));
         if (!stringIsEmpty(productName)) {
             for (Store store : stores.getAllStores().values()) {
-                productList.addAll(store.getProducts().keySet().stream()
+                productList.addAll(store.getProducts().getAllProducts().keySet().stream()
                         .filter(p -> p.getProductName().equals(productName))
                         .collect(Collectors.toList()));
             }
@@ -294,7 +294,7 @@ public class Market {
         List<Product> productList = new ArrayList<>();
         if (!stringIsEmpty(productCategory)) {
             for (Store store : stores.getAllStores().values()) {
-                productList.addAll(store.getProducts().keySet().stream()
+                productList.addAll(store.getProducts().getAllProducts().keySet().stream()
                         .filter(p -> p.getCategory().equals(productCategory))
                         .collect(Collectors.toList()));
             }
@@ -318,7 +318,7 @@ public class Market {
         List<Product> productList = new ArrayList<>();
         if (!stringIsEmpty(productSubstring)) {
             for (Store store : stores.getAllStores().values()) {
-                productList.addAll(store.getProducts().keySet().stream()
+                productList.addAll(store.getProducts().getAllProducts().keySet().stream()
                         .filter(p -> p.getProductName().contains(productSubstring))
                         .collect(Collectors.toList()));
             }
@@ -981,7 +981,7 @@ public class Market {
         checkMarketOpen();
         checkStoreExists(storeId);
         Map<ProductDTO, Integer> newMap = new HashMap<>();
-        for (Map.Entry<Product, Integer> entry : stores.getStore(storeId).getProducts().entrySet())
+        for (Map.Entry<Product, Integer> entry : stores.getStore(storeId).getProducts().getAllProducts().entrySet())
             newMap.put(new ProductDTO(entry.getKey()), entry.getValue());
         return newMap;
     }
