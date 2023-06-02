@@ -1,9 +1,9 @@
 package BusinessLayer;
 
 import DAOs.ProductDAO;
+import DAOs.PurchaseDAO;
 import Repositories.IProductRepository;
-
-import java.util.ArrayList;
+import Repositories.IPurchaseRepository;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +21,7 @@ public class Guest {
     @OneToOne(cascade = CascadeType.ALL)
     private IProductRepository searchResults;
     @OneToMany(cascade = CascadeType.ALL)
-    private List<Purchase> purchaseHistory;
+    private IPurchaseRepository purchaseHistory;
     @OneToOne(cascade = CascadeType.ALL)
     private PaymentDetails paymentDetails;
     @OneToOne(cascade = CascadeType.ALL)
@@ -31,7 +31,7 @@ public class Guest {
         this.id = 0L; // Initializing with a default value
         shoppingCart = new ShoppingCart();
         searchResults = new ProductDAO();
-        purchaseHistory = new ArrayList<>();
+        purchaseHistory = new PurchaseDAO();
         paymentDetails = null;
         supplyDetails = null;
     }
@@ -50,15 +50,15 @@ public class Guest {
 
     public Purchase purchaseShoppingCart() throws Exception {    //2.14
         if (paymentDetails == null) {
-            logger.error(String.format("no payment details exist"));
+            logger.error("no payment details exist");
             throw new Exception("no payment details exist");
         }
         if (supplyDetails == null) {
-            logger.error(String.format("no supply details exist"));
+            logger.error("no supply details exist");
             throw new Exception("no supply details exist");
         }
         Purchase p = shoppingCart.purchaseShoppingCart();
-        purchaseHistory.add(p);
+        purchaseHistory.savePurchase(p);
         return p;
     }
 
@@ -93,7 +93,7 @@ public class Guest {
     }
 
     public Store openStore(String storeName, int storeId) throws Exception {
-        logger.error(String.format("Cannot perform action when not a member"));
+        logger.error("Cannot perform action when not a member");
         throw new Exception("Cannot perform action when not a member");
     }
 
@@ -102,7 +102,7 @@ public class Guest {
     }
 
     public String getUsername() throws Exception {
-        logger.error(String.format("Cannot perform action when not a member"));
+        logger.error("Cannot perform action when not a member");
         throw new Exception("Cannot perform action when not a member");
     }
 
@@ -119,11 +119,11 @@ public class Guest {
     }
 
     public void revertPurchase(Purchase purchase) {
-        purchaseHistory.remove(purchase);
+        purchaseHistory.removePurchase(purchase);
     }
 
-    public Collection<Purchase> getPpurchaseHistory() {
-        return purchaseHistory;
+    public Collection<Purchase> getPurchaseHistory() {
+        return purchaseHistory.getAllPurchases();
     }
 
     public ShoppingCart getShoppingCart() {
