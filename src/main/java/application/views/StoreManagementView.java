@@ -212,7 +212,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
                 div.setText("You");
                 return div;
             }
-            if (marketController.hasPermission(MainLayout.getSessionId(), storeId, PositionDTO.permissionType.setPermissions).value)
+            if (!marketController.hasPermission(MainLayout.getSessionId(), storeId, PositionDTO.permissionType.setPermissions).value)
                 return new Div();
             PositionDTO position = memberDTO.getPositions().stream().filter(p -> p.getStore().getStoreId() == storeId).findFirst().orElse(null);
             if (position != null && position.getAssigner().getUsername().equals(marketController.getUsername(MainLayout.getSessionId()).value))
