@@ -207,7 +207,6 @@ public class MainLayout extends AppLayout {
         Map<String, Runnable> actionsMap = new HashMap<>();
         actionsMap.put("Add Payment Method", () -> UI.getCurrent().navigate(AddPaymentMethod.class));
         actionsMap.put("Open a New Store", () -> UI.getCurrent().navigate(OpenStore.class));
-        actionsMap.put("Close Store", () -> UI.getCurrent().navigate(CloseStore.class));
         actionsMap.put("My Stores", () -> UI.getCurrent().navigate(ManagerStoresView.class));
 
         actionsMap.put("Get information about members", () -> UI.getCurrent().navigate(GetInformationAboutMembers.class));

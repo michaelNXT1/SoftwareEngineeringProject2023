@@ -22,6 +22,7 @@ import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridSortOrder;
 import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
@@ -86,7 +87,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         discountGrids.add(productDiscountLayout, categoryDiscountLayout, storeDiscountLayout);
         discountGrids.setWidthFull();
 
-        add(productAndPolicyGrids, new H1("Discount Lists"), discountGrids, new Button("Close Store"));
+        add(productAndPolicyGrids, new H1("Discount Lists"), discountGrids, new Button("Close Store", e -> CloseStore()));
 
         setWidthFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
@@ -102,6 +103,11 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         successVl.add(new Label(msg), new Button("Close", e -> successDialog.close()));
         successDialog.add(successVl);
         successDialog.open();
+    }
+
+    private void CloseStore() {
+        Response r = marketController.closeStore(MainLayout.getSessionId(), storeId);
+        Notification.show(r.getError_occurred() ? r.error_message : "Store closed successfully", 3000, Notification.Position.MIDDLE);
     }
 
     @Override
