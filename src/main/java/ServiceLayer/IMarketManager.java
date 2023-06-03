@@ -6,6 +6,7 @@ import ServiceLayer.DTOs.Discounts.DiscountDTO;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
@@ -162,7 +163,7 @@ public interface IMarketManager {
     getPurchasePolicyTypes();
 
     //Discount methods
-    Response
+    ResponseT<Integer>
     addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType);
 
     Response
@@ -178,13 +179,13 @@ public interface IMarketManager {
     getDiscountPolicyMap(int storeId);
 
     //Discount policy methods
-    Response
+    ResponseT<Integer>
     addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone);
 
-    Response
+    ResponseT<Integer>
     addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity);
 
-    Response
+    ResponseT<Integer>
     addMinBagTotalDiscountPolicy(String sessionId, int storeId, int discountId, double minTotal);
 
     Response
@@ -217,7 +218,7 @@ public interface IMarketManager {
     getSearchKeyword(String sessionId);
 
     ResponseT<Set<PositionDTO.permissionType>> getPermissions(String sessionId, int storeId, String username);
-
+     Response addSupplyDetails(String sessionId, String name, String address, String city, String country, String zip);
 
 //        Response
 //        logoutSystemManager(String sessionId);

@@ -219,7 +219,7 @@ public abstract class ServiceTests extends TestCase {
     }
 
 
-    public boolean addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType) {
+    public Integer addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType) {
         return this.bridge.addProductDiscount(sessionId, storeId, productId, discountPercentage, compositionType);
     }
 
@@ -234,17 +234,17 @@ public abstract class ServiceTests extends TestCase {
     }
 
 
-    public boolean addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone) {
+    public Integer addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone) {
         return this.bridge.addMinQuantityDiscountPolicy(sessionId, storeId, discountId, productId, minQuantity, allowNone);
     }
 
 
-    public boolean addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity) {
+    public Integer addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity) {
         return this.bridge.addMaxQuantityDiscountPolicy(sessionId, storeId, discountId, productId, maxQuantity);
     }
 
 
-    public boolean addMinBagTotalDiscountPolicy(String sessionId, int storeId, int discountId, double minTotal) {
+    public Integer addMinBagTotalDiscountPolicy(String sessionId, int storeId, int discountId, double minTotal) {
         return this.bridge.addMinBagTotalDiscountPolicy(sessionId, storeId, discountId, minTotal);
     }
 
@@ -273,5 +273,9 @@ public abstract class ServiceTests extends TestCase {
     }
     public boolean getInformationAboutMembers(String sessionId){
         return bridge.getInformationAboutMembers(sessionId);
+    }
+
+    public boolean addSupplyDetails(String sessionId, String name, String address, String city, String country, String zip){
+        return this.bridge.addSupplyDetails(sessionId, name, address, city, country, zip);
     }
 }

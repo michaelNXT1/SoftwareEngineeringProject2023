@@ -25,17 +25,17 @@ public class AddDiscountTest extends ServiceTests {
     public void testAddProductDiscountAsStoreOwnerSuccess() {
         int storeID = openStore(sessionID1, "newStore");
         int productID1 = addProduct(sessionID1, storeID, "test", 3.9, "milk", 9, "10");
-        assertTrue(addProductDiscount(sessionID1, storeID, productID1, 0.1, 0));
+        assertTrue(addProductDiscount(sessionID1, storeID, productID1, 0.1, 0) != null);
     }
 
     @Test
     public void testAddProductDiscountAsStoreOwnerFailure() {
         int storeID = openStore(sessionID1, "newStore");
         int productID1 = addProduct(sessionID1, storeID, "test", 3.9, "milk", 9, "10");
-        assertFalse(addProductDiscount(sessionID1, storeID, productID1 + 1, 0.1, 0));
-        assertFalse(addProductDiscount(sessionID1, storeID + 1, productID1, 0.1, 0));
-        assertFalse(addProductDiscount(sessionID1, storeID, productID1, 0.0, 0));
-        assertFalse(addProductDiscount(sessionID1, storeID, productID1, 0.1, 5));
+        assertFalse(addProductDiscount(sessionID1, storeID, productID1 + 1, 0.1, 0) != null);
+        assertFalse(addProductDiscount(sessionID1, storeID + 1, productID1, 0.1, 0)!= null);
+        assertFalse(addProductDiscount(sessionID1, storeID, productID1, 0.0, 0)!=  null);
+        assertFalse(addProductDiscount(sessionID1, storeID, productID1, 0.1, 5)!=  null);
     }
 
     @Test

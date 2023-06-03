@@ -231,7 +231,7 @@ public class StoreManager implements Position {
     }
 
     @Override
-    public void addProductDiscount(int productId, double discountPercentage, int compositionType) throws Exception {
+    public Integer addProductDiscount(int productId, double discountPercentage, int compositionType) throws Exception {
         logger.error("store manager hasn't permission to perform this action");
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
@@ -255,19 +255,19 @@ public class StoreManager implements Position {
     }
 
     @Override
-    public void addMinQuantityDiscountPolicy(int discountId, int productId, int minQuantity, boolean allowNone) throws Exception {
+    public Integer addMinQuantityDiscountPolicy(int discountId, int productId, int minQuantity, boolean allowNone) throws Exception {
         logger.error("store manager hasn't permission to perform this action");
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 
     @Override
-    public void addMaxQuantityDiscountPolicy(int discountId, int productId, int maxQuantity) throws Exception {
+    public Integer addMaxQuantityDiscountPolicy(int discountId, int productId, int maxQuantity) throws Exception {
         logger.error("store manager hasn't permission to perform this action");
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 
     @Override
-    public void addMinBagTotalDiscountPolicy(int discountId, double minTotal) throws Exception {
+    public Integer addMinBagTotalDiscountPolicy(int discountId, double minTotal) throws Exception {
         logger.error("store manager hasn't permission to perform this action");
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
