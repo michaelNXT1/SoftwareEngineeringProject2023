@@ -239,8 +239,8 @@ public abstract class ServiceTests extends TestCase {
     }
 
 
-    public boolean addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity, boolean allowNone) {
-        return this.bridge.addMaxQuantityDiscountPolicy(sessionId, storeId, discountId, productId, maxQuantity, allowNone);
+    public boolean addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity) {
+        return this.bridge.addMaxQuantityDiscountPolicy(sessionId, storeId, discountId, productId, maxQuantity);
     }
 
 

@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public abstract class BasePurchasePolicy {
+    protected int policyId;
     protected SystemLogger logger;
 
     public static List<String> getPurchasePolicyTypes() {
@@ -21,7 +22,6 @@ public abstract class BasePurchasePolicy {
         return ret.stream().sorted().collect(Collectors.toList());
     }
 
-    protected int policyId;
 
     public BasePurchasePolicy(int policyId) {
         this.policyId = policyId;

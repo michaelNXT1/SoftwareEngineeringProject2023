@@ -14,4 +14,8 @@ public abstract class DiscountDTO {
     public double getDiscountPercentage() {
         return discountPercentage;
     }
+
+    public int getDiscountId() {
+        return discountId;
+    }
 }

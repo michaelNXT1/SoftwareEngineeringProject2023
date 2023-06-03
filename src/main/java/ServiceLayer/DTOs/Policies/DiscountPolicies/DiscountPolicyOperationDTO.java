@@ -22,4 +22,12 @@ public class DiscountPolicyOperationDTO extends BaseDiscountPolicyDTO {
         }
         this.right = dpo.getRight().copyConstruct();
     }
+
+    @Override
+    public String toString() {
+        return switch (joinOperator) {
+            case OR -> "(" + left.toString() + ")\nOR\n(" + right.toString() + ")";
+            case XOR -> "(" + left.toString() + ")\nOR\n(" + right.toString() + ")\nbut not both";
+        };
+    }
 }

@@ -21,4 +21,8 @@ public class ProductDiscount extends Discount {
     public DiscountDTO copyConstruct() {
         return new ProductDiscountDTO(this);
     }
+
+    public int getProductId() {
+        return productId;
+    }
 }

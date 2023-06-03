@@ -9,6 +9,7 @@ import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface IMarketManager {
     Response signUpSystemManager(String username, String password);
