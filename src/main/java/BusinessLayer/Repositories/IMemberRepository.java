@@ -1,4 +1,4 @@
-package Repositories;
+package BusinessLayer.Repositories;
 
 import BusinessLayer.Member;
 import BusinessLayer.Position;

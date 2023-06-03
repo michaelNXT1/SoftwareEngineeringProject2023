@@ -2,8 +2,8 @@ package BusinessLayer;
 
 import DAOs.MapStringGuestDAO;
 import DAOs.MapStringSystemManagerDAO;
-import Repositories.IMapStringGuestRepository;
-import Repositories.IMapStringSystemManagerRepository;
+import BusinessLayer.Repositories.IMapStringGuestRepository;
+import BusinessLayer.Repositories.IMapStringSystemManagerRepository;
 
 import java.security.SecureRandom;
 import java.util.Base64;

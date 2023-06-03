@@ -2,7 +2,7 @@ package BusinessLayer;
 
 import DAOs.MapIntegerIntegerDAO;
 import DAOs.PurchaseProductDAO;
-import Repositories.IMapIntegerIntegerRepository;
+import BusinessLayer.Repositories.IMapIntegerIntegerRepository;
 import Utils.Pair;
 
 import javax.persistence.*;

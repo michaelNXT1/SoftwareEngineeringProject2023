@@ -1,7 +1,7 @@
 package DAOs;
 
 import BusinessLayer.ShoppingBag;
-import Repositories.IShoppingBagRepository;
+import BusinessLayer.Repositories.IShoppingBagRepository;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;

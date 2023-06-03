@@ -1,7 +1,7 @@
 package DAOs;
 
 import BusinessLayer.Position;
-import Repositories.IPositionRepository;
+import BusinessLayer.Repositories.IPositionRepository;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 

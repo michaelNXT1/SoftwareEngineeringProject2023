@@ -1,4 +1,4 @@
-package Repositories;
+package BusinessLayer.Repositories;
 
 import BusinessLayer.Product;
 import BusinessLayer.Store;

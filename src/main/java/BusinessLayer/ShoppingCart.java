@@ -3,11 +3,10 @@ package BusinessLayer;
 import BusinessLayer.Logger.SystemLogger;
 import DAOs.PurchaseProductDAO;
 import DAOs.ShoppingBagDAO;
-import Repositories.IPurchaseProductRepository;
-import Repositories.IShoppingBagRepository;
+import BusinessLayer.Repositories.IPurchaseProductRepository;
+import BusinessLayer.Repositories.IShoppingBagRepository;
 import Utils.Pair;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
