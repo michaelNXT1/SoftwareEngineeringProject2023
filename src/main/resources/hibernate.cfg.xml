@@ -14,6 +14,7 @@
 
         <!-- SQL dialect -->
         <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+        <property name="current_session_context_class">thread</property>
 
         <!-- Print executed SQL to stdout -->
         <property name="show_sql">true</property>
@@ -35,6 +36,7 @@
         <mapping class="BusinessLayer.PurchaseType"/>
         <mapping class="BusinessLayer.SystemManager"/>
         <mapping class="BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy"/>
+
 
 
     </session-factory>
