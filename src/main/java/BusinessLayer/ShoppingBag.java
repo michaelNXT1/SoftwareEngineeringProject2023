@@ -87,4 +87,8 @@ public class ShoppingBag {
     public boolean isEmpty() {
         return productList.values().stream().allMatch(integer -> integer == 0);
     }
+
+    public double getProductDiscountPercentageInCart(int productId) throws Exception {
+        return store.getProductDiscountPercentage(productId, productList);
+    }
 }

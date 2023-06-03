@@ -207,4 +207,8 @@ public interface IMarketController {
 
     ResponseT<Set<PositionDTO.permissionType>>
     getPermissions(String sessionId, int storeId, String username);
+
+    ResponseT<Boolean> hasPaymentMethod(String sessionId);
+
+    ResponseT<Double> getProductDiscountPercentageInCart(String sessionId, int storeId, int productId);
 }

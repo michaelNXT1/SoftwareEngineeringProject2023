@@ -631,4 +631,22 @@ public class MarketManager implements IMarketManager {
             return ResponseT.fromError(e.getMessage());
         }
     }
+
+    @Override
+    public ResponseT<Boolean> hasPaymentMethod(String sessionId) {
+        try {
+            return ResponseT.fromValue(market.hasPaymentMethod(sessionId));
+        } catch (Exception e) {
+            return ResponseT.fromError(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseT<Double> getProductDiscountPercentageInCart(String sessionId, int storeId, int productId) {
+        try {
+            return ResponseT.fromValue(market.getProductDiscountPercentageInCart(sessionId, storeId, productId));
+        } catch (Exception e) {
+            return ResponseT.fromError(e.getMessage());
+        }
+    }
 }

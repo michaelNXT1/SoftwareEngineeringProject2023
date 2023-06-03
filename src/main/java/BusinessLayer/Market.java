@@ -1005,4 +1005,17 @@ public class Market {
         }
         return storeManagerPosition.getPermissions();
     }
+
+    public boolean hasPaymentMethod(String sessionId) throws Exception {
+        isMarketOpen();
+        Guest m = sessionManager.getSession(sessionId);
+        return m.getPaymentDetails() != null;
+    }
+
+    public double getProductDiscountPercentageInCart(String sessionId, int storeId, int productId) throws Exception {
+        isMarketOpen();
+        Store s=getStore(sessionId, storeId);
+        Guest m=sessionManager.getSession(sessionId);
+        return m.getShoppingCart().getProductDiscountPercentageInCart(s, productId);
+    }
 }
