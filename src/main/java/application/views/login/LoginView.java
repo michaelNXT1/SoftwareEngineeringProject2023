@@ -27,7 +27,7 @@ public class LoginView extends VerticalLayout{
 
 
     @Autowired
-    public LoginView(){
+    public LoginView() throws Exception {
         this.header = new Header();
         this.header.setText("Login");
         this.usernameField = new TextField("Username");

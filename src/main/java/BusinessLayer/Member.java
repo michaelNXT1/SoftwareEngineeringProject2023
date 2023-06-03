@@ -3,7 +3,9 @@ package BusinessLayer;
 import BusinessLayer.Logger.SystemLogger;
 
 import CommunicationLayer.NotificationBroker;
+import DAOs.NotificationDAO;
 import DAOs.PositionDAO;
+import Repositories.INotificationRepository;
 import Repositories.IPositionRepository;
 import Security.SecurityUtils;
 import ServiceLayer.DTOs.StoreDTO;
@@ -18,8 +20,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @Entity
 @Table(name = "members")
 public class Member extends Guest {
-
-    private ConcurrentLinkedQueue<Notification> notifications;
+    @OneToOne(cascade = CascadeType.ALL)
+    private INotificationRepository notifications;
     private NotificationBroker notificationBroker;
     @Id
     @Column(unique = true)
@@ -38,7 +40,7 @@ public class Member extends Guest {
         this.username = username;
         this.hashedPassword = hashedPassword;
         this.logger = new SystemLogger();
-        this.notifications = new ConcurrentLinkedQueue<Notification>();
+        this.notifications = new NotificationDAO();
     }
 
     public Member() {
@@ -105,8 +107,8 @@ public class Member extends Guest {
     }
 
     public void sendRealTimeNotification(){
-        if(!(notifications == null || notifications.isEmpty())) {
-            for (Notification notification : notifications) {
+        if(!(notifications == null || notifications.getAllNotifications().isEmpty())) {
+            for (Notification notification : notifications.getAllNotifications()) {
                 this.notificationBroker.sendNotificationToUser(notification, this.username);
             }
             notifications.clear();
@@ -117,7 +119,7 @@ public class Member extends Guest {
         if (this.notificationBroker != null) {
             notificationBroker.sendNotificationToUser(shopNotification, this.username);
         }else {
-            this.notifications.add(shopNotification);
+            this.notifications.addNotification(shopNotification);
         }
     }
 

@@ -21,7 +21,7 @@ public class HelloWorldView extends HorizontalLayout {
 
     private final TextField name;
 
-    public HelloWorldView() {
+    public HelloWorldView() throws Exception {
         IMarketController marketController = MarketController.getInstance();
         name = new TextField("Your name");
         Button sayHello = new Button("Say hello");

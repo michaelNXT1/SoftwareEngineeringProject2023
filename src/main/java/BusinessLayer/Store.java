@@ -31,8 +31,8 @@ public class Store {
     private final IPurchaseRepository purchaseList;
     @OneToOne(cascade = CascadeType.ALL)
     private final IMemberRepository employees;
-    @ElementCollection
-    private final List<String> storeOwners = new LinkedList<>();
+    @OneToOne(cascade = CascadeType.ALL)
+    private final IStoreOwnerRepository storeOwners;
     @OneToOne(cascade = CascadeType.ALL)
     private final IPurchasePolicyRepository purchasePolicies;
     @OneToMany
@@ -53,7 +53,8 @@ public class Store {
     public Store(int storeId, String storeName, Member storeFounder) {
         this.storeId = storeId;
         this.storeName = storeName;
-        this.storeOwners.add(storeFounder.getUsername());
+        this.storeOwners = new StoreOwnerDAO();
+        this.storeOwners.addStoreOwner(storeFounder.getUsername());
         this.categories = new SetStringDAO();
         this.products = new MapProductIntegerDAO(new HashMap<>(), this);
         this.purchaseList = new PurchaseDAO();
@@ -77,6 +78,7 @@ public class Store {
         this.employees = new MemberDAO();
         this.logger = new SystemLogger();
         this.productIdCounter = new AtomicInteger(0);
+        this.storeOwners = new StoreOwnerDAO();
         purchasePolicies = new PurchasePolicyDAO();
         purchasePolicyCounter = 0;
         productDiscountPolicyMap = new HashMap<>();
@@ -444,7 +446,7 @@ public class Store {
     }
 
     public List<String> getStoreOwners() {
-        return storeOwners;
+        return storeOwners.getAllStoreOwners();
     }
 
     public List<BasePurchasePolicy> getPurchasePolicies() {
