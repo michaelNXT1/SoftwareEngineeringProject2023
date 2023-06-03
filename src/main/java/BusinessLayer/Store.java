@@ -78,6 +78,7 @@ public class Store {
         this.employees = new MemberDAO();
         this.logger = new SystemLogger();
         this.productIdCounter = new AtomicInteger(0);
+        this.storeOwners = new StoreOwnerDAO();
         purchasePolicies = new PurchasePolicyDAO();
         purchasePolicyCounter = 0;
         productDiscountPolicyMap = new HashMap<>();
