@@ -6,6 +6,7 @@ import ServiceLayer.DTOs.PurchaseDTO;
 import ServiceLayer.DTOs.ShoppingCartDTO;
 import ServiceLayer.IMarketManager;
 import ServiceLayer.MarketManager;
+import ServiceLayer.Response;
 
 import java.time.LocalTime;
 import java.util.*;
@@ -253,7 +254,13 @@ public class Real implements Bridge {
 
     @Override
     public boolean addMinQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone) {
-        return !this.manager.addMinQuantityPolicy(sessionId, storeId, productId, minQuantity, allowNone).getError_occurred();
+        Response isNull = this.manager.addMinQuantityPolicy(sessionId, storeId, productId, minQuantity, allowNone);
+        if(isNull != null){
+            return !isNull.getError_occurred();
+        }
+        else{
+            return false;
+        }
     }
 
     @Override
@@ -279,6 +286,11 @@ public class Real implements Bridge {
     @Override
     public boolean addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone) {
         return !this.manager.addMinQuantityDiscountPolicy(sessionId, storeId, discountId, productId, minQuantity, allowNone).getError_occurred();
+    }
+
+    @Override
+    public boolean addSupplyDetails(String sessionId, String name, String address, String city, String country, String zip) {
+        return !this.manager.addSupplyDetails(sessionId,name,address,city,country,zip).getError_occurred();
     }
 
     @Override

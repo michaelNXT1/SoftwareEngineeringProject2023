@@ -29,7 +29,7 @@ public class ConcurrencyTest extends TestCase {
     @Test
     public void testBuyProductsMultipleBuysSucess() throws Exception {
         market.signUp("master","1234");
-        String id = market.login("master","1234");
+        String id = market.login("master","1234",null);
         market.addPaymentMethod(id,"123","06","2026","540", "Micheal", "260589064");
         int storeid = market.openStore(id,"newStore");
         int productID =setUpStoreWithAmount(id,storeid,100);
@@ -44,7 +44,7 @@ public class ConcurrencyTest extends TestCase {
     @Test
     public void testBuyProductsMultipleBuysSucessMoreThenInventory() throws Exception {
         market.signUp("master","1234");
-        String id = market.login("master","1234");
+        String id = market.login("master","1234",null);
         market.addPaymentMethod(id,"123","06","2026","540", "Micheal", "260589064");
         int storeId = market.openStore(id,"newStore");
         int productId = setUpStoreWithAmount(id, storeId,10);
@@ -59,7 +59,7 @@ public class ConcurrencyTest extends TestCase {
     @Test
     public void testBuyProductsMultipleBuysFailMoreThenInventoryHistory() throws Exception {
         market.signUp("master","1234");
-        String id = market.login("master","1234");
+        String id = market.login("master","1234",null);
         market.addPaymentMethod(id,"123","06","2026","540", "Micheal", "260589064");
         int storeId = market.openStore(id,"newStore");
         int productID = setUpStoreWithAmount(id,storeId,7);
@@ -87,7 +87,7 @@ public class ConcurrencyTest extends TestCase {
                 try {
                     String name = String.format("bob%d", nameId.getAndIncrement());
                     market.signUp(name, "123");
-                    newId = market.login(name, "123");
+                    newId = market.login(name, "123",null);
                     market.addPaymentMethod(newId, "123", "13", "12", "232", "Micheal", "260589064");
                     market.addProductToCart(newId, storeId, productId, amount);
                     confirmPurchase(newId);
@@ -183,7 +183,7 @@ public class ConcurrencyTest extends TestCase {
                 try {
                     String name = String.format("bob%d",nameId.getAndIncrement());
                     market.signUp(name,"123");
-                    market.login(name,"123");
+                    market.login(name,"123",null);
                     idsCount.put(name,"123");
                 } catch (Exception e) {
                 }
@@ -212,7 +212,7 @@ public class ConcurrencyTest extends TestCase {
                 String id = "";
                 try {
                     market.signUp(name,"123");
-                    id = market.login(name,"123");
+                    id = market.login(name,"123",null);
                 } catch (Exception e) {
                 }
                 int storeId = 0;
@@ -244,7 +244,7 @@ public class ConcurrencyTest extends TestCase {
     @Test
     public void testMultipleManagerAppoint() throws Exception {
         market.signUp("BigBoss","123");
-        String sessionID = market.login("BigBoss","123");
+        String sessionID = market.login("BigBoss","123",null);
         int storeId = market.openStore(sessionID,"newStore");
 
         AtomicInteger nameId = new AtomicInteger(1);

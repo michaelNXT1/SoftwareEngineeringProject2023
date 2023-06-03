@@ -470,6 +470,17 @@ public class MarketManager implements IMarketManager {
         }
     }
 
+    @Override
+    public Response addSupplyDetails(String sessionId, String name, String address, String city, String country, String zip) {
+        try {
+            this.market.addSupplyDetails(sessionId, name, address, city, country, zip);
+            return new Response();
+        }
+        catch (Exception e){
+            return new Response(e.getMessage());
+        }
+    }
+
     public Response addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType) {
         try {
             market.addProductDiscount(sessionId, storeId, productId, discountPercentage, compositionType);

@@ -473,6 +473,15 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
+    public boolean addSupplyDetails(String sessionId, String name, String address, String city, String country, String zip) {
+        if (real != null) {
+            return real.addSupplyDetails(sessionId, name, address, city, country, zip);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
     public boolean addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity) {
         if (real != null) {
             return real.addMaxQuantityDiscountPolicy(sessionId, storeId, discountId, productId, maxQuantity);

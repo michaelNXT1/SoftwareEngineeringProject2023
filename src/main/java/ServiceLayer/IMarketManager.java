@@ -143,6 +143,8 @@ public interface IMarketManager {
 
     ResponseT<List<String>> getPurchasePolicyTypes();
 
+    Response addSupplyDetails(String sessionId, String name, String address, String city, String country, String zip);
+
 //        Response logoutSystemManager(String sessionId);
 
 //        ResponseT<String> loginSystemManager(String username, String password);

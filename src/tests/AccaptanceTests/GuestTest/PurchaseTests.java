@@ -28,6 +28,7 @@ public class PurchaseTests extends ServiceTests {
         storeID2 = openStore(sessionID1, "newStore3");
         productID2 = addProduct(sessionID1, storeID2,"test2",3.9,"milk",9,"1");
         addPaymentMethod(sessionID1,"124","12","2026","540");
+        addSupplyDetails(sessionID1,"abc","abc","abc","abc","abc");
         addToCart(sessionID1, storeID2, productID2, 5);
     }
 

@@ -219,6 +219,10 @@ public abstract class ServiceTests extends TestCase {
     }
 
 
+    public boolean addSupplyDetails(String sessionId, String name, String address, String city, String country, String zip){
+        return this.bridge.addSupplyDetails(sessionId, name, address, city, country, zip);
+    }
+
     public boolean addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType) {
         return this.bridge.addProductDiscount(sessionId, storeId, productId, discountPercentage, compositionType);
     }
