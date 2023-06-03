@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 class ShoppingCartTest extends TestCase {
 
@@ -45,6 +46,29 @@ class ShoppingCartTest extends TestCase {
 //        assertTrue(shoppingCart.shoppingBags.get(0).getProductList().containsKey(product1));
 //    }
 
+    @Test
+    void purchaseShoppingCartWithMockPaymentSystem() throws Exception {
+        SupplySystemProxy supplySystemProxy = mock(SupplySystemProxy.class);
+        PaymentSystemProxy ps = new PaymentSystemProxy();
+        market.setPaymentSystem(ps);
+        market.setSupplySystem(supplySystemProxy);
+        market.addSupplyDetails(sessionId1, "shoham", "alexnder", "beer sheva", "Israel","806459");
+        market.addPaymentMethod(sessionId1, "123456789", "April","2023","489","shoham","508479063");
+        Exception exception = assertThrows(Exception.class, () -> market.purchaseShoppingCart(sessionId1));
+        assertEquals("Purchase failed, supply system hasn't managed to charge", exception.getMessage());
+    }
+
+    @Test
+    void purchaseShoppingCartWithMockSupplySystem() throws Exception {
+        PaymentSystemProxy paymentSystemProxy = mock(PaymentSystemProxy.class);
+        SupplySystemProxy ss = new SupplySystemProxy();
+        market.setSupplySystem(ss);
+        market.setPaymentSystem(paymentSystemProxy);
+        market.addSupplyDetails(sessionId1, "shoham", "alexnder", "beer sheva", "Israel","806459");
+        market.addPaymentMethod(sessionId1, "123456789", "April","2023","489","shoham","508479063");
+        Exception exception = assertThrows(Exception.class, () -> market.purchaseShoppingCart(sessionId1));
+        assertEquals("Purchase failed, supply system hasn't managed to charge", exception.getMessage());
+    }
     @Test
     void changeProductQuantity() throws Exception {
         market.addProduct(sessionId1, storeId1, product1.getProductName(),20.0,"cat",50,"wow");
