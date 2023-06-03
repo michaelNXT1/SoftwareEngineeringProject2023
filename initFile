@@ -1,0 +1,11 @@
+register(u1);
+register(u2);
+register(u3);
+register(u4);
+register(u5);
+register(u6);
+open-store(u2,s1);
+add-product(u2,s1,chocolate,20,sweets,30,chocolate is good);
+appoint-owner(u2,s1,u3);
+appoint-owner(u3,s1,u5);
+appoint-manager(u5,s1,u6);

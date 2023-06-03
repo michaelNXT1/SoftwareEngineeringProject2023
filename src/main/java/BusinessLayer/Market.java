@@ -24,6 +24,7 @@ import ServiceLayer.DTOs.*;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 
+import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalTime;
@@ -46,8 +47,8 @@ public class Market {
     private final SystemLogger logger;
     private boolean marketOpen;
 
-
-    public Market() {
+    private String path;
+    public Market(String path) throws Exception {
         stores = new MapIntegerStoreDAO();
         systemManagers = new MapStringSystemManagerDAO();
         users = new MapStringMemberDAO(new ConcurrentHashMap<>());
@@ -56,6 +57,7 @@ public class Market {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
+        this.path = path;
         marketOpen = true;
         this.logger = new SystemLogger();
         supplySystem = new SupplySystemProxy();
@@ -65,6 +67,72 @@ public class Market {
         SystemManager sm = new SystemManager("admin", new String(passwordEncoder.digest("admin".getBytes())));
         marketOpen = true;
         systemManagers.addSystemManager(sm.getUsername(), sm);
+        if(path != null)
+            parseFile(path);
+    }
+
+    public StoreDTO getStoreByName(String sessionId, String storeName) throws Exception {
+        isMarketOpen();
+        logger.info(String.format("get store by name %s", storeName));
+        sessionManager.getSession(sessionId);
+        return stores.getAllStores().values().stream().filter(s -> s.getStoreName().equals(storeName)).toList().stream().map(StoreDTO::new).findFirst().get();
+    }
+
+    private void parseFile(String filePath) throws Exception {
+
+        if (filePath!= null){
+            String sessionId = "";
+            int storeId;
+            File file = new File(filePath);
+            Scanner fileScanner = new Scanner(file);
+            while(fileScanner.hasNextLine()){
+                String command = fileScanner.nextLine();
+                String action = command.substring(0,command.indexOf("("));
+                String[] args = command.substring(command.indexOf("(")+1,command.indexOf(")")).split(",");
+                switch (action){
+                    case "signUp":
+                        signUp(args[0],"123");
+                        break;
+                    case "login":
+                        sessionId = login(args[0],"123",null);
+                        break;
+                    case "logout" :
+                        logout(sessionId);
+                        break;
+                    case "open-store":
+                        sessionId = login(args[0], "123",null);
+                        storeId = openStore(sessionId,"newStore");
+                        logout(sessionId);
+                        break;
+                    case "appoint-manager":
+                        sessionId = login(args[0],"123",null);
+                        storeId = getStoreByName(sessionId,args[1]).getStoreId();
+                        setPositionOfMemberToStoreManager(sessionId,storeId,args[2]);
+                        logout(sessionId);
+                        break;
+                    case "appoint-owner":
+                        //appoint-manager(<Manager-name>,<Store-name>,<New Manager name>,<Details>);
+                        sessionId = login(args[0],"123",null);
+                        storeId = getStoreByName(sessionId, args[1]).getStoreId();
+                        setPositionOfMemberToStoreOwner(sessionId,storeId,args[2]);
+                        logout(sessionId);
+                        break;
+                    case "add-product":
+                        //add-product(<manager-name>,<store-name>,<product-name>,<amount>,<price>);
+                        sessionId = login(args[0],"123",null);
+                        storeId = getStoreByName(sessionId, args[1]).getStoreId();
+                        addProduct(sessionId,storeId,args[2],Double.parseDouble(args[3]),args[4],Integer.parseInt(args[5]),args[6]);
+                        logout(sessionId);
+                        break;
+
+                    default:
+                        throw new Exception("Wrong syntax");
+
+
+                }
+            }
+
+        }
     }
 
     private static boolean stringIsEmpty(String value) {
@@ -837,6 +905,7 @@ public class Market {
         g.addSupplyDetails(name, address, city, country, zip);
         logger.info(String.format("Supply details of %s are added", sessionId));
     }
+
 
     //PRIVATE METHODS
     public Store getStore(String sessionId, int storeId) throws Exception {
