@@ -21,12 +21,9 @@ import java.util.Set;
 @Component
 public class MarketController implements IMarketController {
 
-    private static MarketController instance = null;
     private final MarketManager marketManager;
-
-    private MarketController() {
-        marketManager = new MarketManager();
-    }
+    private static MarketController instance = null;
+    private final NotificationController notificationBroker;
 
     public static MarketController getInstance() {
         if (instance == null) {
@@ -35,34 +32,36 @@ public class MarketController implements IMarketController {
         return instance;
     }
 
-    @GetMapping("/signUpSystemManager")
+    private MarketController() {
+        this.marketManager = new MarketManager();
+        this.notificationBroker = new NotificationController();
+    }
+    @PostMapping("/signUpSystemManager")
     @ResponseBody
     @Override
     public Response signUpSystemManager(@RequestParam(value = "username", defaultValue = "") String username,
                                         @RequestParam(value = "password", defaultValue = "") String password) {
-        return marketManager.signUpSystemManager(username, password);
+        return this.marketManager.signUpSystemManager(username,password);
     }
-
-    @GetMapping("/enterMarket")
+    @PostMapping("/enterMarket")
     @ResponseBody
     @Override
     public ResponseT<String> enterMarket() {
-        return marketManager.enterMarket();
+        return this.marketManager.enterMarket();
     }
-
-    @GetMapping("/exitMarket")
+    @GetMapping("/signUp")
     @ResponseBody
     @Override
-    public Response exitMarket(@RequestParam(value = "username", defaultValue = "") String sessionId) {
-        return marketManager.exitMarket(sessionId);
+    public Response exitMarket(@RequestParam(value = "sessionId", defaultValue = "") String sessionId) {
+        return this.marketManager.exitMarket(sessionId);
     }
 
     @GetMapping("/signUp")
     @ResponseBody
-    public Response signUp(
-            @RequestParam(value = "username", defaultValue = "") String username,
-            @RequestParam(value = "password", defaultValue = "") String password) {
-        return marketManager.signUp(username, password);
+    @Override
+    public Response signUp(@RequestParam(value = "username", defaultValue = "") String username,
+                           @RequestParam(value = "password", defaultValue = "") String password) {
+        return this.marketManager.signUp(username,password);
     }
 
     @GetMapping("/login")
@@ -70,7 +69,7 @@ public class MarketController implements IMarketController {
     public ResponseT<String> login(
             @RequestParam(value = "username", defaultValue = "") String username,
             @RequestParam(value = "password", defaultValue = "") String password) {
-        return marketManager.login(username, password);
+        return marketManager.login(username, password,notificationBroker);
     }
 
     @GetMapping("/logout")
@@ -167,6 +166,7 @@ public class MarketController implements IMarketController {
                                                                   @RequestParam(value = "maxPrice", defaultValue = "-1") double maxPrice) {
         return marketManager.filterSearchResultsByPrice(sessionId, minPrice, maxPrice);
     }
+
 
     @GetMapping("/addProductToCart")
     @ResponseBody

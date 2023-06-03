@@ -1,6 +1,7 @@
 package ServiceLayer;
 
 import BusinessLayer.Market;
+import CommunicationLayer.NotificationBroker;
 import ServiceLayer.DTOs.*;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
@@ -57,9 +58,9 @@ public class MarketManager implements IMarketManager {
     }
 
     //use case 2.3
-    public ResponseT<String> login(String username, String password) {
+    public ResponseT<String> login(String username, String password, NotificationBroker notificationBroker) {
         try {
-            String ret = market.login(username, password);
+            String ret = market.login(username, password,notificationBroker);
             return ResponseT.fromValue(ret);
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
@@ -296,6 +297,7 @@ public class MarketManager implements IMarketManager {
         }
     }
 
+
     public Response editProductPrice(String sessionId, int storeId, int productId, double newPrice) {
         try {
             market.editProductPrice(sessionId, storeId, productId, newPrice);
@@ -522,7 +524,12 @@ public class MarketManager implements IMarketManager {
             return new Response(e.getMessage());
         }
     }
-  
+
+    @Override
+    public Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity, boolean allowNone) {
+        return null;
+    }
+
     @Override
     public Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity) {
         try {
@@ -578,6 +585,36 @@ public class MarketManager implements IMarketManager {
     }
 
     @Override
+    public Response addProductTimeRestrictionPolicy(String sessionId, int storeId, int productId, LocalTime startTime, LocalTime endTime) {
+        return null;
+    }
+
+    @Override
+    public Response addCategoryTimeRestrictionPolicy(String sessionId, int storeId, String category, LocalTime startTime, LocalTime endTime) {
+        return null;
+    }
+
+    @Override
+    public Response joinPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator) {
+        return null;
+    }
+
+    @Override
+    public Response removePolicy(String sessionId, int storeId, int policyId) {
+        return null;
+    }
+
+    @Override
+    public Response addMaxQuantityPolicy(String sessionId, int storeId, int productId, int maxQuantity) {
+        return null;
+    }
+
+    @Override
+    public Response addMinQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone) {
+        return null;
+    }
+
+    @Override
     public ResponseT<List<MemberDTO>> getInformationAboutMembers(String sessionId) {
         try {
             List<MemberDTO> ret = market.getInformationAboutMembers(sessionId);
@@ -594,6 +631,11 @@ public class MarketManager implements IMarketManager {
         } catch (Exception e) {
             return new Response(e.getMessage());
         }
+    }
+
+    @Override
+    public Response removeStoreOwner(String sessionId, String storeOwnerToRemove, int storeId) {
+        return null;
     }
 
     @Override
