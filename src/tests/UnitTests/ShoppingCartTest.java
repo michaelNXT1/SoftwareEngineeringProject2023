@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class ShoppingCartTest extends TestCase {
 
@@ -62,6 +64,30 @@ class ShoppingCartTest extends TestCase {
     void purchaseShoppingCart() throws Exception {
         Purchase purchase = shoppingCart.purchaseShoppingCart();
         assertTrue(purchase.getProductList().contains(product2));
+    }
+
+    @Test
+    void purchaseShoppingCartWithMockPaymentSystem() throws Exception {
+        SupplySystemProxy supplySystemProxy = mock(SupplySystemProxy.class);
+        PaymentSystemProxy ps = new PaymentSystemProxy();
+        market.setPaymentSystem(ps);
+        market.setSupplySystem(supplySystemProxy);
+        market.addSupplyDetails(sessionId1, "shoham", "alexnder", "beer sheva", "Israel","806459");
+        market.addPaymentMethod(sessionId1, "123456789", "April","2023","489","shoham","508479063");
+        Exception exception = assertThrows(Exception.class, () -> market.purchaseShoppingCart(sessionId1));
+        assertEquals("Purchase failed, supply system hasn't managed to charge", exception.getMessage());
+    }
+
+    @Test
+    void purchaseShoppingCartWithMockSupplySystem() throws Exception {
+        PaymentSystemProxy paymentSystemProxy = mock(PaymentSystemProxy.class);
+        SupplySystemProxy ss = new SupplySystemProxy();
+        market.setSupplySystem(ss);
+        market.setPaymentSystem(paymentSystemProxy);
+        market.addSupplyDetails(sessionId1, "shoham", "alexnder", "beer sheva", "Israel","806459");
+        market.addPaymentMethod(sessionId1, "123456789", "April","2023","489","shoham","508479063");
+        Exception exception = assertThrows(Exception.class, () -> market.purchaseShoppingCart(sessionId1));
+        assertEquals("Purchase failed, supply system hasn't managed to charge", exception.getMessage());
     }
     @Test
     void purchaseShoppingCartWhenSupplySystemFailed() throws Exception {
