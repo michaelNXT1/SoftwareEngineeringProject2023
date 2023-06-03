@@ -30,7 +30,7 @@ public class AddDiscount extends VerticalLayout {
     private final MarketController marketController;
 
     @Autowired
-    public AddDiscount() {
+    public AddDiscount() throws Exception {
         Header header = new Header();
         header.setText("Add discount to store");
 

@@ -26,13 +26,13 @@ public class MarketController implements IMarketController {
     private final NotificationController notificationBroker;
 
 
-    private MarketController() {
+    private MarketController() throws Exception {
         this.marketManager = new MarketManager();
         this.notificationBroker = new NotificationController();
     }
 
 
-    public static MarketController getInstance() {
+    public static MarketController getInstance() throws Exception {
         if (instance == null) {
             instance = new MarketController();
         }
