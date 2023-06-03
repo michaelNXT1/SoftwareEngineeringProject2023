@@ -23,7 +23,9 @@ public class ShoppingBag {
     //Use case 2.10 & Use case 2.12
     public void setProductQuantity(int productId, int quantity) throws Exception {
         Product p = store.getProduct(productId);
-        if (store.getProducts().get(p) >= quantity)
+        if (quantity == 0)
+            productList.remove(productId);
+        else if (store.getProducts().get(p) >= quantity)
             productList.put(productId, quantity);
         else {
             logger.error("Requested product quantity not available.");
@@ -55,7 +57,6 @@ public class ShoppingBag {
             logger.error("Store purchase policies are not fulfilled in this cart");
             throw new Exception("Store purchase policies are not fulfilled in this cart");
         }
-        store.checkPoliciesFulfilled(productList);
         List<PurchaseProduct> retList = new ArrayList<>();
         for (Map.Entry<Integer, Integer> e : productList.entrySet()) {
             Pair<PurchaseProduct, Boolean> ppp = purchaseProduct(e.getKey());
