@@ -14,7 +14,9 @@ public class Purchase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @OneToOne
+    @JoinColumn(name = "shopping_bag_id")
+    private ShoppingBag bagPurchase;
     @Transient
     private IPurchaseProductRepository productList;
 
@@ -35,5 +37,25 @@ public class Purchase {
 
     public IPurchaseProductRepository getProductList() {
         return this.productList;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public ShoppingBag getBagPurchase() {
+        return bagPurchase;
+    }
+
+    public void setBagPurchase(ShoppingBag bagPurchase) {
+        this.bagPurchase = bagPurchase;
+    }
+
+    public void setProductList(IPurchaseProductRepository productList) {
+        this.productList = productList;
     }
 }

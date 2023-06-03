@@ -5,11 +5,9 @@ import jakarta.persistence.*;
 @Entity
 public class SystemManager {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(name = "user_name", columnDefinition = "text")
+    @Column(name = "username", columnDefinition = "text")
     private String username;
-    @Column(name = "hash_password", columnDefinition = "text")
+    @Column(name = "hashedPassword", columnDefinition = "text")
     private String hashedPassword;
 
     public SystemManager(String username, String hashedPassword) {
@@ -24,13 +22,6 @@ public class SystemManager {
         return username;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public void setUsername(String username) {
         this.username = username;

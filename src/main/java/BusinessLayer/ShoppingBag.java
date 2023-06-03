@@ -28,7 +28,7 @@ public class ShoppingBag {
     @Transient
     private IMapIntegerIntegerRepository productList;
 
-    @OneToOne(mappedBy = "shoppingBag", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "bagPurchase", cascade = CascadeType.ALL)
     private Purchase bagPurchase;
 
 
