@@ -1,6 +1,7 @@
 package application.views;
 
 import CommunicationLayer.MarketController;
+import CommunicationLayer.NotificationController;
 import ServiceLayer.DTOs.Discounts.CategoryDiscountDTO;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
 import ServiceLayer.DTOs.Discounts.ProductDiscountDTO;
