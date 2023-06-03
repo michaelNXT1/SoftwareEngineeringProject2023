@@ -556,6 +556,16 @@ public class MarketController implements IMarketController {
         return marketManager.getPermissions(sessionId, storeId, username);
     }
 
+    @Override
+    public ResponseT<Boolean> hasPaymentMethod(String sessionId) {
+        return marketManager.hasPaymentMethod(sessionId);
+    }
+
+    @Override
+    public ResponseT<Double> getProductDiscountPercentageInCart(String sessionId, int storeId, int productId) {
+        return marketManager.getProductDiscountPercentageInCart(sessionId, storeId, productId);
+    }
+
     @GetMapping("/editProductInCart")
     @ResponseBody
     public Response editProductInCart(

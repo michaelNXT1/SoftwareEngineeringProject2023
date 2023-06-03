@@ -287,7 +287,7 @@ public class Market {
         Guest g = sessionManager.getSession(sessionId);
         List<Product> list = new ArrayList<>();
         if (!stringIsEmpty(productSubstring))
-            stores.values().forEach(s -> list.addAll(s.getProducts().keySet().stream().filter(p -> p.getProductName().contains(productSubstring)).toList()));
+            stores.values().forEach(s -> list.addAll(s.getProducts().keySet().stream().filter(p -> p.getProductName().toLowerCase().contains(productSubstring.toLowerCase())).toList()));
         g.setSearchResults(list);
         g.setSearchKeyword(productSubstring);
         return list.stream().map(ProductDTO::new).toList();
@@ -1004,5 +1004,18 @@ public class Market {
             throw new Exception("the name of the store manager has not have that position in this store");
         }
         return storeManagerPosition.getPermissions();
+    }
+
+    public boolean hasPaymentMethod(String sessionId) throws Exception {
+        isMarketOpen();
+        Guest m = sessionManager.getSession(sessionId);
+        return m.getPaymentDetails() != null;
+    }
+
+    public double getProductDiscountPercentageInCart(String sessionId, int storeId, int productId) throws Exception {
+        isMarketOpen();
+        Store s=getStore(sessionId, storeId);
+        Guest m=sessionManager.getSession(sessionId);
+        return m.getShoppingCart().getProductDiscountPercentageInCart(s, productId);
     }
 }
