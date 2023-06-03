@@ -173,6 +173,7 @@ public class MainLayout extends AppLayout {
         layout.setFlexGrow(1, rightLayout);
         vl.add(layout);
         return vl;
+
     }
 
     private void logout() {

@@ -18,6 +18,7 @@ import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
 @PreserveOnRefresh
 public class AboutView extends VerticalLayout {
 
+
     public AboutView() {
         setSpacing(false);
 
