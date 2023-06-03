@@ -143,8 +143,7 @@ public class MainLayout extends AppLayout {
         H1 appName = new H1("AIMSS inc.");
         appName.setWidthFull();
 
-        Button homeButton = new Button("Home", e -> UI.getCurrent().navigate(HelloWorldView.class));
-        Button aboutButton = new Button("About", e -> UI.getCurrent().navigate(AboutView.class));
+        Button homeButton = new Button("Home", e -> UI.getCurrent().navigate(AboutView.class));
         Select<String> select = initActionSelect();
         searchBox = new TextField();
         searchBox.setPlaceholder("Search product");
@@ -162,7 +161,7 @@ public class MainLayout extends AppLayout {
 
         Div div1 = new Div(), div2 = new Div(), div3 = new Div();
         leftLayout.add(appName);
-        centerLayout.add(div1, homeButton, aboutButton, select, searchBox, searchType, searchButton, cartButton, div2);
+        centerLayout.add(div1, homeButton, select, searchBox, searchType, searchButton, cartButton, div2);
         centerLayout.setFlexGrow(1, div1);
         centerLayout.setFlexGrow(1, div2);
 
@@ -184,7 +183,7 @@ public class MainLayout extends AppLayout {
             Notification.show(r.error_message, 3000, Notification.Position.MIDDLE);
         else {
             Notification.show("you logged out successfully", 3000, Notification.Position.MIDDLE);
-            UI.getCurrent().navigate(HelloWorldView.class);
+            UI.getCurrent().navigate(AboutView.class);
             boolean isLoggedIn = marketController.isLoggedIn(sessionId).value;
             loginButton.setVisible(!isLoggedIn);
             signUpButton.setVisible(!isLoggedIn);
@@ -192,7 +191,7 @@ public class MainLayout extends AppLayout {
         }
 
         if (sessionId != null)
-            UI.getCurrent().navigate(HelloWorldView.class);
+            UI.getCurrent().navigate(AboutView.class);
     }
 
     private void SearchProducts() {

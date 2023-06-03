@@ -15,7 +15,6 @@ import com.vaadin.flow.router.*;
 
 @PageTitle("Hello World")
 @Route(value = "hello", layout = MainLayout.class)
-@RouteAlias(value = "", layout = MainLayout.class)
 @PreserveOnRefresh
 public class HelloWorldView extends HorizontalLayout {
 
