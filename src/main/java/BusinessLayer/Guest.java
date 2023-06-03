@@ -37,14 +37,6 @@ public class Guest {
     }
 
     public Purchase purchaseShoppingCart() throws Exception {    //2.14
-        if (paymentDetails == null) {
-            logger.error(String.format("no payment details exist"));
-            throw new Exception("no payment details exist");
-        }
-        if (supplyDetails == null) {
-            logger.error(String.format("no supply details exist"));
-            throw new Exception("no supply details exist");
-        }
         Purchase p = shoppingCart.purchaseShoppingCart();
         purchaseHistory.add(p);
         return p;
