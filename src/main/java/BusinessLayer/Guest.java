@@ -2,8 +2,8 @@ package BusinessLayer;
 
 import DAOs.ProductDAO;
 import DAOs.PurchaseDAO;
-import BusinessLayer.Repositories.IProductRepository;
-import BusinessLayer.Repositories.IPurchaseRepository;
+import Repositories.IProductRepository;
+import Repositories.IPurchaseRepository;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;

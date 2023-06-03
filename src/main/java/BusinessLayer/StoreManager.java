@@ -2,7 +2,7 @@ package BusinessLayer;
 
 import BusinessLayer.Logger.SystemLogger;
 import DAOs.SetPermissionTypeDAO;
-import BusinessLayer.Repositories.ISetPermissionTypeRepository;
+import Repositories.ISetPermissionTypeRepository;
 import ServiceLayer.DTOs.PositionDTO;
 
 import javax.persistence.*;

@@ -1,6 +1,6 @@
 package DAOs;
 import BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy;
-import BusinessLayer.Repositories.IPurchasePolicyRepository;
+import Repositories.IPurchasePolicyRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
