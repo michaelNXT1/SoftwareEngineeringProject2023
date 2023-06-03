@@ -48,7 +48,7 @@ public class Market {
     private boolean marketOpen;
 
     private String path;
-    public Market(String path) {
+    public Market(String path) throws Exception {
         stores = new MapIntegerStoreDAO();
         systemManagers = new MapStringSystemManagerDAO();
         users = new MapStringMemberDAO(new ConcurrentHashMap<>());
@@ -67,6 +67,8 @@ public class Market {
         SystemManager sm = new SystemManager("admin", new String(passwordEncoder.digest("admin".getBytes())));
         marketOpen = true;
         systemManagers.addSystemManager(sm.getUsername(), sm);
+        if(path != null)
+            parseFile(path);
     }
 
     public StoreDTO getStoreByName(String sessionId, String storeName) throws Exception {

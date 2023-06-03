@@ -15,7 +15,7 @@ import java.util.Set;
 public class MarketManager implements IMarketManager {
     private final Market market;
 
-    public MarketManager() {
+    public MarketManager() throws Exception {
         this.market = new Market(null);
     }
 
