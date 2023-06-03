@@ -48,7 +48,7 @@ public interface Position {
     void removePurchasePolicy(int policyId) throws Exception;
 
     //Discount management
-    void addProductDiscount(int productId, double discountPercentage, int compositionType) throws Exception;
+    Integer addProductDiscount(int productId, double discountPercentage, int compositionType) throws Exception;
 
     void addCategoryDiscount(String category, double discountPercentage, int compositionType) throws Exception;
 
@@ -57,11 +57,11 @@ public interface Position {
     void removeDiscount(int discountId) throws Exception;
 
     //Discount policy management
-    void addMinQuantityDiscountPolicy(int discountId, int productId, int minQuantity, boolean allowNone) throws Exception;
+    Integer addMinQuantityDiscountPolicy(int discountId, int productId, int minQuantity, boolean allowNone) throws Exception;
 
-    void addMaxQuantityDiscountPolicy(int discountId, int productId, int maxQuantity) throws Exception;
+    Integer addMaxQuantityDiscountPolicy(int discountId, int productId, int maxQuantity) throws Exception;
 
-    void addMinBagTotalDiscountPolicy(int discountId, double minTotal) throws Exception;
+    Integer addMinBagTotalDiscountPolicy(int discountId, double minTotal) throws Exception;
 
     void joinDiscountPolicies(int policyId1, int policyId2, int operator) throws Exception;
 

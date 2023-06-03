@@ -1,7 +1,7 @@
 package DAOs;
 
 import BusinessLayer.StoreManager;
-import BusinessLayer.Repositories.ISetPermissionTypeRepository;
+import Repositories.ISetPermissionTypeRepository;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 

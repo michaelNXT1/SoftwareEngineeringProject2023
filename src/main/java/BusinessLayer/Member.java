@@ -4,7 +4,7 @@ import BusinessLayer.Logger.SystemLogger;
 
 import CommunicationLayer.NotificationBroker;
 import DAOs.PositionDAO;
-import BusinessLayer.Repositories.IPositionRepository;
+import Repositories.IPositionRepository;
 import Security.SecurityUtils;
 import ServiceLayer.DTOs.StoreDTO;
 

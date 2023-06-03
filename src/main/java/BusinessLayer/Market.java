@@ -13,10 +13,10 @@ import DAOs.MapIntegerStoreDAO;
 import DAOs.MapStringMemberDAO;
 import DAOs.MapStringSystemManagerDAO;
 import DAOs.ProductDAO;
-import BusinessLayer.Repositories.IMapIntegerStoreRepository;
-import BusinessLayer.Repositories.IMapStringMemberRepository;
-import BusinessLayer.Repositories.IMapStringSystemManagerRepository;
-import BusinessLayer.Repositories.IProductRepository;
+import Repositories.IMapIntegerStoreRepository;
+import Repositories.IMapStringMemberRepository;
+import Repositories.IMapStringSystemManagerRepository;
+import Repositories.IProductRepository;
 import Security.ProxyScurity;
 import Security.SecurityAdapter;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
@@ -727,14 +727,15 @@ public class Market {
         logger.info(String.format("%s remove %d policy from %s store", sessionId, policyId, storeId));
     }
 
-    public void addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType) throws Exception {
+    public Integer addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType) throws Exception {
         logger.info("trying to addProductDiscount");
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
-        p.addProductDiscount(productId, discountPercentage, compositionType);
+        int dId = p.addProductDiscount(productId, discountPercentage, compositionType);
         logger.info(String.format("%s added product discount to %d store", sessionId, storeId));
+        return dId;
     }
 
     public void addCategoryDiscount(String sessionId, int storeId, String category, double discountPercentage, int compositionType) throws Exception {
@@ -767,35 +768,38 @@ public class Market {
         logger.info("successfully removed discount");
     }
 
-    public void addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone) throws Exception {
+    public Integer addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone) throws Exception {
         logger.info("trying to addMinQuantityDiscountPolicy");
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
-        p.addMinQuantityDiscountPolicy(discountId, productId, minQuantity, allowNone);
+        int discountID =p.addMinQuantityDiscountPolicy(discountId, productId, minQuantity, allowNone);
         logger.info(String.format("%s added min quantity discount policy to %d store", sessionId, storeId));
+        return discountID;
     }
 
-    public void addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity) throws Exception {
+    public Integer addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity) throws Exception {
         logger.info("trying to addMaxQuantityDiscountPolicy");
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
-        p.addMaxQuantityDiscountPolicy(discountId, productId, maxQuantity);
+        int discountID = p.addMaxQuantityDiscountPolicy(discountId, productId, maxQuantity);
         logger.info(String.format("%s added max quantity discount policy to %d store", sessionId, storeId));
+        return discountID;
 
     }
 
-    public void addMinBagTotalDiscountPolicy(String sessionId, int storeId, int discountId, double minTotal) throws Exception {
+    public Integer addMinBagTotalDiscountPolicy(String sessionId, int storeId, int discountId, double minTotal) throws Exception {
         logger.info("trying to addMinBagTotalDiscountPolicy");
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
-        p.addMinBagTotalDiscountPolicy(discountId, minTotal);
+        int discountID =p.addMinBagTotalDiscountPolicy(discountId, minTotal);
         logger.info(String.format("%s added min total bag discount policy to %d store", sessionId, storeId));
+        return discountID;
     }
 
     public void joinDiscountPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator) throws Exception {

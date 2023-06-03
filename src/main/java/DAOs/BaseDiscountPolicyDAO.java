@@ -1,7 +1,7 @@
 package DAOs;
 
 import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
-import BusinessLayer.Repositories.IBaseDiscountPolicyRepository;
+import Repositories.IBaseDiscountPolicyRepository;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 

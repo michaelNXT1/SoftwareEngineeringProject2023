@@ -1,4 +1,4 @@
-package BusinessLayer.Repositories;
+package Repositories;
 
 import BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy;
 

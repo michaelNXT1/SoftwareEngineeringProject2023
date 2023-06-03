@@ -1,5 +1,5 @@
 package BusinessLayer;
-import BusinessLayer.Repositories.IPurchaseProductRepository;
+import Repositories.IPurchaseProductRepository;
 
 import javax.persistence.*;
 import java.util.List;

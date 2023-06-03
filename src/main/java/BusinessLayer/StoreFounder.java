@@ -132,8 +132,8 @@ public class StoreFounder implements Position {
     }
 
     @Override
-    public void addProductDiscount(int productId, double discountPercentage, int compositionType) throws Exception {
-        store.addProductDiscount(productId, discountPercentage, compositionType);
+    public Integer addProductDiscount(int productId, double discountPercentage, int compositionType) throws Exception {
+        return store.addProductDiscount(productId, discountPercentage, compositionType);
     }
 
     @Override
@@ -152,18 +152,18 @@ public class StoreFounder implements Position {
     }
 
     @Override
-    public void addMinQuantityDiscountPolicy(int discountId, int productId, int minQuantity, boolean allowNone) throws Exception {
-        store.addMinQuantityDiscountPolicy(discountId, productId, minQuantity, allowNone);
+    public Integer addMinQuantityDiscountPolicy(int discountId, int productId, int minQuantity, boolean allowNone) throws Exception {
+        return store.addMinQuantityDiscountPolicy(discountId, productId, minQuantity, allowNone);
     }
 
     @Override
-    public void addMaxQuantityDiscountPolicy(int discountId, int productId, int maxQuantity) throws Exception {
-        store.addMaxQuantityDiscountPolicy(discountId, productId, maxQuantity);
+    public Integer addMaxQuantityDiscountPolicy(int discountId, int productId, int maxQuantity) throws Exception {
+        return store.addMaxQuantityDiscountPolicy(discountId, productId, maxQuantity);
     }
 
     @Override
-    public void addMinBagTotalDiscountPolicy(int discountId, double minTotal) throws Exception {
-        store.addMinBagTotalDiscountPolicy(discountId, minTotal);
+    public Integer addMinBagTotalDiscountPolicy(int discountId, double minTotal) throws Exception {
+        return store.addMinBagTotalDiscountPolicy(discountId, minTotal);
     }
 
     @Override

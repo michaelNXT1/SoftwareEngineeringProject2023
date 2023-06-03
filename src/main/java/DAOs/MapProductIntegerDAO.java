@@ -2,7 +2,7 @@ package DAOs;
 
 import BusinessLayer.Product;
 import BusinessLayer.Store;
-import BusinessLayer.Repositories.IMapProductIntegerRepository;
+import Repositories.IMapProductIntegerRepository;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 

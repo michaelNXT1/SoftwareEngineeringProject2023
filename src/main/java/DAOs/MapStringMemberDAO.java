@@ -1,11 +1,10 @@
 package DAOs;
 
 import BusinessLayer.Member;
-import BusinessLayer.Repositories.IMapStringMemberRepository;
+import Repositories.IMapStringMemberRepository;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class MapStringMemberDAO implements IMapStringMemberRepository {
