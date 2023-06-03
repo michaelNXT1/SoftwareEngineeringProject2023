@@ -2,11 +2,15 @@ package application.views;
 
 import CommunicationLayer.MarketController;
 import ServiceLayer.DTOs.ProductDTO;
+import ServiceLayer.DTOs.PurchaseDTO;
 import ServiceLayer.DTOs.ShoppingCartDTO;
 import ServiceLayer.Response;
+import ServiceLayer.ResponseT;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.Header;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -21,12 +25,12 @@ import java.util.Map;
 @PreserveOnRefresh
 public class
 ShoppingCart extends VerticalLayout {
-    private Header myBag;
-    private Header total;
-    private Grid<ProductDTO> productGrid;
+    private final Span cartEmptySpan;
+    private final Span totalSpan;
+    private final Grid<ProductDTO> productGrid;
+    private final MarketController marketController;
     ShoppingCartDTO shoppingCart;
     Map<ProductDTO, Integer> productDTOList;
-    private MarketController marketController;
 
 
     @Autowired
@@ -37,35 +41,52 @@ ShoppingCart extends VerticalLayout {
         productGrid = new Grid<>(ProductDTO.class, false);
         productGrid.addColumn(ProductDTO::getProductName).setHeader("Product Name");
         productGrid.addColumn(this::getStoreName).setHeader("Store Name");
-        productGrid.addColumn(productDTO -> String.format("%.2f", productDTO.getPrice())).setHeader("Price per item");
-        productGrid.addComponentColumn(product -> {
-            HorizontalLayout hl = new HorizontalLayout();
-            IntegerField quantity = new IntegerField();
-            quantity.setValue(productDTOList.get(product));
-            quantity.setStepButtonsVisible(true);
-            quantity.setMin(0);
-            Button updateButton = new Button("Update", e -> updateQuantity(product, quantity.getValue()));
-            Button removeButton = new Button("Remove", e -> removeProduct(product));
-            hl.add(quantity, updateButton, removeButton);
-            return hl;
-        }).setHeader("Quantity");
-        productGrid.addColumn(p -> p.getPrice() * productDTOList.get(p)).setHeader("Total").setFooter("Total: " + String.format("%.2f", calculateTotalPrice()));
-
+        productGrid.addComponentColumn(this::initPriceColumn).setHeader("Price per item");
+        productGrid.addComponentColumn(this::initQuantityColumn).setHeader("Quantity");
+        totalSpan = new Span("Total: " + String.format("%.2f", calculateTotalPrice()));
+        Button purchaseButton = new Button("Purchase cart", e -> purchaseShoppingCart());
+        Span paymentDetails = new Span("Please add payment details.");
+        VerticalLayout vl = new VerticalLayout();
+        vl.add(totalSpan, purchaseButton, paymentDetails);
+        vl.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+        productGrid.addColumn(this::initTotalColumn).setHeader("Total").setFooter(vl).setKey("price");
+        ResponseT<Boolean> paymentDetailsExist = marketController.hasPaymentMethod(MainLayout.getSessionId());
+        if (paymentDetailsExist.getError_occurred()) {
+            purchaseButton.setEnabled(false);
+            paymentDetails.setText(paymentDetailsExist.error_message);
+        } else {
+            purchaseButton.setEnabled(paymentDetailsExist.value);
+            paymentDetails.setVisible(!paymentDetailsExist.value);
+        }
         productGrid.setItems(productDTOList.keySet());
-
-        Button purchaseButton = new Button("Purchase cart");
-        setHorizontalComponentAlignment(Alignment.END, purchaseButton);
-        add(productGrid, purchaseButton);
+        cartEmptySpan = new Span("Your cart is empty");
+        cartEmptySpan.setVisible(false);
+        add(productGrid, cartEmptySpan);
         setWidthFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         getStyle().set("text-align", "center");
     }
 
+    private void purchaseShoppingCart() {
+        ResponseT<PurchaseDTO> r = marketController.purchaseShoppingCart(MainLayout.getSessionId());
+        if (r.getError_occurred())
+            Notification.show(r.error_message);
+        else {
+            Notification.show("SUCCESS");
+            refreshGrid();
+        }
+    }
+
     private double calculateTotalPrice() {
         double ret = 0;
-        for (Map.Entry<ProductDTO, Integer> e : productDTOList.entrySet())
-            ret += e.getKey().getPrice() * e.getValue();
+        for (Map.Entry<ProductDTO, Integer> e : productDTOList.entrySet()) {
+            ResponseT<Double> productDiscount = marketController.getProductDiscountPercentageInCart(MainLayout.getSessionId(), e.getKey().getStoreId(), e.getKey().getProductId());
+            if (productDiscount.getError_occurred())
+                ret += e.getKey().getPrice() * e.getValue();
+            else
+                ret += e.getKey().getPrice() * (1.0 - productDiscount.value) * e.getValue();
+        }
         return ret;
     }
 
@@ -75,7 +96,6 @@ ShoppingCart extends VerticalLayout {
             Notification.show(r.error_message);
         else {
             Notification.show("quantity updated successfully");
-            productDTOList = marketController.getShoppingCart(MainLayout.getSessionId()).value.getProducts();
             refreshGrid();
         }
     }
@@ -87,7 +107,6 @@ ShoppingCart extends VerticalLayout {
             Notification.show(r.error_message);
         else {
             Notification.show("product removed successfully");
-            productDTOList = marketController.getShoppingCart(MainLayout.getSessionId()).value.getProducts();
             refreshGrid();
         }
     }
@@ -97,13 +116,43 @@ ShoppingCart extends VerticalLayout {
     }
 
     private void refreshGrid() {
+        productDTOList = marketController.getShoppingCart(MainLayout.getSessionId()).value.getProducts();
         if (productDTOList.size() > 0) {
             productGrid.setVisible(true);
-//            productGrid.getDataProvider().refreshAll();
             productGrid.setItems(productDTOList.keySet());
+            totalSpan.setText("Total: " + String.format("%.2f", calculateTotalPrice()));
         } else {
+            cartEmptySpan.setVisible(true);
             productGrid.setVisible(false);
         }
     }
 
+    private HorizontalLayout initQuantityColumn(ProductDTO product) {
+        HorizontalLayout hl = new HorizontalLayout();
+        IntegerField quantity = new IntegerField();
+        quantity.setValue(productDTOList.get(product));
+        quantity.setStepButtonsVisible(true);
+        quantity.setMin(0);
+        Button updateButton = new Button("Update", e -> updateQuantity(product, quantity.getValue()));
+        Button removeButton = new Button("Remove", e -> removeProduct(product));
+        hl.add(quantity, updateButton, removeButton);
+        return hl;
+    }
+
+    private Object initTotalColumn(ProductDTO p) {
+        ResponseT<Double> productDiscount = marketController.getProductDiscountPercentageInCart(MainLayout.getSessionId(), p.getStoreId(), p.getProductId());
+        if (productDiscount.getError_occurred())
+            return p.getPrice() * productDTOList.get(p);
+        return String.format("%.2f", p.getPrice() * (1.0 - productDiscount.value) * productDTOList.get(p));
+    }
+
+    private Component initPriceColumn(ProductDTO productDTO) {
+        ResponseT<Double> productDiscount = marketController.getProductDiscountPercentageInCart(MainLayout.getSessionId(), productDTO.getStoreId(), productDTO.getProductId());
+        if (productDiscount.getError_occurred())
+            return new Span(String.format("%.2f", productDTO.getPrice()));
+        double discountPercentage = productDiscount.value;
+        if (discountPercentage == 0.0)
+            return new Span(String.format("%.2f", productDTO.getPrice()));
+        return new Html("<span><s>" + String.format("%.2f", productDTO.getPrice()) + "</s> " + String.format("%.2f", productDTO.getPrice() * (1.0 - discountPercentage)) + "</span>");
+    }
 }
