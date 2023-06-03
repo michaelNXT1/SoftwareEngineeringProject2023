@@ -51,6 +51,9 @@ public interface IMarketManager {
     Response removeProductFromCart(String sessionId, int storeId, int productId);
 
     ResponseT<PurchaseDTO> purchaseShoppingCart(String sessionId);
+    ResponseT<Boolean> hasPermission(String sessionId, int storeId, PositionDTO.permissionType employeeList);
+    Response setStoreManagerPermissions(String sessionId, int storeId, String storeManager, Set<PositionDTO.permissionType> permissions);
+    Response removeStoreOwner(String sessionId, int storeId, String storeOwnerName);
 
     ResponseT<Integer> openStore(String sessionId, String storeName);
 
@@ -60,7 +63,7 @@ public interface IMarketManager {
 
     Response editProductName(String sessionId, int storeId, int productId, String newName);
 
-    Response editProductPrice(String sessionId, int storeId, int productId, int newPrice);
+    Response editProductPrice(String sessionId, int storeId, int productId, double newPrice);
 
     Response editProductCategory(String sessionId, int storeId, int productId, String newCategory);
 
@@ -107,6 +110,12 @@ public interface IMarketManager {
     Response joinDiscountPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator);
 
     Response removeDiscountPolicy(String sessionId, int storeId, int policyId);
+    Response removeDiscount(String sessionId, int storeId, int discountId);
+    Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity);
+    ResponseT<List<String>> getDiscountPolicyTypes();
+    ResponseT<Set<PositionDTO.permissionType>> getPermissions(String sessionId, int storeId, String username);
+    ResponseT<Boolean> hasPaymentMethod(String sessionId);
+    ResponseT<Double> getProductDiscountPercentageInCart(String sessionId, int storeId, int productId);
 
     Response addPaymentMethod(String sessionId, String cardNumber, String month, String year, String cvv);
 

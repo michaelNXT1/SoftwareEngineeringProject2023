@@ -37,13 +37,40 @@ public class MarketController implements IMarketController {
         this.marketManager = new MarketManager();
         this.notificationBroker = new NotificationController();
     }
+    @PostMapping("/signUpSystemManager")
+    @ResponseBody
+    @Override
+    public Response signUpSystemManager(@RequestParam(value = "username", defaultValue = "") String username,
+                                        @RequestParam(value = "password", defaultValue = "") String password) {
+        return this.marketManager.signUpSystemManager(username,password);
+    }
+    @PostMapping("/enterMarket")
+    @ResponseBody
+    @Override
+    public ResponseT<String> enterMarket() {
+        return this.marketManager.enterMarket();
+    }
+    @GetMapping("/signUp")
+    @ResponseBody
+    @Override
+    public Response exitMarket(@RequestParam(value = "sessionId", defaultValue = "") String sessionId) {
+        return this.marketManager.exitMarket(sessionId);
+    }
+
+    @GetMapping("/signUp")
+    @ResponseBody
+    @Override
+    public Response signUp(@RequestParam(value = "username", defaultValue = "") String username,
+                           @RequestParam(value = "password", defaultValue = "") String password) {
+        return this.marketManager.signUp(username,password);
+    }
 
     @GetMapping("/login")
     @ResponseBody
     public ResponseT<String> login(
             @RequestParam(value = "username", defaultValue = "") String username,
             @RequestParam(value = "password", defaultValue = "") String password) {
-        return marketManager.login(username, password,notificationBroker).value;
+        return marketManager.login(username, password,notificationBroker);
     }
 
     @GetMapping("/logout")
