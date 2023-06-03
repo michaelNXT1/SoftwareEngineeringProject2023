@@ -1,22 +1,40 @@
 package application.views.about;
 
+import CommunicationLayer.IMarketController;
+import CommunicationLayer.MarketController;
 import application.views.MainLayout;
+import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.PreserveOnRefresh;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
 
 @PageTitle("About")
 @Route(value = "about", layout = MainLayout.class)
+@RouteAlias(value = "", layout = MainLayout.class)
 @PreserveOnRefresh
 public class AboutView extends VerticalLayout {
+    private final TextField name;
 
     public AboutView() {
+        IMarketController marketController = MarketController.getInstance();
+        name = new TextField("Your name");
+        Button sayHello = new Button("Say hello");
+        sayHello.addClickListener(e -> Notification.show("Hello " + name.getValue()));
+        sayHello.addClickShortcut(Key.ENTER);
+        add(new H1("Welcome, " + marketController.getUsername(MainLayout.getSessionId()).value + "!"));
+
+
         setSpacing(false);
 
 //        Image img = new Image("images/empty-plant.png", "placeholder plant");
