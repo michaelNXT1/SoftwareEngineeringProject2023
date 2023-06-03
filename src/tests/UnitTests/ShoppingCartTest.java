@@ -30,7 +30,7 @@ class ShoppingCartTest extends TestCase {
         product1 = new Product(storeId1,1,"wine", 3, "60.0", "alcohol");
         product2 = new Product(storeId1,2, "cheese", 9.5, "milk","fads");
         product3 = new Product(storeId1,3, "steak", 120.0, "meat","asd");
-        market = new Market();
+        market = new Market(null);
         market.signUp(userName1, password1);
         market.signUpSystemManager(userName1, password1);
         market.signUp("idan123",  "wswsad32");

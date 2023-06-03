@@ -16,7 +16,7 @@ public class MarketManager implements IMarketManager {
     private final Market market;
 
     public MarketManager() {
-        this.market = new Market();
+        this.market = new Market(null);
     }
 
     public Response signUpSystemManager(String username, String password) {
