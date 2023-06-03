@@ -50,6 +50,8 @@ public class Store {
         discountCounter = 0;
     }
 
+
+
     public String getStoreName() {
         return storeName;
     }
@@ -355,6 +357,10 @@ public class Store {
         employees.add(member);
     }
 
+    public void removeEmployee(Member member) {
+        employees.remove(member);
+    }
+
     public Map<Discount, List<BaseDiscountPolicy>> getProductDiscountPolicyMap() {
         return productDiscountPolicyMap;
     }
@@ -373,9 +379,5 @@ public class Store {
 
     public List<BasePurchasePolicy> getPurchasePolicies() {
         return purchasePolicies;
-    }
-
-    public void addStoreOwner(Member member) {
-        storeOwners.add(member.getUsername());
     }
 }

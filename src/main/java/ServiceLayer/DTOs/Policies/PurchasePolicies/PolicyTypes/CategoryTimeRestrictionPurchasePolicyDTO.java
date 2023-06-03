@@ -22,6 +22,6 @@ public class CategoryTimeRestrictionPurchasePolicyDTO extends BasePurchasePolicy
 
     @Override
     public String toString() {
-        return "Category " + category + " allowed between " + startTime + " and " + endTime;
+        return "Category " + category + " allowed between " + startTime + "-" + endTime;
     }
 }

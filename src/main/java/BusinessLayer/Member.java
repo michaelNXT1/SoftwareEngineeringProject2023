@@ -1,19 +1,25 @@
 package BusinessLayer;
 
 import BusinessLayer.Logger.SystemLogger;
+
+import CommunicationLayer.NotificationBroker;
 import Security.SecurityUtils;
 import ServiceLayer.DTOs.StoreDTO;
 
 
+import Notification.Notification;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Member extends Guest {
 
     private String username;
     private String hashedPassword;
+    private NotificationBroker notificationBroker;
 
+    private ConcurrentLinkedQueue<Notification> notifications;
     private SystemLogger logger;
     private List<Position> positions = new LinkedList<>(); //all the positions of this member, note that position act as a state
 
@@ -22,9 +28,13 @@ public class Member extends Guest {
         this.username = username;
         this.hashedPassword = hashedPassword;
         this.logger = new SystemLogger();
+        this.notifications = new ConcurrentLinkedQueue<Notification>();
     }
 
     // getter, setter
+    public void setNotificationBroker(NotificationBroker notificationBroker){
+        this.notificationBroker = notificationBroker;
+    }
     public void setPosition(Position newPosition) {
         boolean found = false;
         for (int i = 0; i < positions.size() && !found; i++) {
@@ -52,6 +62,8 @@ public class Member extends Guest {
 
     public void logout() {
         SecurityUtils.logout();
+        notificationBroker = null;
+
     }
 
     public Position getStorePosition(Store store) {
@@ -76,6 +88,23 @@ public class Member extends Guest {
         }
     }
 
+    public void sendRealTimeNotification(){
+        if(!(notifications == null || notifications.isEmpty())) {
+            for (Notification notification : notifications) {
+                this.notificationBroker.sendRealTimeNotification(notification, this.username);
+            }
+            notifications.clear();
+        }
+    }
+
+    public void sendNotification(Notification shopNotification) {
+        if (this.notificationBroker != null) {
+            notificationBroker.sendRealTimeNotification(shopNotification, this.username);
+        }else {
+            this.notifications.add(shopNotification);
+        }
+    }
+
     public void setToStoreOwner(Store store, Member assigner) throws Exception {
         if (getStorePosition(store) != null) {
             logger.error(String.format("the member is already have a different position in this store : %s", store.getStoreName()));
@@ -83,7 +112,7 @@ public class Member extends Guest {
         } else {
             logger.info(String.format("%s promote to be the owner of %s", getUsername(), store.getStoreName()));
             positions.add(new StoreOwner(store, assigner));
-            store.addStoreOwner(this);
+            store.addEmployee(this);
         }
     }
 
@@ -108,12 +137,9 @@ public class Member extends Guest {
 
     public void notBeingStoreOwner(Guest m, Store store) throws Exception {
         Position storeOwnerP = null;
-        for (Position p : positions
-        ) {
-            if (p instanceof StoreOwner) {
+        for (Position p : positions)
+            if (p instanceof StoreOwner && p.getStore().equals(store))
                 storeOwnerP = p;
-            }
-        }
         if (storeOwnerP == null) {
             logger.error(String.format("%s is not a store owner", username));
             throw new Exception(String.format("%s is not a store owner", username));
@@ -122,12 +148,9 @@ public class Member extends Guest {
             logger.error(String.format("%s is not the assigner of %s", m.getUsername(), getUsername()));
             throw new Exception("can remove only store owner assigned by him");
         }
-        if (!storeOwnerP.getStore().equals(store)) {
-            logger.error(String.format("%s is not store owner of %s store", m.getUsername(), store.getStoreName()));
-            throw new Exception("can remove only store owner assigned by him");
-        }
+        store.removeEmployee(this);
         positions.remove(storeOwnerP);
-        logger.info(String.format("remove %s from being storeManager", getUsername()));
+        logger.info(String.format("remove %s from being store owner", getUsername()));
     }
 
     public List<Position> getPositions() {

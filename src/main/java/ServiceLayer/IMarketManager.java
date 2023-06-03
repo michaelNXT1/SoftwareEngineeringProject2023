@@ -1,5 +1,6 @@
 package ServiceLayer;
 
+import CommunicationLayer.NotificationBroker;
 import ServiceLayer.DTOs.*;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
@@ -8,6 +9,7 @@ import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface IMarketManager {
     Response signUpSystemManager(String username, String password);
@@ -18,7 +20,7 @@ public interface IMarketManager {
 
     Response signUp(String username, String password);
 
-    ResponseT<String> login(String username, String password);
+    ResponseT<String> login(String username, String password, NotificationBroker notificationBroker);
 
     Response logout(String sessionId);
 
@@ -49,6 +51,9 @@ public interface IMarketManager {
     Response removeProductFromCart(String sessionId, int storeId, int productId);
 
     ResponseT<PurchaseDTO> purchaseShoppingCart(String sessionId);
+    ResponseT<Boolean> hasPermission(String sessionId, int storeId, PositionDTO.permissionType employeeList);
+    Response setStoreManagerPermissions(String sessionId, int storeId, String storeManager, Set<PositionDTO.permissionType> permissions);
+    Response removeStoreOwner(String sessionId, int storeId, String storeOwnerName);
 
     ResponseT<Integer> openStore(String sessionId, String storeName);
 
@@ -58,7 +63,7 @@ public interface IMarketManager {
 
     Response editProductName(String sessionId, int storeId, int productId, String newName);
 
-    Response editProductPrice(String sessionId, int storeId, int productId, int newPrice);
+    Response editProductPrice(String sessionId, int storeId, int productId, double newPrice);
 
     Response editProductCategory(String sessionId, int storeId, int productId, String newCategory);
 
@@ -98,13 +103,19 @@ public interface IMarketManager {
 
     Response addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone);
 
-    Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity);
+    Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity, boolean allowNone);
 
     Response addMinBagTotalDiscountPolicy(String sessionId, int storeId, int discountId, double minTotal);
 
     Response joinDiscountPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator);
 
     Response removeDiscountPolicy(String sessionId, int storeId, int policyId);
+    Response removeDiscount(String sessionId, int storeId, int discountId);
+    Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity);
+    ResponseT<List<String>> getDiscountPolicyTypes();
+    ResponseT<Set<PositionDTO.permissionType>> getPermissions(String sessionId, int storeId, String username);
+    ResponseT<Boolean> hasPaymentMethod(String sessionId);
+    ResponseT<Double> getProductDiscountPercentageInCart(String sessionId, int storeId, int productId);
 
     Response addPaymentMethod(String sessionId, String cardNumber, String month, String year, String cvv);
 
@@ -131,11 +142,6 @@ public interface IMarketManager {
     ResponseT<List<BasePurchasePolicyDTO>> getPurchasePoliciesByStoreId(int storeId);
 
     ResponseT<List<String>> getPurchasePolicyTypes();
-
-    ResponseT<List<String>> getDiscountPolicyTypes();
-
-    Response removeDiscount(String sessionId, int storeId, int discountId);
-
 
 //        Response logoutSystemManager(String sessionId);
 

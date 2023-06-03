@@ -23,7 +23,7 @@ public class Real implements Bridge {
     }
 
     public String login(String username, String password) {
-        return manager.login(username, password).value;
+        return manager.login(username, password,null ).value;
     }
 
     public boolean register(String username, String password) {
@@ -282,8 +282,8 @@ public class Real implements Bridge {
     }
 
     @Override
-    public boolean addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity, boolean allowNone) {
-        return !this.manager.addMaxQuantityDiscountPolicy(sessionId, storeId, discountId, productId, maxQuantity, allowNone).getError_occurred();
+    public boolean addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity) {
+        return !this.manager.addMaxQuantityDiscountPolicy(sessionId, storeId, discountId, productId, maxQuantity).getError_occurred();
     }
 
     @Override
@@ -333,7 +333,7 @@ public class Real implements Bridge {
 
     @Override
     public boolean removeStoreOwner(String sessionId, String storeOwnerToRemove, int storeId) {
-        return !manager.removeStoreOwner(sessionId, storeOwnerToRemove, storeId).getError_occurred();
+        return !manager.removeStoreOwner(sessionId, storeId, storeOwnerToRemove).getError_occurred();
     }
 
     @Override
