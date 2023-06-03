@@ -222,10 +222,11 @@ public class Store {
     }
 
     //Discounts
-    public void addProductDiscount(int productId, double discountPercentage, int compositionType) throws Exception {
+    public Integer addProductDiscount(int productId, double discountPercentage, int compositionType) throws Exception {
         checkProductExists(productId);
         Discount discount = new ProductDiscount(discountCounter++, discountPercentage, productId, compositionType);
         productDiscountPolicyMap.put(discount, new ArrayList<>());
+        return discountCounter - 1;
     }
 
     public void addCategoryDiscount(String category, double discountPercentage, int compositionType) throws Exception {
@@ -257,19 +258,22 @@ public class Store {
     }
 
     //Discount policies
-    public void addMinQuantityDiscountPolicy(int discountId, int productId, int minQuantity, boolean allowNone) throws Exception {
+    public Integer addMinQuantityDiscountPolicy(int discountId, int productId, int minQuantity, boolean allowNone) throws Exception {
         Discount d = findDiscount(discountId);
         productDiscountPolicyMap.get(d).add(new MinQuantityDiscountPolicy(purchasePolicyCounter++, checkProductExists(productId), minQuantity, allowNone));
+        return purchasePolicyCounter - 1 ;
     }
 
-    public void addMaxQuantityDiscountPolicy(int discountId, int productId, int maxQuantity) throws Exception {
+    public Integer addMaxQuantityDiscountPolicy(int discountId, int productId, int maxQuantity) throws Exception {
         Discount d = findDiscount(discountId);
         productDiscountPolicyMap.get(d).add(new MaxQuantityDiscountPolicy(purchasePolicyCounter++, checkProductExists(productId), maxQuantity));
+        return purchasePolicyCounter - 1 ;
     }
 
-    public void addMinBagTotalDiscountPolicy(int discountId, double minTotal) throws Exception {
+    public Integer addMinBagTotalDiscountPolicy(int discountId, double minTotal) throws Exception {
         Discount d = findDiscount(discountId);
         productDiscountPolicyMap.get(d).add(new MinBagTotalDiscountPolicy(purchasePolicyCounter++, minTotal));
+        return purchasePolicyCounter - 1 ;
     }
 
     public void joinDiscountPolicies(int policyId1, int policyId2, int operator) throws Exception {

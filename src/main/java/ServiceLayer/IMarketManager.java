@@ -95,23 +95,22 @@ public interface IMarketManager {
 
     Response addMinQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone);
 
-    Response addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType);
+    ResponseT<Integer> addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType);
 
     Response addCategoryDiscount(String sessionId, int storeId, String category, double discountPercentage, int compositionType);
 
     Response addStoreDiscount(String sessionId, int storeId, double discountPercentage, int compositionType);
 
-    Response addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone);
+    ResponseT<Integer>  addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone);
 
-    Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity, boolean allowNone);
+    ResponseT<Integer>  addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity);
 
-    Response addMinBagTotalDiscountPolicy(String sessionId, int storeId, int discountId, double minTotal);
+    ResponseT<Integer>  addMinBagTotalDiscountPolicy(String sessionId, int storeId, int discountId, double minTotal);
 
     Response joinDiscountPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator);
 
     Response removeDiscountPolicy(String sessionId, int storeId, int policyId);
     Response removeDiscount(String sessionId, int storeId, int discountId);
-    Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity);
     ResponseT<List<String>> getDiscountPolicyTypes();
     ResponseT<Set<PositionDTO.permissionType>> getPermissions(String sessionId, int storeId, String username);
     ResponseT<Boolean> hasPaymentMethod(String sessionId);

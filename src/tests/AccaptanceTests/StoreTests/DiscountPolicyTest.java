@@ -25,7 +25,7 @@ public class DiscountPolicyTest extends ServiceTests {
         int storeID = openStore(sessionID1, "newStore");
         int productID1 = addProduct(sessionID1, storeID, "test", 3.9, "milk", 9, "10");
         addProductDiscount(sessionID1, storeID, productID1, 0.1, 0);
-        assertTrue(addMinQuantityDiscountPolicy(sessionID1, storeID, 0, productID1, 2, false));
+        assertTrue(addMinQuantityDiscountPolicy(sessionID1, storeID, 0, productID1, 2, false) > -1);
     }
 
     @Test
@@ -33,10 +33,10 @@ public class DiscountPolicyTest extends ServiceTests {
         int storeID = openStore(sessionID1, "newStore");
         int productID1 = addProduct(sessionID1, storeID, "test", 3.9, "milk", 9, "10");
         addProductDiscount(sessionID1, storeID, productID1, 0.1, 0);
-        assertFalse(addMinQuantityDiscountPolicy(sessionID1, storeID + 1, 0, productID1, 2, false));
-        assertFalse(addMinQuantityDiscountPolicy(sessionID1, storeID, 1, productID1, 2, false));
-        assertFalse(addMinQuantityDiscountPolicy(sessionID1, storeID, 0, productID1 + 1, 2, false));
-        assertFalse(addMinQuantityDiscountPolicy(sessionID1, storeID, 0, productID1, -1, false));
+        assertFalse(addMinQuantityDiscountPolicy(sessionID1, storeID + 1, 0, productID1, 2, false) > -1);
+        assertFalse(addMinQuantityDiscountPolicy(sessionID1, storeID, 1, productID1, 2, false)>-1);
+        assertFalse(addMinQuantityDiscountPolicy(sessionID1, storeID, 0, productID1 + 1, 2, false)>-1);
+        assertFalse(addMinQuantityDiscountPolicy(sessionID1, storeID, 0, productID1, -1, false)>-1);
     }
 
     @Test

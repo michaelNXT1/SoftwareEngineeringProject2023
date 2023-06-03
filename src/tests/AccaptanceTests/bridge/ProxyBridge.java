@@ -437,11 +437,11 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public boolean addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType) {
+    public Integer addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType) {
         if (real != null) {
             return real.addProductDiscount(sessionId, storeId, productId, discountPercentage, compositionType);
         } else {
-            return false;
+            return -1;
         }
     }
 
@@ -464,11 +464,11 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public boolean addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone) {
+    public Integer addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone) {
         if (real != null) {
             return real.addMinQuantityDiscountPolicy(sessionId, storeId, discountId, productId, minQuantity, allowNone);
         } else {
-            return false;
+            return -1;
         }
     }
 
@@ -482,20 +482,20 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public boolean addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity) {
+    public Integer addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity) {
         if (real != null) {
             return real.addMaxQuantityDiscountPolicy(sessionId, storeId, discountId, productId, maxQuantity);
         } else {
-            return false;
+            return -1;
         }
     }
 
     @Override
-    public boolean addMinBagTotalDiscountPolicy(String sessionId, int storeId, int discountId, double minTotal) {
+    public Integer addMinBagTotalDiscountPolicy(String sessionId, int storeId, int discountId, double minTotal) {
         if (real != null) {
             return real.addMinBagTotalDiscountPolicy(sessionId, storeId, discountId, minTotal);
         } else {
-            return false;
+            return -1;
         }
     }
 

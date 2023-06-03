@@ -481,12 +481,11 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public Response addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType) {
+    public ResponseT<Integer> addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType) {
         try {
-            market.addProductDiscount(sessionId, storeId, productId, discountPercentage, compositionType);
-            return new Response();
+            return ResponseT.fromValue(market.addProductDiscount(sessionId, storeId, productId, discountPercentage, compositionType));
         } catch (Exception e) {
-            return new Response(e.getMessage());
+            return ResponseT.fromValue(-1);
         }
     }
 
@@ -518,6 +517,7 @@ public class MarketManager implements IMarketManager {
         }
     }
 
+
     @Override
     public ResponseT<Map<DiscountDTO, List<BaseDiscountPolicyDTO>>> getDiscountPolicyMap(int storeId) {
         try {
@@ -527,36 +527,28 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public Response addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone) {
+    public ResponseT<Integer>  addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone) {
         try {
-            market.addMinQuantityDiscountPolicy(sessionId, storeId, discountId, productId, minQuantity, allowNone);
-            return new Response();
+            return ResponseT.fromValue(market.addMinQuantityDiscountPolicy(sessionId, storeId, discountId, productId, minQuantity, allowNone));
         } catch (Exception e) {
-            return new Response(e.getMessage());
+            return ResponseT.fromValue(-1);
         }
     }
 
     @Override
-    public Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity, boolean allowNone) {
-        return null;
-    }
-
-    @Override
-    public Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity) {
+    public ResponseT<Integer>  addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity) {
         try {
-            market.addMaxQuantityDiscountPolicy(sessionId, storeId, discountId, productId, maxQuantity);
-            return new Response();
+            return ResponseT.fromValue(market.addMaxQuantityDiscountPolicy(sessionId, storeId, discountId, productId, maxQuantity));
         } catch (Exception e) {
-            return new Response(e.getMessage());
+            return ResponseT.fromValue(-1);
         }
     }
 
-    public Response addMinBagTotalDiscountPolicy(String sessionId, int storeId, int discountId, double minTotal) {
+    public ResponseT<Integer> addMinBagTotalDiscountPolicy(String sessionId, int storeId, int discountId, double minTotal) {
         try {
-            market.addMinBagTotalDiscountPolicy(sessionId, storeId, discountId, minTotal);
-            return new Response();
+            return ResponseT.fromValue(market.addMinBagTotalDiscountPolicy(sessionId, storeId, discountId, minTotal));
         } catch (Exception e) {
-            return new Response(e.getMessage());
+            return ResponseT.fromValue(-1);
         }
     }
 
@@ -597,32 +589,62 @@ public class MarketManager implements IMarketManager {
 
     @Override
     public Response addProductTimeRestrictionPolicy(String sessionId, int storeId, int productId, LocalTime startTime, LocalTime endTime) {
-        return null;
+        try {
+            market.addProductTimeRestrictionPolicy(sessionId, storeId, productId, startTime, endTime);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
     }
 
     @Override
     public Response addCategoryTimeRestrictionPolicy(String sessionId, int storeId, String category, LocalTime startTime, LocalTime endTime) {
-        return null;
+        try {
+            market.addCategoryTimeRestrictionPolicy(sessionId, storeId, category, startTime, endTime);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
     }
 
     @Override
     public Response joinPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator) {
-        return null;
+        try {
+            market.joinPolicies(sessionId, storeId, policyId1, policyId2, operator);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
     }
 
     @Override
     public Response removePolicy(String sessionId, int storeId, int policyId) {
-        return null;
+        try {
+            market.removePolicy(sessionId, storeId, policyId);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
     }
 
     @Override
     public Response addMaxQuantityPolicy(String sessionId, int storeId, int productId, int maxQuantity) {
-        return null;
+        try {
+            market.addMaxQuantityPolicy(sessionId, storeId, productId, maxQuantity);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
     }
 
     @Override
     public Response addMinQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone) {
-        return null;
+        try {
+            market.addMinQuantityPolicy(sessionId, storeId, productId, minQuantity,allowNone);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
     }
 
     @Override
@@ -646,7 +668,12 @@ public class MarketManager implements IMarketManager {
 
     @Override
     public Response removeStoreOwner(String sessionId, String storeOwnerToRemove, int storeId) {
-        return null;
+        try {
+            market.removeStoreOwner(sessionId, storeOwnerToRemove,storeId);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
     }
 
     @Override

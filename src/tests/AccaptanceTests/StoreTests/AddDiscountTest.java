@@ -25,17 +25,48 @@ public class AddDiscountTest extends ServiceTests {
     public void testAddProductDiscountAsStoreOwnerSuccess() {
         int storeID = openStore(sessionID1, "newStore");
         int productID1 = addProduct(sessionID1, storeID, "test", 3.9, "milk", 9, "10");
-        assertTrue(addProductDiscount(sessionID1, storeID, productID1, 0.1, 0));
+        assertTrue(addProductDiscount(sessionID1, storeID, productID1, 0.1, 0)>-1);
+    }
+
+    @Test
+    public void testAddMinBagTotalDiscountPolicySuccess() {
+        int storeID = openStore(sessionID1, "newStore");
+        int productID1 = addProduct(sessionID1, storeID, "test", 3.9, "milk", 9, "10");
+        int dId = addProductDiscount(sessionID1, storeID, productID1, 0.1, 0);
+        assertTrue(addMinBagTotalDiscountPolicy(sessionID1, storeID, 0, 6) == dId);
+    }
+
+    @Test
+    public void testAddMinBagTotalDiscountPolicyStoreNotExistFail() {
+        int storeID = openStore(sessionID1, "newStore");
+        int productID1 = addProduct(sessionID1, storeID, "test", 3.9, "milk", 9, "10");
+        int dId = addProductDiscount(sessionID1, storeID, productID1, 0.1, 0);
+        assertFalse(addMinBagTotalDiscountPolicy(sessionID1, storeID+2, 0, 6) == dId);
+    }
+
+    @Test
+    public void testAddMinBagTotalDiscountPolicyDiscountNotExistFail() {
+        int storeID = openStore(sessionID1, "newStore");
+        int productID1 = addProduct(sessionID1, storeID, "test", 3.9, "milk", 9, "10");
+        int did = addProductDiscount(sessionID1, storeID, productID1, 0.1, 0);
+        assertFalse(addMinBagTotalDiscountPolicy(sessionID1, storeID, -1, 6) == did);
+    }
+    @Test
+    public void testAddMinBagTotalDiscountPolicyNegativeMinQuantityFail() {
+        int storeID = openStore(sessionID1, "newStore");
+        int productID1 = addProduct(sessionID1, storeID, "test", 3.9, "milk", 9, "10");
+        int did = addProductDiscount(sessionID1, storeID, productID1, 0.1, 0);
+        assertFalse(addMinBagTotalDiscountPolicy(sessionID1, storeID, 0, -1) == did);
     }
 
     @Test
     public void testAddProductDiscountAsStoreOwnerFailure() {
         int storeID = openStore(sessionID1, "newStore");
         int productID1 = addProduct(sessionID1, storeID, "test", 3.9, "milk", 9, "10");
-        assertFalse(addProductDiscount(sessionID1, storeID, productID1 + 1, 0.1, 0));
-        assertFalse(addProductDiscount(sessionID1, storeID + 1, productID1, 0.1, 0));
-        assertFalse(addProductDiscount(sessionID1, storeID, productID1, 0.0, 0));
-        assertFalse(addProductDiscount(sessionID1, storeID, productID1, 0.1, 5));
+        assertFalse(addProductDiscount(sessionID1, storeID, productID1 + 1, 0.1, 0)>-1);
+        assertFalse(addProductDiscount(sessionID1, storeID + 1, productID1, 0.1, 0)>-1);
+        assertFalse(addProductDiscount(sessionID1, storeID, productID1, 0.0, 0)>-1);
+        assertFalse(addProductDiscount(sessionID1, storeID, productID1, 0.1, 5)>-1);
     }
 
     @Test
