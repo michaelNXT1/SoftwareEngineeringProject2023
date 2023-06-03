@@ -7,6 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class ShoppingCartTest extends TestCase {
 
@@ -29,7 +31,7 @@ class ShoppingCartTest extends TestCase {
         product1 = new Product(storeId1,1,"wine", 3, "60.0", "alcohol");
         product2 = new Product(storeId1,2, "cheese", 9.5, "milk","fads");
         product3 = new Product(storeId1,3, "steak", 120.0, "meat","asd");
-        market = new Market();
+        market = new Market(null);
         market.signUp(userName1, password1);
         market.signUpSystemManager(userName1, password1);
         market.signUp("idan123",  "wswsad32");
@@ -61,6 +63,30 @@ class ShoppingCartTest extends TestCase {
     void purchaseShoppingCart() throws Exception {
         Purchase purchase = shoppingCart.purchaseShoppingCart();
         assertTrue(purchase.getProductList().getAllPurchaseProducts().contains(product2));
+    }
+
+    @Test
+    void purchaseShoppingCartWithMockPaymentSystem() throws Exception {
+        SupplySystemProxy supplySystemProxy = mock(SupplySystemProxy.class);
+        PaymentSystemProxy ps = new PaymentSystemProxy();
+        market.setPaymentSystem(ps);
+        market.setSupplySystem(supplySystemProxy);
+        market.addSupplyDetails(sessionId1, "shoham", "alexnder", "beer sheva", "Israel","806459");
+        market.addPaymentMethod(sessionId1, "123456789", "April","2023","489","shoham","508479063");
+        Exception exception = assertThrows(Exception.class, () -> market.purchaseShoppingCart(sessionId1));
+        assertEquals("Purchase failed, supply system hasn't managed to charge", exception.getMessage());
+    }
+
+    @Test
+    void purchaseShoppingCartWithMockSupplySystem() throws Exception {
+        PaymentSystemProxy paymentSystemProxy = mock(PaymentSystemProxy.class);
+        SupplySystemProxy ss = new SupplySystemProxy();
+        market.setSupplySystem(ss);
+        market.setPaymentSystem(paymentSystemProxy);
+        market.addSupplyDetails(sessionId1, "shoham", "alexnder", "beer sheva", "Israel","806459");
+        market.addPaymentMethod(sessionId1, "123456789", "April","2023","489","shoham","508479063");
+        Exception exception = assertThrows(Exception.class, () -> market.purchaseShoppingCart(sessionId1));
+        assertEquals("Purchase failed, supply system hasn't managed to charge", exception.getMessage());
     }
     @Test
     void purchaseShoppingCartWhenSupplySystemFailed() throws Exception {

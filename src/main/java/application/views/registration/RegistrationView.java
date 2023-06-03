@@ -23,7 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
         private Header header;
 
         @Autowired
-        public RegistrationView(){
+        public RegistrationView() throws Exception {
             this.header = new Header();
             this.header.setText("Registration");
             this.usernameField = new TextField("Username");

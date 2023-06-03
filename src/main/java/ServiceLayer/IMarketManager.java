@@ -6,143 +6,223 @@ import ServiceLayer.DTOs.Discounts.DiscountDTO;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public interface IMarketManager {
-    Response signUpSystemManager(String username, String password);
+    Response
+    signUpSystemManager(String username, String password);
 
-    ResponseT<String> enterMarket();
+    ResponseT<String>
+    enterMarket();
 
-    Response exitMarket(String sessionId);
+    Response
+    exitMarket(String sessionId);
 
-    Response signUp(String username, String password);
+    //User methods
+    Response
+    signUp(String username, String password);
 
-    ResponseT<String> login(String username, String password, NotificationBroker notificationBroker);
+    public ResponseT<String>
+    login(String username, String password, NotificationBroker notificationBroker);
 
-    Response logout(String sessionId);
+    Response
+    logout(String sessionId);
 
-    ResponseT<List<StoreDTO>> getStores(String sessionId, String storeSubString);
+    ResponseT<Boolean>
+    isLoggedIn(String sessionId);
 
-    ResponseT<StoreDTO> getStore(String sessionId, int storeId);
+    //Interaction methods
+    ResponseT<List<StoreDTO>>
+    getStores(String sessionId, String storeSubString);
 
-    ResponseT<ProductDTO> getProduct(String sessionId, int storeId, int productId);
+    ResponseT<StoreDTO>
+    getStore(String sessionId, int storeId);
 
-    ResponseT<List<ProductDTO>> getProductsByName(String sessionId, String productName);
+    ResponseT<ProductDTO>
+    getProduct(String sessionId, int storeId, int productId);
 
-    ResponseT<List<ProductDTO>> getProductsByCategory(String sessionId, String productCategory);
+    ResponseT<List<ProductDTO>>
+    getProductsByName(String sessionId, String productName);
 
-    ResponseT<List<ProductDTO>> getProductsBySubstring(String sessionId, String productSubstring);
+    ResponseT<List<ProductDTO>>
+    getProductsByCategory(String sessionId, String productCategory);
 
-    ResponseT<List<ProductDTO>> getSearchResults(String sessionId);
+    ResponseT<Map<ProductDTO, Integer>>
+    getProductsByStore(int storeId);
 
-    ResponseT<List<ProductDTO>> filterSearchResultsByCategory(String sessionId, String category);
+    ResponseT<List<ProductDTO>>
+    getProductsBySubstring(String sessionId, String productSubstring);
 
-    ResponseT<List<ProductDTO>> filterSearchResultsByPrice(String sessionId, double minPrice, double maxPrice);
+    ResponseT<List<ProductDTO>>
+    getSearchResults(String sessionId);
 
-    Response addProductToCart(String sessionId, int storeId, int productId, int quantity);
+    ResponseT<List<ProductDTO>>
+    filterSearchResultsByCategory(String sessionId, String category);
 
-    ResponseT<ShoppingCartDTO> getShoppingCart(String sessionId);
+    ResponseT<List<ProductDTO>>
+    filterSearchResultsByPrice(String sessionId, double minPrice, double maxPrice);
 
-    Response changeProductQuantity(String sessionId, int storeId, int productId, int quantity);
+    Response
+    addProductToCart(String sessionId, int storeId, int productId, int quantity);
 
-    Response removeProductFromCart(String sessionId, int storeId, int productId);
+    ResponseT<ShoppingCartDTO>
+    getShoppingCart(String sessionId);
 
-    ResponseT<PurchaseDTO> purchaseShoppingCart(String sessionId);
+    Response
+    changeProductQuantity(String sessionId, int storeId, int productId, int quantity);
 
-    ResponseT<Integer> openStore(String sessionId, String storeName);
+    Response
+    removeProductFromCart(String sessionId, int storeId, int productId);
 
-    ResponseT<List<PurchaseDTO>> getPurchaseHistory(String sessionId, int storeId);
+    ResponseT<PurchaseDTO>
+    purchaseShoppingCart(String sessionId);
 
-    ResponseT<ProductDTO> addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description);
+    Response
+    addPaymentMethod(String sessionId, String cardNumber, String month, String year, String cvv);
 
-    Response editProductName(String sessionId, int storeId, int productId, String newName);
+    //Management methods
+    ResponseT<Integer>
+    openStore(String sessionId, String storeName);
 
-    Response editProductPrice(String sessionId, int storeId, int productId, double newPrice);
+    Response
+    closeStore(String sessionId, int storeId);
 
-    Response editProductCategory(String sessionId, int storeId, int productId, String newCategory);
+    ResponseT<List<PurchaseDTO>>
+    getPurchaseHistory(String sessionId, int storeId);
 
-    Response removeProductFromStore(String sessionId, int storeId, int productId);
+    ResponseT<List<StoreDTO>>
+    getResponsibleStores(String sessionId);
 
-    Response setPositionOfMemberToStoreManager(String sessionId, int storeID, String MemberToBecomeManager);
+    //Product management methods
+    ResponseT<ProductDTO>
+    addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description);
 
-    Response setPositionOfMemberToStoreOwner(String sessionId, int storeID, String MemberToBecomeOwner);
+    Response
+    editProductName(String sessionId, int storeId, int productId, String newName);
 
-    Response addStoreManagerPermissions(String sessionId, String storeManager, int storeID, int newPermission);
+    Response
+    editProductPrice(String sessionId, int storeId, int productId, double newPrice);
 
-    Response removeStoreManagerPermissions(String sessionId, String storeManager, int storeID, int newPermission);
+    Response
+    editProductCategory(String sessionId, int storeId, int productId, String newCategory);
 
-    ResponseT<List<MemberDTO>> getStoreEmployees(String sessionId, int storeId);
+    Response
+    removeProductFromStore(String sessionId, int storeId, int productId);
 
-    Response closeStore(String sessionId, int storeId);
+    //Employee management methods
+    Response
+    setPositionOfMemberToStoreManager(String sessionId, int storeID, String MemberToBecomeManager);
 
-    ResponseT<Map<StoreDTO, List<PurchaseDTO>>> getStoresPurchases(String sessionId);
+    Response
+    setPositionOfMemberToStoreOwner(String sessionId, int storeID, String MemberToBecomeOwner);
 
-    Response addProductTimeRestrictionPurchasePolicy(String sessionId, int storeId, int productId, LocalTime startTime, LocalTime endTime);
+    Response
+    setStoreManagerPermissions(String sessionId, int storeId, String storeManager, Set<PositionDTO.permissionType> permissions);
 
-    Response addCategoryTimeRestrictionPurchasePolicy(String sessionId, int storeId, String category, LocalTime startTime, LocalTime endTime);
+    Response
+    addStoreManagerPermissions(String sessionId, String storeManager, int storeID, int newPermission);
 
-    Response joinPurchasePolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator);
+    Response
+    removeStoreManagerPermissions(String sessionId, String storeManager, int storeID, int newPermission);
 
-    Response removePurchasePolicy(String sessionId, int storeId, int policyId);
+    ResponseT<Boolean>
+    hasPermission(String sessionId, int storeId, PositionDTO.permissionType employeeList);
 
-    Response addMaxQuantityPurchasePolicy(String sessionId, int storeId, int productId, int maxQuantity);
+    Response
+    removeStoreOwner(String sessionId, int storeId, String storeOwnerToRemove);
+    ResponseT<List<MemberDTO>>
+    getStoreEmployees(String sessionId, int storeId);
 
-    Response addMinQuantityPurchasePolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNote);
+    //Purchase policy methods
+    Response
+    addMaxQuantityPurchasePolicy(String sessionId, int storeId, int productId, int maxQuantity);
 
-    Response addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType);
+    Response
+    addMinQuantityPurchasePolicy(String sessionId, int storeId, int productId, int minQuantity, boolean allowNone);
 
-    Response addCategoryDiscount(String sessionId, int storeId, String category, double discountPercentage, int compositionType);
+    Response
+    addProductTimeRestrictionPurchasePolicy(String sessionId, int storeId, int productId, LocalTime startTime, LocalTime endTime);
 
-    Response addStoreDiscount(String sessionId, int storeId, double discountPercentage, int compositionType);
+    Response
+    addCategoryTimeRestrictionPurchasePolicy(String sessionId, int storeId, String category, LocalTime startTime, LocalTime endTime);
 
-    Response addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone);
+    Response
+    joinPurchasePolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator);
 
-    Response addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity);
+    Response
+    removePurchasePolicy(String sessionId, int storeId, int policyId);
 
-    Response addMinBagTotalDiscountPolicy(String sessionId, int storeId, int discountId, double minTotal);
+    ResponseT<List<BasePurchasePolicyDTO>>
+    getPurchasePoliciesByStoreId(int storeId);
 
-    Response joinDiscountPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator);
+    ResponseT<List<String>>
+    getPurchasePolicyTypes();
 
-    Response removeDiscountPolicy(String sessionId, int storeId, int policyId);
+    //Discount methods
+    ResponseT<Integer>
+    addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType);
 
-    Response addPaymentMethod(String sessionId, String cardNumber, String month, String year, String cvv);
+    Response
+    addCategoryDiscount(String sessionId, int storeId, String category, double discountPercentage, int compositionType);
 
-    ResponseT<List<String>> getAllCategories();
+    Response
+    addStoreDiscount(String sessionId, int storeId, double discountPercentage, int compositionType);
 
-    Response removeMember(String sessionId, String memberName);
+    Response
+    removeDiscount(String sessionId, int storeId, int discountId);
 
-    Response removeStoreOwner(String sessionId, String storeOwnerToRemove, int storeId);
+    ResponseT<Map<DiscountDTO, List<BaseDiscountPolicyDTO>>>
+    getDiscountPolicyMap(int storeId);
 
-    ResponseT<List<MemberDTO>> getInformationAboutMembers(String sessionId);
+    //Discount policy methods
+    ResponseT<Integer>
+    addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone);
 
-    ResponseT<String> getSearchKeyword(String sessionId);
+    ResponseT<Integer>
+    addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity);
 
-    ResponseT<String> getUsername(String sessionId);
+    ResponseT<Integer>
+    addMinBagTotalDiscountPolicy(String sessionId, int storeId, int discountId, double minTotal);
 
-    ResponseT<List<StoreDTO>> getResponsibleStores(String sessionId);
+    Response
+    joinDiscountPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator);
 
-    ResponseT<Boolean> isLoggedIn(String sessionId);
+    Response
+    removeDiscountPolicy(String sessionId, int storeId, int policyId);
 
-    ResponseT<Map<ProductDTO, Integer>> getProductsByStore(int storeId);
-    ResponseT<Boolean> hasPermission(String sessionId, int storeId, PositionDTO.permissionType employeeList);
-    Response setStoreManagerPermissions(String sessionId, int storeId, String storeManager, Set<PositionDTO.permissionType> permissions);
+    ResponseT<List<String>>
+    getDiscountPolicyTypes();
 
-    ResponseT<Map<DiscountDTO, List<BaseDiscountPolicyDTO>>> getDiscountPolicyMap(int storeId);
+    //System manager methods
+    ResponseT<Map<StoreDTO, List<PurchaseDTO>>>
+    getStoresPurchases(String sessionId);
 
-    ResponseT<List<BasePurchasePolicyDTO>> getPurchasePoliciesByStoreId(int storeId);
+    ResponseT<List<MemberDTO>>
+    getInformationAboutMembers(String sessionId);
 
-    ResponseT<List<String>> getPurchasePolicyTypes();
+    Response
+    removeMember(String sessionId, String memberName);
 
-    ResponseT<List<String>> getDiscountPolicyTypes();
+    //Other
+    ResponseT<List<String>>
+    getAllCategories();
 
-    Response removeDiscount(String sessionId, int storeId, int discountId);
+    ResponseT<String>
+    getUsername(String sessionId);
+
+    ResponseT<String>
+    getSearchKeyword(String sessionId);
 
     ResponseT<Set<PositionDTO.permissionType>> getPermissions(String sessionId, int storeId, String username);
+     Response addSupplyDetails(String sessionId, String name, String address, String city, String country, String zip);
 
-//        Response logoutSystemManager(String sessionId);
+//        Response
+//        logoutSystemManager(String sessionId);
 
-//        ResponseT<String> loginSystemManager(String username, String password);
+//        ResponseT<String>
+//        loginSystemManager(String username, String password);
 }

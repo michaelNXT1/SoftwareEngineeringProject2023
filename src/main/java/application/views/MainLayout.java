@@ -53,7 +53,7 @@ public class MainLayout extends AppLayout {
     private Button signUpButton;
     private Button logoutButton;
 
-    public MainLayout() {
+    public MainLayout() throws Exception {
         sessionId = marketController.enterMarket().value;
         config();
         addToNavbar(createHeaderContent());

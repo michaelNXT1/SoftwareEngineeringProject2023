@@ -5,7 +5,6 @@ import Repositories.IMapStringGuestRepository;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class MapStringGuestDAO implements IMapStringGuestRepository {

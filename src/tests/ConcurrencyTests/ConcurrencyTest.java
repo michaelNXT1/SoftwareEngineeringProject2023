@@ -13,8 +13,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ConcurrencyTest extends TestCase {
-    Market market = new Market();
+    Market market = new Market(null);
     private final static int THREADS=10;
+
+    public ConcurrencyTest() throws Exception {
+    }
 
     @Before
     public void setUp() throws Exception {

@@ -262,8 +262,8 @@ public class Real implements Bridge {
     }
 
     @Override
-    public boolean addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType) {
-        return !this.manager.addProductDiscount(sessionId, storeId, productId, discountPercentage, compositionType).getError_occurred();
+    public Integer addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType) {
+        return this.manager.addProductDiscount(sessionId, storeId, productId, discountPercentage, compositionType).value;
     }
 
     @Override
@@ -277,18 +277,18 @@ public class Real implements Bridge {
     }
 
     @Override
-    public boolean addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone) {
-        return !this.manager.addMinQuantityDiscountPolicy(sessionId, storeId, discountId, productId, minQuantity, allowNone).getError_occurred();
+    public Integer addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone) {
+       return this.manager.addMinQuantityDiscountPolicy(sessionId, storeId, discountId, productId, minQuantity, allowNone).value;
     }
 
     @Override
-    public boolean addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity) {
-        return !this.manager.addMaxQuantityDiscountPolicy(sessionId, storeId, discountId, productId, maxQuantity).getError_occurred();
+    public Integer addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity) {
+        return this.manager.addMaxQuantityDiscountPolicy(sessionId, storeId, discountId, productId, maxQuantity).value;
     }
 
     @Override
-    public boolean addMinBagTotalDiscountPolicy(String sessionId, int storeId, int discountId, double minTotal) {
-        return !this.manager.addMinBagTotalDiscountPolicy(sessionId, storeId, discountId, minTotal).getError_occurred();
+    public Integer addMinBagTotalDiscountPolicy(String sessionId, int storeId, int discountId, double minTotal) {
+        return this.manager.addMinBagTotalDiscountPolicy(sessionId, storeId, discountId, minTotal).value;
     }
 
     @Override
@@ -344,5 +344,10 @@ public class Real implements Bridge {
     @Override
     public boolean getInformationAboutMembers(String sessionId) {
         return !manager.getInformationAboutMembers(sessionId).getError_occurred();
+    }
+
+    @Override
+    public boolean addSupplyDetails(String sessionId, String name, String address, String city, String country, String zip) {
+        return !this.manager.addSupplyDetails(sessionId, name, address, city, country, zip).getError_occurred();
     }
 }

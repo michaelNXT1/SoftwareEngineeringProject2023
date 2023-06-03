@@ -1,6 +1,8 @@
 package BusinessLayer;
 
 import BusinessLayer.Logger.SystemLogger;
+import DAOs.SetPermissionTypeDAO;
+import Repositories.ISetPermissionTypeRepository;
 import ServiceLayer.DTOs.PositionDTO;
 import jakarta.persistence.*;
 
@@ -34,17 +36,14 @@ public class StoreManager implements Position {
     @ManyToOne
     @JoinColumn(name = "store_owners")
     private final Member assigner;
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "store_manager_permissions", joinColumns = @JoinColumn(name = "store_manager_id"))
-    @Enumerated(EnumType.STRING)
-    private Set<permissionType> permissions;
+    private ISetPermissionTypeRepository permissions;
     private final Object permissionLock = new Object();
 
     public StoreManager(Store store, Member assigner) {
         this.id = 0L; // Initializing with a default value
         this.store = store;
         this.assigner = assigner;
-        permissions = new HashSet<>();
+        permissions = new SetPermissionTypeDAO(new HashSet<>());
     }
 
     @Override
@@ -233,7 +232,7 @@ public class StoreManager implements Position {
     }
 
     @Override
-    public void addProductDiscount(int productId, double discountPercentage, int compositionType) throws Exception {
+    public Integer addProductDiscount(int productId, double discountPercentage, int compositionType) throws Exception {
         logger.error("store manager hasn't permission to perform this action");
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
@@ -257,19 +256,19 @@ public class StoreManager implements Position {
     }
 
     @Override
-    public void addMinQuantityDiscountPolicy(int discountId, int productId, int minQuantity, boolean allowNone) throws Exception {
+    public Integer addMinQuantityDiscountPolicy(int discountId, int productId, int minQuantity, boolean allowNone) throws Exception {
         logger.error("store manager hasn't permission to perform this action");
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 
     @Override
-    public void addMaxQuantityDiscountPolicy(int discountId, int productId, int maxQuantity) throws Exception {
+    public Integer addMaxQuantityDiscountPolicy(int discountId, int productId, int maxQuantity) throws Exception {
         logger.error("store manager hasn't permission to perform this action");
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 
     @Override
-    public void addMinBagTotalDiscountPolicy(int discountId, double minTotal) throws Exception {
+    public Integer addMinBagTotalDiscountPolicy(int discountId, double minTotal) throws Exception {
         logger.error("store manager hasn't permission to perform this action");
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
@@ -288,26 +287,26 @@ public class StoreManager implements Position {
 
     @Override
     public void setPermissions(Set<PositionDTO.permissionType> permissions) {
-        this.permissions = new HashSet<>();
+        this.permissions = new SetPermissionTypeDAO(new HashSet<>());
         for (PositionDTO.permissionType permission : permissions)
-            this.permissions.add(permissionType.valueOf(permission.name()));
+            this.permissions.addPermission(permissionType.valueOf(permission.name()));
     }
 
     @Override
     public Set<PositionDTO.permissionType> getPermissions() {
         Set<PositionDTO.permissionType> ret = new HashSet<>();
-        for (permissionType permission : permissions)
+        for (permissionType permission : permissions.getAllPermissions())
             ret.add(PositionDTO.permissionType.valueOf(permission.name()));
         return ret;
     }
 
     public void addPermission(StoreManager.permissionType newPermission) { //permission for store manager only
-        permissions.add(newPermission);
+        permissions.addPermission(newPermission);
     }
 
     @Override
     public void removePermission(permissionType permission) {
-        permissions.remove(permission);
+        permissions.removePermission(permission);
     }
 
     @Override

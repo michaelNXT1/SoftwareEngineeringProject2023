@@ -29,7 +29,7 @@ public class AddPaymentMethod extends VerticalLayout {
     private final Header header;
 
     @Autowired
-    public AddPaymentMethod() {
+    public AddPaymentMethod() throws Exception {
         this.header = new Header();
         this.header.setText("Add Payment Method");
         this.cardNumberField = new TextField("Card Number");

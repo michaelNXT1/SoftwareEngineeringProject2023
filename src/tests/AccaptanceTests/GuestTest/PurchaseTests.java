@@ -1,9 +1,7 @@
 package AccaptanceTests.GuestTest;
 
 import AccaptanceTests.ServiceTests;
-import ServiceLayer.DTOs.ProductDTO;
-import ServiceLayer.DTOs.ShoppingBagDTO;
-import ServiceLayer.DTOs.ShoppingCartDTO;
+import ServiceLayer.DTOs.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,15 +39,13 @@ public class PurchaseTests extends ServiceTests {
     @Test
     public void testPurchaseSuccessful(){
         boolean product1Exist = false;
-        ShoppingCartDTO shoppingCartDTO = viewCart(sessionID1);
-        List<ShoppingBagDTO> bagList =  shoppingCartDTO.shoppingBags;
-        for(ShoppingBagDTO bagDTO: bagList){
-            for(ProductDTO productDTO: bagDTO.getProductList().keySet()){
-                if(productDTO.getProductId() == productID2)
-                    product1Exist = true;
+        PurchaseDTO purchaseDTO= buyCart(sessionID1);
+        List<PurchaseProductDTO> bagList =  purchaseDTO.getProductDTOList();
+        for(PurchaseProductDTO productDTO:bagList){
+            if(productDTO.getProductName() == "test2")
+                product1Exist = true;
             }
-        }
-        assertTrue(product1Exist && buyCart(sessionID1)!=null);
+        assertTrue(product1Exist);
     }
     @Test
     public void testNotEngItemsQuantityFail(){
@@ -69,6 +65,86 @@ public class PurchaseTests extends ServiceTests {
         assertNull(buyCart(sessionID1));
     }
 
+    @Test
+    public void testAndPoliciesPurchaseSuccess() {
+        int storeID = openStore(sessionID1, "newStore");
+        int productID1 = addProduct(sessionID1, storeID, "test", 3.9, "milk", 9, "10");
+        addProductDiscount(sessionID1, storeID, productID1, 0.1, 0);
+        addMaxQuantityDiscountPolicy(sessionID1, storeID, 0,productID1, 6);
+        addMinBagTotalDiscountPolicy(sessionID1, storeID, 0, 1);
+        logout(sessionID1);
+        String sessionId2 = login("alon12", "alon0601");
+        addPaymentMethod(sessionId2,"1234","06","2026","540");
+        addSupplyDetails(sessionId2,"alon","ASd","asd","sad","asd");
+        addToCart(sessionID1,storeID,productID1,5);
+        PurchaseDTO purchaseDTO = buyCart(sessionId2);
+        assertTrue(purchaseDTO.getTotalPrice() == 3.9*0.9*0.9);
+    }
+
+    @Test
+    public void testOrPoliciesPurchaseSuccess() {
+        int storeID = openStore(sessionID1, "newStore");
+        int productID1 = addProduct(sessionID1, storeID, "test", 3.9, "milk", 9, "10");
+        addProductDiscount(sessionID1, storeID, productID1, 0.1, 0);
+        int qdId = addMaxQuantityDiscountPolicy(sessionID1, storeID, 0,productID1, 6);
+        int mbID = addMinBagTotalDiscountPolicy(sessionID1, storeID, 0, 1);
+        joinPolicies(sessionID1,storeID,qdId,mbID,0);
+        logout(sessionID1);
+        String sessionId2 = login("alon12", "alon0601");
+        addPaymentMethod(sessionId2,"1234","06","2026","540");
+        addSupplyDetails(sessionId2,"alon","ASd","asd","sad","asd");
+        addToCart(sessionID1,storeID,productID1,5);
+        PurchaseDTO purchaseDTO = buyCart(sessionId2);
+        assertTrue(purchaseDTO.getTotalPrice() == 3.9*0.9);
+    }
+
+    @Test
+    public void testXOrPoliciesPurchaseSuccess() {
+        int storeID = openStore(sessionID1, "newStore");
+        int productID1 = addProduct(sessionID1, storeID, "test", 3.9, "milk", 9, "10");
+        addProductDiscount(sessionID1, storeID, productID1, 0.1, 0);
+        int qdId = addMaxQuantityDiscountPolicy(sessionID1, storeID, 0,productID1, 6);
+        int mbID = addMinBagTotalDiscountPolicy(sessionID1, storeID, 0, 1);
+        joinPolicies(sessionID1,storeID,qdId,mbID,0);
+        logout(sessionID1);
+        String sessionId2 = login("alon12", "alon0601");
+        addPaymentMethod(sessionId2,"1234","06","2026","540");
+        addSupplyDetails(sessionId2,"alon","ASd","asd","sad","asd");
+        addToCart(sessionID1,storeID,productID1,5);
+        PurchaseDTO purchaseDTO = buyCart(sessionId2);
+        assertTrue(purchaseDTO.getTotalPrice() == 3.9*0.9);
+    }
+    @Test
+    public void testAddMinBagTotalDiscountPolicyPurchaseSuccess() {
+        int storeID = openStore(sessionID1, "newStore");
+        int productID1 = addProduct(sessionID1, storeID, "test", 3.9, "milk", 9, "10");
+        int productID2 = addProduct(sessionID1, storeID, "test1", 3.9, "milk", 9, "10");
+        addProductDiscount(sessionID1, storeID, productID1, 0.1, 0);
+        addMinBagTotalDiscountPolicy(sessionID1, storeID, 0, 2);
+        logout(sessionID1);
+        String sessionId2 = login("alon12", "alon0601");
+        addPaymentMethod(sessionId2,"1234","06","2026","540");
+        addSupplyDetails(sessionId2,"alon","ASd","asd","sad","asd");
+        addToCart(sessionID1,storeID,productID1,7);
+        addToCart(sessionID1,storeID,productID2,3);
+        PurchaseDTO purchaseDTO = buyCart(sessionId2);
+        assertTrue(purchaseDTO.getTotalPrice() == 3.9*0.9 + 3.9);
+    }
+
+    @Test
+    public void testAddMinBagTotalDiscountPolicyPurchaseFail() {
+        int storeID = openStore(sessionID1, "newStore");
+        int productID1 = addProduct(sessionID1, storeID, "test", 3.9, "milk", 9, "10");
+        addProductDiscount(sessionID1, storeID, productID1, 0.1, 0);
+        addMinBagTotalDiscountPolicy(sessionID1, storeID, 0, 6);
+        logout(sessionID1);
+        String sessionId2 = login("alon12", "alon0601");
+        addPaymentMethod(sessionId2,"1234","06","2026","540");
+        addSupplyDetails(sessionId2,"alon","ASd","asd","sad","asd");
+        addToCart(sessionID1,storeID,productID1,5);
+        PurchaseDTO purchaseDTO = buyCart(sessionId2);
+        assertFalse(purchaseDTO.getTotalPrice() == 3.9*0.1);
+    }
     @Test
     public void testNothingInCartFail(){
         deleteItemInCart(sessionID1,storeID2,productID2);

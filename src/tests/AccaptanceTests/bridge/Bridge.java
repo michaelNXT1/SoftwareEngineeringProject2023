@@ -106,17 +106,17 @@ public interface Bridge {
 
     boolean addMaxQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity);
 
-    boolean addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType);
+    Integer addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType);
 
     boolean addCategoryDiscount(String sessionId, int storeId, String category, double discountPercentage, int compositionType);
 
     boolean addStoreDiscount(String sessionId, int storeId, double discountPercentage, int compositionType);
 
-    boolean addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone);
+    Integer addMinQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int minQuantity, boolean allowNone);
 
-    boolean addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity);
+    Integer addMaxQuantityDiscountPolicy(String sessionId, int storeId, int discountId, int productId, int maxQuantity);
 
-    boolean addMinBagTotalDiscountPolicy(String sessionId, int storeId, int discountId, double minTotal);
+    Integer addMinBagTotalDiscountPolicy(String sessionId, int storeId, int discountId, double minTotal);
 
     boolean joinDiscountPolicies(String sessionId, int storeId, int policyId1, int policyId2, int operator);
 
@@ -139,4 +139,6 @@ public interface Bridge {
     boolean setPositionOfMemberToStoreManager(String sessionId, int storeID, String memberToBecomeManager);
 
     boolean getInformationAboutMembers(String sessionId);
+
+    boolean addSupplyDetails(String sessionId, String name, String address, String city, String country, String zip);
 }

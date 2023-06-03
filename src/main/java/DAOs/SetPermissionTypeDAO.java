@@ -1,29 +1,29 @@
 package DAOs;
 
-import BusinessLayer.Member;
-import Repositories.IMapStringMemberRepository;
+import BusinessLayer.StoreManager;
+import Repositories.ISetPermissionTypeRepository;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import java.util.Map;
+import java.util.Set;
 
-public class MapStringMemberDAO implements IMapStringMemberRepository {
+public class SetPermissionTypeDAO implements ISetPermissionTypeRepository {
 
-    private Map<String, Member> memberMap;
+    private Set<StoreManager.permissionType> permissions;
 
-    public MapStringMemberDAO(Map<String, Member> memberMap) {
-        this.memberMap = memberMap;
+    public SetPermissionTypeDAO(Set<StoreManager.permissionType> permissions) {
+        this.permissions = permissions;
     }
 
     @Override
-    public void put(String key, Member member) {
+    public void addPermission(StoreManager.permissionType permission) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
-            session.persist(member);
+            session.persist(permission);
             transaction.commit();
-            memberMap.put(key, member);
+            permissions.add(permission);
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
@@ -35,20 +35,14 @@ public class MapStringMemberDAO implements IMapStringMemberRepository {
     }
 
     @Override
-    public Member get(String key) {
-        return memberMap.get(key);
-    }
-
-    @Override
-    public void remove(String key) {
+    public void removePermission(StoreManager.permissionType permission) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
-            Member member = memberMap.get(key);
-            if (member != null) {
-                session.remove(member);
-                memberMap.remove(key);
+            if (permissions.contains(permission)) {
+                session.remove(permission);
+                permissions.remove(permission);
             }
             transaction.commit();
         } catch (Exception e) {
@@ -59,20 +53,17 @@ public class MapStringMemberDAO implements IMapStringMemberRepository {
         } finally {
             session.close();
         }
+
     }
 
     @Override
-    public boolean containsKey(String key) {
-        return memberMap.containsKey(key);
+    public Set<StoreManager.permissionType> getAllPermissions() {
+        return permissions;
     }
 
     @Override
-    public boolean containsValue(Member member) {
-        return memberMap.containsValue(member);
+    public boolean contains(StoreManager.permissionType permission) {
+        return permissions.contains(permission);
     }
 
-    @Override
-    public Map<String, Member> getAllMembers() {
-        return memberMap;
-    }
 }
