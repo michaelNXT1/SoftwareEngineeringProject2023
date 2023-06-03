@@ -179,8 +179,9 @@ public class StoreFounder implements Position {
 
     @Override
     public void closeStore() throws IllegalAccessException {
-        store.setOpen(false);
+
     }
+
 
     @Override
     public List<Member> getStoreEmployees() {

@@ -22,23 +22,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Store {
     @Id
     @Column(name = "store_id")
-    private final int storeId;
+    private int storeId;
     @Column(name = "store_name", columnDefinition = "text")
-    private final String storeName;
-    @Transient
-    private final IStringSetRepository categories;
-    @Transient
-    private IMapProductIntegerRepository products;
-    @Transient
-    private final IPurchaseRepository purchaseList;
-    @Transient
-    private final IMemberRepository employees;
-    @OneToOne(cascade = CascadeType.ALL)
-    private final IStoreOwnerRepository storeOwners;
-    @OneToOne(cascade = CascadeType.ALL)
-    private final IPurchasePolicyRepository purchasePolicies;
-    @OneToMany
-    private final Map<Discount, IBaseDiscountPolicyRepository> productDiscountPolicyMap;
+    private String storeName;
     @Column(name = "purchase_policy_counter")
     private int purchasePolicyCounter;
     @Column(name = "discount_policy_counter")
@@ -47,10 +33,26 @@ public class Store {
     private int discountCounter;
     @Column(name = "open")
     private boolean isOpen;
+    @Transient
+    private IStringSetRepository categories;
+    @Transient
+    private IMapProductIntegerRepository products;
+    @Transient
+    private IPurchaseRepository purchaseList;
+    @Transient
+    private IMemberRepository employees;
+    @Transient
+    private IStoreOwnerRepository storeOwners;
+    @Transient
+    private IPurchasePolicyRepository purchasePolicies;
+    @Transient
+    private Map<Discount, IBaseDiscountPolicyRepository> productDiscountPolicyMap;
     @Transient //Marks a property or field as transient, indicating that it should not be persisted in the database.
-    private final AtomicInteger productIdCounter;
+    private AtomicInteger productIdCounter;
     @Transient //Marks a property or field as transient, indicating that it should not be persisted in the database.
-    private final SystemLogger logger;
+    private SystemLogger logger;
+
+
 
     public Store(int storeId, String storeName, Member storeFounder) {
         this.storeId = storeId;
@@ -88,6 +90,9 @@ public class Store {
         discountCounter = 0;
     }
 
+    public AtomicInteger getProductIdCounter() {
+        return productIdCounter;
+    }
 
     public String getStoreName() {
         return storeName;
@@ -457,5 +462,73 @@ public class Store {
 
     public void setProducts(IMapProductIntegerRepository mapProductIntegerRepository) {
         products = mapProductIntegerRepository;
+    }
+
+    public int getPurchasePolicyCounter() {
+        return purchasePolicyCounter;
+    }
+
+    public int getDiscountPolicyCounter() {
+        return discountPolicyCounter;
+    }
+
+    public int getDiscountCounter() {
+        return discountCounter;
+    }
+
+    public SystemLogger getLogger() {
+        return logger;
+    }
+
+    public void setStoreId(int storeId) {
+        this.storeId = storeId;
+    }
+
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
+    }
+
+    public void setPurchasePolicyCounter(int purchasePolicyCounter) {
+        this.purchasePolicyCounter = purchasePolicyCounter;
+    }
+
+    public void setDiscountPolicyCounter(int discountPolicyCounter) {
+        this.discountPolicyCounter = discountPolicyCounter;
+    }
+
+    public void setDiscountCounter(int discountCounter) {
+        this.discountCounter = discountCounter;
+    }
+
+    public void setCategories(IStringSetRepository categories) {
+        this.categories = categories;
+    }
+
+    public void setPurchaseList(IPurchaseRepository purchaseList) {
+        this.purchaseList = purchaseList;
+    }
+
+    public void setEmployees(IMemberRepository employees) {
+        this.employees = employees;
+    }
+
+    public void setStoreOwners(IStoreOwnerRepository storeOwners) {
+        this.storeOwners = storeOwners;
+    }
+
+    public void setPurchasePolicies(IPurchasePolicyRepository purchasePolicies) {
+        this.purchasePolicies = purchasePolicies;
+    }
+
+    public void setProductDiscountPolicyMap(Map<Discount, IBaseDiscountPolicyRepository> productDiscountPolicyMap) {
+        this.productDiscountPolicyMap = productDiscountPolicyMap;
+    }
+
+    public void setProductIdCounter(AtomicInteger productIdCounter) {
+        this.productIdCounter = productIdCounter;
+    }
+
+    public void setLogger(SystemLogger logger) {
+        this.logger = logger;
     }
 }

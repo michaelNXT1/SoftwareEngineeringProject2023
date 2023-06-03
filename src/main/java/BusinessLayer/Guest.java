@@ -31,8 +31,23 @@ public class Guest {
     @OneToOne(cascade = CascadeType.ALL)
     private SupplyDetails supplyDetails;
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setShoppingCart(ShoppingCart shoppingCart) {
+        this.shoppingCart = shoppingCart;
+    }
+
+    public void setPaymentDetails(PaymentDetails paymentDetails) {
+        this.paymentDetails = paymentDetails;
+    }
+
+    public void setSupplyDetails(SupplyDetails supplyDetails) {
+        this.supplyDetails = supplyDetails;
+    }
+
     public Guest() {
-        this.id = 0L; // Initializing with a default value
         shoppingCart = new ShoppingCart();
         searchResults = new ProductDAO();
         purchaseHistory = new PurchaseDAO();

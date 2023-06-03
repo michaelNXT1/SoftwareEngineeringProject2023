@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @Entity
 @Table(name = "members")
 public class Member extends Guest {
-    @OneToOne(cascade = CascadeType.ALL)
+    @Transient
     private INotificationRepository notifications;
     @Transient
     private NotificationBroker notificationBroker;
@@ -141,7 +141,6 @@ public class Member extends Guest {
     public Store openStore(String name, int storeID) {
         Store newStore = new Store(storeID, name, this);
         StoreFounder newStoreFounder = new StoreFounder(newStore);
-        newStore.setOpen(true);
         try {
             positions.addPosition(newStoreFounder);
         } catch (Exception e) {

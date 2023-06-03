@@ -3,7 +3,6 @@ package BusinessLayer;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "system_managers")
 public class SystemManager {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,14 +15,33 @@ public class SystemManager {
     public SystemManager(String username, String hashedPassword) {
         this.username = username;
         this.hashedPassword = hashedPassword;
-        this.id = 0L; // Initializing with a default value
     }
 
-    public String getPassword() {
-        return hashedPassword;
+    public SystemManager() {
     }
 
     public String getUsername() {
         return username;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+
+    public String getHashedPassword() {
+        return hashedPassword;
+    }
+
+    public void setHashedPassword(String hashedPassword) {
+        this.hashedPassword = hashedPassword;
     }
 }

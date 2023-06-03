@@ -549,7 +549,7 @@ public class MarketController implements IMarketController {
 
     @Override
     public Response removeStoreOwner(String sessionId, int storeId, String username) {
-        return marketManager.removeStoreOwner(sessionId, username,storeId);
+        return marketManager.removeStoreOwner(sessionId, storeId,username);
     }
 
     @Override

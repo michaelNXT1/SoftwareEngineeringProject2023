@@ -14,6 +14,7 @@ public class HibernateUtil {
             Configuration configuration = new Configuration();
             // register annotated classes
             configuration.addAnnotatedClass(Member.class);
+            configuration.addAnnotatedClass(BusinessLayer.Store.class);
             configuration.addAnnotatedClass(BusinessLayer.StoreManager.class);
             configuration.addAnnotatedClass(BusinessLayer.Product.class);
             configuration.addAnnotatedClass(BusinessLayer.StoreFounder.class);
@@ -24,6 +25,7 @@ public class HibernateUtil {
             configuration.addAnnotatedClass(BusinessLayer.PaymentDetails.class);
             configuration.addAnnotatedClass(BusinessLayer.SupplyDetails.class);
             configuration.addAnnotatedClass(BusinessLayer.PurchaseType.class);
+            configuration.addAnnotatedClass(BusinessLayer.SystemManager.class);
             configuration.addAnnotatedClass(BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy.class);
             sessionFactory = configuration.configure().buildSessionFactory();
         } catch (Throwable ex) {

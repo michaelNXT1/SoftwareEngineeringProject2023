@@ -23,16 +23,17 @@
 
         <!-- Annotated entity classes -->
         <mapping class="BusinessLayer.Member"/>
+        <mapping class="BusinessLayer.Store"/>
         <mapping class="BusinessLayer.Purchase"/>
         <mapping class="BusinessLayer.StoreManager"/>
         <mapping class="BusinessLayer.StoreFounder"/>
-        <mapping class="BusinessLayer.Store"/>
         <mapping class="BusinessLayer.PurchaseProduct"/>
         <mapping class="BusinessLayer.StoreFounder"/>
         <mapping class="BusinessLayer.ShoppingCart"/>
         <mapping class="BusinessLayer.PaymentDetails"/>
         <mapping class="BusinessLayer.SupplyDetails"/>
         <mapping class="BusinessLayer.PurchaseType"/>
+        <mapping class="BusinessLayer.SystemManager"/>
         <mapping class="BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy"/>
 
 

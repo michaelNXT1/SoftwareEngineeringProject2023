@@ -1,9 +1,9 @@
 package DAOs;
 
 import Repositories.IStoreOwnerRepository;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import java.util.LinkedList;
 import java.util.List;

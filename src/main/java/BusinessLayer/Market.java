@@ -9,12 +9,10 @@ import BusinessLayer.Logger.SystemLogger;
 import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
 import BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy;
 import CommunicationLayer.NotificationBroker;
-import DAOs.MemberDAO;
 import DAOs.MapIntegerStoreDAO;
 import DAOs.MapStringMemberDAO;
 import DAOs.MapStringSystemManagerDAO;
 import DAOs.ProductDAO;
-import Repositories.IMemberRepository;
 import Repositories.IMapIntegerStoreRepository;
 import Repositories.IMapStringMemberRepository;
 import Repositories.IMapStringSystemManagerRepository;
@@ -69,9 +67,7 @@ public class Market {
         supplySystem.setSupplySystem(new SupplySystem());
         paymentSystem = new PaymentSystemProxy();
         paymentSystem.setPaymentSystem(new PaymentSystem());
-        SystemManager sm = new SystemManager("admin", new String(passwordEncoder.digest("admin".getBytes())));
-        marketOpen = true;
-        systemManagers.addSystemManager(sm.getUsername(), sm);
+        signUpSystemManager("admin","admin");
         if(path != null)
             parseFile(path);
     }
@@ -230,7 +226,7 @@ public class Market {
             if (sm != null) {
                 String hashedPassword = new String(passwordEncoder.digest(password.getBytes()));
                 // If the Member doesn't exist or the password is incorrect, return false
-                if (!hashedPassword.equals(sm.getPassword())) {
+                if (!hashedPassword.equals(sm.getHashedPassword())) {
                     logger.error(String.format("%s has Invalid username or password", username));
                     throw new Error("Invalid username or password");
                 }
@@ -275,7 +271,7 @@ public class Market {
 //
 //        String hashedPassword = new String(passwordEncoder.digest(password.getBytes()));
 //        // If the Member doesn't exist or the password is incorrect, return false
-//        if (sm == null || !hashedPassword.equals(sm.getPassword())) {
+//        if (sm == null || !hashedPassword.equals(sm.getHashedPassword())) {
 //            logger.error(String.format("%s has Invalid username or password", username));
 //            throw new Error("Invalid username or password");
 //        }

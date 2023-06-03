@@ -61,7 +61,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
     private int storeId;
 
     @Autowired
-    public StoreManagementView() {
+    public StoreManagementView() throws Exception {
         this.marketController = MarketController.getInstance();
         this.header = new Header();
         add(header);

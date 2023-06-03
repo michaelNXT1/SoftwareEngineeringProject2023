@@ -32,11 +32,16 @@ public class StoreManager implements Position {
     private String positionType;
 
     @Transient //Marks a property or field as transient, indicating that it should not be persisted in the database.
-    private final SystemLogger logger = new SystemLogger();    private final Store store;
+    private final SystemLogger logger = new SystemLogger();
+    @ManyToOne
+    @JoinColumn(name = "store_id")
+    private final Store store;
     @ManyToOne
     @JoinColumn(name = "store_owners")
     private final Member assigner;
+    @Transient
     private ISetPermissionTypeRepository permissions;
+    @Transient
     private final Object permissionLock = new Object();
 
     public StoreManager(Store store, Member assigner) {
