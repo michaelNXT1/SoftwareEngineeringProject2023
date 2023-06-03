@@ -1,6 +1,7 @@
 package application.views;
 
 import CommunicationLayer.MarketController;
+import CommunicationLayer.NotificationController;
 import ServiceLayer.DTOs.ProductDTO;
 import ServiceLayer.DTOs.PurchaseDTO;
 import ServiceLayer.DTOs.ShoppingCartDTO;
