@@ -86,11 +86,11 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         discountGrids.add(productDiscountLayout, categoryDiscountLayout, storeDiscountLayout);
         discountGrids.setWidthFull();
 
-        add(productAndPolicyGrids, new H1("Discount Lists"), discountGrids);
+        add(productAndPolicyGrids, new H1("Discount Lists"), discountGrids, new Button("Close Store"));
 
         setWidthFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
-        setDefaultHorizontalComponentAlignment(Alignment.START);
+        setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         getStyle().set("text-align", "center");
     }
 
@@ -135,7 +135,10 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         VerticalLayout products = new VerticalLayout();
         HorizontalLayout productsHL = new HorizontalLayout();
         Div productsDiv = new Div();
-        productsHL.add(new H1("Product List"), productsDiv, new Button("+", e -> addProductDialog()));
+        boolean hasPermission = marketController.hasPermission(MainLayout.getSessionId(), storeId, PositionDTO.permissionType.Inventory).value;
+        Button addProductButton = new Button("+", e -> addProductDialog());
+        addProductButton.setEnabled(hasPermission);
+        productsHL.add(new H1("Product List"), productsDiv, addProductButton);
         productsHL.setFlexGrow(1, productsDiv);
         productsHL.setWidthFull();
         productGrid = new Grid<>(ProductDTO.class, false);
@@ -145,8 +148,16 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         productGrid.addColumn(ProductDTO::getPrice).setHeader("Price").setSortable(true).setTextAlign(ColumnTextAlign.START).setFlexGrow(0);
         productGrid.addColumn(ProductDTO::getRating).setHeader("Rating").setSortable(true).setTextAlign(ColumnTextAlign.START).setFlexGrow(0);
         productGrid.addColumn(productDTO -> productMap.get(productDTO)).setHeader("Quantity").setSortable(true).setTextAlign(ColumnTextAlign.START).setFlexGrow(1);
-        productGrid.addComponentColumn(productDTO -> new Button("Edit", e -> editProductDialog(productDTO))).setFlexGrow(0).setAutoWidth(true);
-        productGrid.addComponentColumn(productDTO -> new Button("Remove", e -> removeProductDialog(productDTO.getProductId()))).setFlexGrow(0).setAutoWidth(true);
+        productGrid.addComponentColumn(productDTO -> {
+            if (hasPermission)
+                return new Button("Edit", e -> editProductDialog(productDTO));
+            return new Div();
+        }).setFlexGrow(0).setAutoWidth(true);
+        productGrid.addComponentColumn(productDTO -> {
+            if (hasPermission)
+                return new Button("Remove", e -> removeProductDialog(productDTO.getProductId()));
+            return new Div();
+        }).setFlexGrow(0).setAutoWidth(true);
         productGrid.sort(List.of(new GridSortOrder<>(productGrid.getColumnByKey("Id"), SortDirection.ASCENDING)));
         products.add(productsHL, productGrid);
         return products;
@@ -176,7 +187,9 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         VerticalLayout employees = new VerticalLayout();
         HorizontalLayout employeesHL = new HorizontalLayout();
         Div employeesDiv = new Div();
-        employeesHL.add(new H1("Employees List"), employeesDiv, new Button("+", e -> addEmployeeDialog()));
+        Button addEmployeeButton = new Button("+", e -> addEmployeeDialog());
+        employeesHL.add(new H1("Employees List"), employeesDiv, addEmployeeButton);
+        addEmployeeButton.setEnabled(marketController.hasPermission(MainLayout.getSessionId(), storeId, PositionDTO.permissionType.setNewPosition).value);
         employeesHL.setFlexGrow(1, employeesDiv);
         employeesHL.setWidthFull();
         employeesGrid = new Grid<>(MemberDTO.class, false);
@@ -193,6 +206,8 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
                 div.setText("You");
                 return div;
             }
+            if (marketController.hasPermission(MainLayout.getSessionId(), storeId, PositionDTO.permissionType.setPermissions).value)
+                return new Div();
             PositionDTO position = memberDTO.getPositions().stream().filter(p -> p.getStore().getStoreId() == storeId).findFirst().orElse(null);
             if (position != null && position.getAssigner().getUsername().equals(marketController.getUsername(MainLayout.getSessionId()).value))
                 return switch (position.getPositionName()) {
@@ -755,7 +770,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         checkboxGroup.addThemeVariants(CheckboxGroupVariant.LUMO_VERTICAL);
 
         ResponseT<Set<PositionDTO.permissionType>> permissions = marketController.getPermissions(MainLayout.getSessionId(), storeId, employee.getUsername());
-        Set<String> stringPermissions=new HashSet<>();
+        Set<String> stringPermissions = new HashSet<>();
         if (!permissions.getError_occurred())
             stringPermissions = PositionDTO.mapStrings(permissions.value);
         checkboxGroup.setValue(stringPermissions);
