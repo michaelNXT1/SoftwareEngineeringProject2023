@@ -140,7 +140,7 @@ public class MainLayout extends AppLayout {
         centerLayout.addClassNames(Display.FLEX, AlignItems.CENTER, Padding.Horizontal.LARGE);
         rightLayout.addClassNames(Display.FLEX, AlignItems.END, Padding.Horizontal.LARGE);
 
-        H1 appName = new H1("AIMSS inc.");
+        H1 appName = new H1("AIMSS incs.");
         appName.setWidthFull();
 
         Button homeButton = new Button("Home", e -> UI.getCurrent().navigate(AboutView.class));
