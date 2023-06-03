@@ -7,7 +7,6 @@ import application.components.AppNav;
 import application.components.AppNavItem;
 import application.views.about.AboutView;
 import application.views.category.CategoryView;
-import application.views.helloworld.HelloWorldView;
 import application.views.login.LoginView;
 import application.views.openStore.OpenStore;
 import application.views.registration.RegistrationView;
@@ -44,10 +43,9 @@ import java.util.stream.Collectors;
  */
 public class MainLayout extends AppLayout {
     private static String sessionId;
-
+    private final Map<String, Runnable> searchActionMap = new HashMap<>();
     MarketController marketController = MarketController.getInstance();
     private TextField searchBox;
-    private final Map<String, Runnable> searchActionMap = new HashMap<>();
     private Select<String> searchType;
     private Button loginButton;
     private Button signUpButton;
@@ -58,6 +56,14 @@ public class MainLayout extends AppLayout {
         config();
         addToNavbar(createHeaderContent());
         addDrawerContent();
+    }
+
+    public static String getSessionId() {
+        return sessionId;
+    }
+
+    public static void setSessionId(String sessionId) {
+        MainLayout.sessionId = sessionId;
     }
 
     private void config() {
@@ -108,7 +114,6 @@ public class MainLayout extends AppLayout {
 //        sessionId = marketController.login("Shoham", "1234").value;
     }
 
-
     private void addDrawerContent() {
         H1 appName = new H1("Categories");
         appName.addClassNames(FontSize.SMALL, LumoUtility.Margin.NONE);
@@ -117,14 +122,6 @@ public class MainLayout extends AppLayout {
         Scroller scroller = new Scroller(createCategoryNev());
 
         addToDrawer(header, scroller, createFooter());
-    }
-
-    public static void setSessionId(String sessionId) {
-        MainLayout.sessionId = sessionId;
-    }
-
-    public static String getSessionId() {
-        return sessionId;
     }
 
     private Component createHeaderContent() {
@@ -206,6 +203,7 @@ public class MainLayout extends AppLayout {
         Select<String> select = new Select<>();
         Map<String, Runnable> actionsMap = new HashMap<>();
         actionsMap.put("Add Payment Method", () -> UI.getCurrent().navigate(AddPaymentMethod.class));
+        actionsMap.put("Add Delivery Address", () -> UI.getCurrent().navigate(AddDeliveryAddress.class));
         actionsMap.put("Open a New Store", () -> UI.getCurrent().navigate(OpenStore.class));
         actionsMap.put("My Stores", () -> UI.getCurrent().navigate(ManagerStoresView.class));
 

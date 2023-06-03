@@ -1,7 +1,7 @@
 package CommunicationLayer;
 
-import ServiceLayer.DTOs.*;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
+import ServiceLayer.DTOs.*;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 import ServiceLayer.MarketManager;
@@ -21,9 +21,14 @@ import java.util.Set;
 @Component
 public class MarketController implements IMarketController {
 
-    private final MarketManager marketManager;
     private static MarketController instance = null;
+    private final MarketManager marketManager;
     private final NotificationController notificationBroker;
+
+    private MarketController() {
+        this.marketManager = new MarketManager();
+        this.notificationBroker = new NotificationController();
+    }
 
     public static MarketController getInstance() {
         if (instance == null) {
@@ -32,23 +37,21 @@ public class MarketController implements IMarketController {
         return instance;
     }
 
-    private MarketController() {
-        this.marketManager = new MarketManager();
-        this.notificationBroker = new NotificationController();
-    }
     @PostMapping("/signUpSystemManager")
     @ResponseBody
     @Override
     public Response signUpSystemManager(@RequestParam(value = "username", defaultValue = "") String username,
                                         @RequestParam(value = "password", defaultValue = "") String password) {
-        return this.marketManager.signUpSystemManager(username,password);
+        return this.marketManager.signUpSystemManager(username, password);
     }
+
     @PostMapping("/enterMarket")
     @ResponseBody
     @Override
     public ResponseT<String> enterMarket() {
         return this.marketManager.enterMarket();
     }
+
     @GetMapping("/signUp")
     @ResponseBody
     @Override
@@ -61,7 +64,7 @@ public class MarketController implements IMarketController {
     @Override
     public Response signUp(@RequestParam(value = "username", defaultValue = "") String username,
                            @RequestParam(value = "password", defaultValue = "") String password) {
-        return this.marketManager.signUp(username,password);
+        return this.marketManager.signUp(username, password);
     }
 
     @GetMapping("/login")
@@ -69,7 +72,7 @@ public class MarketController implements IMarketController {
     public ResponseT<String> login(
             @RequestParam(value = "username", defaultValue = "") String username,
             @RequestParam(value = "password", defaultValue = "") String password) {
-        return marketManager.login(username, password,notificationBroker);
+        return marketManager.login(username, password, notificationBroker);
     }
 
     @GetMapping("/logout")
@@ -564,6 +567,11 @@ public class MarketController implements IMarketController {
     @Override
     public ResponseT<Double> getProductDiscountPercentageInCart(String sessionId, int storeId, int productId) {
         return marketManager.getProductDiscountPercentageInCart(sessionId, storeId, productId);
+    }
+
+    @Override
+    public Response addSupplyDetails(String sessionId, String name, String address, String city, String country, String zip) {
+        return marketManager.addSupplyDetails(sessionId, name, address, city, country, zip);
     }
 
     @GetMapping("/editProductInCart")
