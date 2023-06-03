@@ -1,4 +1,4 @@
-package BussinessLayer.Notification;
+package BusinessLayer.Notification;
 
 
 import java.time.LocalDateTime;

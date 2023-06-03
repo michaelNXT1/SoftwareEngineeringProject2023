@@ -1,6 +1,6 @@
 package CommunicationLayer;
 
-import Notification.Notification;
+import BusinessLayer.Notification.Notification;
 public interface NotificationBroker {
 
     /***
