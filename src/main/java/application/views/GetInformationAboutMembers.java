@@ -20,7 +20,7 @@ public class GetInformationAboutMembers extends VerticalLayout {
     private Grid<MemberDTO> grid;
 
     @Autowired
-    public GetInformationAboutMembers() {
+    public GetInformationAboutMembers() throws Exception {
         this.marketController = MarketController.getInstance();
 
         // Create grid for member data

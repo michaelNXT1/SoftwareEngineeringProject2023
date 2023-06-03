@@ -19,7 +19,7 @@ public class CloseStore extends VerticalLayout {
         private Header header;
 
         @Autowired
-        public CloseStore(){
+        public CloseStore() throws Exception {
             this.header = new Header();
             this.header.setText("Close Store");
             this.storeIdField = new TextField("store Id");

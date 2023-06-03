@@ -21,7 +21,7 @@ import java.util.List;
 public class ManagerStoresView extends VerticalLayout {
 
     @Autowired
-    public ManagerStoresView() {
+    public ManagerStoresView() throws Exception {
         MarketController marketController = MarketController.getInstance();
         List<StoreDTO> stores = marketController.getResponsibleStores(MainLayout.getSessionId()).value;
         Header header = new Header();
