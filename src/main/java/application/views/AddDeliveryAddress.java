@@ -11,7 +11,7 @@ import com.vaadin.flow.router.PreserveOnRefresh;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Route(value = "addPaymentMethod", layout = MainLayout.class)
+@Route(value = "addDeliveryAddress", layout = MainLayout.class)
 @PreserveOnRefresh
 public class AddDeliveryAddress extends VerticalLayout {
     private final MarketController marketController;
