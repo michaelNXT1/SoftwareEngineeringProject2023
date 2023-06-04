@@ -34,7 +34,7 @@ public class AddDeliveryAddress extends VerticalLayout {
         zipField=new TextField("Zip Code");
         Button submitButton = new Button("add", e -> addDeliveryAddress());
 
-        add(header, nameField, addressField, cityField, countryField, zipField);
+        add(header, nameField, addressField, cityField, countryField, zipField, submitButton);
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
