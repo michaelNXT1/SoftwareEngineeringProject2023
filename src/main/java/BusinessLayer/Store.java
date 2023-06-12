@@ -12,7 +12,7 @@ import DAOs.*;
 import Repositories.*;
 import jakarta.persistence.*;
 
-//import javax.persistence.*;
+
 import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -45,7 +45,7 @@ public class Store {
     @Transient
     private IPurchasePolicyRepository purchasePolicies;
     @Transient
-    private Map<Discount, IBaseDiscountPolicyRepository> productDiscountPolicyMap;
+    private IBaseDiscountPolicyMapRepository productDiscountPolicyMap;
     @Transient //Marks a property or field as transient, indicating that it should not be persisted in the database.
     private AtomicInteger productIdCounter;
     @Transient //Marks a property or field as transient, indicating that it should not be persisted in the database.
@@ -61,11 +61,12 @@ public class Store {
         this.products = new MapProductIntegerDAO(new HashMap<>(), this);
         this.purchaseList = new PurchaseDAO();
         this.employees = new MemberDAO();
+        employees.addMember(storeFounder);
         this.logger = new SystemLogger();
         this.productIdCounter = new AtomicInteger(0);
         purchasePolicies = new PurchasePolicyDAO();
         purchasePolicyCounter = 0;
-        productDiscountPolicyMap = new HashMap<>();
+        productDiscountPolicyMap = new BaseDiscountPolicyMapDAO();
         discountPolicyCounter = 0;
         discountCounter = 0;
     }
@@ -82,7 +83,7 @@ public class Store {
         this.storeOwners = new StoreOwnerDAO();
         purchasePolicies = new PurchasePolicyDAO();
         purchasePolicyCounter = 0;
-        productDiscountPolicyMap = new HashMap<>();
+        productDiscountPolicyMap = new BaseDiscountPolicyMapDAO();
         discountPolicyCounter = 0;
         discountCounter = 0;
     }
@@ -266,7 +267,7 @@ public class Store {
     public Integer addProductDiscount(int productId, double discountPercentage, int compositionType) throws Exception {
         checkProductExists(productId);
         Discount discount = new ProductDiscount(discountCounter++, discountPercentage, productId, compositionType);
-        productDiscountPolicyMap.put(discount, new BaseDiscountPolicyDAO());
+        productDiscountPolicyMap.addDiscountPolicy(discount, new BaseDiscountPolicyDAO());
         return discount.getDiscountId();
     }
 
@@ -278,18 +279,18 @@ public class Store {
         }
 
         Discount discount = new CategoryDiscount(discountCounter++, discountPercentage, category, compositionType);
-        productDiscountPolicyMap.put(discount, new BaseDiscountPolicyDAO());
+        productDiscountPolicyMap.addDiscountPolicy(discount, new BaseDiscountPolicyDAO());
     }
 
 
     public void addStoreDiscount(double discountPercentage, int compositionType) throws Exception {
         Discount discount = new StoreDiscount(discountCounter++, discountPercentage, this, compositionType);
-        productDiscountPolicyMap.put(discount, new BaseDiscountPolicyDAO());
+        productDiscountPolicyMap.addDiscountPolicy(discount, new BaseDiscountPolicyDAO());
     }
 
     public void removeDiscount(int discountId) throws Exception {
         Discount d = findDiscount(discountId);
-        productDiscountPolicyMap.remove(d);
+        productDiscountPolicyMap.removeDiscountPolicy(d);
     }
 
     private Discount findDiscount(int discountId) throws Exception {
@@ -304,27 +305,27 @@ public class Store {
     //Discount policies
     public Integer addMinQuantityDiscountPolicy(int discountId, int productId, int minQuantity, boolean allowNone) throws Exception {
         Discount d = findDiscount(discountId);
-        productDiscountPolicyMap.get(d).addDiscountPolicy(new MinQuantityDiscountPolicy(purchasePolicyCounter++, checkProductExists(productId), minQuantity, allowNone));
+        productDiscountPolicyMap.getAllDiscountPolicies().get(d).addDiscountPolicy(new MinQuantityDiscountPolicy(purchasePolicyCounter++, checkProductExists(productId), minQuantity, allowNone));
         return purchasePolicyCounter - 1;
     }
 
     public Integer addMaxQuantityDiscountPolicy(int discountId, int productId, int maxQuantity) throws Exception {
         Discount d = findDiscount(discountId);
-        productDiscountPolicyMap.get(d).addDiscountPolicy(new MaxQuantityDiscountPolicy(purchasePolicyCounter++, checkProductExists(productId), maxQuantity));
+        productDiscountPolicyMap.getAllDiscountPolicies().get(d).addDiscountPolicy(new MaxQuantityDiscountPolicy(purchasePolicyCounter++, checkProductExists(productId), maxQuantity));
         return purchasePolicyCounter - 1;
 
     }
 
     public Integer addMinBagTotalDiscountPolicy(int discountId, double minTotal) throws Exception {
         Discount d = findDiscount(discountId);
-        productDiscountPolicyMap.get(d).addDiscountPolicy(new MinBagTotalDiscountPolicy(purchasePolicyCounter++, minTotal));
+        productDiscountPolicyMap.getAllDiscountPolicies().get(d).addDiscountPolicy(new MinBagTotalDiscountPolicy(purchasePolicyCounter++, minTotal));
         return purchasePolicyCounter - 1;
 
     }
 
     public void joinDiscountPolicies(int policyId1, int policyId2, int operator) throws Exception {
         BaseDiscountPolicy found_1 = null, found_2 = null;
-        for (Discount discount : productDiscountPolicyMap.keySet()) {
+        for (Discount discount : productDiscountPolicyMap.getAllDiscountPolicies().keySet()) {
             IBaseDiscountPolicyRepository baseDiscountPolicies = productDiscountPolicyMap.get(discount);
             for (BaseDiscountPolicy bdp : baseDiscountPolicies.getAllDiscountPolicies()) {
                 if (bdp.getPolicyId() == policyId1)

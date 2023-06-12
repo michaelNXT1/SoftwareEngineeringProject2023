@@ -69,5 +69,7 @@ abstract public class Discount {
         return compositionType;
     }
 
+    public int getId(){ return this.discountId; }
+
     public abstract DiscountDTO copyConstruct();
 }
