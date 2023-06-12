@@ -25,7 +25,7 @@ public class StoreFounderTest extends TestCase {
 
     public void testChangeStoreManagerPermissions() {
         //check for store founder
-        StoreManager storeManager = new StoreManager(store,member);
+        StoreManager storeManager = new StoreManager(store,member,member);
         storeFounder.addStoreManagerPermissions(storeManager, StoreManager.permissionType.Inventory);
         assertTrue(storeManager.getPermissions().contains(StoreManager.permissionType.Inventory));
         storeFounder.removeStoreManagerPermissions(storeManager, StoreManager.permissionType.Inventory);
