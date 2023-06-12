@@ -22,12 +22,12 @@ public class StoreOwnerTest extends TestCase {
         Store store = new Store(0,"store",member);
         //storeManager = new StoreManager(store,member);
         //storeFounder = new StoreFounder(store);
-        storeOwner = new StoreOwner(store,member);
+        storeOwner = new StoreOwner(store,member,member);
         p = null;
     }
 
     public void testChangeStoreManagerPermissions() {
-        StoreManager storeManager = new StoreManager(store,member);
+        StoreManager storeManager = new StoreManager(store,member,member);
         storeOwner.addStoreManagerPermissions(storeManager, StoreManager.permissionType.Inventory);
         assertTrue(storeManager.getPermissions().contains(StoreManager.permissionType.Inventory));
         storeOwner.removeStoreManagerPermissions(storeManager, StoreManager.permissionType.Inventory);

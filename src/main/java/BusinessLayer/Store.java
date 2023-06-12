@@ -15,7 +15,6 @@ import jakarta.persistence.*;
 //import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 @Entity
 @Table(name = "stores")
@@ -58,12 +57,10 @@ public class Store {
         this.storeId = storeId;
         this.storeName = storeName;
         this.storeOwners = new StoreOwnerDAO();
-        this.storeOwners.addStoreOwner(storeFounder.getUsername());
-        this.categories = new SetStringDAO();
+        this.categories = new SetCategoryDAO();
         this.products = new MapProductIntegerDAO(new HashMap<>(), this);
         this.purchaseList = new PurchaseDAO();
         this.employees = new MemberDAO();
-        employees.addMember(storeFounder);
         this.logger = new SystemLogger();
         this.productIdCounter = new AtomicInteger(0);
         purchasePolicies = new PurchasePolicyDAO();
@@ -76,7 +73,7 @@ public class Store {
     public Store() {
         this.storeId = 0;
         this.storeName = "";
-        this.categories = new SetStringDAO();
+        this.categories = new SetCategoryDAO();
         this.products = new MapProductIntegerDAO(new HashMap<>(), this);
         this.purchaseList = new PurchaseDAO();
         this.employees = new MemberDAO();
@@ -148,7 +145,8 @@ public class Store {
                 throw new Exception("cannot set quantity to less then 0");
             }
             p = new Product(storeId, this.productIdCounter.getAndIncrement(), productName, price, category, description);
-            categories.addString(category);
+            if(!categories.getAllCategory().stream().anyMatch(c-> c.getCategoryName().equals(category)))
+                categories.addString(new Category(category));
             products.addProduct(p, quantity);
         }
         return p;
@@ -273,8 +271,8 @@ public class Store {
     }
 
     public void addCategoryDiscount(String category, double discountPercentage, int compositionType) throws Exception {
-        Set<String> categoryStrings = categories.getAllStrings();
-        if (!categoryStrings.contains(category)) {
+        List<Category> categoryStrings = categories.getAllCategory();
+        if (!categoryStrings.stream().anyMatch(c-> c.getCategoryName().equals(category))) {
             logger.error("Category doesn't exist");
             throw new Exception("Category doesn't exist");
         }
@@ -441,7 +439,13 @@ public class Store {
 
 
     public List<Member> getEmployees() {
-        return employees.getAllMember();
+        IPositionRepository positionRepository = new PositionDAO();
+        List<Position> employeesP = positionRepository.getAllPositions().stream().filter(p -> p.getStore().getStoreName().equals(this.storeName)).toList();
+        List<Member> employees = new ArrayList<>();
+        for(Position p:employeesP){
+            employees.add(p.getPositionMember());
+        }
+        return employees;
     }
 
     @ElementCollection

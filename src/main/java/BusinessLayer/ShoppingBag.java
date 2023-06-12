@@ -28,7 +28,8 @@ public class ShoppingBag {
     @Transient
     private IMapIntegerIntegerRepository productList;
 
-    @OneToOne(mappedBy = "bagPurchase", cascade = CascadeType.ALL)
+    @OneToOne
+    @JoinColumn(name = "purchase_id")
     private Purchase bagPurchase;
 
 

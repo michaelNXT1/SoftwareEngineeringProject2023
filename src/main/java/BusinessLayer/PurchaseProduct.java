@@ -33,6 +33,9 @@ public class PurchaseProduct {
         this.quantity = quantity;
     }
 
+    public PurchaseProduct() {
+    }
+
     public int getProductId() {
         return productId;
     }

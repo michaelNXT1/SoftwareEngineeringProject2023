@@ -4,10 +4,8 @@ import jakarta.persistence.*;
 
 @Entity
 public class SystemManager {
-    @Id
-    @Column(name = "username", columnDefinition = "text")
+
     private String username;
-    @Column(name = "hashedPassword", columnDefinition = "text")
     private String hashedPassword;
 
     public SystemManager(String username, String hashedPassword) {
@@ -17,7 +15,8 @@ public class SystemManager {
 
     public SystemManager() {
     }
-
+    @Id
+    @Column
     public String getUsername() {
         return username;
     }
@@ -27,6 +26,7 @@ public class SystemManager {
         this.username = username;
     }
 
+    @Column
 
     public String getHashedPassword() {
         return hashedPassword;

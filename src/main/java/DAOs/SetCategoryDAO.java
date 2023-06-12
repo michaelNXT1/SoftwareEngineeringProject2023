@@ -1,20 +1,18 @@
 package DAOs;
 
-import BusinessLayer.Store;
+import BusinessLayer.Category;
+import BusinessLayer.Member;
 import Repositories.IStringSetRepository;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import org.hibernate.query.Query;
 
-public class SetStringDAO implements IStringSetRepository {
+import java.util.List;
+
+public class SetCategoryDAO implements IStringSetRepository {
 
     @Override
-    public void addString(String string) {
+    public void addString(Category string) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
         try {
@@ -25,14 +23,14 @@ public class SetStringDAO implements IStringSetRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
     }
 
     @Override
-    public void removeString(String string) {
+    public void removeString(Category string) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
         try {
@@ -43,32 +41,44 @@ public class SetStringDAO implements IStringSetRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
     }
 
     @Override
-    public Set<String> getAllStrings() {
+    public List<Category> getAllCategory() {
         Session session = HibernateUtil.getSessionFactory().openSession();
-        Set<String> stringSet = new HashSet<>();
+        List<Category> categories = null;
         try {
-            CriteriaBuilder builder = session.getCriteriaBuilder();
-            CriteriaQuery<Store> query = builder.createQuery(Store.class);
-            Root<Store> root = query.from(Store.class);
-            query.select(root).distinct(true);
-            List<Store> stores = session.createQuery(query).getResultList();
-            for (Store store : stores) {
-                IStringSetRepository categories = store.getCategories();
-                stringSet.addAll(categories.getAllStrings());
-            }
+            String hql = "FROM Category";
+            Query<Category> query = session.createQuery(hql, Category.class);
+            categories = query.list();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             session.close();
         }
-        return stringSet;
+        return categories;
+    }
+    @Override
+    public void clear() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+
+        try {
+            transaction = session.beginTransaction();
+            session.createQuery("DELETE FROM Category").executeUpdate();
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw e;
+        } finally {
+            session.close();
+        }
     }
 
 }

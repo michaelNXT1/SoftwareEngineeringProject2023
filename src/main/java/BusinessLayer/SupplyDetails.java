@@ -7,33 +7,37 @@ import jakarta.persistence.Id;
 @Entity
 public class SupplyDetails {
     @Id
-    @Column(name = "name", columnDefinition = "text")
+    @Column
     private String name;
-
+@Column
     public String getName() {
         return name;
     }
+    @Column
 
     public String getAddress() {
         return address;
     }
+    @Column
 
     public String getCity() {
         return city;
     }
+    @Column
 
     public String getCountry() {
         return country;
     }
+    @Column
 
     public String getZip() {
         return zip;
     }
 
-    private final String address;
-    private final String city;
-    private final String country;
-    private final String zip;
+    private String address;
+    private String city;
+    private String country;
+    private String zip;
     public SupplyDetails(String name, String address, String city, String country, String zip) {
         this.name = name;
         this.address = address;
@@ -42,4 +46,6 @@ public class SupplyDetails {
         this.zip = zip;
     }
 
+    public SupplyDetails() {
+    }
 }

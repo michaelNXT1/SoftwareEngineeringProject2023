@@ -22,7 +22,7 @@ public class StoreManagerTest extends TestCase {
         super.setUp();
         member = new Member("member","012");
         store = new Store(0,"store",member);
-        storeManager = new StoreManager(store,member);
+        storeManager = new StoreManager(store,member,member);
         //storeFounder = new StoreFounder(store);
         //storeOwner = new StoreOwner(store,member);
         p = null;
@@ -31,8 +31,8 @@ public class StoreManagerTest extends TestCase {
     @Test
     public void testAddStoreManagerPermissions() {
         try {
-            StoreFounder storeFounder = new StoreFounder(store);
-            StoreManager storeManager2 = new StoreManager(store,member);
+            StoreFounder storeFounder = new StoreFounder(store,member);
+            StoreManager storeManager2 = new StoreManager(store,member,member);
             storeFounder.addStoreManagerPermissions(storeManager, StoreManager.permissionType.setPermissions);
             storeManager.addStoreManagerPermissions(storeManager2,StoreManager.permissionType.Inventory);
             assertTrue(storeManager2.getPermissions().contains(StoreManager.permissionType.Inventory));;
@@ -44,7 +44,7 @@ public class StoreManagerTest extends TestCase {
     @Test
     public void testAddStoreManagerPermissionsWithoutPermission() {
         try {
-            StoreManager storeManager2 = new StoreManager(store,member);
+            StoreManager storeManager2 = new StoreManager(store,member,member);
             storeManager.addStoreManagerPermissions(storeManager2, StoreManager.permissionType.Inventory);
             fail("Expected IllegalAccessException was not thrown");
         } catch (IllegalAccessException e) {
@@ -61,7 +61,7 @@ public class StoreManagerTest extends TestCase {
     public void testAddProductToStoreWithPermission() throws Exception {
         // arrange
 
-            StoreFounder storeFounder = new StoreFounder(store);
+            StoreFounder storeFounder = new StoreFounder(store,member);
             storeFounder.addStoreManagerPermissions(storeManager, StoreManager.permissionType.Inventory);
             // act
             p = storeManager.addProduct(store,"Product 1", 10.0, "proxyProduct", 100,"aa");
@@ -86,7 +86,7 @@ public class StoreManagerTest extends TestCase {
     public void testRemoveProductFromStoreWithPermission() {
         // arrange
         try {
-            StoreFounder storeFounder = new StoreFounder(store);
+            StoreFounder storeFounder = new StoreFounder(store,member);
             storeFounder.addStoreManagerPermissions(storeManager, StoreManager.permissionType.Inventory);
             // act
             Product p = storeManager.addProduct(store,"Product 1", 10.0, "proxyProduct", 100,"aa");
@@ -116,7 +116,7 @@ public class StoreManagerTest extends TestCase {
 
     @Test
     public void testEditProductNameWithPermission() throws Exception {
-        StoreFounder storeFounder = new StoreFounder(store);
+        StoreFounder storeFounder = new StoreFounder(store,member);
         storeFounder.addStoreManagerPermissions(storeManager, StoreManager.permissionType.Inventory);
         p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"aa");
         storeManager.editProductName(p.getProductId(), "Product 2");
@@ -139,7 +139,7 @@ public class StoreManagerTest extends TestCase {
 
 
     public void testEditProductPriceWithPermission() throws Exception {
-        StoreFounder storeFounder = new StoreFounder(store);
+        StoreFounder storeFounder = new StoreFounder(store,member);
         storeFounder.addStoreManagerPermissions(storeManager, StoreManager.permissionType.Inventory);
         p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"aa");
         storeManager.editProductPrice(p.getProductId(), 60.0);
@@ -158,7 +158,7 @@ public class StoreManagerTest extends TestCase {
         }
     }
     public void testEditProductCategoryWithPermission() throws Exception {
-        StoreFounder storeFounder = new StoreFounder(store);
+        StoreFounder storeFounder = new StoreFounder(store,member);
         storeFounder.addStoreManagerPermissions(storeManager, StoreManager.permissionType.Inventory);
         p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"aa");
         storeManager.editProductCategory(p.getProductId(), "new category");
@@ -178,7 +178,7 @@ public class StoreManagerTest extends TestCase {
     }
 
     public void testEditProductDescriptionWithPermission() throws Exception {
-        StoreFounder storeFounder = new StoreFounder(store);
+        StoreFounder storeFounder = new StoreFounder(store,member);
         storeFounder.addStoreManagerPermissions(storeManager, StoreManager.permissionType.Inventory);
         p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"aa");
         storeManager.editProductDescription(p.getProductId(), "new description");
@@ -200,7 +200,7 @@ public class StoreManagerTest extends TestCase {
 
 
     public void testGetPurchaseHistoryWithPermission() throws IllegalAccessException {
-        StoreFounder storeFounder = new StoreFounder(store);
+        StoreFounder storeFounder = new StoreFounder(store,member);
         storeFounder.addStoreManagerPermissions(storeManager, StoreManager.permissionType.Purchases);
         List<Purchase> purchaseList = storeManager.getPurchaseHistory(store);
         assertTrue(purchaseList.isEmpty());

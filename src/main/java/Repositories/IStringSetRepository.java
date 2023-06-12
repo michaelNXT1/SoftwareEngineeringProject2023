@@ -1,9 +1,12 @@
 package Repositories;
 
-import java.util.Set;
+import BusinessLayer.Category;
+
+import java.util.List;
 
 public interface IStringSetRepository {
-    void addString(String string);
-    void removeString(String string);
-    Set<String> getAllStrings();
+    void addString(Category string);
+    void removeString(Category string);
+    List<Category> getAllCategory();
+    void clear();
 }

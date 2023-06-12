@@ -18,7 +18,7 @@ public class StoreFounderTest extends TestCase {
         member = new Member("member","012");
         store = new Store(0,"store",member);
         //storeManager = new StoreManager(store,member);
-        storeFounder = new StoreFounder(store);
+        storeFounder = new StoreFounder(store,member);
         //storeOwner = new StoreOwner(store,member);
         p = null;
     }

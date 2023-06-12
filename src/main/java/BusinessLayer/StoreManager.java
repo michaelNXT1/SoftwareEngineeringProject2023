@@ -13,14 +13,14 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "positions")
-//@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-//@DiscriminatorColumn(name = "position_type", discriminatorType = DiscriminatorType.STRING)
 public class StoreManager implements Position {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @ManyToOne
+    @JoinColumn(name = "positionMember")
+    private Member positionMember;
     public enum permissionType {
         setNewPosition, //setPositionOfMemberToStoreManager, setPositionOfMemberToStoreOwner - all actions of setting new position
         setPermissions, //addStoreManagerPermissions, removeStoreManagerPermissions - all actions refer to set another store manager permission
@@ -28,27 +28,71 @@ public class StoreManager implements Position {
         Purchases, // getPurchaseHistory
         EmployeeList // getStoreEmployees
     }
-    @Column(name = "position_type", insertable = false, updatable = false, columnDefinition = "text")
-    private String positionType;
-
     @Transient //Marks a property or field as transient, indicating that it should not be persisted in the database.
-    private final SystemLogger logger = new SystemLogger();
+    private SystemLogger logger = new SystemLogger();
     @ManyToOne
     @JoinColumn(name = "store_id")
-    private final Store store;
+    private Store store;
     @ManyToOne
     @JoinColumn(name = "store_owners")
-    private final Member assigner;
+    private Member assigner;
     @Transient
     private ISetPermissionTypeRepository permissions;
     @Transient
-    private final Object permissionLock = new Object();
+    private Object permissionLock = new Object();
 
-    public StoreManager(Store store, Member assigner) {
-        this.id = 0L; // Initializing with a default value
+    public StoreManager(Store store, Member assigner,Member thisMember) {
         this.store = store;
         this.assigner = assigner;
         permissions = new SetPermissionTypeDAO(new HashSet<>());
+        this.positionMember = thisMember;
+    }
+
+    public StoreManager() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Member getPositionMember() {
+        return positionMember;
+    }
+
+    public void setPositionMember(Member positionMember) {
+        this.positionMember = positionMember;
+    }
+
+    public SystemLogger getLogger() {
+        return logger;
+    }
+
+    public void setLogger(SystemLogger logger) {
+        this.logger = logger;
+    }
+
+    public void setStore(Store store) {
+        this.store = store;
+    }
+
+    public void setAssigner(Member assigner) {
+        this.assigner = assigner;
+    }
+
+    public void setPermissions(ISetPermissionTypeRepository permissions) {
+        this.permissions = permissions;
+    }
+
+    public Object getPermissionLock() {
+        return permissionLock;
+    }
+
+    public void setPermissionLock(Object permissionLock) {
+        this.permissionLock = permissionLock;
     }
 
     @Override

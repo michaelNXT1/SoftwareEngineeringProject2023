@@ -3,8 +3,10 @@ package BusinessLayer;
 import BusinessLayer.Logger.SystemLogger;
 
 import CommunicationLayer.NotificationBroker;
+import CommunicationLayer.NotificationController;
 import DAOs.NotificationDAO;
 import DAOs.PositionDAO;
+import DAOs.StoreOwnerDAO;
 import Repositories.INotificationRepository;
 import Repositories.IPositionRepository;
 import Security.SecurityUtils;
@@ -24,26 +26,25 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @Table(name = "members")
 public class Member extends Guest {
     @Transient
-    private INotificationRepository notifications;
+    private INotificationRepository notifications= new NotificationDAO();;
     @Transient
     private NotificationBroker notificationBroker;
-    @Column(unique = true, columnDefinition = "text")
+    @Id
+    @Column
     private String username;
 
-    @Column(columnDefinition = "text")
+    @Column
     private String hashedPassword;
 
     @Transient
     private IPositionRepository positions = new PositionDAO();//all the positions of this member, note that position act as a state
     @Transient
-    private SystemLogger logger;
+    private SystemLogger logger = new SystemLogger();
 
     public Member(String username, String hashedPassword) {
         super();
         this.username = username;
         this.hashedPassword = hashedPassword;
-        this.logger = new SystemLogger();
-        this.notifications = new NotificationDAO();
     }
 
     public Member() {
@@ -90,7 +91,7 @@ public class Member extends Guest {
     public Position getStorePosition(Store store) {
         synchronized (positions) {
             for (Position position : positions.getAllPositions()) {
-                if (position.getStore().equals(store)) {
+                if (position.getStore().getStoreName().equals(store.getStoreName())) {
                     return position;
                 }
             }
@@ -104,7 +105,7 @@ public class Member extends Guest {
             logger.error(String.format("the member is already have a different position in this store : %s", store.getStoreName()));
             throw new Exception("the member is already have a different position in this store");
         } else {
-            positions.addPosition(new StoreManager(store, assigner));
+            positions.addPosition(new StoreManager(store, assigner,this));
             store.addEmployee(this);
         }
     }
@@ -132,7 +133,7 @@ public class Member extends Guest {
             throw new Exception("the member is already have a different position in this store");
         } else {
             logger.info(String.format("%s promote to be the owner of %s", getUsername(), store.getStoreName()));
-            positions.addPosition(new StoreOwner(store, assigner));
+            positions.addPosition(new StoreOwner(store, assigner,this));
             store.addEmployee(this);
         }
     }
@@ -140,12 +141,13 @@ public class Member extends Guest {
     @Override
     public Store openStore(String name, int storeID) {
         Store newStore = new Store(storeID, name, this);
-        StoreFounder newStoreFounder = new StoreFounder(newStore);
+        StoreFounder newStoreFounder = new StoreFounder(newStore,this);
+        StoreOwner newStoreOwner = new StoreOwner(newStore,this,this);
         try {
             positions.addPosition(newStoreFounder);
+            positions.addPosition(newStoreOwner);
         } catch (Exception e) {
             // Rollback if either operation fails
-            positions.removePosition(newStoreFounder);
             throw e;
         }
         return newStore;

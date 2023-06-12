@@ -1,5 +1,6 @@
 package DAOs;
 
+import BusinessLayer.StoreOwner;
 import Repositories.IStoreOwnerRepository;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -15,7 +16,7 @@ public class StoreOwnerDAO implements IStoreOwnerRepository {
     }
 
     @Override
-    public void addStoreOwner(String storeOwner) {
+    public void addStoreOwner(StoreOwner storeOwner) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
 
@@ -30,7 +31,7 @@ public class StoreOwnerDAO implements IStoreOwnerRepository {
             e.printStackTrace();
         } finally {
             session.close();
-            this.storeOwners.add(storeOwner);
+            this.storeOwners.add(storeOwner.getPositionName());
         }
     }
 

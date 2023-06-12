@@ -11,4 +11,5 @@ public interface IMapStringMemberRepository {
     boolean containsKey(String key);
     boolean containsValue(Member member);
     Map<String, Member> getAllMembers();
+    void clear();
 }

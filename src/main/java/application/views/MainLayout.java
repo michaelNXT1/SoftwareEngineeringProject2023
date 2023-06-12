@@ -45,7 +45,8 @@ import java.util.stream.Collectors;
 public class MainLayout extends AppLayout {
     private static String sessionId;
 
-    MarketController marketController = MarketController.getInstance();
+
+    MarketController marketController;
     private TextField searchBox;
     private final Map<String, Runnable> searchActionMap = new HashMap<>();
     private Select<String> searchType;
@@ -54,6 +55,12 @@ public class MainLayout extends AppLayout {
     private Button logoutButton;
 
     public MainLayout() throws Exception {
+        try {
+            marketController = MarketController.getInstance();
+        }
+        catch (Exception e){
+
+        }
         sessionId = marketController.enterMarket().value;
         config();
         addToNavbar(createHeaderContent());

@@ -10,30 +10,65 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "positions")
-//@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-//@DiscriminatorColumn(name = "position_type", discriminatorType = DiscriminatorType.STRING)
 public class StoreOwner implements Position {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
     @JoinColumn(name = "store_id")
-    private final Store store;
+    private Store store;
+    @ManyToOne
+    @JoinColumn(name = "positionMember")
+    private Member positionMember;
     @ManyToOne
     @JoinColumn(name = "store_owners")
-    private final Member assigner;
+    private Member assigner;
     @Transient
-    private final SystemLogger logger;
+    private SystemLogger logger;
 
-    @Column(name = "position_type", insertable = false, updatable = false, columnDefinition = "text")
-    private String positionType;
-
-    public StoreOwner(Store store, Member assigner) {
-        this.id = 0L; // Initializing with a default value
+    public StoreOwner(Store store, Member assigner,Member thisMember) {
         this.store = store;
         this.assigner = assigner;
         logger = new SystemLogger();
+        this.positionMember = thisMember;
+    }
+
+    public StoreOwner() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setStore(Store store) {
+        this.store = store;
+    }
+
+    @Override
+    public Member getPositionMember() {
+        return positionMember;
+    }
+
+    @Override
+    public void setPositionMember(Member positionMember) {
+        this.positionMember = positionMember;
+    }
+
+    public void setAssigner(Member assigner) {
+        this.assigner = assigner;
+    }
+
+    public SystemLogger getLogger() {
+        return logger;
+    }
+
+    public void setLogger(SystemLogger logger) {
+        this.logger = logger;
     }
 
     @Override

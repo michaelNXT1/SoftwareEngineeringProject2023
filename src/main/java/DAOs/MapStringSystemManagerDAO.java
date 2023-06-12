@@ -24,6 +24,7 @@ public class MapStringSystemManagerDAO implements IMapStringSystemManagerReposit
                 transaction.rollback();
             }
             e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }

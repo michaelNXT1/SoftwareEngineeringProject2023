@@ -12,23 +12,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 import static org.atmosphere.annotation.AnnotationUtil.logger;
 
-@Entity
-@Inheritance(strategy = InheritanceType.JOINED)
+
 public class Guest {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
-    @OneToOne(cascade = CascadeType.ALL)
+
     private ShoppingCart shoppingCart;
-    @Transient
+
     private String searchKeyword;
-    @Transient
+
     private IProductRepository searchResults;
-    @Transient
     private IPurchaseRepository purchaseHistory;
-    @OneToOne(cascade = CascadeType.ALL)
     private PaymentDetails paymentDetails;
-    @OneToOne(cascade = CascadeType.ALL)
     private SupplyDetails supplyDetails;
 
     public void setId(Long id) {

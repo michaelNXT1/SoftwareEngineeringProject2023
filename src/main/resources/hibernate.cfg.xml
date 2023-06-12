@@ -7,13 +7,11 @@
     <session-factory>
 
         <!-- Connection settings -->
-        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
-        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/sadnaDB</property>
-        <property name="hibernate.connection.username">postgres</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/sadnadb</property>
+        <property name="hibernate.connection.username">root</property>
         <property name="hibernate.connection.password">admin</property>
 
         <!-- SQL dialect -->
-        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
         <property name="current_session_context_class">thread</property>
 
         <!-- Print executed SQL to stdout -->
@@ -26,17 +24,20 @@
         <mapping class="BusinessLayer.Member"/>
         <mapping class="BusinessLayer.Store"/>
         <mapping class="BusinessLayer.Purchase"/>
+        <mapping class="BusinessLayer.Product"/>
         <mapping class="BusinessLayer.ShoppingBag"/>
-        <mapping class="BusinessLayer.StoreManager"/>
-        <mapping class="BusinessLayer.StoreFounder"/>
         <mapping class="BusinessLayer.PurchaseProduct"/>
-        <mapping class="BusinessLayer.StoreFounder"/>
         <mapping class="BusinessLayer.ShoppingCart"/>
         <mapping class="BusinessLayer.PaymentDetails"/>
         <mapping class="BusinessLayer.SupplyDetails"/>
         <mapping class="BusinessLayer.PurchaseType"/>
         <mapping class="BusinessLayer.SystemManager"/>
-
+        <mapping class="BusinessLayer.StoreOwner"/>
+        <mapping class="BusinessLayer.StoreFounder"/>
+        <mapping class="BusinessLayer.StoreManager"/>
+        <mapping class="BusinessLayer.Category"/>
+        <mapping class="Notification.Notification"/>
         <mapping class="BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy"/>
+        <mapping class="BusinessLayer.Policies.PurchasePolicies.PolicyTypes.CategoryTimeRestrictionPurchasePolicy"/>
     </session-factory>
 </hibernate-configuration>
