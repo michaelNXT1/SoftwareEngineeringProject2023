@@ -1075,4 +1075,10 @@ public class Market {
         Guest m=sessionManager.getSession(sessionId);
         return m.getShoppingCart().getProductDiscountPercentageInCart(s, productId);
     }
+
+    public List<PurchaseDTO> getUserPurchaseHistory(String sessionId) throws Exception {
+        isMarketOpen();
+        Guest m = sessionManager.getSession(sessionId);
+        return m.getPurchaseHistory().stream().map(PurchaseDTO::new).collect(Collectors.toList());
+    }
 }

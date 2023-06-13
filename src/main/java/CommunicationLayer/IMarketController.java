@@ -213,4 +213,6 @@ public interface IMarketController {
     ResponseT<Double> getProductDiscountPercentageInCart(String sessionId, int storeId, int productId);
 
     Response addSupplyDetails(String sessionId, String name, String address, String city, String country, String zip);
+
+    ResponseT<List<PurchaseDTO>> getUserPurchaseHistory(String sessionId);
 }
