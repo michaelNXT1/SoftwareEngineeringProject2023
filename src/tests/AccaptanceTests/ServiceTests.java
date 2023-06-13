@@ -18,7 +18,7 @@ public abstract class ServiceTests extends TestCase {
     Bridge bridge;
 
 
-    public void setUp() {
+    public void setUp() throws Exception {
 
         this.bridge = Driver.getBridge();
 

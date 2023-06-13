@@ -27,7 +27,7 @@ class MarketTest extends TestCase {
 
     @org.junit.jupiter.api.BeforeAll
     void startUp() throws Exception {
-        market = new Market("testFile.txt");
+        market = new Market("testFile.txt",true);
         market.signUp(userName1, password1);
         market.signUp(userName2, password2);
         sessionID1 = market.login(userName1,password1,null);
