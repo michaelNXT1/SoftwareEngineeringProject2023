@@ -121,7 +121,7 @@ public class Member extends Guest {
 
     public void sendNotification(Notification shopNotification) {
         if (this.notificationBroker != null) {
-            notificationBroker.sendNotificationToUser(shopNotification, this.username);
+            notificationBroker.sendRealTimeNotification(shopNotification, this.username);
         }else {
             this.notifications.addNotification(shopNotification);
         }

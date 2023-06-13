@@ -56,7 +56,7 @@ abstract public class Discount {
 
     public double calculateNewPercentage(double currentPercentage) {
         return switch (compositionType) {
-            case ADDITION -> Math.max(currentPercentage + discountPercentage, 1.0);
+            case ADDITION -> Math.min(currentPercentage + discountPercentage, 1.0);
             case MAX -> Math.max(currentPercentage, discountPercentage);
         };
     }

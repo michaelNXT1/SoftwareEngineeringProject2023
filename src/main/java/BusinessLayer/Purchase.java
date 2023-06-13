@@ -6,11 +6,13 @@ import Repositories.IPurchaseProductRepository;
 //import javax.persistence.*;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Table(name = "purchases")
 public class Purchase {
+    private LocalDateTime purchaseDateTime;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,7 +22,9 @@ public class Purchase {
     public Purchase(IPurchaseProductRepository productList) {
         this.id = 0L; // Initializing with a default value
         this.productList = productList;
+        this.purchaseDateTime = LocalDateTime.now();
     }
+
 
     public Purchase() {
     }
@@ -50,5 +54,10 @@ public class Purchase {
 
     public void setProductList(IPurchaseProductRepository productList) {
         this.productList = productList;
+    }
+
+
+    public LocalDateTime getPurchaseDateTime() {
+        return purchaseDateTime;
     }
 }

@@ -27,4 +27,8 @@ public class PurchaseProductDTO {
     public int getQuantity() {
         return quantity;
     }
+
+    public String getProductName() {
+        return this.productName;
+    }
 }

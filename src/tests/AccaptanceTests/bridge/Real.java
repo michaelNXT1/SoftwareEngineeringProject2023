@@ -14,7 +14,7 @@ public class Real implements Bridge {
 
     private IMarketManager manager;
 
-    public Real() throws Exception {
+    public Real() {
         this.manager = new MarketManager();
     }
 

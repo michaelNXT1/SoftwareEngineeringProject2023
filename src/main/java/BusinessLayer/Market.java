@@ -17,6 +17,7 @@ import Repositories.IMapIntegerStoreRepository;
 import Repositories.IMapStringMemberRepository;
 import Repositories.IMapStringSystemManagerRepository;
 import Repositories.IProductRepository;
+import Notification.Notification;
 import Security.ProxyScurity;
 import Security.SecurityAdapter;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
@@ -24,8 +25,6 @@ import ServiceLayer.DTOs.*;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 
-
-import Notification.Notification;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -38,8 +37,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 
-
-@Service
 public class Market {
     public static final Object purchaseLock = new Object();
     final Object userLock = new Object();
@@ -68,7 +65,6 @@ public class Market {
             throw new RuntimeException(e);
         }
         this.path = path;
-        this.isTestMode=isTestMode;
         marketOpen = true;
         this.logger = new SystemLogger();
         supplySystem = new SupplySystemProxy();
@@ -76,7 +72,7 @@ public class Market {
         paymentSystem = new PaymentSystemProxy();
         paymentSystem.setPaymentSystem(new PaymentSystem());
         clearAllData();
-//        signUpSystemManager("admin","admin");
+        signUpSystemManager("admin","admin");
         if(path != null)
             parseFile(path);
         testModeSupplySystem(isTestMode);
@@ -255,13 +251,12 @@ public class Market {
                 }
                 return null;
             }
-            isMarketOpen();
-            // Retrieve the stored Member's object for the given username
-            Member member;
-            synchronized (username.intern()) {
-                member = users.get(username);
-            }
-
+        }
+        isMarketOpen();
+        // Retrieve the stored Member's object for the given username
+        Member member;
+        synchronized (username.intern()) {
+            member = users.get(username);
             String hashedPassword = new String(passwordEncoder.digest(password.getBytes()));
             // If the Member doesn't exist or the password is incorrect, throw exception
             if (member == null || !hashedPassword.equals(member.getPassword())) {
@@ -278,13 +273,13 @@ public class Market {
                 return sessionManager.createSession(member);
             }
             logger.error(String.format("%s did not passed authenticate check and logged in to the system", username));
+            return null;
         }
-        return null;
     }
 
 //    //use case 2.3
 //    public String loginSystemManager(String username, String password) throws Exception {
-//        logger.info(String.format("%s trying to log in to the systemManager", username));
+//        logger.info(String.format("%s trying to log in to the systemMnager", username));
 //        // Retrieve the stored Member's object for the given username
 //        SystemManager sm = systemManagers.get(username);
 //
@@ -396,8 +391,6 @@ public class Market {
                 .collect(Collectors.toList());
     }
 
-
-
     //use case 2.8
     public List<ProductDTO> getProductsBySubstring(String sessionId, String productSubstring) throws Exception {
         isMarketOpen();
@@ -418,8 +411,6 @@ public class Market {
                 .map(ProductDTO::new)
                 .collect(Collectors.toList());
     }
-
-
 
     //use case __.__
     public List<ProductDTO> getSearchResults(String sessionId) throws Exception {
@@ -512,6 +503,11 @@ public class Market {
             purchase = g.purchaseShoppingCart();
             for (PurchaseProduct p : purchase.getProductList().getAllPurchaseProducts()) {
                 logger.info(String.format("purchase completed you just bought %d from %s", p.getQuantity(), p.getProductName()));
+                Store s = getStore(sessionId, p.getStoreId());
+                List<Member> managers = s.getManagers();
+                for (Member manager : managers) {
+                    manager.sendNotification(new Notification(String.format("purchase completed from %s from product %s bought %d quantity", s.getStoreName(), p.getProductName(), p.getQuantity())));
+                }
             }
         }
 
@@ -570,9 +566,9 @@ public class Market {
         Store s = stores.getStore(storeId);
         Product product = p.addProduct(s,productName, price, category, quantity, description);
         List<Member> managers = s.getEmployees();
-        for(Member manager: managers){
+        for (Member manager : managers) {
             logger.info("sending notifications");
-            manager.sendNotification(new Notification(String.format("%s added to %s with %d quantity",productName,s.getStoreName(),quantity)));
+            manager.sendNotification(new Notification(String.format("%s added to %s with %d quantity", productName, s.getStoreName(), quantity)));
         }
         return new ProductDTO(product);
     }
@@ -584,14 +580,14 @@ public class Market {
         logger.info("trying to edit product name");
         checkStoreExists(storeId);
         logger.info(String.format("edit product name %d to %s in store %s", productId, newName, getStore(sessionId, storeId).getStoreName()));
-        Store s = getStore(sessionId,storeId);
+        Store s = getStore(sessionId, storeId);
         Product product = s.getProduct(productId);
         String oldName = product.getProductName();
         Position p = checkPositionLegal(sessionId, storeId);
         p.editProductName(productId, newName);
         List<Member> managers = s.getManagers();
-        for(Member manager: managers){
-            manager.sendNotification(new Notification(String.format("%s changed %s name to %s in %s store",g.getUsername(),oldName,newName,s.getStoreName())));
+        for (Member manager : managers) {
+            manager.sendNotification(new Notification(String.format("%s changed %s name to %s in %s store", g.getUsername(), oldName, newName, s.getStoreName())));
         }
     }
 
@@ -601,24 +597,18 @@ public class Market {
         Guest g = sessionManager.getSession(sessionId);
         logger.info("trying to edit product price");
         checkStoreExists(storeId);
-        Store s = getStore(sessionId,storeId);
+        logger.info(String.format("edit product price %d to %.2f in store %s", productId, newPrice, getStore(sessionId, storeId).getStoreName()));
+        Store s = getStore(sessionId, storeId);
         Product product = s.getProduct(productId);
         double oldPrice = product.getPrice();
         logger.info(String.format("edit product price %d to %f in store %s", productId, newPrice, getStore(sessionId, storeId).getStoreName()));
         Position p = checkPositionLegal(sessionId, storeId);
         p.editProductPrice(productId, newPrice);
         List<Member> managers = s.getManagers();
-        for(Member manager: managers){
-            manager.sendNotification(new Notification(String.format("%s changed %s price from %0.2f to %0.2f in %s store",g.getUsername(),product.getProductName(),oldPrice,newPrice,s.getStoreName())));
+        for (Member manager : managers) {
+            manager.sendNotification(new Notification(String.format("%s changed %s price from %0.2f to %0.2f in %s store", g.getUsername(), product.getProductName(), oldPrice, newPrice, s.getStoreName())));
         }
     }
-
-    //use case 5.2 - by product description (currently not necessary)
-//    public void editProductDescription(int storeId, int productId, String newDescription) throws Exception {
-//        checkStoreExists(storeId);
-//        Position p = checkPositionLegal(storeId);
-//        p.editProductDescription(productId, newDescription);
-//    }
 
     //use case 5.2 - by product category
     public void editProductCategory(String sessionId, int storeId, int productId, String newCategory) throws Exception {
@@ -627,14 +617,14 @@ public class Market {
         logger.info("trying to edit product category");
         checkStoreExists(storeId);
         logger.info(String.format("edit product category %d to %s in store %s", productId, newCategory, getStore(sessionId, storeId).getStoreName()));
-        Store s = getStore(sessionId,storeId);
+        Store s = getStore(sessionId, storeId);
         Product product = s.getProduct(productId);
         String oldName = product.getCategory();
         Position p = checkPositionLegal(sessionId, storeId);
         p.editProductCategory(productId, newCategory);
         List<Member> managers = s.getManagers();
-        for(Member manager: managers){
-            manager.sendNotification(new Notification(String.format("%s changed %s category from %s to %s in %s store",g.getUsername(),product.getProductName(),oldName,newCategory,s.getStoreName())));
+        for (Member manager : managers) {
+            manager.sendNotification(new Notification(String.format("%s changed %s category from %s to %s in %s store", g.getUsername(), product.getProductName(), oldName, newCategory, s.getStoreName())));
         }
     }
 
@@ -652,13 +642,13 @@ public class Market {
         logger.info("trying to remove product from store");
         checkStoreExists(storeId);
         logger.info(String.format("removing product %d from %s", productId, getStore(sessionId, storeId)));
-        Store s = getStore(sessionId,storeId);
+        Store s = getStore(sessionId, storeId);
         Product product = s.getProduct(productId);
         Position p = checkPositionLegal(sessionId, storeId);
         p.removeProductFromStore(productId);
         List<Member> managers = s.getManagers();
-        for(Member manager: managers){
-            manager.sendNotification(new Notification(String.format("%s removed %s from %s store",g.getUsername(),product.getProductName(),s.getStoreName())));
+        for (Member manager : managers) {
+            manager.sendNotification(new Notification(String.format("%s removed %s from %s store", g.getUsername(), product.getProductName(), s.getStoreName())));
         }
     }
 
@@ -669,7 +659,7 @@ public class Market {
         Guest g = sessionManager.getSession(sessionId);
         logger.info(String.format("%s trying to appoint %s to new owner of the %s", g.getUsername(), MemberToBecomeOwner, stores.getStore(storeID).getStoreName()));
         checkStoreExists(storeID);
-        Store s = getStore(sessionId,storeID);
+        Store s = getStore(sessionId, storeID);
         Position p = checkPositionLegal(sessionId, storeID);
         Member m = users.get(MemberToBecomeOwner);
         if (m == null) {
@@ -678,8 +668,8 @@ public class Market {
         }
         p.setPositionOfMemberToStoreOwner(stores.getStore(storeID), m, (Member) g);
         List<Member> employees = s.getEmployees();
-        for(Member employee: employees){
-            employee.sendNotification(new Notification(String.format("%s appoint %s to be new owner of %s",g.getUsername(),MemberToBecomeOwner,s.getStoreName())));
+        for (Member employee : employees) {
+            employee.sendNotification(new Notification(String.format("%s appoint %s to be new owner of %s", g.getUsername(), MemberToBecomeOwner, s.getStoreName())));
         }
     }
 
@@ -691,13 +681,18 @@ public class Market {
         logger.info(String.format("trying to appoint new manager to the store the member %s", MemberToBecomeManager));
         checkStoreExists(storeID);
         logger.info(String.format("promoting %s to be the manager of %s", MemberToBecomeManager, getStore(sessionId, storeID)));
+        Store s = getStore(sessionId, storeID);
         Position p = checkPositionLegal(sessionId, storeID);
         Member m = users.get(MemberToBecomeManager);
         if (m == null) {
             logger.error(String.format("%s is not a member", MemberToBecomeManager));
             throw new Exception("MemberToBecomeManager is not a member ");
         }
-        p.setPositionOfMemberToStoreManager(stores.getStore(storeID), m, (Member) g);
+        p.setPositionOfMemberToStoreManager(stores.get(storeID), m, (Member) g);
+        List<Member> employees = s.getEmployees();
+        for (Member employee : employees) {
+            employee.sendNotification(new Notification(String.format("%s appoint %s to be new manager of %s", g.getUsername(), MemberToBecomeManager, s.getStoreName())));
+        }
     }
     @Transactional
     public void setStoreManagerPermissions(String sessionId, int storeId, String storeManager, Set<PositionDTO.permissionType> permissions) throws Exception {
@@ -755,6 +750,7 @@ public class Market {
             p.removeStoreManagerPermissions(storeManagerPosition, perm);
         }
     }
+
     //use case 5.11
     public List<MemberDTO> getStoreEmployees(String sessionId, int storeId) throws Exception {
         isMarketOpen();
@@ -974,7 +970,6 @@ public class Market {
         logger.info(String.format("Supply details of %s are added", sessionId));
     }
 
-
     //PRIVATE METHODS
     public Store getStore(String sessionId, int storeId) throws Exception {
         isMarketOpen();
@@ -1183,6 +1178,25 @@ public class Market {
             throw new Exception("the name of the store manager has not have that position in this store");
         }
         return storeManagerPosition.getPermissions();
+    }
+
+    public boolean hasPaymentMethod(String sessionId) throws Exception {
+        isMarketOpen();
+        Guest m = sessionManager.getSession(sessionId);
+        return m.getPaymentDetails() != null;
+    }
+
+    public double getProductDiscountPercentageInCart(String sessionId, int storeId, int productId) throws Exception {
+        isMarketOpen();
+        Store s = getStore(sessionId, storeId);
+        Guest m = sessionManager.getSession(sessionId);
+        return m.getShoppingCart().getProductDiscountPercentageInCart(s, productId);
+    }
+
+    public List<PurchaseDTO> getUserPurchaseHistory(String sessionId) throws Exception {
+        isMarketOpen();
+        Guest m = sessionManager.getSession(sessionId);
+        return m.getPurchaseHistory().stream().map(PurchaseDTO::new).collect(Collectors.toList());
     }
     private void  testModeSupplySystem(boolean flag) {
         if (flag)

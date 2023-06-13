@@ -3,14 +3,14 @@ package BusinessLayer;
 import DAOs.MapIntegerIntegerDAO;
 import DAOs.PurchaseProductDAO;
 import Repositories.IMapIntegerIntegerRepository;
+import Repositories.IProductRepository;
 import Utils.Pair;
 import jakarta.persistence.*;
 
-//import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static org.atmosphere.annotation.AnnotationUtil.logger;
 
@@ -26,7 +26,7 @@ public class ShoppingBag {
     private Store store;
 
     @Transient
-    private IMapIntegerIntegerRepository productList;
+    private IProductRepository productList;
 
     @OneToOne
     @JoinColumn(name = "purchase_id")
@@ -47,8 +47,10 @@ public class ShoppingBag {
     //Use case 2.10 & Use case 2.12
     public void setProductQuantity(int productId, int quantity) throws Exception {
         Product p = store.getProduct(productId);
-        if (store.getProducts().getAllProducts().get(p) >= quantity)
-            productList.put(productId, quantity);
+        if (quantity == 0)
+            productList.deleteProduct(p);
+        else if (productList.getProductById(productId).getAmount() >= quantity)
+            productList.saveProduct(p);
         else {
             logger.error("Requested product quantity not available.");
             throw new Exception("Requested product quantity not available.");
@@ -64,10 +66,9 @@ public class ShoppingBag {
     //Use case 2.14
     public Pair<PurchaseProduct, Boolean> purchaseProduct(int productId) {
         try {
-            PurchaseProduct pp = store.subtractForPurchase(productId, productList.get(productId));
-            double discountPercentage = store.getProductDiscountPercentage(productId, productList.getAllItems());
+            PurchaseProduct pp = store.subtractForPurchase(productId, productList.getProductById(productId).getAmount());
+            double discountPercentage = store.getProductDiscountPercentage(productId, productList.getAllProducts());
             pp.setPrice(pp.getPrice() * (1.0 - discountPercentage));
-            this.productList.remove(productId);
             return new Pair<>(pp, true);
         } catch (Exception e) {
             return new Pair<>(null, false);
@@ -75,7 +76,7 @@ public class ShoppingBag {
     }
 
     public Pair<List<PurchaseProduct>, Boolean> purchaseShoppingBag() throws Exception {
-        if (!store.checkPoliciesFulfilled(productList.getAllItems())) {
+        if (!store.checkPoliciesFulfilled(productList.getAllProducts())) {
             logger.error("Store purchase policies are not fulfilled in this cart");
             throw new Exception("Store purchase policies are not fulfilled in this cart");
         }
@@ -92,6 +93,7 @@ public class ShoppingBag {
             }
         }
         store.addPurchase(bagPurchase);
+        productList.clear();
         return new Pair<>(retList, true);
     }
 
@@ -107,12 +109,12 @@ public class ShoppingBag {
     public IMapIntegerIntegerRepository getProductList() {
         return productList;
     }
-    public void setProductList(IMapIntegerIntegerRepository productList) {
-        this.productList.getAllItems().clear(); // Clear existing items in the in-memory map
-        this.productList.getAllItems().putAll(productList.getAllItems()); // Copy items from the new map
-    }
 
     public boolean isEmpty() {
-        return productList.getAllItems().values().stream().allMatch(integer -> integer == 0);
+        return productList.getAllProducts().values().stream().allMatch(integer -> integer == 0);
+    }
+
+    public double getProductDiscountPercentageInCart(int productId) throws Exception {
+        return store.getProductDiscountPercentage(productId, productList);
     }
 }

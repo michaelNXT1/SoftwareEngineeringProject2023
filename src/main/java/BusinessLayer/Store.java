@@ -133,7 +133,6 @@ public class Store {
         return purchaseList.getAllPurchases();
     }
 
-
     //use case 5.1
     public Product addProduct(String productName, double price, String category, int quantity, String description) throws Exception {
         if (products.getAllProducts().keySet().stream().anyMatch(p -> p.getProductName().equals(productName))) {

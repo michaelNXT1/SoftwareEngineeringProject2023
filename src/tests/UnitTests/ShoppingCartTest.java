@@ -1,10 +1,11 @@
 package UnitTests;
 
 import BusinessLayer.*;
-import BusinessLayer.Member;
+import ServiceLayer.DTOs.PurchaseDTO;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -47,25 +48,6 @@ class ShoppingCartTest extends TestCase {
 //    }
 
     @Test
-    void changeProductQuantity() throws Exception {
-        market.addProduct(sessionId1, storeId1, product1.getProductName(),20.0,"cat",50,"wow");
-        market.changeProductQuantity(sessionId1, storeId1, product1.getProductId(),12);
-        assertEquals(product1.getAmount(),12);
-    }
-
-    @Test
-    void removeProduct() throws Exception {
-        market.removeProductFromCart(sessionId1, storeId1, product1.getProductId());
-        assertFalse(shoppingCart.shoppingBags.getShoppingBagById(0).getProductList().containsKey(product1.getProductId()));
-    }
-
-    @Test
-    void purchaseShoppingCart() throws Exception {
-        Purchase purchase = shoppingCart.purchaseShoppingCart();
-        assertTrue(purchase.getProductList().getAllPurchaseProducts().contains(product2));
-    }
-
-    @Test
     void purchaseShoppingCartWithMockPaymentSystem() throws Exception {
         SupplySystemProxy supplySystemProxy = mock(SupplySystemProxy.class);
         PaymentSystemProxy ps = new PaymentSystemProxy();
@@ -87,6 +69,24 @@ class ShoppingCartTest extends TestCase {
         market.addPaymentMethod(sessionId1, "123456789", "April","2023","489","shoham","508479063");
         Exception exception = assertThrows(Exception.class, () -> market.purchaseShoppingCart(sessionId1));
         assertEquals("Purchase failed, supply system hasn't managed to charge", exception.getMessage());
+    }
+    @Test
+    void changeProductQuantity() throws Exception {
+        market.addProduct(sessionId1, storeId1, product1.getProductName(),20.0,"cat",50,"wow");
+        market.changeProductQuantity(sessionId1, storeId1, product1.getProductId(),12);
+        assertEquals(product1.getAmount(),12);
+    }
+
+    @Test
+    void removeProduct() throws Exception {
+        market.removeProductFromCart(sessionId1, storeId1, product1.getProductId());
+        assertFalse(shoppingCart.shoppingBags.getShoppingBagById(0).getProductList().containsKey(product1.getProductId()));
+    }
+
+    @Test
+    void purchaseShoppingCart() throws Exception {
+        Purchase purchase = shoppingCart.purchaseShoppingCart();
+        assertTrue(purchase.getProductList().contains(product2));
     }
     @Test
     void purchaseShoppingCartWhenSupplySystemFailed() throws Exception {

@@ -1,7 +1,7 @@
 package CommunicationLayer;
 
-import ServiceLayer.DTOs.*;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
+import ServiceLayer.DTOs.*;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 import ServiceLayer.MarketManager;
@@ -26,48 +26,47 @@ public class MarketController implements IMarketController {
     private final MarketManager marketManager;
     private final NotificationController notificationBroker;
 
-
-    private MarketController() throws Exception {
+    private MarketController() {
         this.marketManager = new MarketManager();
         this.notificationBroker = new NotificationController();
     }
 
 
-    public static MarketController getInstance() throws Exception {
+    public static MarketController getInstance() {
         if (instance == null) {
             instance = new MarketController();
         }
         return instance;
     }
 
-    @GetMapping("/signUpSystemManager")
+    @PostMapping("/signUpSystemManager")
     @ResponseBody
     @Override
     public Response signUpSystemManager(@RequestParam(value = "username", defaultValue = "") String username,
                                         @RequestParam(value = "password", defaultValue = "") String password) {
-        return marketManager.signUpSystemManager(username, password);
+        return this.marketManager.signUpSystemManager(username, password);
     }
 
-    @GetMapping("/enterMarket")
+    @PostMapping("/enterMarket")
     @ResponseBody
     @Override
     public ResponseT<String> enterMarket() {
-        return marketManager.enterMarket();
+        return this.marketManager.enterMarket();
     }
 
     @GetMapping("/exitMarket")
     @ResponseBody
     @Override
-    public Response exitMarket(@RequestParam(value = "username", defaultValue = "") String sessionId) {
-        return marketManager.exitMarket(sessionId);
+    public Response exitMarket(@RequestParam(value = "sessionId", defaultValue = "") String sessionId) {
+        return this.marketManager.exitMarket(sessionId);
     }
 
     @GetMapping("/signUp")
     @ResponseBody
-    public Response signUp(
-            @RequestParam(value = "username", defaultValue = "") String username,
-            @RequestParam(value = "password", defaultValue = "") String password) {
-        return marketManager.signUp(username, password);
+    @Override
+    public Response signUp(@RequestParam(value = "username", defaultValue = "") String username,
+                           @RequestParam(value = "password", defaultValue = "") String password) {
+        return this.marketManager.signUp(username, password);
     }
 
     @GetMapping("/login")
@@ -75,7 +74,7 @@ public class MarketController implements IMarketController {
     public ResponseT<String> login(
             @RequestParam(value = "username", defaultValue = "") String username,
             @RequestParam(value = "password", defaultValue = "") String password) {
-        return marketManager.login(username, password,notificationBroker);
+        return marketManager.login(username, password, notificationBroker);
     }
 
 
@@ -173,6 +172,7 @@ public class MarketController implements IMarketController {
                                                                   @RequestParam(value = "maxPrice", defaultValue = "-1") double maxPrice) {
         return marketManager.filterSearchResultsByPrice(sessionId, minPrice, maxPrice);
     }
+
 
     @GetMapping("/addProductToCart")
     @ResponseBody
@@ -343,7 +343,7 @@ public class MarketController implements IMarketController {
         return marketManager.getStoresPurchases(sessionId);
     }
 
-    @GetMapping("/addProductTimeRestrictionPurchasePolicy")
+    @GetMapping("/addProductTimeRestrictionPolicy")
     @ResponseBody
     @Override
     public Response addProductTimeRestrictionPolicy(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
@@ -354,7 +354,7 @@ public class MarketController implements IMarketController {
         return marketManager.addProductTimeRestrictionPurchasePolicy(sessionId, storeId, productId, startTime, endTime);
     }
 
-    @GetMapping("/addCategoryTimeRestrictionPurchasePolicy")
+    @GetMapping("/addCategoryTimeRestrictionPolicy")
     @ResponseBody
     @Override
     public Response addCategoryTimeRestrictionPolicy(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
@@ -365,7 +365,7 @@ public class MarketController implements IMarketController {
         return marketManager.addCategoryTimeRestrictionPurchasePolicy(sessionId, storeId, category, startTime, endTime);
     }
 
-    @GetMapping("/joinPurchasePolicies")
+    @GetMapping("/joinPolicies")
     @ResponseBody
     @Override
     public Response joinPolicies(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
@@ -376,7 +376,7 @@ public class MarketController implements IMarketController {
         return marketManager.joinPurchasePolicies(sessionId, storeId, policyId1, policyId2, operator);
     }
 
-    @GetMapping("/removePurchasePolicy")
+    @GetMapping("/removePolicy")
     @ResponseBody
     @Override
     public Response removePolicy(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
@@ -385,7 +385,7 @@ public class MarketController implements IMarketController {
         return marketManager.removePurchasePolicy(sessionId, storeId, policyId);
     }
 
-    @GetMapping("/addMinQuantityPurchasePolicy")
+    @GetMapping("/addMinQuantityPolicy")
     @ResponseBody
     @Override
     public Response addMinQuantityPolicy(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
@@ -396,7 +396,7 @@ public class MarketController implements IMarketController {
         return marketManager.addMinQuantityPurchasePolicy(sessionId, storeId, productId, minQuantity, allowNone);
     }
 
-    @GetMapping("/addMaxQuantityPurchasePolicy")
+    @GetMapping("/addMaxQuantityPolicy")
     @ResponseBody
     @Override
     public Response addMaxQuantityPolicy(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
@@ -549,7 +549,7 @@ public class MarketController implements IMarketController {
 
     @Override
     public Response removeStoreOwner(String sessionId, int storeId, String username) {
-        return marketManager.removeStoreOwner(sessionId, storeId,username);
+        return marketManager.removeStoreOwner(sessionId, storeId, username);
     }
 
     @Override
@@ -560,6 +560,26 @@ public class MarketController implements IMarketController {
     @Override
     public ResponseT<Set<PositionDTO.permissionType>> getPermissions(String sessionId, int storeId, String username) {
         return marketManager.getPermissions(sessionId, storeId, username);
+    }
+
+    @Override
+    public ResponseT<Boolean> hasPaymentMethod(String sessionId) {
+        return marketManager.hasPaymentMethod(sessionId);
+    }
+
+    @Override
+    public ResponseT<Double> getProductDiscountPercentageInCart(String sessionId, int storeId, int productId) {
+        return marketManager.getProductDiscountPercentageInCart(sessionId, storeId, productId);
+    }
+
+    @Override
+    public Response addSupplyDetails(String sessionId, String name, String address, String city, String country, String zip) {
+        return marketManager.addSupplyDetails(sessionId, name, address, city, country, zip);
+    }
+
+    @Override
+    public ResponseT<List<PurchaseDTO>> getUserPurchaseHistory(String sessionId) {
+        return marketManager.getUserPurchaseHistory(sessionId);
     }
 
     @GetMapping("/editProductInCart")
