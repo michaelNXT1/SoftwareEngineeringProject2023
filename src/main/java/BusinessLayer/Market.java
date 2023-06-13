@@ -9,14 +9,8 @@ import BusinessLayer.Logger.SystemLogger;
 import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
 import BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy;
 import CommunicationLayer.NotificationBroker;
-import DAOs.MapIntegerStoreDAO;
-import DAOs.MapStringMemberDAO;
-import DAOs.MapStringSystemManagerDAO;
-import DAOs.ProductDAO;
-import Repositories.IMapIntegerStoreRepository;
-import Repositories.IMapStringMemberRepository;
-import Repositories.IMapStringSystemManagerRepository;
-import Repositories.IProductRepository;
+import DAOs.*;
+import Repositories.*;
 import Security.ProxyScurity;
 import Security.SecurityAdapter;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
@@ -68,7 +62,6 @@ public class Market {
             throw new RuntimeException(e);
         }
         this.path = path;
-        this.isTestMode=isTestMode;
         marketOpen = true;
         this.logger = new SystemLogger();
         supplySystem = new SupplySystemProxy();
@@ -360,7 +353,7 @@ public class Market {
         logger.info(String.format("Getting product by name: %s", productName));
         if (!stringIsEmpty(productName)) {
             for (Store store : stores.getAllStores().values()) {
-                productList.addAll(store.getProducts().getAllProducts().keySet().stream()
+                productList.addAll(store.getProducts().getAllProducts().stream()
                         .filter(p -> p.getProductName().equals(productName)).toList());
             }
         }
@@ -383,7 +376,7 @@ public class Market {
         List<Product> productList = new ArrayList<>();
         if (!stringIsEmpty(productCategory)) {
             for (Store store : stores.getAllStores().values()) {
-                productList.addAll(store.getProducts().getAllProducts().keySet().stream()
+                productList.addAll(store.getProducts().getAllProducts().stream()
                         .filter(p -> p.getCategory().equals(productCategory)).toList());
             }
         }
@@ -406,7 +399,7 @@ public class Market {
         List<Product> productList = new ArrayList<>();
         if (!stringIsEmpty(productSubstring)) {
             for (Store store : stores.getAllStores().values()) {
-                productList.addAll(store.getProducts().getAllProducts().keySet().stream()
+                productList.addAll(store.getProducts().getAllProducts().stream()
                         .filter(p -> p.getProductName().contains(productSubstring)).toList());
             }
         }
@@ -1120,8 +1113,8 @@ public class Market {
         checkMarketOpen();
         checkStoreExists(storeId);
         Map<ProductDTO, Integer> newMap = new HashMap<>();
-        for (Map.Entry<Product, Integer> entry : stores.getStore(storeId).getProducts().getAllProducts().entrySet())
-            newMap.put(new ProductDTO(entry.getKey()), entry.getValue());
+        for (Product p: stores.getStore(storeId).getProducts().getAllProducts().stream().filter(p -> p.getStoreId() == storeId).toList())
+            newMap.put(new ProductDTO(p), p.getProductId());
         return newMap;
     }
 

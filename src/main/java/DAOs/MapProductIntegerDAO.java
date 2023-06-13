@@ -19,18 +19,12 @@ public class MapProductIntegerDAO implements IMapProductIntegerRepository {
 
     @Override
     public void addProduct(Product product, int quantity) {
-        Map<Product, Integer> productMap = store.getProducts().getAllProducts();
-        productMap.put(product, quantity);
-        store.setProducts(new MapProductIntegerDAO(productMap,store));
-        updateStore(store);
+
     }
 
     @Override
     public void removeProduct(Product product) {
-        Map<Product, Integer> productMap = store.getProducts().getAllProducts();
-        productMap.remove(product);
-        store.setProducts(new MapProductIntegerDAO(productMap,store));
-        updateStore(store);
+
     }
 
     // Helper method to update the store entity
@@ -53,10 +47,7 @@ public class MapProductIntegerDAO implements IMapProductIntegerRepository {
 
     @Override
     public void updateProductQuantity(Product product, int quantity) {
-        Map<Product, Integer> productMap = store.getProducts().getAllProducts();
-        productMap.put(product, quantity);
-        store.setProducts(new MapProductIntegerDAO(productMap,store));
-        updateStore(store);
+
     }
 
     @Override
@@ -66,13 +57,11 @@ public class MapProductIntegerDAO implements IMapProductIntegerRepository {
 
     @Override
     public int getProductQuantity(Product product) {
-        Map<Product, Integer> productMap = store.getProducts().getAllProducts();
-        return productMap.getOrDefault(product, 0);
+        return 1;
     }
 
     @Override
     public boolean containsProduct(Product product) {
-        Map<Product, Integer> productMap = store.getProducts().getAllProducts();
-        return productMap.containsKey(product);
+        return true;
     }
 }

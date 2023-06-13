@@ -35,7 +35,7 @@ public class Store {
     @Transient
     private IStringSetRepository categories;
     @Transient
-    private IMapProductIntegerRepository products;
+    private IProductRepository products = new ProductDAO();
     @Transient
     private IPurchaseRepository purchaseList;
     @Transient
@@ -52,15 +52,15 @@ public class Store {
     private AtomicInteger productIdCounter;
     @Transient //Marks a property or field as transient, indicating that it should not be persisted in the database.
     private SystemLogger logger;
-
-
+    @Transient
+    private IPurchaseTypeRepository purchaseTypeRepository = new PurchaseTypeDAO();
 
     public Store(int storeId, String storeName, Member storeFounder){
         this.storeId = storeId;
         this.storeName = storeName;
         this.storeOwners = new StoreOwnerDAO();
         this.categories = new SetCategoryDAO();
-        this.products = new MapProductIntegerDAO(new HashMap<>(), this);
+        this.products = new ProductDAO();
         this.purchaseList = new PurchaseDAO();
         this.employees = new MemberDAO();
         this.logger = new SystemLogger();
@@ -76,7 +76,7 @@ public class Store {
         this.storeId = 0;
         this.storeName = "";
         this.categories = new SetCategoryDAO();
-        this.products = new MapProductIntegerDAO(new HashMap<>(), this);
+        this.products = new ProductDAO();
         this.purchaseList = new PurchaseDAO();
         this.employees = new MemberDAO();
         this.logger = new SystemLogger();
@@ -97,17 +97,17 @@ public class Store {
         return storeName;
     }
 
-    public IMapProductIntegerRepository getProducts() {
+    public IProductRepository getProducts() {
         return products;
     }
 
     //Use case 2.14
     public void addToProductQuantity(int productId, int amountToAdd) throws Exception {
         synchronized (Market.purchaseLock) {
-            Product p = getProduct(productId);
-            synchronized (p) {
-                if (products.getProductQuantity(p) + amountToAdd >= 0)
-                    products.addProduct(p, products.getProductQuantity(p) + amountToAdd);
+            Product p = products.getProductById(productId);
+            synchronized (p.getProductName().intern()) {
+                p.setAmount(p.getAmount() + amountToAdd);
+                products.updateProduct(p);
             }
         }
     }
@@ -115,8 +115,8 @@ public class Store {
     public PurchaseProduct subtractForPurchase(int productId, int quantity) throws Exception {
         Product p = getProduct(productId);
         synchronized (p) {
-            if (products.getProductQuantity(p) - quantity >= 0)
-                products.addProduct(p, products.getProductQuantity(p) - quantity);
+            p.setAmount(p.getAmount() - quantity);
+            products.updateProduct(p);
         }
         return new PurchaseProduct(p, quantity, storeId);
     }
@@ -136,7 +136,7 @@ public class Store {
 
     //use case 5.1
     public Product addProduct(String productName, double price, String category, int quantity, String description) throws Exception {
-        if (products.getAllProducts().keySet().stream().anyMatch(p -> p.getProductName().equals(productName))) {
+        if (products.getAllProducts().stream().anyMatch(p -> p.getProductName().equals(productName))) {
             logger.error(String.format("%s already exist", productName));
             throw new Exception("Product name already exists");
         }
@@ -149,7 +149,9 @@ public class Store {
             p = new Product(storeId, this.productIdCounter.getAndIncrement(), productName, price, category, description);
             if(!categories.getAllCategory().stream().anyMatch(c-> c.getCategoryName().equals(category)))
                 categories.addString(new Category(category));
-            products.addProduct(p, quantity);
+            if(!purchaseTypeRepository.getAllPurchaseTypes().stream().anyMatch(pt->pt.type == p.getPurchaseType().type))
+                purchaseTypeRepository.savePurchaseType(p.getPurchaseType());
+            products.saveProduct(p);
         }
         return p;
     }
@@ -160,7 +162,7 @@ public class Store {
     public void removeProduct(int productId) throws Exception {
         synchronized (Market.purchaseLock) {
             Product p = getProduct(productId);
-            products.removeProduct(p);
+            products.deleteProduct(p);
         }
     }
 
@@ -177,7 +179,7 @@ public class Store {
     }
 
     public Product getProduct(int productId) throws Exception {
-        Product ret = products.getAllProducts().keySet().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null);
+        Product ret = products.getAllProducts().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null);
         if (ret == null) {
             logger.error(String.format("%d product doesnt exist", productId));
             throw new Exception("Product doesn't exist");
@@ -187,7 +189,7 @@ public class Store {
 
     public void editProductName(int productId, String newName) throws Exception {
         checkProductExists(productId);
-        if (products.getAllProducts().keySet().stream().anyMatch(p -> p.getProductName().equals(newName))) {
+        if (products.getAllProducts().stream().anyMatch(p -> p.getProductName().equals(newName))) {
             logger.error(String.format("%s already exist", newName));
             throw new Exception("Product name already exists");
         }
@@ -384,7 +386,7 @@ public class Store {
 
 
     private Product checkProductExists(int productId) throws Exception {
-        Product product = products.getAllProducts().keySet().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null);
+        Product product = products.getAllProducts().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null);
         if (product == null) {
             logger.error(String.format("%d product doesnt exist", productId));
             throw new Exception("product id doesn't exist");
@@ -452,7 +454,7 @@ public class Store {
         return purchasePolicies.getAllPurchasePolicies();
     }
 
-    public void setProducts(IMapProductIntegerRepository mapProductIntegerRepository) {
+    public void setProducts(IProductRepository mapProductIntegerRepository) {
         products = mapProductIntegerRepository;
     }
 

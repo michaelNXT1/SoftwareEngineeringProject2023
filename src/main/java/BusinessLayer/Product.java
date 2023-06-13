@@ -35,7 +35,7 @@ public class Product {
     private String description;
 
     @OneToOne
-    @JoinColumn(name = "purchase_type_id")
+    @JoinColumn(name = "purchase_type")
     private PurchaseType purchaseType;
 
     public Product(int storeId, int productId, String productName, double price, String category, String description) throws Exception {
@@ -52,7 +52,8 @@ public class Product {
             throw new Exception("product category is empty");
         }
         this.storeId = storeId;
-        this.purchaseType = new BuyItNow(this);
+        this.purchaseType = new PurchaseType();
+        this.purchaseType.setType(PurchaseType.Type.BuyItNow);
         this.productId = productId;
         this.productName = productName;
         this.price = price;
@@ -63,6 +64,14 @@ public class Product {
 
     public Product() {
 
+    }
+
+    public void setStoreId(int storeId) {
+        this.storeId = storeId;
+    }
+
+    public PurchaseType getPurchaseType() {
+        return purchaseType;
     }
 
     public void setPurchaseType(PurchaseType purchaseType) {
