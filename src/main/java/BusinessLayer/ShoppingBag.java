@@ -1,6 +1,7 @@
 package BusinessLayer;
 
 import DAOs.MapIntegerIntegerDAO;
+import DAOs.ProductDAO;
 import DAOs.PurchaseProductDAO;
 import Repositories.IMapIntegerIntegerRepository;
 import Repositories.IProductRepository;
@@ -25,8 +26,9 @@ public class ShoppingBag {
     @JoinColumn(name = "store_id")
     private Store store;
 
-    @Transient
-    private IProductRepository productList;
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private List<Product> productList = new ArrayList<>();
 
     @OneToOne
     @JoinColumn(name = "purchase_id")
@@ -36,7 +38,6 @@ public class ShoppingBag {
     public ShoppingBag(Store store) {
         this.id = 0L; // Initializing with a default value
         this.store = store;
-        this.productList = new MapIntegerIntegerDAO(new ConcurrentHashMap<>());
         bagPurchase = new Purchase(new PurchaseProductDAO());
     }
 
@@ -48,9 +49,9 @@ public class ShoppingBag {
     public void setProductQuantity(int productId, int quantity) throws Exception {
         Product p = store.getProduct(productId);
         if (quantity == 0)
-            productList.deleteProduct(p);
-        else if (productList.getProductById(productId).getAmount() >= quantity)
-            productList.saveProduct(p);
+            productList.remove(p);
+        else if (p.getAmount() >= quantity)
+            productList.add(p);
         else {
             logger.error("Requested product quantity not available.");
             throw new Exception("Requested product quantity not available.");
@@ -59,15 +60,19 @@ public class ShoppingBag {
 
     //Use case 2.13
     public void removeProduct(int productId) throws Exception {
-        store.getProduct(productId);
-        productList.remove(productId);
+        Product p = store.getProduct(productId);
+        productList.remove(p);
     }
 
     //Use case 2.14
     public Pair<PurchaseProduct, Boolean> purchaseProduct(int productId) {
         try {
-            PurchaseProduct pp = store.subtractForPurchase(productId, productList.getProductById(productId).getAmount());
-            double discountPercentage = store.getProductDiscountPercentage(productId, productList.getAllProducts());
+            PurchaseProduct pp = store.subtractForPurchase(productId,store.getProduct(productId).getAmount());
+            Map<Integer,Integer> productToAmount = new HashMap<>();
+            for(Product p :this.productList){
+                productToAmount.put(p.getProductId(),p.getAmount());
+            }
+            double discountPercentage = store.getProductDiscountPercentage(productId,productToAmount);
             pp.setPrice(pp.getPrice() * (1.0 - discountPercentage));
             return new Pair<>(pp, true);
         } catch (Exception e) {
@@ -76,13 +81,17 @@ public class ShoppingBag {
     }
 
     public Pair<List<PurchaseProduct>, Boolean> purchaseShoppingBag() throws Exception {
-        if (!store.checkPoliciesFulfilled(productList.getAllProducts())) {
+        Map<Integer,Integer> productToAmount = new HashMap<>();
+        for(Product p :this.productList){
+            productToAmount.put(p.getProductId(),p.getAmount());
+        }
+        if (!store.checkPoliciesFulfilled(productToAmount)) {
             logger.error("Store purchase policies are not fulfilled in this cart");
             throw new Exception("Store purchase policies are not fulfilled in this cart");
         }
-        store.checkPoliciesFulfilled(productList.getAllItems());
+        store.checkPoliciesFulfilled(productToAmount);
         List<PurchaseProduct> retList = new ArrayList<>();
-        for (Map.Entry<Integer, Integer> e : productList.getAllItems().entrySet()) {
+        for (Map.Entry<Integer, Integer> e : productToAmount.entrySet()) {
             Pair<PurchaseProduct, Boolean> ppp = purchaseProduct(e.getKey());
             if (ppp.getSecond()) {
                 retList.add(ppp.getFirst());
@@ -106,15 +115,19 @@ public class ShoppingBag {
         return store;
     }
 
-    public IMapIntegerIntegerRepository getProductList() {
+    public List<Product> getProductList() {
         return productList;
     }
 
     public boolean isEmpty() {
-        return productList.getAllProducts().values().stream().allMatch(integer -> integer == 0);
+        return productList.isEmpty();
     }
 
     public double getProductDiscountPercentageInCart(int productId) throws Exception {
-        return store.getProductDiscountPercentage(productId, productList);
+        Map<Integer,Integer> productToAmount = new HashMap<>();
+        for(Product p :this.productList){
+            productToAmount.put(p.getProductId(),p.getAmount());
+        }
+        return store.getProductDiscountPercentage(productId, productToAmount);
     }
 }

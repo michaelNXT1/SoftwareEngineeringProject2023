@@ -80,13 +80,13 @@ class ShoppingCartTest extends TestCase {
     @Test
     void removeProduct() throws Exception {
         market.removeProductFromCart(sessionId1, storeId1, product1.getProductId());
-        assertFalse(shoppingCart.shoppingBags.getShoppingBagById(0).getProductList().containsKey(product1.getProductId()));
+        assertFalse(shoppingCart.shoppingBags.getShoppingBagById(0).getProductList().contains(product1));
     }
 
     @Test
     void purchaseShoppingCart() throws Exception {
         Purchase purchase = shoppingCart.purchaseShoppingCart();
-        assertTrue(purchase.getProductList().contains(product2));
+        assertTrue(purchase.getProductList().getAllPurchaseProducts().contains(product2));
     }
     @Test
     void purchaseShoppingCartWhenSupplySystemFailed() throws Exception {

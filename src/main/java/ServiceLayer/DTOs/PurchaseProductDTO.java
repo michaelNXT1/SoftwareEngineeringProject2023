@@ -16,10 +16,6 @@ public class PurchaseProductDTO {
         this.quantity = p.getQuantity();
     }
 
-    public String getProductName() {
-        return productName;
-    }
-
     public double getPrice() {
         return price;
     }

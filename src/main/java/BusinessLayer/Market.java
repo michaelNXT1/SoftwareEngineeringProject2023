@@ -9,14 +9,8 @@ import BusinessLayer.Logger.SystemLogger;
 import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
 import BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy;
 import CommunicationLayer.NotificationBroker;
-import DAOs.MapIntegerStoreDAO;
-import DAOs.MapStringMemberDAO;
-import DAOs.MapStringSystemManagerDAO;
-import DAOs.ProductDAO;
-import Repositories.IMapIntegerStoreRepository;
-import Repositories.IMapStringMemberRepository;
-import Repositories.IMapStringSystemManagerRepository;
-import Repositories.IProductRepository;
+import DAOs.*;
+import Repositories.*;
 import Notification.Notification;
 import Security.ProxyScurity;
 import Security.SecurityAdapter;
@@ -29,6 +23,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalTime;
@@ -55,7 +50,7 @@ public class Market {
     private IBaseDiscountPolicyMapRepository  baseDiscountPolicyMapDAO= new BaseDiscountPolicyMapDAO();
 
     private String path;
-    public Market(String path, Boolean isTestMode) throws Exception {
+    public Market(String path, Boolean isTestMode)  {
         stores = new MapIntegerStoreDAO();
         systemManagers = new MapStringSystemManagerDAO();
         users = new MapStringMemberDAO(new ConcurrentHashMap<>());
@@ -72,7 +67,7 @@ public class Market {
         paymentSystem = new PaymentSystemProxy();
         paymentSystem.setPaymentSystem(new PaymentSystem());
         clearAllData();
-        signUpSystemManager("admin","admin");
+//        signUpSystemManager("admin","admin");
         if(path != null)
             parseFile(path);
         testModeSupplySystem(isTestMode);
@@ -92,55 +87,96 @@ public class Market {
         return stores.getAllStores().values().stream().filter(s -> s.getStoreName().equals(storeName)).toList().stream().map(StoreDTO::new).findFirst().get();
     }
 
-    private void parseFile(String filePath) throws Exception {
+    private void parseFile(String filePath)  {
 
         if (filePath!= null){
             String sessionId = "";
             int storeId;
             File file = new File(filePath);
-            Scanner fileScanner = new Scanner(file);
+            Scanner fileScanner = null;
+            try {
+                fileScanner = new Scanner(file);
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
             while(fileScanner.hasNextLine()){
                 String command = fileScanner.nextLine();
                 String action = command.substring(0,command.indexOf("("));
                 String[] args = command.substring(command.indexOf("(")+1,command.indexOf(")")).split(",");
                 switch (action){
                     case "signUp":
-                        signUp(args[0],"123");
+                        try {
+                            signUp(args[0],"123");
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
                         break;
                     case "login":
-                        sessionId = login(args[0],"123",null);
+                        try {
+                            sessionId = login(args[0],"123",null);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
                         break;
                     case "logout" :
-                        logout(sessionId);
+                        try {
+                            logout(sessionId);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
                         break;
                     case "open-store":
-                        sessionId = login(args[0], "123",null);
-                        storeId = openStore(sessionId,"newStore");
-                        logout(sessionId);
+                        try {
+                            sessionId = login(args[0], "123",null);
+                            storeId = openStore(sessionId,"newStore");
+                            logout(sessionId);
+                        }
+                        catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
                         break;
                     case "appoint-manager":
-                        sessionId = login(args[0],"123",null);
-                        storeId = getStoreByName(sessionId,args[1]).getStoreId();
-                        setPositionOfMemberToStoreManager(sessionId,storeId,args[2]);
-                        logout(sessionId);
+                        try {
+                            sessionId = login(args[0],"123",null);
+                            storeId = getStoreByName(sessionId,args[1]).getStoreId();
+                            setPositionOfMemberToStoreManager(sessionId,storeId,args[2]);
+                            logout(sessionId);
+                        }
+                        catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
                         break;
                     case "appoint-owner":
-                        //appoint-manager(<Manager-name>,<Store-name>,<New Manager name>,<Details>);
-                        sessionId = login(args[0],"123",null);
-                        storeId = getStoreByName(sessionId, args[1]).getStoreId();
-                        setPositionOfMemberToStoreOwner(sessionId,storeId,args[2]);
-                        logout(sessionId);
+                        try {
+                            sessionId = login(args[0],"123",null);
+                            storeId = getStoreByName(sessionId, args[1]).getStoreId();
+                            setPositionOfMemberToStoreOwner(sessionId,storeId,args[2]);
+                            logout(sessionId);
+                        }catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+
                         break;
                     case "add-product":
                         //add-product(<manager-name>,<store-name>,<product-name>,<amount>,<price>);
-                        sessionId = login(args[0],"123",null);
-                        storeId = getStoreByName(sessionId, args[1]).getStoreId();
-                        addProduct(sessionId,storeId,args[2],Double.parseDouble(args[3]),args[4],Integer.parseInt(args[5]),args[6]);
-                        logout(sessionId);
+                        try {
+                            sessionId = login(args[0], "123", null);
+                            storeId = getStoreByName(sessionId, args[1]).getStoreId();
+                            addProduct(sessionId, storeId, args[2], Double.parseDouble(args[3]), args[4], Integer.parseInt(args[5]), args[6]);
+                            logout(sessionId);
+                        }
+                        catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
                         break;
 
                     default:
-                        throw new Exception("Wrong syntax");
+                        try {
+                            throw new Exception("Wrong syntax");
+                        }
+                        catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
 
 
                 }
@@ -688,7 +724,7 @@ public class Market {
             logger.error(String.format("%s is not a member", MemberToBecomeManager));
             throw new Exception("MemberToBecomeManager is not a member ");
         }
-        p.setPositionOfMemberToStoreManager(stores.get(storeID), m, (Member) g);
+        p.setPositionOfMemberToStoreManager(stores.getStore(storeID), m, (Member) g);
         List<Member> employees = s.getEmployees();
         for (Member employee : employees) {
             employee.sendNotification(new Notification(String.format("%s appoint %s to be new manager of %s", g.getUsername(), MemberToBecomeManager, s.getStoreName())));
@@ -1196,7 +1232,7 @@ public class Market {
     public List<PurchaseDTO> getUserPurchaseHistory(String sessionId) throws Exception {
         isMarketOpen();
         Guest m = sessionManager.getSession(sessionId);
-        return m.getPurchaseHistory().stream().map(PurchaseDTO::new).collect(Collectors.toList());
+        return m.getPurchaseHistory().getAllPurchases().stream().map(PurchaseDTO::new).collect(Collectors.toList());
     }
     private void  testModeSupplySystem(boolean flag) {
         if (flag)

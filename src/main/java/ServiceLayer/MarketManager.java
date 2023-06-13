@@ -15,8 +15,8 @@ import java.util.Set;
 public class MarketManager implements IMarketManager {
     private final Market market;
 
-    public MarketManager() {
-        this.market = new Market();
+    public MarketManager(String path, boolean testMode) {
+        this.market = new Market(path,testMode);
     }
 
     public Response signUpSystemManager(String username, String password) {

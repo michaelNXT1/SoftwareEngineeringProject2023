@@ -113,7 +113,7 @@ public class Member extends Guest {
     public void sendRealTimeNotification(){
         if(!(notifications == null || notifications.getAllNotifications().isEmpty())) {
             for (Notification notification : notifications.getAllNotifications()) {
-                this.notificationBroker.sendNotificationToUser(notification, this.username);
+                this.notificationBroker.sendRealTimeNotification(notification, this.username);
             }
             notifications.clear();
         }

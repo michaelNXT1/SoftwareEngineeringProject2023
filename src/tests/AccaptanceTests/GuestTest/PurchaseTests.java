@@ -43,7 +43,7 @@ public class PurchaseTests extends ServiceTests {
         PurchaseDTO purchaseDTO= buyCart(sessionID1);
         List<PurchaseProductDTO> bagList =  purchaseDTO.getProductDTOList();
         for(PurchaseProductDTO productDTO:bagList) {
-            if (productDTO.getProductName() == "test2")
+            if (productDTO.getProductName().equals("test2"))
                 product1Exist = true;
         }
         assertTrue(product1Exist);
