@@ -24,7 +24,7 @@ public class SearchResultView extends VerticalLayout {
     private final Header header;
 
     @Autowired
-    public SearchResultView() {
+    public SearchResultView() throws Exception {
         this.marketController = MarketController.getInstance();
         this.header = new Header();
         this.header.setText("Search results for " + marketController.getSearchKeyword(MainLayout.getSessionId()).value);

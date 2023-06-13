@@ -22,7 +22,7 @@ public class SignUpSystemManager extends VerticalLayout {
     private final Header header;
 
     @Autowired
-    public SignUpSystemManager() {
+    public SignUpSystemManager() throws Exception {
         this.header = new Header();
         this.header.setText("SignUpSystemManager");
         this.usernameField = new TextField("Username");

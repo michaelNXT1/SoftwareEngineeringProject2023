@@ -1,5 +1,6 @@
 package BusinessLayer;
-import javax.persistence.*;
+//import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)

@@ -19,7 +19,7 @@ public class ProductDAO implements IProductRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -36,7 +36,7 @@ public class ProductDAO implements IProductRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -48,7 +48,7 @@ public class ProductDAO implements IProductRepository {
         try {
             product = session.get(Product.class, productId);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -61,7 +61,7 @@ public class ProductDAO implements IProductRepository {
         try {
             productList = session.createQuery("FROM products", Product.class).list();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -82,7 +82,7 @@ public class ProductDAO implements IProductRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }

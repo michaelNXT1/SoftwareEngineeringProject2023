@@ -33,10 +33,7 @@ public class MemberDAO implements IMemberRepository {
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
-            Member managedMember = session.get(Member.class, member.getUsername());
-            if (managedMember != null) {
-                session.remove(managedMember);
-            }
+            session.remove(member);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -67,7 +64,7 @@ public class MemberDAO implements IMemberRepository {
         Session session = HibernateUtil.getSessionFactory().openSession();
         List<Member> members = null;
         try {
-            String hql = "FROM members";
+            String hql = "FROM Member";
             Query<Member> query = session.createQuery(hql, Member.class);
             members = query.list();
         } catch (Exception e) {
@@ -79,7 +76,23 @@ public class MemberDAO implements IMemberRepository {
     }
 
 
+    public void clear() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
 
+        try {
+            transaction = session.beginTransaction();
+            session.createQuery("DELETE FROM Member").executeUpdate();
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
 
 
 }

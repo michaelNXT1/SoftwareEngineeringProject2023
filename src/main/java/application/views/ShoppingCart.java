@@ -31,7 +31,7 @@ ShoppingCart extends VerticalLayout {
 
 
     @Autowired
-    public ShoppingCart() {
+    public ShoppingCart() throws Exception {
         this.marketController = MarketController.getInstance();
         shoppingCart = marketController.getShoppingCart(MainLayout.getSessionId()).value;
         productDTOList = shoppingCart.getProducts();

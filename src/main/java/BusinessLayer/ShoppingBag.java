@@ -4,8 +4,9 @@ import DAOs.MapIntegerIntegerDAO;
 import DAOs.PurchaseProductDAO;
 import Repositories.IMapIntegerIntegerRepository;
 import Utils.Pair;
+import jakarta.persistence.*;
 
-import javax.persistence.*;
+//import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,8 @@ public class ShoppingBag {
     @Transient
     private IMapIntegerIntegerRepository productList;
 
-    @OneToOne(mappedBy = "shoppingBag", cascade = CascadeType.ALL)
+    @OneToOne
+    @JoinColumn(name = "purchase_id")
     private Purchase bagPurchase;
 
 

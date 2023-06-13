@@ -4,13 +4,17 @@ import BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy;
 import BusinessLayer.Product;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.PolicyTypes.ProductTimeRestrictionPurchasePolicyDTO;
-import javax.persistence.*;
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+//import javax.persistence.*;
+//import javax.persistence.Column;
+//import javax.persistence.JoinColumn;
+//import javax.persistence.ManyToOne;
+import jakarta.persistence.*;
+
 import java.time.LocalTime;
 import java.util.Map;
 @Entity
+@Table(name = "ProductTimeRestrictionPurchasePolicy")
+@DiscriminatorValue("CHILD")
 public class ProductTimeRestrictionPurchasePolicy extends BasePurchasePolicy {
     @ManyToOne
     @JoinColumn(name = "product_id")

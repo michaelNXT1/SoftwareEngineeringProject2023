@@ -78,4 +78,21 @@ public class MapIntegerStoreDAO implements IMapIntegerStoreRepository {
         }
         return storeMap;
     }
+    public void clear() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+
+        try {
+            transaction = session.beginTransaction();
+            session.createQuery("DELETE FROM Store").executeUpdate();
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
 }

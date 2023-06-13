@@ -1,11 +1,10 @@
 package UnitTests;
 
 import BusinessLayer.*;
-import ServiceLayer.DTOs.PurchaseDTO;
+import BusinessLayer.Member;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -63,7 +62,7 @@ class ShoppingCartTest extends TestCase {
     @Test
     void purchaseShoppingCart() throws Exception {
         Purchase purchase = shoppingCart.purchaseShoppingCart();
-        assertTrue(purchase.getProductList().contains(product2));
+        assertTrue(purchase.getProductList().getAllPurchaseProducts().contains(product2));
     }
 
     @Test

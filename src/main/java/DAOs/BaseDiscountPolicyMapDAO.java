@@ -21,14 +21,13 @@ public class BaseDiscountPolicyMapDAO implements IBaseDiscountPolicyMapRepositor
     }
 
     @Override
-    public void addDiscountPolicy(Discount discount, IBaseDiscountPolicyRepository discountPolicy) {
+    public void addDiscountPolicy(BaseDiscountPolicy discount) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
 
         try {
             transaction = session.beginTransaction();
             session.saveOrUpdate(discount);
-            session.saveOrUpdate(discountPolicy);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -37,12 +36,11 @@ public class BaseDiscountPolicyMapDAO implements IBaseDiscountPolicyMapRepositor
             e.printStackTrace();
         } finally {
             session.close();
-            this.discountPolicies.put(discount, discountPolicy);
         }
     }
 
     @Override
-    public void removeDiscountPolicy(Discount discount) {
+    public void removeDiscountPolicy(BaseDiscountPolicy discount) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
 
@@ -65,7 +63,6 @@ public class BaseDiscountPolicyMapDAO implements IBaseDiscountPolicyMapRepositor
     public BaseDiscountPolicy getDiscountPolicy(Discount discount) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         BaseDiscountPolicy discountPolicy = null;
-
         try {
             discountPolicy = session.get(BaseDiscountPolicy.class, discount.getId());
         } catch (Exception e) {
@@ -78,18 +75,27 @@ public class BaseDiscountPolicyMapDAO implements IBaseDiscountPolicyMapRepositor
     }
 
     @Override
-    public Map<Discount, IBaseDiscountPolicyRepository> getAllDiscountPolicies() {
+    public BaseDiscountPolicy getDiscountPolicyById(Integer key) {
         Session session = HibernateUtil.getSessionFactory().openSession();
-        Map<Discount, IBaseDiscountPolicyRepository> discountPolicyMap = new HashMap<>();
-
+        BaseDiscountPolicy baseDiscountPolicy = null;
         try {
-            Query<Discount> query = session.createQuery("FROM Discount", Discount.class);
-            List<Discount> discounts = query.list();
+            baseDiscountPolicy = session.get(BaseDiscountPolicy.class, key);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return baseDiscountPolicy;
+    }
 
-            for (Discount discount : discounts) {
-                IBaseDiscountPolicyRepository discountPolicy = session.get(IBaseDiscountPolicyRepository.class, discount.getId());
-                discountPolicyMap.put(discount, discountPolicy);
-            }
+    @Override
+    public List<BaseDiscountPolicy> getAllDiscountPolicies() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        List<BaseDiscountPolicy> discountPolicyMap = null;
+        try {
+            Query<BaseDiscountPolicy> query = session.createQuery("FROM BaseDiscountPolicy", BaseDiscountPolicy.class);
+            discountPolicyMap = query.list();
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -97,5 +103,27 @@ public class BaseDiscountPolicyMapDAO implements IBaseDiscountPolicyMapRepositor
         }
 
         return discountPolicyMap;
+    }
+
+    @Override
+    public void clear() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+
+        try {
+            transaction = session.beginTransaction();
+            session.createQuery("DELETE FROM MaxQuantityDiscountPolicy").executeUpdate();
+            session.createQuery("DELETE FROM MinBagTotalDiscountPolicy").executeUpdate();
+            session.createQuery("DELETE FROM MinQuantityDiscountPolicy").executeUpdate();
+            session.createQuery("DELETE FROM DiscountPolicyOperation").executeUpdate();
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
     }
 }

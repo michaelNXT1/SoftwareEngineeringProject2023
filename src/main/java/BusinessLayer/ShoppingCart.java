@@ -11,7 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.persistence.*;
+//import javax.persistence.*;
+import jakarta.persistence.*;
+
 
 
 @Entity
@@ -20,8 +22,7 @@ public class ShoppingCart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "shopping_bag_id")
+    @Transient
     public IShoppingBagRepository shoppingBags;
     @Transient //Marks a property or field as transient, indicating that it should not be persisted in the database.
     private SystemLogger logger;
