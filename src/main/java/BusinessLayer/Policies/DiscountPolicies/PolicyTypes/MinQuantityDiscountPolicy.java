@@ -4,12 +4,14 @@ import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
 import BusinessLayer.Product;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.PolicyTypes.MinQuantityDiscountPolicyDTO;
+import jakarta.persistence.*;
 
-import javax.persistence.*;
+//import javax.persistence.*;
 import java.util.Map;
 
 @Entity
 @Table(name = "min_quantity_discount_policy")
+@DiscriminatorValue("CHILD")
 public class MinQuantityDiscountPolicy extends BaseDiscountPolicy {
     @ManyToOne
     @JoinColumn(name = "product_id")
@@ -21,8 +23,8 @@ public class MinQuantityDiscountPolicy extends BaseDiscountPolicy {
     @Column(name = "allow_none")
     private final boolean allowNone;
 
-    public MinQuantityDiscountPolicy(int policyId, Product product, int minQuantity, boolean allowNone) throws Exception {
-        super(policyId);
+    public MinQuantityDiscountPolicy(int policyId, Product product, int minQuantity, boolean allowNone,int store_id,int discount_id) throws Exception {
+        super(policyId,store_id,discount_id);
         if (minQuantity <= 0) {
             logger.error("Min quantity must be larger than 0 but is " + minQuantity);
             throw new Exception("Min quantity must be larger than 0");

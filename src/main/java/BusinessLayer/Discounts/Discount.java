@@ -3,11 +3,14 @@ package BusinessLayer.Discounts;
 import BusinessLayer.Logger.SystemLogger;
 import BusinessLayer.Product;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
-import javax.persistence.*;
+//import javax.persistence.*;
+import jakarta.persistence.*;
+
 
 @Entity
 @Table(name = "discounts")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@DiscriminatorColumn(name = "Discount", discriminatorType = DiscriminatorType.STRING)
 abstract public class Discount {
 
     public enum CompositionType {
@@ -16,17 +19,17 @@ abstract public class Discount {
     }
     @Id
     @Column(name = "discount_id")
-    protected final int discountId;
+    protected int discountId;
 
     @Column(name = "discount_percentage")
-    protected final double discountPercentage;
+    protected double discountPercentage;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "composition_type")
-    protected final CompositionType compositionType;
+    protected CompositionType compositionType;
 
     @Transient
-    protected final SystemLogger logger;
+    protected SystemLogger logger;
 
     public Discount(int discountId, double discountPercentage, int compositionType) throws Exception {
         logger = new SystemLogger();

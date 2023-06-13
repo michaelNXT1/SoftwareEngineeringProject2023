@@ -3,7 +3,9 @@ package BusinessLayer.Policies.PurchasePolicies;
 import BusinessLayer.Logger.SystemLogger;
 import BusinessLayer.Product;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
-import javax.persistence.*;
+//import javax.persistence.*;
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +13,7 @@ import java.util.stream.Collectors;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@DiscriminatorColumn(name = "BasePurchasePolicy", discriminatorType = DiscriminatorType.STRING)
 public abstract class BasePurchasePolicy {
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)

@@ -1,6 +1,6 @@
 package ServiceLayer.DTOs;
 
-import BusinessLayer.*;
+import BusinessLayer.Member;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -19,10 +19,10 @@ public class MemberDTO {
             this.email = member.getEmail();
             this.positions = member.getPositions().getAllPositions().stream().map(PositionDTO::new).collect(Collectors.toList());
             this.shoppingCart = new ShoppingCartDTO(member.getShoppingCart());
-            this.searchResults = member.getSearchResults().stream()
+            this.searchResults = member.getSearchResults().getAllProducts().stream()
                     .map(ProductDTO::new)
                     .collect(Collectors.toList());
-            this.purchaseHistory = member.getPurchaseHistory().stream()
+            this.purchaseHistory = member.getPurchaseHistory().getAllPurchases().stream()
                     .map(PurchaseDTO::new)
                     .collect(Collectors.toList());
     }

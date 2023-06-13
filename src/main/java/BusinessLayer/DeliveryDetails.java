@@ -1,16 +1,20 @@
 package BusinessLayer;
-import javax.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Entity;
 
+//import javax.persistence.*;
+@Entity
 @Embeddable
 public class DeliveryDetails {
 
-    @Column
+    @Column(columnDefinition = "text")
     private String street;
 
     @Column
     private int number;
 
-    @Column
+    @Column( columnDefinition = "text")
     private String zipcode;
 
     public DeliveryDetails(String street, int number, String zipcode) {

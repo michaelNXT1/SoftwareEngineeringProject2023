@@ -3,10 +3,12 @@ package BusinessLayer.Policies.DiscountPolicies;
 import BusinessLayer.Product;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.DiscountPolicyOperationDTO;
-import javax.persistence.*;
+import jakarta.persistence.*;
+//import javax.persistence.*;
 import java.util.Map;
 
 @Entity
+@DiscriminatorValue("CHILD")
 public class DiscountPolicyOperation extends BaseDiscountPolicy {
 
     public enum JoinOperator {
@@ -22,8 +24,8 @@ public class DiscountPolicyOperation extends BaseDiscountPolicy {
     @OneToOne
     private final BaseDiscountPolicy right;
 
-    public DiscountPolicyOperation(int policyId, BaseDiscountPolicy left, int joinOperator, BaseDiscountPolicy right) {
-        super(policyId);
+    public DiscountPolicyOperation(int policyId, BaseDiscountPolicy left, int joinOperator, BaseDiscountPolicy right,int store_id,int discount_id) {
+        super(policyId,store_id,discount_id);
         this.policyId = policyId;
         this.left = left;
         try {

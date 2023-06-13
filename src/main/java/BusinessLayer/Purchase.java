@@ -1,7 +1,11 @@
 package BusinessLayer;
+import DAOs.PurchaseProductDAO;
+import Repositories.IProductRepository;
 import Repositories.IPurchaseProductRepository;
 
-import javax.persistence.*;
+//import javax.persistence.*;
+import jakarta.persistence.*;
+
 import java.util.List;
 
 @Entity
@@ -10,14 +14,15 @@ public class Purchase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @OneToOne(cascade = CascadeType.ALL)
+    @Transient
     private IPurchaseProductRepository productList;
-    private PaymentDetails paymentDetails;
 
     public Purchase(IPurchaseProductRepository productList) {
         this.id = 0L; // Initializing with a default value
         this.productList = productList;
+    }
+
+    public Purchase() {
     }
 
     public void addProduct(PurchaseProduct p) {
@@ -30,7 +35,20 @@ public class Purchase {
     }
 
 
-    public List<PurchaseProduct> getProductList() {
-        return this.productList.getAllPurchaseProducts();
+    public IPurchaseProductRepository getProductList() {
+        return this.productList;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+
+    public void setProductList(IPurchaseProductRepository productList) {
+        this.productList = productList;
     }
 }

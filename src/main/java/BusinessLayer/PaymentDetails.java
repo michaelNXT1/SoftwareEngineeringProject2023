@@ -1,20 +1,31 @@
 package BusinessLayer;
-import javax.persistence.*;
-public class PaymentDetails {
-    @Id
-    @Column(name = "creditCardNumber")
-    private final String creditCardNumber;
-    @Column(name = "month")
-    private final String month;
-    @Column(name = "year")
-    private final String year;
-    @Column(name = "cvv")
-    private final String cvv;
-    @Column(name = "holder")
-    private final String holder;
-    @Column(name = "cardId")
-    private final String cardId;
 
+import jakarta.persistence.*;
+@Entity
+@Table(name = "PaymentDetails")
+public class PaymentDetails {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "creditCardNumber")
+    private String creditCardNumber;
+
+    @Column(name = "month")
+    private String month;
+
+    @Column(name = "year")
+    private String year;
+
+    @Column(name = "cvv")
+    private String cvv;
+
+    @Column(name = "holder")
+    private String holder;
+
+    @Column(name = "cardId")
+    private String cardId;
 
 
     public PaymentDetails(String cardNumber, String month, String year, String cvv, String holder, String cardId) {
@@ -26,6 +37,9 @@ public class PaymentDetails {
         this.cardId = cardId;
     }
 
+    public PaymentDetails() {
+        // JPA requires a default constructor
+    }
     public String getCreditCardNumber() {
         return creditCardNumber;
     }

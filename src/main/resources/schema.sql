@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS member;
+CREATE TABLE member (id INT IDENTITY PRIMARY KEY, description VARCHAR(255), details VARCHAR(4096), done BIT);

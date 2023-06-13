@@ -13,7 +13,7 @@ public class PurchaseDTO {
     private List<PurchaseProductDTO> productDTOList;
 
     public PurchaseDTO(Purchase p) {
-        productDTOList = p.getProductList().stream().map(PurchaseProductDTO::new).collect(Collectors.toList());
+        productDTOList = p.getProductList().getAllPurchaseProducts().stream().map(PurchaseProductDTO::new).collect(Collectors.toList());
     }
 
     public List<PurchaseProductDTO> getProductDTOList() {

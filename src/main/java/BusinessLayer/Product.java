@@ -1,7 +1,9 @@
 package BusinessLayer;
 
+import jakarta.persistence.*;
+
 import static org.atmosphere.annotation.AnnotationUtil.logger;
-import javax.persistence.*;
+//import javax.persistence.*;
 
 @Entity
 @Table(name = "products")
@@ -14,13 +16,13 @@ public class Product {
     @Column(name = "product_id")
     private int productId;
 
-    @Column(name = "product_name")
+    @Column(name = "product_name", columnDefinition = "text")
     private String productName;
 
     @Column(name = "price")
     private double price;
 
-    @Column(name = "category")
+    @Column(name = "category", columnDefinition = "text")
     private String category;
 
     @Column(name = "rating")
@@ -29,7 +31,7 @@ public class Product {
     @Column(name = "amount")
     private int amount;
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "text")
     private String description;
 
     @OneToOne
