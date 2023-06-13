@@ -26,6 +26,7 @@ public class PurchaseTests extends ServiceTests {
         storeID2 = openStore(sessionID1, "newStore3");
         productID2 = addProduct(sessionID1, storeID2,"test2",3.9,"milk",9,"1");
         addPaymentMethod(sessionID1,"124","12","2026","540");
+        addSupplyDetails(sessionID1,"abc","abc","abc","abc","abc");
         addToCart(sessionID1, storeID2, productID2, 5);
     }
 
@@ -41,10 +42,10 @@ public class PurchaseTests extends ServiceTests {
         boolean product1Exist = false;
         PurchaseDTO purchaseDTO= buyCart(sessionID1);
         List<PurchaseProductDTO> bagList =  purchaseDTO.getProductDTOList();
-        for(PurchaseProductDTO productDTO:bagList){
-            if(productDTO.getProductName() == "test2")
+        for(PurchaseProductDTO productDTO:bagList) {
+            if (productDTO.getProductName().equals("test2"))
                 product1Exist = true;
-            }
+        }
         assertTrue(product1Exist);
     }
     @Test
@@ -58,13 +59,6 @@ public class PurchaseTests extends ServiceTests {
         login("alon1", "alon0601");
         assertNull(buyCart(sessionID1));
     }
-    @Test
-    public void testBuyingPolicyFail(){
-        addMinQuantityPolicy(sessionID1,storeID2,productID2,3,false);
-        addToCart(sessionID1, storeID2, productID2, 2);
-        assertNull(buyCart(sessionID1));
-    }
-
     @Test
     public void testAndPoliciesPurchaseSuccess() {
         int storeID = openStore(sessionID1, "newStore");
@@ -95,7 +89,8 @@ public class PurchaseTests extends ServiceTests {
         addSupplyDetails(sessionId2,"alon","ASd","asd","sad","asd");
         addToCart(sessionID1,storeID,productID1,5);
         PurchaseDTO purchaseDTO = buyCart(sessionId2);
-        assertTrue(purchaseDTO.getTotalPrice() == 3.9*0.9);
+        double ans =  3.9*0.9;
+        assertTrue(purchaseDTO.getTotalPrice() ==ans);
     }
 
     @Test
@@ -112,7 +107,8 @@ public class PurchaseTests extends ServiceTests {
         addSupplyDetails(sessionId2,"alon","ASd","asd","sad","asd");
         addToCart(sessionID1,storeID,productID1,5);
         PurchaseDTO purchaseDTO = buyCart(sessionId2);
-        assertTrue(purchaseDTO.getTotalPrice() == 3.9*0.9);
+        double ans =  3.9*0.9;
+        assertTrue(purchaseDTO.getTotalPrice() == ans);
     }
     @Test
     public void testAddMinBagTotalDiscountPolicyPurchaseSuccess() {
@@ -128,7 +124,8 @@ public class PurchaseTests extends ServiceTests {
         addToCart(sessionID1,storeID,productID1,7);
         addToCart(sessionID1,storeID,productID2,3);
         PurchaseDTO purchaseDTO = buyCart(sessionId2);
-        assertTrue(purchaseDTO.getTotalPrice() == 3.9*0.9 + 3.9);
+        double ans =  3.9*0.9 + 3.9;
+        assertTrue(purchaseDTO.getTotalPrice() == ans);
     }
 
     @Test
@@ -145,6 +142,13 @@ public class PurchaseTests extends ServiceTests {
         PurchaseDTO purchaseDTO = buyCart(sessionId2);
         assertFalse(purchaseDTO.getTotalPrice() == 3.9*0.1);
     }
+    @Test
+    public void testBuyingPolicyFail(){
+        addMinQuantityPolicy(sessionID1,storeID2,productID2,3,false);
+        addToCart(sessionID1, storeID2, productID2, 2);
+        assertNull(buyCart(sessionID1));
+    }
+
     @Test
     public void testNothingInCartFail(){
         deleteItemInCart(sessionID1,storeID2,productID2);

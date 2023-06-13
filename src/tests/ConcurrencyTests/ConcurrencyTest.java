@@ -36,7 +36,6 @@ public class ConcurrencyTest extends TestCase {
         market.addPaymentMethod(id,"123","06","2026","540", "Micheal", "260589064");
         int storeid = market.openStore(id,"newStore");
         int productID =setUpStoreWithAmount(id,storeid,100);
-        market.addSupplyDetails(id,"mosdhe","ads","ads","ads","ads");
         buyFromStoreAmount(storeid,productID,5);
         try {
             assertEquals(100-(THREADS*5),market.getStore(id, storeid).getProduct(productID).getAmount());
@@ -52,7 +51,6 @@ public class ConcurrencyTest extends TestCase {
         market.addPaymentMethod(id,"123","06","2026","540", "Micheal", "260589064");
         int storeId = market.openStore(id,"newStore");
         int productId = setUpStoreWithAmount(id, storeId,10);
-        market.addSupplyDetails(id,"mosdhe","ads","ads","ads","ads");
         buyFromStoreAmount(storeId,productId,1);
         try {
             assertEquals(1,market.getStore(id, storeId).getProduct(productId).getProductId());
@@ -66,7 +64,6 @@ public class ConcurrencyTest extends TestCase {
         market.signUp("master","1234");
         String id = market.login("master","1234",null);
         market.addPaymentMethod(id,"123","06","2026","540", "Micheal", "260589064");
-        market.addSupplyDetails(id,"mosdhe","ads","ads","ads","ads");
         int storeId = market.openStore(id,"newStore");
         int productID = setUpStoreWithAmount(id,storeId,7);
         buyFromStoreAmount(storeId,productID,10);
@@ -94,7 +91,6 @@ public class ConcurrencyTest extends TestCase {
                     String name = String.format("bob%d", nameId.getAndIncrement());
                     market.signUp(name, "123");
                     newId = market.login(name, "123",null);
-                    market.addSupplyDetails(newId,"mosdhe","ads","ads","ads","ads");
                     market.addPaymentMethod(newId, "123", "13", "12", "232", "Micheal", "260589064");
                     market.addProductToCart(newId, storeId, productId, amount);
                     confirmPurchase(newId);

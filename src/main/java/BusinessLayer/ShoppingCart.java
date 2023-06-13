@@ -108,4 +108,13 @@ public class ShoppingCart {
 
     public void revertPurchase(Purchase purchase) {
     }
+
+    public double getProductDiscountPercentageInCart(Store s, int productId) throws Exception {
+        ShoppingBag shoppingBag = shoppingBags.getAllShoppingBags().stream().filter(sb -> sb.getStore().equals(s)).findFirst().orElse(null);
+        if (shoppingBag == null) {
+            logger.error(String.format("this store %s is not existing in this cart", s.getStoreName()));
+            throw new Exception("store doesn't exist in cart");
+        }
+        return shoppingBag.getProductDiscountPercentageInCart(productId);
+    }
 }

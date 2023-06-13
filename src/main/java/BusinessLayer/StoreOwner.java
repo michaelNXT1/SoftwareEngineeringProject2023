@@ -4,7 +4,6 @@ import BusinessLayer.Logger.SystemLogger;
 import ServiceLayer.DTOs.PositionDTO;
 import jakarta.persistence.*;
 
-//import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
@@ -189,16 +188,19 @@ public class StoreOwner implements Position {
     @Override
     public Integer addMinQuantityDiscountPolicy(int discountId, int productId, int minQuantity, boolean allowNone) throws Exception {
         return store.addMinQuantityDiscountPolicy(discountId, productId, minQuantity, allowNone);
+
     }
 
     @Override
     public Integer addMaxQuantityDiscountPolicy(int discountId, int productId, int maxQuantity) throws Exception {
         return store.addMaxQuantityDiscountPolicy(discountId, productId, maxQuantity);
+
     }
 
     @Override
     public Integer addMinBagTotalDiscountPolicy(int discountId, double minTotal) throws Exception {
         return store.addMinBagTotalDiscountPolicy(discountId, minTotal);
+
     }
 
 

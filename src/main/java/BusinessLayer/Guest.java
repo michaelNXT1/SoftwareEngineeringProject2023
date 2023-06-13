@@ -10,8 +10,8 @@ import Repositories.IPurchaseRepository;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-import static org.atmosphere.annotation.AnnotationUtil.logger;
 
+import static org.atmosphere.annotation.AnnotationUtil.logger;
 
 public class Guest {
 

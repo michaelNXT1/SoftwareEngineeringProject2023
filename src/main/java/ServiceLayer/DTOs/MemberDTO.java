@@ -1,6 +1,6 @@
 package ServiceLayer.DTOs;
 
-import BusinessLayer.Member;
+import BusinessLayer.*;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 public class MemberDTO {
     private final String username;
     private final String email;
-    private List<PositionDTO> positions = new LinkedList<>();
+    private final List<PositionDTO> positions;
     private final ShoppingCartDTO shoppingCart;
     private final List<ProductDTO> searchResults;
     private final List<PurchaseDTO> purchaseHistory;
