@@ -74,6 +74,8 @@ public class MainLayout extends AppLayout {
 
         marketController.signUp("Michael", "1234");
         sessionId = marketController.login("Michael", "1234").value;
+        marketController.addPaymentMethod(sessionId, "a", "a", "a", "a");
+        marketController.addSupplyDetails(sessionId,"a","a","a","a","a");
         marketController.openStore(sessionId, "Shufersal");
         marketController.openStore(sessionId, "Ebay");
         Map<String, Integer> productMap = new HashMap<>();
@@ -102,6 +104,9 @@ public class MainLayout extends AppLayout {
         marketController.setPositionOfMemberToStoreOwner(sessionId, 0, "Alon");
         marketController.setPositionOfMemberToStoreManager(sessionId, 0, "Shoham");
         marketController.addStoreManagerPermissions(sessionId, "Shoham", 0, 4);
+
+        marketController.addProductToCart(sessionId, 0, 1, 4);
+        marketController.addProductToCart(sessionId, 0, 2, 4);
 
         marketController.logout(sessionId);
 
@@ -211,7 +216,10 @@ public class MainLayout extends AppLayout {
         actionsMap.put("System Manager Registration", () -> UI.getCurrent().navigate(SignUpSystemManager.class));
 
         select.setItems(actionsMap.keySet().stream().sorted().collect(Collectors.toList()));
-        select.addValueChangeListener(event -> actionsMap.get(event.getValue()).run());
+        select.addValueChangeListener(event -> {
+            actionsMap.get(event.getValue()).run();
+            select.clear();
+        });
         select.setPlaceholder("Actions");
         return select;
     }

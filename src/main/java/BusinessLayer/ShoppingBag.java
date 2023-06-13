@@ -2,10 +2,7 @@ package BusinessLayer;
 
 import Utils.Pair;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.atmosphere.annotation.AnnotationUtil.logger;
 
@@ -45,7 +42,6 @@ public class ShoppingBag {
             PurchaseProduct pp = store.subtractForPurchase(productId, productList.get(productId));
             double discountPercentage = store.getProductDiscountPercentage(productId, productList);
             pp.setPrice(pp.getPrice() * (1.0 - discountPercentage));
-            this.productList.remove(productId);
             return new Pair<>(pp, true);
         } catch (Exception e) {
             return new Pair<>(null, false);
@@ -69,6 +65,7 @@ public class ShoppingBag {
             }
         }
         store.addPurchase(bagPurchase);
+        productList.clear();
         return new Pair<>(retList, true);
     }
 

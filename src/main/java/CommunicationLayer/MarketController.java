@@ -574,6 +574,11 @@ public class MarketController implements IMarketController {
         return marketManager.addSupplyDetails(sessionId, name, address, city, country, zip);
     }
 
+    @Override
+    public ResponseT<List<PurchaseDTO>> getUserPurchaseHistory(String sessionId) {
+        return marketManager.getUserPurchaseHistory(sessionId);
+    }
+
     @GetMapping("/editProductInCart")
     @ResponseBody
     public Response editProductInCart(

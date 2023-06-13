@@ -144,6 +144,8 @@ public interface IMarketManager {
 
     Response addSupplyDetails(String sessionId, String name, String address, String city, String country, String zip);
 
+    ResponseT<List<PurchaseDTO>> getUserPurchaseHistory(String sessionId);
+
 //        Response logoutSystemManager(String sessionId);
 
 //        ResponseT<String> loginSystemManager(String username, String password);
