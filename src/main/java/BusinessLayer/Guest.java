@@ -9,10 +9,10 @@ import static org.atmosphere.annotation.AnnotationUtil.logger;
 
 public class Guest {
 
-    private ShoppingCart shoppingCart;
+    private final ShoppingCart shoppingCart;
     private String searchKeyword;
     private List<Product> searchResults;
-    private List<Purchase> purchaseHistory;
+    private final List<Purchase> purchaseHistory;
     private PaymentDetails paymentDetails;
     private SupplyDetails supplyDetails;
 
@@ -70,7 +70,7 @@ public class Guest {
     }
 
     public Store openStore(String storeName, int storeId) throws Exception {
-        logger.error(String.format("Cannot perform action when not a member"));
+        logger.error("Cannot perform action when not a member");
         throw new Exception("Cannot perform action when not a member");
     }
 
@@ -79,7 +79,7 @@ public class Guest {
     }
 
     public String getUsername() throws Exception {
-        logger.error(String.format("Cannot perform action when not a member"));
+        logger.error("Cannot perform action when not a member");
         throw new Exception("Cannot perform action when not a member");
     }
 
@@ -99,7 +99,7 @@ public class Guest {
         purchaseHistory.remove(purchase);
     }
 
-    public Collection<Purchase> getPpurchaseHistory() {
+    public List<Purchase> getPurchaseHistory() {
         return purchaseHistory;
     }
 

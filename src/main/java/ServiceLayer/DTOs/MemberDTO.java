@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 public class MemberDTO {
     private final String username;
     private final String email;
-    private List<PositionDTO> positions = new LinkedList<>();
+    private final List<PositionDTO> positions;
     private final ShoppingCartDTO shoppingCart;
     private final List<ProductDTO> searchResults;
     private final List<PurchaseDTO> purchaseHistory;
@@ -22,7 +22,7 @@ public class MemberDTO {
             this.searchResults = member.getSearchResults().stream()
                     .map(ProductDTO::new)
                     .collect(Collectors.toList());
-            this.purchaseHistory = member.getPpurchaseHistory().stream()
+            this.purchaseHistory = member.getPurchaseHistory().stream()
                     .map(PurchaseDTO::new)
                     .collect(Collectors.toList());
     }
