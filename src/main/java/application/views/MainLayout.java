@@ -216,7 +216,10 @@ public class MainLayout extends AppLayout {
         actionsMap.put("System Manager Registration", () -> UI.getCurrent().navigate(SignUpSystemManager.class));
 
         select.setItems(actionsMap.keySet().stream().sorted().collect(Collectors.toList()));
-        select.addValueChangeListener(event -> actionsMap.get(event.getValue()).run());
+        select.addValueChangeListener(event -> {
+            actionsMap.get(event.getValue()).run();
+            select.clear();
+        });
         select.setPlaceholder("Actions");
         return select;
     }
