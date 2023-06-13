@@ -52,8 +52,7 @@ public class Store {
     private AtomicInteger productIdCounter;
     @Transient //Marks a property or field as transient, indicating that it should not be persisted in the database.
     private SystemLogger logger;
-    @Transient
-    private IPurchaseTypeRepository purchaseTypeRepository = new PurchaseTypeDAO();
+
 
     public Store(int storeId, String storeName, Member storeFounder){
         this.storeId = storeId;
@@ -148,8 +147,6 @@ public class Store {
             p = new Product(storeId, this.productIdCounter.getAndIncrement(), productName, price, category, description);
             if(!categories.getAllCategory().stream().anyMatch(c-> c.getCategoryName().equals(category)))
                 categories.addString(new Category(category));
-            if(!purchaseTypeRepository.getAllPurchaseTypes().stream().anyMatch(pt->pt.type == p.getPurchaseType().type))
-                purchaseTypeRepository.savePurchaseType(p.getPurchaseType());
             products.saveProduct(p);
         }
         return p;
@@ -401,10 +398,6 @@ public class Store {
             }
         }
         return manager;
-    }
-
-    public void addEmployee(Member member) {
-        employees.addMember(member);
     }
 
     public void removeEmployee(Member member) {

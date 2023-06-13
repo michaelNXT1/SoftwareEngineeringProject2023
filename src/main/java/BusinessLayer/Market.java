@@ -50,7 +50,10 @@ public class Market {
     private boolean marketOpen;
     private IStringSetRepository stringSetRepository = new SetCategoryDAO();
     private IPositionRepository positionRepository = new PositionDAO();
-    private IBaseDiscountPolicyMapRepository  baseDiscountPolicyMapDAO= new BaseDiscountPolicyMapDAO();
+    private IBaseDiscountPolicyRepository  baseDiscountPolicyMapDAO= new BaseDiscountPolicyDAO();
+    private IPurchasePolicyRepository purchasePolicyRepository = new PurchasePolicyDAO();
+    private IDiscountRepo discountRepo = new DiscountDAO();
+    private IProductRepository productRepository = new ProductDAO();
 
     private String path;
     public Market(String path, Boolean isTestMode)  {
@@ -78,9 +81,13 @@ public class Market {
     }
     @Transactional
     public void clearAllData(){
+        baseDiscountPolicyMapDAO.clear();
+        purchasePolicyRepository.clear();
+        productRepository.clear();
         stringSetRepository.clear();
         positionRepository.clear();
         users.clear();
+        discountRepo.clear();
         stores.clear();
     }
     public StoreDTO getStoreByName(String sessionId, String storeName) throws Exception {

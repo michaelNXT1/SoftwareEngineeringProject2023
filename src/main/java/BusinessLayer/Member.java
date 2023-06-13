@@ -91,7 +91,7 @@ public class Member extends Guest {
     public Position getStorePosition(Store store) {
         synchronized (positions) {
             for (Position position : positions.getAllPositions()) {
-                if (position.getStore().getStoreName().equals(store.getStoreName())) {
+                if (position.getStore().getStoreName().equals(store.getStoreName()) && position.getPositionMember().username.equals(this.username)) {
                     return position;
                 }
             }
@@ -106,7 +106,6 @@ public class Member extends Guest {
             throw new Exception("the member is already have a different position in this store");
         } else {
             positions.addPosition(new StoreManager(store, assigner,this));
-            store.addEmployee(this);
         }
     }
 
@@ -134,7 +133,6 @@ public class Member extends Guest {
         } else {
             logger.info(String.format("%s promote to be the owner of %s", getUsername(), store.getStoreName()));
             positions.addPosition(new StoreOwner(store, assigner,this));
-            store.addEmployee(this);
         }
     }
 

@@ -24,7 +24,6 @@
         <mapping class="BusinessLayer.Member"/>
         <mapping class="BusinessLayer.Store"/>
         <mapping class="BusinessLayer.Purchase"/>
-        <mapping class="BusinessLayer.PurchaseType"/>
         <mapping class="BusinessLayer.Product"/>
         <mapping class="BusinessLayer.ShoppingBag"/>
         <mapping class="BusinessLayer.PurchaseProduct"/>

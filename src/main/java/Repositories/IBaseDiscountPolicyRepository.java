@@ -10,4 +10,5 @@ public interface IBaseDiscountPolicyRepository {
     List<BaseDiscountPolicy> getAllDiscountPolicies();
 
     BaseDiscountPolicy getDiscountPolicyById(int policyId);
+    void clear();
 }

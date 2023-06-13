@@ -45,7 +45,6 @@ public class SystemManagerPermissions extends VerticalLayout {
             String password = passwordField.getValue();
             Response r = marketController.login(username,password);
             MainLayout.setSessionId(((ResponseT<String>) r).value);
-            if
             UI.getCurrent().navigate("SystemManagerOperations");// if system manger
             if (r.getError_occurred())
                 Notification.show(r.error_message, 3000, Notification.Position.MIDDLE);

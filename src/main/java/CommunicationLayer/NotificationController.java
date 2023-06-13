@@ -12,7 +12,7 @@ import Notification.Notification;
 public class NotificationController implements NotificationBroker {
 
     @Override
-    public void sendNotificationToUser(Notification notification, String ... memberName) {
+    public void sendRealTimeNotification(Notification notification, String... memberName) {
         UI ui = UI.getCurrent();
         ui.access(() -> {
             com.vaadin.flow.component.notification.Notification.show(notification.getMessage());

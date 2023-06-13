@@ -26,7 +26,7 @@ public class ShoppingBag {
     @JoinColumn(name = "store_id")
     private Store store;
 
-    @ManyToOne
+    @ManyToMany
     @JoinColumn(name = "product_id")
     private List<Product> productList = new ArrayList<>();
 

@@ -12,5 +12,6 @@ public interface IProductRepository {
     public Product getProductById(int productId);
     public List<Product> getAllProducts();
     void addAllProducts(List<Product> productList);
+    void clear();
 
 }

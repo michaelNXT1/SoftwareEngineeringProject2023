@@ -9,6 +9,6 @@ public interface NotificationBroker {
      */
     void sendRealTimeNotification(Notification notification, String ... memberName);
 
-    void sendDataUpdateNotice(String... adminUserName);
+//    void sendDataUpdateNotice(String... adminUserName);
 
 }
