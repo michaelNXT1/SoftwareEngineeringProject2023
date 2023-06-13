@@ -19,17 +19,17 @@ abstract public class Discount {
     }
     @Id
     @Column(name = "discount_id")
-    protected final int discountId;
+    protected int discountId;
 
     @Column(name = "discount_percentage")
-    protected final double discountPercentage;
+    protected double discountPercentage;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "composition_type")
-    protected final CompositionType compositionType;
+    protected CompositionType compositionType;
 
     @Transient
-    protected final SystemLogger logger;
+    protected SystemLogger logger;
 
     public Discount(int discountId, double discountPercentage, int compositionType) throws Exception {
         logger = new SystemLogger();

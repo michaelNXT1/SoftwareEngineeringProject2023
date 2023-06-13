@@ -9,7 +9,6 @@ import jakarta.persistence.*;
 import java.util.Map;
 
 @Entity
-@Table(name = "ProductTimeRestrictionPurchasePolicy")
 @DiscriminatorValue("CHILD")
 public class PurchasePolicyOperation extends BasePurchasePolicy {
 

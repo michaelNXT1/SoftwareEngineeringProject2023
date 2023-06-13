@@ -16,8 +16,8 @@ public class MinBagTotalDiscountPolicy extends BaseDiscountPolicy {
     @Column(name = "min_total")
     private final double minTotal;
 
-    public MinBagTotalDiscountPolicy(int policyId, double minTotal) throws Exception {
-        super(policyId);
+    public MinBagTotalDiscountPolicy(int policyId, double minTotal,int store_id,int discount_id) throws Exception {
+        super(policyId,store_id,discount_id);
         if (minTotal <= 0) {
             logger.error("minimum total must be larger than 0 but is " + minTotal);
             throw new Exception("minimum total must be larger than 0");

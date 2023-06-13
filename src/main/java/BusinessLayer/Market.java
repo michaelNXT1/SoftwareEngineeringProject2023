@@ -49,6 +49,7 @@ public class Market {
     private boolean marketOpen;
     private IStringSetRepository stringSetRepository = new SetCategoryDAO();
     private IPositionRepository positionRepository = new PositionDAO();
+    private IBaseDiscountPolicyMapRepository  baseDiscountPolicyMapDAO= new BaseDiscountPolicyMapDAO();
 
     private String path;
     public Market(String path) throws Exception {

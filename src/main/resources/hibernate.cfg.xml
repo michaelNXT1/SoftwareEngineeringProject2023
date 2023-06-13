@@ -37,7 +37,21 @@
         <mapping class="BusinessLayer.StoreManager"/>
         <mapping class="BusinessLayer.Category"/>
         <mapping class="Notification.Notification"/>
+        <mapping class="BusinessLayer.Discounts.Discount"/>
+        <mapping class="BusinessLayer.Discounts.ProductDiscount"/>
+        <mapping class="BusinessLayer.Discounts.CategoryDiscount"/>
+        <mapping class="BusinessLayer.Discounts.StoreDiscount"/>
+        <mapping class="BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy"/>
+        <mapping class="BusinessLayer.Policies.DiscountPolicies.PolicyTypes.MaxQuantityDiscountPolicy"/>
+        <mapping class="BusinessLayer.Policies.DiscountPolicies.PolicyTypes.MinBagTotalDiscountPolicy"/>
+        <mapping class="BusinessLayer.Policies.DiscountPolicies.PolicyTypes.MinQuantityDiscountPolicy"/>
+        <mapping class="BusinessLayer.Policies.DiscountPolicies.DiscountPolicyOperation"/>
         <mapping class="BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy"/>
         <mapping class="BusinessLayer.Policies.PurchasePolicies.PolicyTypes.CategoryTimeRestrictionPurchasePolicy"/>
+        <mapping class="BusinessLayer.Policies.PurchasePolicies.PolicyTypes.MaxQuantityPurchasePolicy"/>
+        <mapping class="BusinessLayer.Policies.PurchasePolicies.PolicyTypes.MinQuantityPurchasePolicy"/>
+        <mapping class="BusinessLayer.Policies.PurchasePolicies.PolicyTypes.ProductTimeRestrictionPurchasePolicy"/>
+        <mapping class="BusinessLayer.Policies.PurchasePolicies.PurchasePolicyOperation"/>
+
     </session-factory>
 </hibernate-configuration>

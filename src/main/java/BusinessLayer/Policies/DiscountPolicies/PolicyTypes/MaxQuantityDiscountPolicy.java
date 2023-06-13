@@ -20,8 +20,8 @@ public class MaxQuantityDiscountPolicy extends BaseDiscountPolicy {
     @Column(name = "min_quantity")
     private int minQuantity;
 
-    public MaxQuantityDiscountPolicy(int policyId, Product product, int maxQuantity) throws Exception {
-        super(policyId);
+    public MaxQuantityDiscountPolicy(int policyId, Product product, int maxQuantity,int store_id,int discount_id) throws Exception {
+        super(policyId,store_id,discount_id);
         if (maxQuantity <= 0) {
             logger.error("Max quantity must be larger than 0 but is " + maxQuantity);
             throw new Exception("Max quantity must be larger than 0");

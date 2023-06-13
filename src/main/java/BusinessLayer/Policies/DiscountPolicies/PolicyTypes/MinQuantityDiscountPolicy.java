@@ -23,8 +23,8 @@ public class MinQuantityDiscountPolicy extends BaseDiscountPolicy {
     @Column(name = "allow_none")
     private final boolean allowNone;
 
-    public MinQuantityDiscountPolicy(int policyId, Product product, int minQuantity, boolean allowNone) throws Exception {
-        super(policyId);
+    public MinQuantityDiscountPolicy(int policyId, Product product, int minQuantity, boolean allowNone,int store_id,int discount_id) throws Exception {
+        super(policyId,store_id,discount_id);
         if (minQuantity <= 0) {
             logger.error("Min quantity must be larger than 0 but is " + minQuantity);
             throw new Exception("Min quantity must be larger than 0");
