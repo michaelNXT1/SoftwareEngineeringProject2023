@@ -46,9 +46,11 @@ public class Market {
     private final SecurityAdapter securityUtils = new ProxyScurity(null);
     private final SystemLogger logger;
     private boolean marketOpen;
+    private boolean isTestMode;
+
 
     private String path;
-    public Market(String path) throws Exception {
+    public Market(String path, Boolean isTestMode) throws Exception {
         stores = new MapIntegerStoreDAO();
         systemManagers = new MapStringSystemManagerDAO();
         users = new MapStringMemberDAO(new ConcurrentHashMap<>());
@@ -58,6 +60,7 @@ public class Market {
             throw new RuntimeException(e);
         }
         this.path = path;
+        this.isTestMode=isTestMode;
         marketOpen = true;
         this.logger = new SystemLogger();
         supplySystem = new SupplySystemProxy();
@@ -69,6 +72,8 @@ public class Market {
         systemManagers.addSystemManager(sm.getUsername(), sm);
         if(path != null)
             parseFile(path);
+        testModeSupplySystem(isTestMode);
+        testModePaymentSystem(isTestMode);
     }
 
     public StoreDTO getStoreByName(String sessionId, String storeName) throws Exception {
@@ -1116,5 +1121,17 @@ public class Market {
             throw new Exception("the name of the store manager has not have that position in this store");
         }
         return storeManagerPosition.getPermissions();
+    }
+    private void  testModeSupplySystem(boolean flag) {
+        if (flag)
+        {
+            supplySystem.setSupplySystem(null);
+        }
+    }
+    private void  testModePaymentSystem(boolean flag) {
+        if (flag)
+        {
+            paymentSystem.setPaymentSystem(null);
+        }
     }
 }

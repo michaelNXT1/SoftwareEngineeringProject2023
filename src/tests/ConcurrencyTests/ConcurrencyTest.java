@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ConcurrencyTest extends TestCase {
-    Market market = new Market(null);
+    Market market = new Market(null,true);
     private final static int THREADS=10;
 
     public ConcurrencyTest() throws Exception {
