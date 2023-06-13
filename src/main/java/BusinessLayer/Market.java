@@ -9,20 +9,20 @@ import BusinessLayer.Logger.SystemLogger;
 import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
 import BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy;
 import CommunicationLayer.NotificationBroker;
+import Notification.Notification;
 import Security.ProxyScurity;
 import Security.SecurityAdapter;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
 import ServiceLayer.DTOs.*;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 
-import Notification.Notification;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 
 public class Market {
@@ -36,7 +36,6 @@ public class Market {
     private Map<String, Member> users;
     private MessageDigest passwordEncoder;
     private SecurityAdapter securityUtils = new ProxyScurity(null);
-
 
 
     private SystemLogger logger;
@@ -189,7 +188,7 @@ public class Market {
             logger.error(String.format("%s did not passed authenticate check and logged in to the system", username));
             return null;
         }
-}
+    }
 
 
     //use case 3.1
@@ -389,10 +388,10 @@ public class Market {
             purchase = g.purchaseShoppingCart();
             for (PurchaseProduct p : purchase.getProductList()) {
                 logger.info(String.format("purchase completed you just bought %d from %s", p.getQuantity(), p.getProductName()));
-                Store s = getStore(sessionId,p.getStoreId());
+                Store s = getStore(sessionId, p.getStoreId());
                 List<Member> managers = s.getManagers();
-                for(Member manager:managers){
-                    manager.sendNotification(new Notification(String.format("purchase completed from %s from product %s bought %d quantity",s.getStoreName(),p.getProductName(),p.getQuantity())));
+                for (Member manager : managers) {
+                    manager.sendNotification(new Notification(String.format("purchase completed from %s from product %s bought %d quantity", s.getStoreName(), p.getProductName(), p.getQuantity())));
                 }
             }
         }
@@ -447,11 +446,11 @@ public class Market {
             p = checkPositionLegal(sessionId, storeId);
         }
         Store s = stores.get(storeId);
-        Product product = p.addProduct(s,productName, price, category, quantity, description);
+        Product product = p.addProduct(s, productName, price, category, quantity, description);
         List<Member> managers = s.getEmployees();
-        for(Member manager: managers){
+        for (Member manager : managers) {
             logger.info("sending notifications");
-            manager.sendNotification(new Notification(String.format("%s added to %s with %d quantity",productName,s.getStoreName(),quantity)));
+            manager.sendNotification(new Notification(String.format("%s added to %s with %d quantity", productName, s.getStoreName(), quantity)));
         }
         return new ProductDTO(product);
     }
@@ -463,14 +462,14 @@ public class Market {
         logger.info("trying to edit product name");
         checkStoreExists(storeId);
         logger.info(String.format("edit product name %d to %s in store %s", productId, newName, getStore(sessionId, storeId).getStoreName()));
-        Store s = getStore(sessionId,storeId);
+        Store s = getStore(sessionId, storeId);
         Product product = s.getProduct(productId);
         String oldName = product.getProductName();
         Position p = checkPositionLegal(sessionId, storeId);
         p.editProductName(productId, newName);
         List<Member> managers = s.getManagers();
-        for(Member manager: managers){
-            manager.sendNotification(new Notification(String.format("%s changed %s name to %s in %s store",g.getUsername(),oldName,newName,s.getStoreName())));
+        for (Member manager : managers) {
+            manager.sendNotification(new Notification(String.format("%s changed %s name to %s in %s store", g.getUsername(), oldName, newName, s.getStoreName())));
         }
     }
 
@@ -481,14 +480,14 @@ public class Market {
         logger.info("trying to edit product price");
         checkStoreExists(storeId);
         logger.info(String.format("edit product price %d to %.2f in store %s", productId, newPrice, getStore(sessionId, storeId).getStoreName()));
-        Store s = getStore(sessionId,storeId);
+        Store s = getStore(sessionId, storeId);
         Product product = s.getProduct(productId);
         double oldPrice = product.getPrice();
         Position p = checkPositionLegal(sessionId, storeId);
         p.editProductPrice(productId, newPrice);
         List<Member> managers = s.getManagers();
-        for(Member manager: managers){
-            manager.sendNotification(new Notification(String.format("%s changed %s price from %0.2f to %0.2f in %s store",g.getUsername(),product.getProductName(),oldPrice,newPrice,s.getStoreName())));
+        for (Member manager : managers) {
+            manager.sendNotification(new Notification(String.format("%s changed %s price from %0.2f to %0.2f in %s store", g.getUsername(), product.getProductName(), oldPrice, newPrice, s.getStoreName())));
         }
     }
 
@@ -499,14 +498,14 @@ public class Market {
         logger.info("trying to edit product category");
         checkStoreExists(storeId);
         logger.info(String.format("edit product category %d to %s in store %s", productId, newCategory, getStore(sessionId, storeId).getStoreName()));
-        Store s = getStore(sessionId,storeId);
+        Store s = getStore(sessionId, storeId);
         Product product = s.getProduct(productId);
         String oldName = product.getCategory();
         Position p = checkPositionLegal(sessionId, storeId);
         p.editProductCategory(productId, newCategory);
         List<Member> managers = s.getManagers();
-        for(Member manager: managers){
-            manager.sendNotification(new Notification(String.format("%s changed %s category from %s to %s in %s store",g.getUsername(),product.getProductName(),oldName,newCategory,s.getStoreName())));
+        for (Member manager : managers) {
+            manager.sendNotification(new Notification(String.format("%s changed %s category from %s to %s in %s store", g.getUsername(), product.getProductName(), oldName, newCategory, s.getStoreName())));
         }
     }
 
@@ -523,13 +522,13 @@ public class Market {
         logger.info("trying to remove product from store");
         checkStoreExists(storeId);
         logger.info(String.format("removing product %d from %s", productId, getStore(sessionId, storeId)));
-        Store s = getStore(sessionId,storeId);
+        Store s = getStore(sessionId, storeId);
         Product product = s.getProduct(productId);
         Position p = checkPositionLegal(sessionId, storeId);
         p.removeProductFromStore(productId);
         List<Member> managers = s.getManagers();
-        for(Member manager: managers){
-            manager.sendNotification(new Notification(String.format("%s removed %s from %s store",g.getUsername(),product.getProductName(),s.getStoreName())));
+        for (Member manager : managers) {
+            manager.sendNotification(new Notification(String.format("%s removed %s from %s store", g.getUsername(), product.getProductName(), s.getStoreName())));
         }
     }
 
@@ -539,7 +538,7 @@ public class Market {
         Guest g = sessionManager.getSession(sessionId);
         logger.info(String.format("%s trying to appoint %s to new owner of the %s", g.getUsername(), MemberToBecomeOwner, stores.get(storeID).getStoreName()));
         checkStoreExists(storeID);
-        Store s = getStore(sessionId,storeID);
+        Store s = getStore(sessionId, storeID);
         Position p = checkPositionLegal(sessionId, storeID);
         Member m = users.get(MemberToBecomeOwner);
         if (m == null) {
@@ -548,8 +547,8 @@ public class Market {
         }
         p.setPositionOfMemberToStoreOwner(stores.get(storeID), m, (Member) g);
         List<Member> employees = s.getEmployees();
-        for(Member employee: employees){
-            employee.sendNotification(new Notification(String.format("%s appoint %s to be new owner of %s",g.getUsername(),MemberToBecomeOwner,s.getStoreName())));
+        for (Member employee : employees) {
+            employee.sendNotification(new Notification(String.format("%s appoint %s to be new owner of %s", g.getUsername(), MemberToBecomeOwner, s.getStoreName())));
         }
     }
 
@@ -560,7 +559,7 @@ public class Market {
         logger.info(String.format("trying to appoint new manager to the store the member %s", MemberToBecomeManager));
         checkStoreExists(storeID);
         logger.info(String.format("promoting %s to be the manager of %s", MemberToBecomeManager, getStore(sessionId, storeID)));
-        Store s = getStore(sessionId,storeID);
+        Store s = getStore(sessionId, storeID);
         Position p = checkPositionLegal(sessionId, storeID);
         Member m = users.get(MemberToBecomeManager);
         if (m == null) {
@@ -569,8 +568,8 @@ public class Market {
         }
         p.setPositionOfMemberToStoreManager(stores.get(storeID), m, (Member) g);
         List<Member> employees = s.getEmployees();
-        for(Member employee: employees){
-            employee.sendNotification(new Notification(String.format("%s appoint %s to be new manager of %s",g.getUsername(),MemberToBecomeManager,s.getStoreName())));
+        for (Member employee : employees) {
+            employee.sendNotification(new Notification(String.format("%s appoint %s to be new manager of %s", g.getUsername(), MemberToBecomeManager, s.getStoreName())));
         }
     }
 
@@ -1071,8 +1070,8 @@ public class Market {
 
     public double getProductDiscountPercentageInCart(String sessionId, int storeId, int productId) throws Exception {
         isMarketOpen();
-        Store s=getStore(sessionId, storeId);
-        Guest m=sessionManager.getSession(sessionId);
+        Store s = getStore(sessionId, storeId);
+        Guest m = sessionManager.getSession(sessionId);
         return m.getShoppingCart().getProductDiscountPercentageInCart(s, productId);
     }
 
