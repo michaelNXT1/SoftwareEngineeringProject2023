@@ -67,8 +67,14 @@ public interface IMarketController {
     Response
     changeProductQuantity(String sessionId, int storeId, int productId, int quantity);
 
+
+    
+    Response removeMember(String sessionId, String memberName);
+
+
     Response
     removeProductFromCart(String sessionId, int storeId, int productId);
+
 
     ResponseT<PurchaseDTO>
     purchaseShoppingCart(String sessionId);

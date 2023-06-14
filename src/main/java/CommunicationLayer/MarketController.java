@@ -215,6 +215,14 @@ public class MarketController implements IMarketController {
                                         @RequestParam(value = "storeName", defaultValue = "") String storeName) {
         return marketManager.openStore(sessionId, storeName);
     }
+    @GetMapping("/openStore")
+    @ResponseBody
+    @Override
+    public Response removeMember(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                             @RequestParam(value = "memberName", defaultValue = "") String memberName) {
+        return marketManager.openStore(sessionId, memberName);
+    }
+
 
     @GetMapping("/getPurchaseHistory")
     @ResponseBody
