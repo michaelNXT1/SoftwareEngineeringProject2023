@@ -15,7 +15,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PreserveOnRefresh;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
-@Route(value = "SystemManager",layout = MainLayout.class)
+@Route(value = "SystemManagerPermissions",layout = MainLayout.class)
 @PreserveOnRefresh
 public class SystemManagerPermissions extends VerticalLayout {
         private TextField usernameField;
@@ -43,13 +43,16 @@ public class SystemManagerPermissions extends VerticalLayout {
         private void login() {
             String username = usernameField.getValue();
             String password = passwordField.getValue();
-            Response r = marketController.login(username,password);
+            Response r = marketController.loginSystemManager(username,password);
             MainLayout.setSessionId(((ResponseT<String>) r).value);
-            UI.getCurrent().navigate("SystemManagerOperations");// if system manger
             if (r.getError_occurred())
                 Notification.show(r.error_message, 3000, Notification.Position.MIDDLE);
-            else
+            else {
                 Notification.show("you logged in successfully", 3000, Notification.Position.MIDDLE);
+                UI.getCurrent().navigate(SystemManagerOperations.class);
+
+
+            }
 
         }
 }

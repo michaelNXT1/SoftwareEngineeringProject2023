@@ -27,6 +27,8 @@ public interface IMarketController {
 
     ResponseT<String>
     login(String username, String password);
+    ResponseT<String>
+    loginSystemManager(String username, String password);
 
     ResponseT<String>
     logout(String sessionId);
@@ -102,6 +104,10 @@ public interface IMarketController {
 
     Response
     addStoreManagerPermissions(String sessionId, String storeManager, int storeID, int newPermission);
+
+    Response
+    removeMember(String sessionId, String memberName);
+
 
     Response
     removeStoreManagerPermissions(String sessionId, String storeManager, int storeID, int newPermission);
