@@ -4,7 +4,6 @@ import BusinessLayer.Logger.SystemLogger;
 import ServiceLayer.DTOs.PositionDTO;
 import jakarta.persistence.*;
 
-//import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
@@ -203,7 +202,7 @@ public class StoreFounder implements Position {
 
     @Override
     public void closeStore() throws IllegalAccessException {
-
+        store.setOpen(false);
     }
 
 

@@ -8,4 +8,5 @@ public interface IPurchasePolicyRepository {
     void addPurchasePolicy(BasePurchasePolicy purchasePolicy);
     void removePurchasePolicy(BasePurchasePolicy purchasePolicy);
     List<BasePurchasePolicy> getAllPurchasePolicies();
+    void clear();
 }

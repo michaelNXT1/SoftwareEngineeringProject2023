@@ -30,7 +30,6 @@
         <mapping class="BusinessLayer.ShoppingCart"/>
         <mapping class="BusinessLayer.PaymentDetails"/>
         <mapping class="BusinessLayer.SupplyDetails"/>
-        <mapping class="BusinessLayer.PurchaseType"/>
         <mapping class="BusinessLayer.SystemManager"/>
         <mapping class="BusinessLayer.StoreOwner"/>
         <mapping class="BusinessLayer.StoreFounder"/>

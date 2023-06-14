@@ -91,7 +91,7 @@ public class Member extends Guest {
     public Position getStorePosition(Store store) {
         synchronized (positions) {
             for (Position position : positions.getAllPositions()) {
-                if (position.getStore().getStoreName().equals(store.getStoreName())) {
+                if (position.getStore().getStoreName().equals(store.getStoreName()) && position.getPositionMember().username.equals(this.username)) {
                     return position;
                 }
             }
@@ -106,14 +106,13 @@ public class Member extends Guest {
             throw new Exception("the member is already have a different position in this store");
         } else {
             positions.addPosition(new StoreManager(store, assigner,this));
-            store.addEmployee(this);
         }
     }
 
     public void sendRealTimeNotification(){
         if(!(notifications == null || notifications.getAllNotifications().isEmpty())) {
             for (Notification notification : notifications.getAllNotifications()) {
-                this.notificationBroker.sendNotificationToUser(notification, this.username);
+                this.notificationBroker.sendRealTimeNotification(notification, this.username);
             }
             notifications.clear();
         }
@@ -121,7 +120,7 @@ public class Member extends Guest {
 
     public void sendNotification(Notification shopNotification) {
         if (this.notificationBroker != null) {
-            notificationBroker.sendNotificationToUser(shopNotification, this.username);
+            notificationBroker.sendRealTimeNotification(shopNotification, this.username);
         }else {
             this.notifications.addNotification(shopNotification);
         }
@@ -134,7 +133,6 @@ public class Member extends Guest {
         } else {
             logger.info(String.format("%s promote to be the owner of %s", getUsername(), store.getStoreName()));
             positions.addPosition(new StoreOwner(store, assigner,this));
-            store.addEmployee(this);
         }
     }
 

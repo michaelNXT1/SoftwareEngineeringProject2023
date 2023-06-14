@@ -4,16 +4,20 @@ import BusinessLayer.Product;
 import BusinessLayer.Purchase;
 import BusinessLayer.PurchaseProduct;
 
-import java.util.LinkedList;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class PurchaseDTO {
 
-    private List<PurchaseProductDTO> productDTOList;
+    private final Long purchaseId;
+    private final LocalDateTime purchaseDateTime;
+    private final List<PurchaseProductDTO> productDTOList;
 
     public PurchaseDTO(Purchase p) {
         productDTOList = p.getProductList().getAllPurchaseProducts().stream().map(PurchaseProductDTO::new).collect(Collectors.toList());
+        this.purchaseId=p.getId();
+        this.purchaseDateTime=p.getPurchaseDateTime();
     }
 
     public List<PurchaseProductDTO> getProductDTOList() {
@@ -24,12 +28,17 @@ public class PurchaseDTO {
         this.productDTOList.add(p);
     }
 
-    public PurchaseDTO() {
-        this.productDTOList = new LinkedList<>();
-    }
+
 
     public double getTotalPrice() {
         return productDTOList.stream().mapToDouble(pp->pp.getPrice()*pp.getQuantity()).sum();
     }
 
+    public Long getPurchaseId() {
+        return purchaseId;
+    }
+
+    public LocalDateTime getPurchaseDateTime() {
+        return purchaseDateTime;
+    }
 }
