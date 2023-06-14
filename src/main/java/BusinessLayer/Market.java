@@ -116,20 +116,21 @@ public class Market {
                 switch (action){
                     case "signUp":
                         try {
-                            signUp(args[0],"123");
+                            signUp(args[0],args[1]);
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
                         break;
                     case "login":
                         try {
-                            sessionId = login(args[0],"123",null);
+                            login(args[0],args[1],null);
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
                         break;
                     case "logout" :
                         try {
+                            sessionId = sessionManager.getSessionIdByGuestName(args[0]);
                             logout(sessionId);
                         } catch (Exception e) {
                             throw new RuntimeException(e);
@@ -137,9 +138,8 @@ public class Market {
                         break;
                     case "open-store":
                         try {
-                            sessionId = login(args[0], "123",null);
-                            storeId = openStore(sessionId,"newStore");
-                            logout(sessionId);
+                            sessionId = sessionManager.getSessionIdByGuestName(args[0]);
+                            openStore(sessionId,args[1]);
                         }
                         catch (Exception e) {
                         throw new RuntimeException(e);
@@ -147,10 +147,9 @@ public class Market {
                         break;
                     case "appoint-manager":
                         try {
-                            sessionId = login(args[0],"123",null);
+                            sessionId = sessionManager.getSessionIdByGuestName(args[0]);
                             storeId = getStoreByName(sessionId,args[1]).getStoreId();
                             setPositionOfMemberToStoreManager(sessionId,storeId,args[2]);
-                            logout(sessionId);
                         }
                         catch (Exception e) {
                             throw new RuntimeException(e);
@@ -158,10 +157,9 @@ public class Market {
                         break;
                     case "appoint-owner":
                         try {
-                            sessionId = login(args[0],"123",null);
+                            sessionId = sessionManager.getSessionIdByGuestName(args[0]);
                             storeId = getStoreByName(sessionId, args[1]).getStoreId();
                             setPositionOfMemberToStoreOwner(sessionId,storeId,args[2]);
-                            logout(sessionId);
                         }catch (Exception e) {
                             throw new RuntimeException(e);
                         }
@@ -170,15 +168,37 @@ public class Market {
                     case "add-product":
                         //add-product(<manager-name>,<store-name>,<product-name>,<amount>,<price>);
                         try {
-                            sessionId = login(args[0], "123", null);
+                            sessionId = sessionManager.getSessionIdByGuestName(args[0]);
                             storeId = getStoreByName(sessionId, args[1]).getStoreId();
-                            addProduct(sessionId, storeId, args[2], Double.parseDouble(args[3]), args[4], Integer.parseInt(args[5]), args[6]);
-                            logout(sessionId);
+                            addProduct(sessionId,storeId,args[2],Double.parseDouble(args[3]),args[4],Integer.parseInt(args[5]),args[6]);
                         }
                         catch (Exception e) {
                         throw new RuntimeException(e);
                     }
                         break;
+
+                    case "sign-up-system-manager":
+                        //add-product(<manager-name>,<store-name>,<product-name>,<amount>,<price>);
+                        try {
+                            signUpSystemManager(args[0],args[1]);
+                        }
+                        catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                        break;
+
+                    case "add-store-manager-permissions":
+                        //add-product(<manager-name>,<store-name>,<product-name>,<amount>,<price>);
+                        try {
+                            sessionId = sessionManager.getSessionIdByGuestName(args[0]);
+                            storeId = getStoreByName(sessionId, args[1]).getStoreId();
+                            addStoreManagerPermissions(sessionId,args[2],storeId,Integer.parseInt(args[3]));
+                        }
+                        catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                        break;
+
 
                     default:
                         try {
