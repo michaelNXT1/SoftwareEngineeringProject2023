@@ -101,6 +101,7 @@ public class SessionManager {
         for (Entry<String, Guest> ent : sessions.getAllGuests().entrySet()) {
             if (ent.getValue().getUsername().equals(name)) {
                 session = ent.getKey();
+                break;
             }
         }
         return session;

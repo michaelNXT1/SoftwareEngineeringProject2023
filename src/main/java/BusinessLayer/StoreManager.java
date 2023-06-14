@@ -388,5 +388,5 @@ public class StoreManager implements Position {
     @Override
     public String getPositionName() {
         return "Manager";
-    }
+}
 }

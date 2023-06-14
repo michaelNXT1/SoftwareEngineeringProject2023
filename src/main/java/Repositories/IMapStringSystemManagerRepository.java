@@ -10,4 +10,6 @@ public interface IMapStringSystemManagerRepository {
     SystemManager getSystemManager(String key);
     Map<String, SystemManager> getAllSystemManagers();
     boolean containsValue(SystemManager sm);
+
+    void clear();
 }

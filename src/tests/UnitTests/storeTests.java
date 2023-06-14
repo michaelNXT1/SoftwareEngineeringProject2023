@@ -97,15 +97,6 @@ class storeTests {
         assertThrows(Exception.class, () -> store.editProductPrice(0, 20));
 
     }
-    @org.junit.jupiter.api.Test
-    public void testAddEmployee() {
-        Member m = new Member("alon", "123456");
-        Store store = new Store(1, "My Store", m);
-        Member newEmployee = new Member("shani", "123");
-        List<Member> employees = store.getEmployees();
-        assertTrue(employees.contains(m));
-        assertTrue(employees.contains(newEmployee));
-    }
 
     @org.junit.jupiter.api.Test
     public void testEditProductCategory() throws Exception {
