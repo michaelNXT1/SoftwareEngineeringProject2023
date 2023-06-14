@@ -143,7 +143,6 @@ public class Member extends Guest {
         StoreOwner newStoreOwner = new StoreOwner(newStore,this,this);
         try {
             positions.addPosition(newStoreFounder);
-            positions.addPosition(newStoreOwner);
         } catch (Exception e) {
             // Rollback if either operation fails
             throw e;
@@ -189,7 +188,8 @@ public class Member extends Guest {
 
     public List<StoreDTO> getResponsibleStores() {
         List<StoreDTO> ret = new ArrayList<>();
-        for (Position p : positions.getAllPositions()) {
+        List<Position> positionList=positions.getPositionsByMember(username);
+        for (Position p : positionList) {
             ret.add(new StoreDTO(p.getStore()));
         }
         return ret;
