@@ -53,7 +53,7 @@ public class MainLayout extends AppLayout {
 
     public MainLayout() {
         sessionId = marketController.enterMarket().value;
-        config();
+        //config();
         addToNavbar(createHeaderContent());
         addDrawerContent();
     }
