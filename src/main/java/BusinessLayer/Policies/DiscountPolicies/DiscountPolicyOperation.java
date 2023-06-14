@@ -25,7 +25,7 @@ public class DiscountPolicyOperation extends BaseDiscountPolicy {
     private final BaseDiscountPolicy right;
 
     public DiscountPolicyOperation(int policyId, BaseDiscountPolicy left, int joinOperator, BaseDiscountPolicy right,int store_id,int discount_id) {
-        super(policyId,store_id,discount_id);
+        super(policyId,store_id, (long) discount_id);
         this.policyId = policyId;
         this.left = left;
         try {

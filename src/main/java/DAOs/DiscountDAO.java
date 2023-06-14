@@ -1,7 +1,6 @@
 package DAOs;
 
 import BusinessLayer.Discounts.Discount;
-import BusinessLayer.Product;
 import Repositories.IDiscountRepo;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -47,7 +46,7 @@ public class DiscountDAO implements IDiscountRepo {
     }
 
     @Override
-    public Discount get(Integer id) {
+    public Discount get(Long id) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Discount discount = null;
         try {

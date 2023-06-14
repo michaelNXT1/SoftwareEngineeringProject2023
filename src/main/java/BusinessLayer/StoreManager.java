@@ -281,19 +281,19 @@ public class StoreManager implements Position {
     }
 
     @Override
-    public Integer addProductDiscount(int productId, double discountPercentage, int compositionType) throws Exception {
+    public long addProductDiscount(int productId, double discountPercentage, int compositionType) throws Exception {
         logger.error("store manager hasn't permission to perform this action");
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 
     @Override
-    public void addCategoryDiscount(String category, double discountPercentage, int compositionType) throws Exception {
+    public long addCategoryDiscount(String category, double discountPercentage, int compositionType) throws Exception {
         logger.error("store manager hasn't permission to perform this action");
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }
 
     @Override
-    public void addStoreDiscount(double discountPercentage, int compositionType) throws Exception {
+    public long addStoreDiscount(double discountPercentage, int compositionType) throws Exception {
         logger.error("store manager hasn't permission to perform this action");
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }

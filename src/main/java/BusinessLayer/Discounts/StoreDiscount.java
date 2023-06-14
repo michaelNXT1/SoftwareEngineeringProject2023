@@ -14,10 +14,10 @@ import jakarta.persistence.*;
 public class StoreDiscount extends Discount {
     @ManyToOne
     @JoinColumn(name = "store_id")
-    private final Store store;
+    private Store store;
 
-    public StoreDiscount(int discountId, double discountPercentage, Store store, int compositionType) throws Exception {
-        super(discountId, discountPercentage, compositionType);
+    public StoreDiscount(double discountPercentage, Store store, int compositionType) throws Exception {
+        super(discountPercentage, compositionType);
         this.store = store;
     }
 

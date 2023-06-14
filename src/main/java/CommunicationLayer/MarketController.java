@@ -409,22 +409,22 @@ public class MarketController implements IMarketController {
     @GetMapping("/addProductDiscount")
     @ResponseBody
     @Override
-    public Response addProductDiscount(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
-                                       @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
-                                       @RequestParam(value = "productId", defaultValue = "-1") int productId,
-                                       @RequestParam(value = "discountPercentage", defaultValue = "-1.0") double discountPercentage,
-                                       @RequestParam(value = "compositionType", defaultValue = "-1.0") int compositionType) {
+    public ResponseT<Long> addProductDiscount(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                              @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
+                                              @RequestParam(value = "productId", defaultValue = "-1") int productId,
+                                              @RequestParam(value = "discountPercentage", defaultValue = "-1.0") double discountPercentage,
+                                              @RequestParam(value = "compositionType", defaultValue = "-1.0") int compositionType) {
         return marketManager.addProductDiscount(sessionId, storeId, productId, discountPercentage, compositionType);
     }
 
     @GetMapping("/addCategoryDiscount")
     @ResponseBody
     @Override
-    public Response addCategoryDiscount(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
-                                        @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
-                                        @RequestParam(value = "category", defaultValue = "") String category,
-                                        @RequestParam(value = "discountPercentage", defaultValue = "-1.0") double discountPercentage,
-                                        @RequestParam(value = "compositionType", defaultValue = "-1.0") int compositionType) {
+    public ResponseT<Long> addCategoryDiscount(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                               @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
+                                               @RequestParam(value = "category", defaultValue = "") String category,
+                                               @RequestParam(value = "discountPercentage", defaultValue = "-1.0") double discountPercentage,
+                                               @RequestParam(value = "compositionType", defaultValue = "-1.0") int compositionType) {
         return marketManager.addCategoryDiscount(sessionId, storeId, category, discountPercentage, compositionType);
     }
 
@@ -438,10 +438,10 @@ public class MarketController implements IMarketController {
     @GetMapping("/addStoreDiscount")
     @ResponseBody
     @Override
-    public Response addStoreDiscount(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
-                                     @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
-                                     @RequestParam(value = "discountPercentage", defaultValue = "-1.0") double discountPercentage,
-                                     @RequestParam(value = "compositionType", defaultValue = "-1.0") int compositionType) {
+    public ResponseT<Long> addStoreDiscount(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                            @RequestParam(value = "storeId", defaultValue = "-1") int storeId,
+                                            @RequestParam(value = "discountPercentage", defaultValue = "-1.0") double discountPercentage,
+                                            @RequestParam(value = "compositionType", defaultValue = "-1.0") int compositionType) {
         return marketManager.addStoreDiscount(sessionId, storeId, discountPercentage, compositionType);
     }
 

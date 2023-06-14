@@ -28,8 +28,6 @@ public class Store {
     private int purchasePolicyCounter;
     @Column(name = "discount_policy_counter")
     private int discountPolicyCounter;
-    @Column(name = "discount_counter")
-    private int discountCounter;
     @Column(name = "open")
     private boolean isOpen;
     @Transient
@@ -68,7 +66,6 @@ public class Store {
         purchasePolicyCounter = 0;
         productDiscountPolicyMap = new BaseDiscountPolicyMapDAO();
         discountPolicyCounter = 0;
-        discountCounter = 0;
     }
 
     public Store(){
@@ -85,7 +82,6 @@ public class Store {
         purchasePolicyCounter = 0;
         productDiscountPolicyMap = new BaseDiscountPolicyMapDAO();
         discountPolicyCounter = 0;
-        discountCounter = 0;
     }
 
     public AtomicInteger getProductIdCounter() {
@@ -263,28 +259,30 @@ public class Store {
     }
 
     //Discounts
-    public Integer addProductDiscount(int productId, double discountPercentage, int compositionType) throws Exception {
+    public long addProductDiscount(int productId, double discountPercentage, int compositionType) throws Exception {
         checkProductExists(productId);
-        Discount discount = new ProductDiscount(discountCounter++, discountPercentage, productId, compositionType);
+        Discount discount = new ProductDiscount(discountPercentage, productId, compositionType);
         discountRepo.addDiscount(discount);
         return discount.getDiscountId();
     }
 
-    public void addCategoryDiscount(String category, double discountPercentage, int compositionType) throws Exception {
+    public long addCategoryDiscount(String category, double discountPercentage, int compositionType) throws Exception {
         List<Category> categoryStrings = categories.getAllCategory();
         if (!categoryStrings.stream().anyMatch(c-> c.getCategoryName().equals(category))) {
             logger.error("Category doesn't exist");
             throw new Exception("Category doesn't exist");
         }
 
-        Discount discount = new CategoryDiscount(discountCounter++, discountPercentage, category, compositionType);
+        Discount discount = new CategoryDiscount(discountPercentage, category, compositionType);
         discountRepo.addDiscount(discount);
+        return discount.getDiscountId();
     }
 
 
-    public void addStoreDiscount(double discountPercentage, int compositionType) throws Exception {
-        Discount discount = new StoreDiscount(discountCounter++, discountPercentage, this, compositionType);
+    public long addStoreDiscount(double discountPercentage, int compositionType) throws Exception {
+        Discount discount = new StoreDiscount(discountPercentage, this, compositionType);
         discountRepo.addDiscount(discount);
+        return discount.getDiscountId();
     }
 
     public void removeDiscount(int discountId) throws Exception {
@@ -293,7 +291,7 @@ public class Store {
     }
 
     private Discount findDiscount(int discountId) throws Exception {
-        Discount discount = discountRepo.get(discountId);
+        Discount discount = discountRepo.get((long) discountId);
         if (discount == null) {
             logger.error("couldn't find discount of id" + discountId);
             throw new Exception("couldn't find discount of id" + discountId);
@@ -333,7 +331,7 @@ public class Store {
             logger.error("the two policies refers to two different discounts policy1 discount " + found_1.getDiscount_id() + "policy2 discount" + found_2.getDiscount_id());
             throw new Exception("he two policies refers to two different discounts");
         }
-        productDiscountPolicyMap.addDiscountPolicy(new DiscountPolicyOperation(discountPolicyCounter++, found_1, operator, found_2,this.storeId,found_1.getDiscount_id()));
+        productDiscountPolicyMap.addDiscountPolicy(new DiscountPolicyOperation(discountPolicyCounter++, found_1, operator, found_2,this.storeId, Math.toIntExact(found_1.getDiscount_id())));
         productDiscountPolicyMap.removeDiscountPolicy(found_1);
         productDiscountPolicyMap.removeDiscountPolicy(found_2);
     }
@@ -458,9 +456,6 @@ public class Store {
         return discountPolicyCounter;
     }
 
-    public int getDiscountCounter() {
-        return discountCounter;
-    }
 
     public SystemLogger getLogger() {
         return logger;
@@ -482,9 +477,6 @@ public class Store {
         this.discountPolicyCounter = discountPolicyCounter;
     }
 
-    public void setDiscountCounter(int discountCounter) {
-        this.discountCounter = discountCounter;
-    }
 
     public void setCategories(IStringSetRepository categories) {
         this.categories = categories;

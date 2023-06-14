@@ -133,16 +133,16 @@ public interface IMarketController {
     Response
     addMaxQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity);
 
-    Response
+    ResponseT<Long>
     addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType);
 
-    Response
+    ResponseT<Long>
     addCategoryDiscount(String sessionId, int storeId, String category, double discountPercentage, int compositionType);
 
     ResponseT<List<MemberDTO>>
     getInformationAboutMembers(String sessionId);
 
-    Response
+    ResponseT<Long>
     addStoreDiscount(String sessionId, int storeId, double discountPercentage, int compositionType);
 
     Response
