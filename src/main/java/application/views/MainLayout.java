@@ -7,7 +7,6 @@ import application.components.AppNav;
 import application.components.AppNavItem;
 import application.views.about.AboutView;
 import application.views.category.CategoryView;
-import application.views.helloworld.HelloWorldView;
 import application.views.login.LoginView;
 import application.views.openStore.OpenStore;
 import application.views.registration.RegistrationView;
@@ -76,7 +75,7 @@ public class MainLayout extends AppLayout {
         marketController.signUp("Michael", "1234");
         sessionId = marketController.login("Michael", "1234").value;
         marketController.addPaymentMethod(sessionId, "a", "a", "a", "a");
-        marketController.addSupplyDetails(sessionId,"a","a","a","a","a");
+        marketController.addSupplyDetails(sessionId, "a", "a", "a", "a", "a");
         marketController.openStore(sessionId, "Shufersal");
         marketController.openStore(sessionId, "Ebay");
         Map<String, Integer> productMap = new HashMap<>();
@@ -219,7 +218,10 @@ public class MainLayout extends AppLayout {
 
         select.setItems(actionsMap.keySet().stream().sorted().collect(Collectors.toList()));
         select.addValueChangeListener(event -> {
-            actionsMap.get(event.getValue()).run();
+            if (sessionId == null)
+                Notification.show("Sorry, sessionId is null, please restart the server :(");
+            else
+                actionsMap.get(event.getValue()).run();
             select.clear();
         });
         select.setPlaceholder("Actions");
