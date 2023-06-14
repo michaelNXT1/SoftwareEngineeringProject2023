@@ -25,7 +25,7 @@ public class ShoppingBag {
     @ManyToOne
     @JoinColumn(name = "store_id")
     private Store store;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "shopping_bag_products" ,joinColumns = @JoinColumn(name = "shoppingBag_id"))
     @Column(name = "product_id")
     private List<Integer> productListId = new ArrayList<>();
