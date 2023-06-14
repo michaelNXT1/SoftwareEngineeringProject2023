@@ -34,8 +34,6 @@ public class ShoppingBag {
     @JoinColumn(name = "purchase_id")
     private Purchase bagPurchase;
 
-    private List<Integer> productAmount;
-
     @Column
     private Long shoppingCartId;
 
