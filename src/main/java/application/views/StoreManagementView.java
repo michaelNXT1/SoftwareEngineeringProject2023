@@ -1010,7 +1010,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
             HorizontalLayout hl = new HorizontalLayout();
             hl.add(
                     new Button("Remove", e -> {
-                        Response response = marketController.removeDiscount(MainLayout.getSessionId(), storeId, discount.getDiscountId());
+                        Response response = marketController.removeDiscount(MainLayout.getSessionId(), storeId, Math.toIntExact(discount.getDiscountId()));
                         if (response.getError_occurred()) {
                             errorSuccessLabel.setText(response.error_message);
                         } else
@@ -1081,7 +1081,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
                         Response response = marketController.addMaxQuantityDiscountPolicy(
                                 MainLayout.getSessionId(),
                                 storeId,
-                                discount.getDiscountId(),
+                                Math.toIntExact(discount.getDiscountId()),
                                 productNameMap.get(productField.getValue()),
                                 quantityField.getValue());
                         if (response.getError_occurred())
@@ -1101,7 +1101,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
                         Response response = marketController.addMinQuantityDiscountPolicy(
                                 MainLayout.getSessionId(),
                                 storeId,
-                                discount.getDiscountId(),
+                                Math.toIntExact(discount.getDiscountId()),
                                 productNameMap.get(productField.getValue()),
                                 quantityField.getValue(),
                                 allowNone.getValue());
@@ -1120,7 +1120,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
                         Response response = marketController.addMinBagTotalDiscountPolicy(
                                 MainLayout.getSessionId(),
                                 storeId,
-                                discount.getDiscountId(),
+                                Math.toIntExact(discount.getDiscountId()),
                                 bagTotalField.getValue());
                         if (response.getError_occurred())
                             errorSuccessLabel.setText(response.error_message);

@@ -1,13 +1,34 @@
 package DAOs;
 
 import BusinessLayer.Purchase;
+import BusinessLayer.ShoppingBag;
 import Repositories.IPurchaseRepository;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import java.util.List;
 
 public class PurchaseDAO implements IPurchaseRepository {
+
+    @Override
+    public void clear() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+
+        try {
+            transaction = session.beginTransaction();
+            session.createQuery("DELETE FROM Purchase").executeUpdate();
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
 
     public void savePurchase(Purchase purchase) {
         Session session = HibernateUtil.getSessionFactory().openSession();

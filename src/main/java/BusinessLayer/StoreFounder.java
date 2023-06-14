@@ -22,6 +22,9 @@ public class StoreFounder implements Position {
     private Member positionMember;
     @Transient //Marks a property or field as transient, indicating that it should not be persisted in the database.
     private SystemLogger logger;
+    @OneToOne
+    @JoinColumn(name = "assigner")
+    private Member assigner = null;
 
     public StoreFounder(Store store, Member member) {
         this.store = store;
@@ -30,6 +33,10 @@ public class StoreFounder implements Position {
     }
 
     public StoreFounder() {
+    }
+
+    public void setAssigner(Member assigner) {
+        this.assigner = assigner;
     }
 
     public Long getId() {
@@ -156,18 +163,18 @@ public class StoreFounder implements Position {
     }
 
     @Override
-    public Integer addProductDiscount(int productId, double discountPercentage, int compositionType) throws Exception {
+    public long addProductDiscount(int productId, double discountPercentage, int compositionType) throws Exception {
         return store.addProductDiscount(productId, discountPercentage, compositionType);
     }
 
     @Override
-    public void addCategoryDiscount(String category, double discountPercentage, int compositionType) throws Exception {
-        store.addCategoryDiscount(category, discountPercentage, compositionType);
+    public long addCategoryDiscount(String category, double discountPercentage, int compositionType) throws Exception {
+        return store.addCategoryDiscount(category, discountPercentage, compositionType);
     }
 
     @Override
-    public void addStoreDiscount(double discountPercentage, int compositionType) throws Exception {
-        store.addStoreDiscount(discountPercentage, compositionType);
+    public long addStoreDiscount(double discountPercentage, int compositionType) throws Exception {
+        return store.addStoreDiscount(discountPercentage, compositionType);
     }
 
     @Override

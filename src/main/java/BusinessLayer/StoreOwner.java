@@ -21,7 +21,7 @@ public class StoreOwner implements Position {
     @JoinColumn(name = "positionMember")
     private Member positionMember;
     @ManyToOne
-    @JoinColumn(name = "store_owners")
+    @JoinColumn(name = "assigner")
     private Member assigner;
     @Transient
     private SystemLogger logger;
@@ -166,18 +166,18 @@ public class StoreOwner implements Position {
     }
 
     @Override
-    public Integer addProductDiscount(int productId, double discountPercentage, int compositionType) throws Exception {
+    public long addProductDiscount(int productId, double discountPercentage, int compositionType) throws Exception {
         return store.addProductDiscount(productId, discountPercentage, compositionType);
     }
 
     @Override
-    public void addCategoryDiscount(String category, double discountPercentage, int compositionType) throws Exception {
-        store.addCategoryDiscount(category, discountPercentage, compositionType);
+    public long addCategoryDiscount(String category, double discountPercentage, int compositionType) throws Exception {
+        return store.addCategoryDiscount(category, discountPercentage, compositionType);
     }
 
     @Override
-    public void addStoreDiscount(double discountPercentage, int compositionType) throws Exception {
-        store.addStoreDiscount(discountPercentage, compositionType);
+    public long addStoreDiscount(double discountPercentage, int compositionType) throws Exception {
+        return store.addStoreDiscount(discountPercentage, compositionType);
     }
 
     @Override

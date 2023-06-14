@@ -1,74 +1,23 @@
 package DAOs;
 
-import BusinessLayer.Discounts.Discount;
-import Repositories.IDiscountRepo;
+import BusinessLayer.Purchase;
+import BusinessLayer.ShoppingBag;
+import BusinessLayer.ShoppingCart;
+import Repositories.IShoppingCartRepo;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class DiscountDAO implements IDiscountRepo {
+public class ShoppingCartDAO implements IShoppingCartRepo {
     @Override
-    public void addDiscount(Discount discount) {
+    public void addShoppingCart(ShoppingCart shoppingCart) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
-            session.persist(discount);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw e;
-        } finally {
-            session.close();
-        }
-    }
-
-    @Override
-    public void removeDiscount(Discount discount) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction transaction = null;
-        try {
-            transaction = session.beginTransaction();
-            session.remove(discount);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw e;
-        } finally {
-            session.close();
-        }
-    }
-
-    @Override
-    public Discount get(Long id) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Discount discount = null;
-        try {
-            discount = session.get(Discount.class, id);
-        } catch (Exception e) {
-            throw e;
-        } finally {
-            session.close();
-        }
-        return discount;
-    }
-
-    @Override
-    public void clear() {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction transaction = null;
-
-        try {
-            transaction = session.beginTransaction();
-            session.createQuery("DELETE FROM CategoryDiscount").executeUpdate();
-            session.createQuery("DELETE FROM ProductDiscount").executeUpdate();
-            session.createQuery("DELETE FROM StoreDiscount").executeUpdate();
+            session.persist(shoppingCart);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -81,18 +30,67 @@ public class DiscountDAO implements IDiscountRepo {
     }
 
     @Override
-    public ConcurrentLinkedQueue<Discount> getAllDiscounts() {
+    public void removeShoppingBag(ShoppingCart shoppingCart) {
         Session session = HibernateUtil.getSessionFactory().openSession();
-        List<Discount> discounts = null;
+        Transaction transaction = null;
         try {
-            discounts = session.createQuery("FROM StoreDiscount", Discount.class).list();
-            discounts.addAll(session.createQuery("FROM ProductDiscount", Discount.class).list());
-            discounts.addAll(session.createQuery("FROM StoreDiscount", Discount.class).list());
+            transaction = session.beginTransaction();
+            session.remove(shoppingCart);
+            transaction.commit();
         } catch (Exception e) {
-            throw e;
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
         } finally {
             session.close();
         }
-        return (ConcurrentLinkedQueue<Discount>) discounts;
+    }
+
+    @Override
+    public ShoppingCart getShoppingBagById(int id) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        ShoppingCart shoppingCart = null;
+        try {
+            shoppingCart = session.get(ShoppingCart.class, id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return shoppingCart;
+    }
+
+    @Override
+    public List<ShoppingCart> getAllShoppingCart() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        List<ShoppingCart> shoppingBags = null;
+        try {
+            shoppingBags = session.createQuery("FROM ShoppingCart", ShoppingCart.class).list();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return shoppingBags;
+    }
+
+    @Override
+    public void clear() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+
+        try {
+            transaction = session.beginTransaction();
+            session.createQuery("DELETE FROM ShoppingCart").executeUpdate();
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
     }
 }

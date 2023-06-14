@@ -54,6 +54,10 @@ public class Market {
     private IPurchasePolicyRepository purchasePolicyRepository = new PurchasePolicyDAO();
     private IDiscountRepo discountRepo = new DiscountDAO();
     private IProductRepository productRepository = new ProductDAO();
+    private IShoppingCartRepo shoppingCartRepo = new ShoppingCartDAO();
+
+    private IShoppingBagRepository shoppingBagRepository = new ShoppingBagDAO();
+    private IPurchaseRepository purchaseRepository = new PurchaseDAO();
 
     private String path;
     public Market(String path, Boolean isTestMode)  {
@@ -81,6 +85,9 @@ public class Market {
     }
     @Transactional
     public void clearAllData(){
+        shoppingBagRepository.clearShoppingBags();
+        shoppingCartRepo.clear();
+        purchaseRepository.clear();
         baseDiscountPolicyMapDAO.clear();
         purchasePolicyRepository.clear();
         productRepository.clear();
@@ -500,8 +507,8 @@ public class Market {
     public ShoppingCartDTO getShoppingCart(String sessionId) throws Exception {
         isMarketOpen();
         Guest g = sessionManager.getSession(sessionId);
-        logger.info(String.format("%s asking for his shopping cart", g.getUsername()));
-        return new ShoppingCartDTO(g.displayShoppingCart());
+        logger.info(String.format("asking for his shopping cart"));
+        return new ShoppingCartDTO(g.displayShoppingCart(g.getId()));
     }
 
     //use case 2.12
@@ -914,35 +921,37 @@ public class Market {
         logger.info(String.format("%s remove %d policy from %s store", sessionId, policyId, storeId));
     }
     @Transactional
-    public Integer addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType) throws Exception {
+    public Long addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType) throws Exception {
         logger.info("trying to addProductDiscount");
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
-        int dId = p.addProductDiscount(productId, discountPercentage, compositionType);
+        Long dId = p.addProductDiscount(productId, discountPercentage, compositionType);
         logger.info(String.format("%s added product discount to %d store", sessionId, storeId));
         return dId;
     }
     @Transactional
-    public void addCategoryDiscount(String sessionId, int storeId, String category, double discountPercentage, int compositionType) throws Exception {
+    public long addCategoryDiscount(String sessionId, int storeId, String category, double discountPercentage, int compositionType) throws Exception {
         logger.info("trying to addCategoryDiscount");
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
-        p.addCategoryDiscount(category, discountPercentage, compositionType);
+        long did = p.addCategoryDiscount(category, discountPercentage, compositionType);
         logger.info(String.format("%s added category discount %s to %d store", sessionId, category, storeId));
+        return did;
     }
     @Transactional
-    public void addStoreDiscount(String sessionId, int storeId, double discountPercentage, int compositionType) throws Exception {
+    public long addStoreDiscount(String sessionId, int storeId, double discountPercentage, int compositionType) throws Exception {
         logger.info("trying to addStoreDiscount");
         isMarketOpen();
         sessionManager.getSession(sessionId);
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
-        p.addStoreDiscount(discountPercentage, compositionType);
+        long did = p.addStoreDiscount(discountPercentage, compositionType);
         logger.info(String.format("%s added store discount of %f percentage to %d store", sessionId, discountPercentage, storeId));
+        return did;
     }
     @Transactional
     public void removeDiscount(String sessionId, int storeId, int discountId) throws Exception {

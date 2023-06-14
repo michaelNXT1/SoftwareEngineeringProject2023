@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 public class MemberDTO {
     private final String username;
     private final String email;
-    private final List<PositionDTO> positions;
+    private List<PositionDTO> positions;
     private final ShoppingCartDTO shoppingCart;
     private final List<ProductDTO> searchResults;
     private final List<PurchaseDTO> purchaseHistory;
@@ -17,7 +17,9 @@ public class MemberDTO {
     public MemberDTO(Member member) {
             this.username = member.getUsername();
             this.email = member.getEmail();
-            this.positions = member.getPositions().getAllPositions().stream().map(PositionDTO::new).collect(Collectors.toList());
+            List<Position> positions1 = member.getPositions().getAllPositions().stream().filter(p -> p.getPositionMember().getUsername().equals(this.username)).toList();
+            for(Position p :positions1)
+                this.positions.add(new PositionDTO(p));
             this.shoppingCart = new ShoppingCartDTO(member.getShoppingCart());
             this.searchResults = member.getSearchResults().getAllProducts().stream()
                     .map(ProductDTO::new)
