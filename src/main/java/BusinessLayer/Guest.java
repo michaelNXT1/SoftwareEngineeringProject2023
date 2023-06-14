@@ -2,7 +2,11 @@ package BusinessLayer;
 
 import DAOs.ProductDAO;
 import DAOs.PurchaseDAO;
+import DAOs.ShoppingBagDAO;
+import DAOs.ShoppingCartDAO;
 import Repositories.IProductRepository;
+import Repositories.IShoppingBagRepository;
+import Repositories.IShoppingCartRepo;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -15,6 +19,7 @@ import static org.atmosphere.annotation.AnnotationUtil.logger;
 
 public class Guest {
 
+    private static Long IdCounter = 0L;
     private Long id;
 
     private ShoppingCart shoppingCart;
@@ -23,6 +28,7 @@ public class Guest {
 
     private IProductRepository searchResults;
     private IPurchaseRepository purchaseHistory;
+    private IShoppingCartRepo shoppingCartRepo = new ShoppingCartDAO();
     private PaymentDetails paymentDetails;
     private SupplyDetails supplyDetails;
 
@@ -43,7 +49,10 @@ public class Guest {
     }
 
     public Guest() {
-        shoppingCart = new ShoppingCart();
+        this.id = IdCounter;
+        IdCounter++;
+        shoppingCart = new ShoppingCart(this.id);
+        shoppingCartRepo.addShoppingCart(shoppingCart);
         searchResults = new ProductDAO();
         purchaseHistory = new PurchaseDAO();
         paymentDetails = null;
@@ -54,8 +63,11 @@ public class Guest {
         shoppingCart.setProductQuantity(s, productId, itemsAmount);
     }
 
-    public ShoppingCart displayShoppingCart() {  //2.11
-        return shoppingCart;
+    public ShoppingCart displayShoppingCart(Long id) {  //2.11
+        List<ShoppingCart> myShoppingCart = shoppingCartRepo.getAllShoppingCart().stream().filter(sc->sc.getUserId() == this.id).toList();
+        if(!myShoppingCart.isEmpty())
+            return myShoppingCart.get(0);
+        return null;
     }
     public IPurchaseRepository getPurchaseHistory(){
         return this.purchaseHistory;

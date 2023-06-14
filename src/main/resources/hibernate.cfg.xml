@@ -26,8 +26,8 @@
         <mapping class="BusinessLayer.Purchase"/>
         <mapping class="BusinessLayer.Product"/>
         <mapping class="BusinessLayer.ShoppingBag"/>
-        <mapping class="BusinessLayer.PurchaseProduct"/>
         <mapping class="BusinessLayer.ShoppingCart"/>
+        <mapping class="BusinessLayer.PurchaseProduct"/>
         <mapping class="BusinessLayer.PaymentDetails"/>
         <mapping class="BusinessLayer.SupplyDetails"/>
         <mapping class="BusinessLayer.SystemManager"/>

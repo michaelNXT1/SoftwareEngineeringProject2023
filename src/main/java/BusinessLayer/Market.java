@@ -54,6 +54,10 @@ public class Market {
     private IPurchasePolicyRepository purchasePolicyRepository = new PurchasePolicyDAO();
     private IDiscountRepo discountRepo = new DiscountDAO();
     private IProductRepository productRepository = new ProductDAO();
+    private IShoppingCartRepo shoppingCartRepo = new ShoppingCartDAO();
+
+    private IShoppingBagRepository shoppingBagRepository = new ShoppingBagDAO();
+    private IPurchaseRepository purchaseRepository = new PurchaseDAO();
 
     private String path;
     public Market(String path, Boolean isTestMode)  {
@@ -81,6 +85,9 @@ public class Market {
     }
     @Transactional
     public void clearAllData(){
+        shoppingBagRepository.clearShoppingBags();
+        shoppingCartRepo.clear();
+        purchaseRepository.clear();
         baseDiscountPolicyMapDAO.clear();
         purchasePolicyRepository.clear();
         productRepository.clear();
@@ -500,8 +507,8 @@ public class Market {
     public ShoppingCartDTO getShoppingCart(String sessionId) throws Exception {
         isMarketOpen();
         Guest g = sessionManager.getSession(sessionId);
-        logger.info(String.format("%s asking for his shopping cart", g.getUsername()));
-        return new ShoppingCartDTO(g.displayShoppingCart());
+        logger.info(String.format("asking for his shopping cart"));
+        return new ShoppingCartDTO(g.displayShoppingCart(g.getId()));
     }
 
     //use case 2.12

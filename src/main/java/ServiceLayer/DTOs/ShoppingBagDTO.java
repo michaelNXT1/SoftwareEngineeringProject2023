@@ -1,13 +1,10 @@
 package ServiceLayer.DTOs;
 
 import BusinessLayer.Product;
-import BusinessLayer.Purchase;
 import BusinessLayer.ShoppingBag;
-import BusinessLayer.ShoppingCart;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class ShoppingBagDTO {
     public StoreDTO getStore() {

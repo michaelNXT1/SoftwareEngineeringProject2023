@@ -27,7 +27,6 @@ public class Purchase {
     @Enumerated(EnumType.STRING)
     protected PurchaseType type;
     public Purchase(IPurchaseProductRepository productList) {
-        this.id = 0L; // Initializing with a default value
         this.productList = productList;
         this.purchaseDateTime = LocalDateTime.now();
         type = PurchaseType.BuyItNow;

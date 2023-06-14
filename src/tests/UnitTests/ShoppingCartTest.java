@@ -1,15 +1,12 @@
 package UnitTests;
 
 import BusinessLayer.*;
-import ServiceLayer.DTOs.PurchaseDTO;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class ShoppingCartTest extends TestCase {
 
@@ -28,10 +25,10 @@ class ShoppingCartTest extends TestCase {
 
     @BeforeEach
     void beforeEach() throws Exception {
-        shoppingCart = new ShoppingCart();
-        product1 = new Product(storeId1,1,"wine", 3, "60.0", "alcohol");
-        product2 = new Product(storeId1,2, "cheese", 9.5, "milk","fads");
-        product3 = new Product(storeId1,3, "steak", 120.0, "meat","asd");
+        shoppingCart = new ShoppingCart(member.getId());
+        product1 = new Product(storeId1,1,"wine", 3, "60.0", "alcohol",3);
+        product2 = new Product(storeId1,2, "cheese", 9.5, "milk","fads",4);
+        product3 = new Product(storeId1,3, "steak", 120.0, "meat","asd",5);
         market = new Market(null,true);
         market.signUp(userName1, password1);
         market.signUpSystemManager(userName1, password1);
@@ -44,7 +41,7 @@ class ShoppingCartTest extends TestCase {
 //    @Test
 //    void addProduct() {
 //        shoppingCart.addProduct(product1, 2, store1);
-//        assertTrue(shoppingCart.shoppingBags.get(0).getProductList().containsKey(product1));
+//        assertTrue(shoppingCart.shoppingBags.get(0).getProductListId().containsKey(product1));
 //    }
 
     @Test

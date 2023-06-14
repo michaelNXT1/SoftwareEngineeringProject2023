@@ -21,7 +21,7 @@ public class StoreOwner implements Position {
     @JoinColumn(name = "positionMember")
     private Member positionMember;
     @ManyToOne
-    @JoinColumn(name = "store_owners")
+    @JoinColumn(name = "assigner")
     private Member assigner;
     @Transient
     private SystemLogger logger;

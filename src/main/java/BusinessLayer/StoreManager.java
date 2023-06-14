@@ -34,7 +34,7 @@ public class StoreManager implements Position {
     @JoinColumn(name = "store_id")
     private Store store;
     @ManyToOne
-    @JoinColumn(name = "store_owners")
+    @JoinColumn(name = "assigner")
     private Member assigner;
     @Transient
     private ISetPermissionTypeRepository permissions;

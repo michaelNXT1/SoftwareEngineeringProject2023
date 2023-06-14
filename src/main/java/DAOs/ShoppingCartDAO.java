@@ -1,22 +1,23 @@
 package DAOs;
 
+import BusinessLayer.Purchase;
 import BusinessLayer.ShoppingBag;
-import Repositories.IShoppingBagRepository;
+import BusinessLayer.ShoppingCart;
+import Repositories.IShoppingCartRepo;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
 import java.util.List;
 
-public class ShoppingBagDAO implements IShoppingBagRepository {
-
+public class ShoppingCartDAO implements IShoppingCartRepo {
     @Override
-    public void addShoppingBag(ShoppingBag shoppingBag) {
+    public void addShoppingCart(ShoppingCart shoppingCart) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
-            session.persist(shoppingBag);
+            session.persist(shoppingCart);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -29,12 +30,12 @@ public class ShoppingBagDAO implements IShoppingBagRepository {
     }
 
     @Override
-    public void removeShoppingBag(ShoppingBag shoppingBag) {
+    public void removeShoppingBag(ShoppingCart shoppingCart) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
-            session.remove(shoppingBag);
+            session.remove(shoppingCart);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -47,25 +48,25 @@ public class ShoppingBagDAO implements IShoppingBagRepository {
     }
 
     @Override
-    public ShoppingBag getShoppingBagById(int id) {
+    public ShoppingCart getShoppingBagById(int id) {
         Session session = HibernateUtil.getSessionFactory().openSession();
-        ShoppingBag shoppingBag = null;
+        ShoppingCart shoppingCart = null;
         try {
-            shoppingBag = session.get(ShoppingBag.class, id);
+            shoppingCart = session.get(ShoppingCart.class, id);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             session.close();
         }
-        return shoppingBag;
+        return shoppingCart;
     }
 
     @Override
-    public List<ShoppingBag> getAllShoppingBags() {
+    public List<ShoppingCart> getAllShoppingCart() {
         Session session = HibernateUtil.getSessionFactory().openSession();
-        List<ShoppingBag> shoppingBags = null;
+        List<ShoppingCart> shoppingBags = null;
         try {
-            shoppingBags = session.createQuery("FROM ShoppingBag", ShoppingBag.class).list();
+            shoppingBags = session.createQuery("FROM ShoppingCart", ShoppingCart.class).list();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -74,13 +75,14 @@ public class ShoppingBagDAO implements IShoppingBagRepository {
         return shoppingBags;
     }
 
-    public void clearShoppingBags() {
+    @Override
+    public void clear() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
 
         try {
             transaction = session.beginTransaction();
-            session.createQuery("DELETE FROM ShoppingBag").executeUpdate();
+            session.createQuery("DELETE FROM ShoppingCart").executeUpdate();
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -91,6 +93,4 @@ public class ShoppingBagDAO implements IShoppingBagRepository {
             session.close();
         }
     }
-
-
 }
