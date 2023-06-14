@@ -4,6 +4,7 @@ import BusinessLayer.Position;
 import Repositories.IPositionRepository;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import java.util.List;
 
@@ -58,7 +59,28 @@ public class PositionDAO implements IPositionRepository {
         return positions;
     }
 
+    public List<Position> getPositionsByMember(String username) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        List<Position> positions = null;
+        try {
+            Query<Position> query = session.createQuery("FROM StoreOwner s WHERE s.positionMember.username = :username", Position.class);
+            query.setParameter("username", username);
+            positions = query.list();
 
+            query = session.createQuery("FROM StoreManager s WHERE s.positionMember.username = :username", Position.class);
+            query.setParameter("username", username);
+            positions.addAll(query.list());
+
+            query = session.createQuery("FROM StoreFounder s WHERE s.positionMember.username = :username", Position.class);
+            query.setParameter("username", username);
+            positions.addAll(query.list());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return positions;
+    }
 
 
     public void clear() {

@@ -577,7 +577,6 @@ public class Market {
         isMarketOpen();
         Guest g = sessionManager.getSession(sessionId);
         logger.info(String.format("try to open new store with this name: %s", storeName));
-        //TODO: lock stores variable
         int storeId;
         synchronized (stores) {
             storeId = stores.getAllStores().keySet().isEmpty() ? 0 : stores.getAllStores().keySet().stream().mapToInt(Integer::intValue).max().getAsInt() + 1;
@@ -592,7 +591,6 @@ public class Market {
         }
         logger.info(String.format("%s store is now open", storeName));
         return storeId;
-        //TODO: release stores variable
     }
 
     //use case 4.1

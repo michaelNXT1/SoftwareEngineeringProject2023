@@ -9,5 +9,7 @@ public interface IPositionRepository {
     void addPosition(Position position);
     void removePosition(Position position);
     List<Position> getAllPositions();
+
+    List<Position> getPositionsByMember(String username);
     // Add other methods as needed
 }
