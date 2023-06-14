@@ -429,7 +429,7 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public ResponseT<Integer> addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType) {
+    public ResponseT<Long> addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType) {
         try {
             return ResponseT.fromValue(market.addProductDiscount(sessionId, storeId, productId, discountPercentage, compositionType));
         } catch (Exception e) {
@@ -437,21 +437,19 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public Response addCategoryDiscount(String sessionId, int storeId, String category, double discountPercentage, int compositionType) {
+    public ResponseT<Long> addCategoryDiscount(String sessionId, int storeId, String category, double discountPercentage, int compositionType) {
         try {
-            market.addCategoryDiscount(sessionId, storeId, category, discountPercentage, compositionType);
-            return new Response();
+            return ResponseT.fromValue(market.addCategoryDiscount(sessionId, storeId, category, discountPercentage, compositionType));
         } catch (Exception e) {
-            return new Response(e.getMessage());
+            return ResponseT.fromError(e.getMessage());
         }
     }
 
-    public Response addStoreDiscount(String sessionId, int storeId, double discountPercentage, int compositionType) {
+    public ResponseT<Long> addStoreDiscount(String sessionId, int storeId, double discountPercentage, int compositionType) {
         try {
-            market.addStoreDiscount(sessionId, storeId, discountPercentage, compositionType);
-            return new Response();
+            return ResponseT.fromValue(market.addStoreDiscount(sessionId, storeId, discountPercentage, compositionType));
         } catch (Exception e) {
-            return new Response(e.getMessage());
+            return ResponseT.fromError(e.getMessage());
         }
     }
 

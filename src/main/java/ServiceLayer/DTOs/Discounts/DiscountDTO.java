@@ -3,7 +3,7 @@ package ServiceLayer.DTOs.Discounts;
 import BusinessLayer.Discounts.Discount;
 
 public abstract class DiscountDTO {
-    protected final int discountId;
+    protected final Long discountId;
     protected final double discountPercentage;
 
     public DiscountDTO(Discount discount) {
@@ -15,7 +15,7 @@ public abstract class DiscountDTO {
         return discountPercentage;
     }
 
-    public int getDiscountId() {
+    public Long getDiscountId() {
         return discountId;
     }
 }

@@ -27,7 +27,7 @@ public abstract class BaseDiscountPolicy {
     protected Integer store_id;
 
     @Column(name = "discount_id")
-    protected Integer discount_id;
+    protected Long discount_id;
 
     @Transient
     protected final SystemLogger logger;
@@ -46,7 +46,7 @@ public abstract class BaseDiscountPolicy {
         return ret.stream().sorted().collect(Collectors.toList());
     }
 
-    public BaseDiscountPolicy(int policyId, int store_id,int discounts) {
+    public BaseDiscountPolicy(int policyId, int store_id,Long discounts) {
         this.logger = new SystemLogger();
         this.policyId = policyId;
         this.store_id = store_id;
@@ -61,11 +61,11 @@ public abstract class BaseDiscountPolicy {
         this.store_id = store_id;
     }
 
-    public Integer getDiscount_id() {
+    public Long getDiscount_id() {
         return discount_id;
     }
 
-    public void setDiscount_id(Integer discount_id) {
+    public void setDiscount_id(Long discount_id) {
         this.discount_id = discount_id;
     }
 

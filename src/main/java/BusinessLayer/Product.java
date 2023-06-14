@@ -35,7 +35,7 @@ public class Product {
     private String description;
 
 
-    public Product(int storeId, int productId, String productName, double price, String category, String description) throws Exception {
+    public Product(int storeId, int productId, String productName, double price, String category, String description,int quantity) throws Exception {
         if (price < 0) {
             logger.error("cannot add product with negative price");
             throw new Exception("cannot add product with negative price");
@@ -48,6 +48,7 @@ public class Product {
             logger.error("product category is empty");
             throw new Exception("product category is empty");
         }
+        this.amount = quantity;
         this.storeId = storeId;
         this.productId = productId;
         this.productName = productName;

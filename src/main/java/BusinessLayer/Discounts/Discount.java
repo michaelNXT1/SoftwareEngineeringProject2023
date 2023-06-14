@@ -18,8 +18,9 @@ abstract public class Discount {
         MAX
     }
     @Id
+    @GeneratedValue
     @Column(name = "discount_id")
-    protected int discountId;
+    protected Long discountId;
 
     @Column(name = "discount_percentage")
     protected double discountPercentage;
@@ -31,9 +32,8 @@ abstract public class Discount {
     @Transient
     protected SystemLogger logger;
 
-    public Discount(int discountId, double discountPercentage, int compositionType) throws Exception {
+    public Discount(double discountPercentage, int compositionType) throws Exception {
         logger = new SystemLogger();
-        this.discountId = discountId;
         if (discountPercentage <= 0.0 || 1.0 < discountPercentage) {
             logger.error("discount percentage illegal: " + discountPercentage);
             throw new Exception("discount percentage illegal");
@@ -43,12 +43,11 @@ abstract public class Discount {
     }
     public Discount() {
         logger = new SystemLogger();
-        this.discountId = 0;
         this.discountPercentage = 0;
         this.compositionType = null;
     }
 
-    public int getDiscountId() {
+    public Long getDiscountId() {
         return discountId;
     }
 
@@ -69,7 +68,7 @@ abstract public class Discount {
         return compositionType;
     }
 
-    public int getId(){ return this.discountId; }
+    public Long getId(){ return this.discountId; }
 
     public abstract DiscountDTO copyConstruct();
 }

@@ -36,7 +36,10 @@ public class PositionDTO {
 
     public PositionDTO(Position p) {
         this.store = new StoreDTO(p.getStore());
-        this.assigner = p.getAssigner() == null ? null : new MemberDTO(p.getAssigner());
+        if(p.getAssigner() == null)
+            this.assigner = null;
+        else
+            this.assigner = new MemberDTO(p.getAssigner());
         this.positionName = p.getPositionName();
     }
 

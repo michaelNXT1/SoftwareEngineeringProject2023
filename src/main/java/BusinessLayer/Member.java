@@ -140,7 +140,7 @@ public class Member extends Guest {
     public Store openStore(String name, int storeID) {
         Store newStore = new Store(storeID, name, this);
         StoreFounder newStoreFounder = new StoreFounder(newStore,this);
-        StoreOwner newStoreOwner = new StoreOwner(newStore,this,this);
+        StoreOwner newStoreOwner = new StoreOwner(newStore,null,this);
         try {
             positions.addPosition(newStoreFounder);
         } catch (Exception e) {

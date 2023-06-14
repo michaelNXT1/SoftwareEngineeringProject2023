@@ -93,9 +93,11 @@ public class BaseDiscountPolicyMapDAO implements IBaseDiscountPolicyMapRepositor
         Session session = HibernateUtil.getSessionFactory().openSession();
         List<BaseDiscountPolicy> discountPolicyMap = null;
         try {
-            Query<BaseDiscountPolicy> query = session.createQuery("FROM BaseDiscountPolicy", BaseDiscountPolicy.class);
+            Query<BaseDiscountPolicy> query = session.createQuery("FROM DiscountPolicyOperation", BaseDiscountPolicy.class);
             discountPolicyMap = query.list();
-
+            discountPolicyMap.addAll( session.createQuery("FROM MaxQuantityDiscountPolicy", BaseDiscountPolicy.class).list());
+            discountPolicyMap.addAll( session.createQuery("FROM MinBagTotalDiscountPolicy", BaseDiscountPolicy.class).list());
+            discountPolicyMap.addAll( session.createQuery("FROM MinQuantityDiscountPolicy", BaseDiscountPolicy.class).list());
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

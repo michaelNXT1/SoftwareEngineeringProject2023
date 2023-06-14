@@ -12,10 +12,10 @@ import jakarta.persistence.*;
 @DiscriminatorValue("CHILD")
 public class CategoryDiscount extends Discount {
     @Column(name = "category")
-    private final String category;
+    private String category;
 
-    public CategoryDiscount(int discountId, double discountPercentage, String category, int compositionType) throws Exception {
-        super(discountId, discountPercentage, compositionType);
+    public CategoryDiscount(double discountPercentage, String category, int compositionType) throws Exception {
+        super(discountPercentage, compositionType);
         this.category = category;
     }
 

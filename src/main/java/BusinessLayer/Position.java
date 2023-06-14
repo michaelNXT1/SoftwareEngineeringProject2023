@@ -50,11 +50,11 @@ public interface Position {
     void removePurchasePolicy(int policyId) throws Exception;
 
     //Discount management
-    Integer addProductDiscount(int productId, double discountPercentage, int compositionType) throws Exception;
+    long addProductDiscount(int productId, double discountPercentage, int compositionType) throws Exception;
 
-    void addCategoryDiscount(String category, double discountPercentage, int compositionType) throws Exception;
+    long addCategoryDiscount(String category, double discountPercentage, int compositionType) throws Exception;
 
-    void addStoreDiscount(double discountPercentage, int compositionType) throws Exception;
+    long addStoreDiscount(double discountPercentage, int compositionType) throws Exception;
 
     void removeDiscount(int discountId) throws Exception;
 
