@@ -2,6 +2,7 @@ package ServiceLayer.DTOs;
 
 import BusinessLayer.*;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,11 +18,11 @@ public class MemberDTO {
     public MemberDTO(Member member) {
             this.username = member.getUsername();
             this.email = member.getEmail();
-            List<Position> positions1 = member.getPositions().getAllPositions().stream().filter(p -> p.getPositionMember().getUsername().equals(this.username)).toList();
-            for(Position p :positions1)
-                this.positions.add(new PositionDTO(p));
+            this.positions = member.getPositions().getAllPositions().stream().filter(p -> p.getPositionMember().getUsername().equals(this.username))
+                .map(PositionDTO::new)
+                .collect(Collectors.toList());
             this.shoppingCart = new ShoppingCartDTO(member.getShoppingCart());
-            this.searchResults = member.getSearchResults().getAllProducts().stream()
+            this.searchResults = member.getSearchResults().stream()
                     .map(ProductDTO::new)
                     .collect(Collectors.toList());
             this.purchaseHistory = member.getPurchaseHistory().getAllPurchases().stream()

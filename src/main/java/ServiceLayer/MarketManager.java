@@ -433,7 +433,7 @@ public class MarketManager implements IMarketManager {
         try {
             return ResponseT.fromValue(market.addProductDiscount(sessionId, storeId, productId, discountPercentage, compositionType));
         } catch (Exception e) {
-            return ResponseT.fromValue(e.getMessage());
+            return ResponseT.fromError(e.getMessage());
         }
     }
 

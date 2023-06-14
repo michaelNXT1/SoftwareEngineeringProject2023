@@ -106,7 +106,7 @@ public interface Bridge {
 
     boolean addMaxQuantityPolicy(String sessionId, int storeId, int productId, int minQuantity);
 
-    Integer addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType);
+    long addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType);
 
     boolean addCategoryDiscount(String sessionId, int storeId, String category, double discountPercentage, int compositionType);
 

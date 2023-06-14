@@ -25,10 +25,10 @@ public class ShoppingBag {
     @ManyToOne
     @JoinColumn(name = "store_id")
     private Store store;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "shopping_bag_products" ,joinColumns = @JoinColumn(name = "shoppingBag_id"))
     @Column(name = "product_id")
-    private List<Integer> productListId = new ArrayList<>();
+    private Map<Integer,Integer> productListId = new HashMap<>();
 
     @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "purchase_id")
@@ -62,7 +62,7 @@ public class ShoppingBag {
         this.store = store;
     }
 
-    public void setProductListId(List<Integer> productListId) {
+    public void setProductListId(Map<Integer,Integer> productListId) {
         this.productListId = productListId;
     }
 
@@ -96,7 +96,7 @@ public class ShoppingBag {
         if (quantity == 0)
             productListId.remove(productId);
         else if (p.getAmount() >= quantity)
-            productListId.add(productId);
+            productListId.put(productId,quantity);
         else {
             logger.error("Requested product quantity not available.");
             throw new Exception("Requested product quantity not available.");
@@ -112,13 +112,8 @@ public class ShoppingBag {
     //Use case 2.14
     public Pair<PurchaseProduct, Boolean> purchaseProduct(int productId) {
         try {
-            PurchaseProduct pp = store.subtractForPurchase(productId,store.getProduct(productId).getAmount());
-            Map<Integer,Integer> productToAmount = new HashMap<>();
-            for(Integer pId :this.productListId){
-                Product product = store.getProduct(pId);
-                productToAmount.put(pId,product.getAmount());
-            }
-            double discountPercentage = store.getProductDiscountPercentage(productId,productToAmount);
+            PurchaseProduct pp = store.subtractForPurchase(productId,productListId.get(store.getProduct(productId)));
+            double discountPercentage = store.getProductDiscountPercentage(productId,productListId);
             pp.setPrice(pp.getPrice() * (1.0 - discountPercentage));
             this.productListId.remove(productId);
             return new Pair<>(pp, true);
@@ -128,18 +123,12 @@ public class ShoppingBag {
     }
 
     public Pair<List<PurchaseProduct>, Boolean> purchaseShoppingBag() throws Exception {
-        Map<Integer,Integer> productToAmount = new HashMap<>();
-        for(Integer pId :this.productListId){
-            Product product = store.getProduct(pId);
-            productToAmount.put(pId,product.getAmount());
-        }
-        if (!store.checkPoliciesFulfilled(productToAmount)) {
+        if (!store.checkPoliciesFulfilled(productListId)) {
             logger.error("Store purchase policies are not fulfilled in this cart");
             throw new Exception("Store purchase policies are not fulfilled in this cart");
         }
-        store.checkPoliciesFulfilled(productToAmount);
         List<PurchaseProduct> retList = new ArrayList<>();
-        for (Map.Entry<Integer, Integer> e : productToAmount.entrySet()) {
+        for (Map.Entry<Integer, Integer> e : productListId.entrySet()) {
             Pair<PurchaseProduct, Boolean> ppp = purchaseProduct(e.getKey());
             if (ppp.getSecond()) {
                 retList.add(ppp.getFirst());
@@ -163,31 +152,16 @@ public class ShoppingBag {
         return store;
     }
 
-    public List<Integer> getProductListId() {
+    public Map<Integer, Integer> getProductListId() {
         return productListId;
     }
 
-    public List<Product> getProductList() {
-        List<Product> products = new ArrayList<>();
-        for(Integer pId : this.productListId){
-            try {
-                products.add(store.getProduct(pId));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return products;
-    }
     public boolean isEmpty() {
         return productListId.isEmpty();
     }
 
     public double getProductDiscountPercentageInCart(int productId) throws Exception {
-        Map<Integer,Integer> productToAmount = new HashMap<>();
-        for(Integer pId :this.productListId){
-            Product product = store.getProduct(pId);
-            productToAmount.put(product.getProductId(),product.getAmount());
-        }
-        return store.getProductDiscountPercentage(productId, productToAmount);
+        return store.getProductDiscountPercentage(productId, productListId);
+
     }
 }

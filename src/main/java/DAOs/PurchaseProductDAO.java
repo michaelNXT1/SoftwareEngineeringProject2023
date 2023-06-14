@@ -47,7 +47,7 @@ public class PurchaseProductDAO implements IPurchaseProductRepository {
         Session session = HibernateUtil.getSessionFactory().openSession();
         List<PurchaseProduct> purchaseProducts = null;
         try {
-            purchaseProducts = session.createQuery("FROM Purchase_products", PurchaseProduct.class).list();
+            purchaseProducts = session.createQuery("FROM PurchaseProduct", PurchaseProduct.class).list();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

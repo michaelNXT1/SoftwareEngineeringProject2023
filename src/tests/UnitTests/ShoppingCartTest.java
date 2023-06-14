@@ -77,7 +77,7 @@ class ShoppingCartTest extends TestCase {
     @Test
     void removeProduct() throws Exception {
         market.removeProductFromCart(sessionId1, storeId1, product1.getProductId());
-        assertFalse(shoppingCart.shoppingBags.getShoppingBagById(0).getProductList().contains(product1));
+        assertFalse(shoppingCart.shoppingBags.getShoppingBagById(0).getProductListId().keySet().contains(product1));
     }
 
     @Test

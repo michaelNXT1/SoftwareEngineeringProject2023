@@ -9,7 +9,7 @@
         <!-- Connection settings -->
         <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/sadnadb</property>
         <property name="hibernate.connection.username">root</property>
-        <property name="hibernate.connection.password">1234</property>
+        <property name="hibernate.connection.password">admin</property>
 
         <!-- SQL dialect -->
         <property name="current_session_context_class">thread</property>

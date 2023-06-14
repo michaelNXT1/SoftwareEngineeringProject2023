@@ -35,7 +35,7 @@ public class PurchaseDAO implements IPurchaseRepository {
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
-            session.persist(purchase);
+            session.saveOrUpdate(purchase);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -65,7 +65,7 @@ public class PurchaseDAO implements IPurchaseRepository {
         Session session = HibernateUtil.getSessionFactory().openSession();
         List<Purchase> purchaseList = null;
         try {
-            purchaseList = session.createQuery("FROM purchases", Purchase.class).list();
+            purchaseList = session.createQuery("FROM Purchase", Purchase.class).list();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

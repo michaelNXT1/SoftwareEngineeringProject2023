@@ -24,6 +24,8 @@ public class PurchaseProduct {
     @Column(name = "quantity")
     private int quantity;
 
+
+
     public PurchaseProduct(Product p, int quantity, int storeId) {
         this.productId = p.getProductId();
         this.storeId = storeId;

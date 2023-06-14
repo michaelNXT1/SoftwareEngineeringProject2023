@@ -10,10 +10,10 @@ public class RemoveStoreOwnerTest extends ServiceTests {
     @Before
     public void setUp(){
         super.setUp();
-        register("alon12","alon0601");
+        register("alon1","alon0601");
         register("alon123", "alon0601");
         storeOwnerToRemove = "alon123";
-        sessionId1 = login("alon12", "alon0601");
+        sessionId1 = login("alon1", "alon0601");
         storeId = openStore(sessionId1, "megaShop");
         setPositionOfMemberToStoreOwner(sessionId1, storeOwnerToRemove, storeId);
     }

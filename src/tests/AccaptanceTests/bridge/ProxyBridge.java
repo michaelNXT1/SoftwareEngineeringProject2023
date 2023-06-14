@@ -437,7 +437,7 @@ public class ProxyBridge implements Bridge {
     }
 
     @Override
-    public Integer addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType) {
+    public long addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType) {
         if (real != null) {
             return real.addProductDiscount(sessionId, storeId, productId, discountPercentage, compositionType);
         } else {
