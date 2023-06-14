@@ -89,6 +89,7 @@ public class Market {
         users.clear();
         discountRepo.clear();
         stores.clear();
+        systemManagers.clear();
     }
     public StoreDTO getStoreByName(String sessionId, String storeName) throws Exception {
         isMarketOpen();

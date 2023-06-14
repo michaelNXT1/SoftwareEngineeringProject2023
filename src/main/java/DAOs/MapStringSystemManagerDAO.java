@@ -86,4 +86,24 @@ public class MapStringSystemManagerDAO implements IMapStringSystemManagerReposit
         return systemManagerMap.containsValue(sm);
     }
 
+    @Override
+    public void clear() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+
+        try {
+            transaction = session.beginTransaction();
+            session.createQuery("DELETE FROM SystemManager").executeUpdate();
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+
+    }
+
 }

@@ -1,10 +1,11 @@
+signUp(U1,123);
 sign-up-system-manager(U1,123);
 signUp(U2,123);
 signUp(U3,123);
 signUp(U4,123);
 signUp(U5,123);
 signUp(U6,123);
-login(U2, 123);
+login(U2,123);
 open-store(U2,S1);
 add-product(U2,S1,BAMBA,30,snacks,20,Baked peanut snack);
 appoint-manager(U2,S1,U3);
