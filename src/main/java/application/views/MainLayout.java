@@ -213,7 +213,7 @@ public class MainLayout extends AppLayout {
         actionsMap.put("Open a New Store", () -> UI.getCurrent().navigate(OpenStore.class));
         actionsMap.put("My Stores", () -> UI.getCurrent().navigate(ManagerStoresView.class));
         actionsMap.put("My Purchases", () -> UI.getCurrent().navigate(UserPurchases.class));
-
+        actionsMap.put("System Manager Login", () -> UI.getCurrent().navigate(SystemManagerPermissions.class));
         actionsMap.put("Get information about members", () -> UI.getCurrent().navigate(GetInformationAboutMembers.class));
         actionsMap.put("System Manager Registration", () -> UI.getCurrent().navigate(SignUpSystemManager.class));
 

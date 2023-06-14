@@ -60,6 +60,13 @@ public class MarketController implements IMarketController {
     public Response exitMarket(@RequestParam(value = "sessionId", defaultValue = "") String sessionId) {
         return this.marketManager.exitMarket(sessionId);
     }
+    @GetMapping("/removeMember")
+    @ResponseBody
+    @Override
+    public Response removeMember(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
+                                 @RequestParam(value = "memberName", defaultValue = "") String memberName) {
+        return marketManager.openStore(sessionId, memberName);
+    }
 
     @GetMapping("/signUp")
     @ResponseBody
@@ -75,6 +82,13 @@ public class MarketController implements IMarketController {
             @RequestParam(value = "username", defaultValue = "") String username,
             @RequestParam(value = "password", defaultValue = "") String password) {
         return marketManager.login(username, password, notificationBroker);
+    }
+    @GetMapping("/loginSystemManager")
+    @ResponseBody
+    public ResponseT<String> loginSystemManager(
+            @RequestParam(value = "username", defaultValue = "") String username,
+            @RequestParam(value = "password", defaultValue = "") String password) {
+        return marketManager.loginSystemManager(username, password, notificationBroker);
     }
 
 

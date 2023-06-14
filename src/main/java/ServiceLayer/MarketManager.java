@@ -66,15 +66,15 @@ public class MarketManager implements IMarketManager {
             return ResponseT.fromError(e.getMessage());
         }
     }
+    public ResponseT<String> loginSystemManager(String username, String password, NotificationBroker notificationBroker) {
+        try {
+            String ret = market.loginSystemManager(username, password, notificationBroker);
+            return ResponseT.fromValue(ret);
+        } catch (Exception e) {
+            return ResponseT.fromError(e.getMessage());
+        }
+    }
 
-//    public ResponseT<String> loginSystemManager(String username, String password) {
-//        try {
-//            String ret = market.loginSystemManager(username, password);
-//            return ResponseT.fromValue(ret);
-//        } catch (Exception e) {
-//            return ResponseT.fromError(e.getMessage());
-//        }
-//    }
 
     public ResponseT<String> logout(String sessionId) {
         try {

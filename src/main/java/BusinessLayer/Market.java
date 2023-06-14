@@ -276,9 +276,7 @@ public class Market {
         }
     }
 
-    //use case 2.3
-    //use case 2.3
-    public String login(String username, String password, NotificationBroker notificationBroker) throws Exception {
+    public String loginSystemManager(String username, String password, NotificationBroker notificationBroker) throws Exception {
         logger.info(String.format("%s try to logg in to the system", username));
         SystemManager sm = systemManagers.getSystemManager(username);
         synchronized (username.intern()) {
@@ -298,6 +296,30 @@ public class Market {
                 return null;
             }
         }
+        return null;
+    }
+    //use case 2.3
+    //use case 2.3
+    public String login(String username, String password, NotificationBroker notificationBroker) throws Exception {
+        logger.info(String.format("%s try to logg in to the system", username));
+//        SystemManager sm = systemManagers.getSystemManager(username);
+//        synchronized (username.intern()) {
+//            if (sm != null) {
+//                String hashedPassword = new String(passwordEncoder.digest(password.getBytes()));
+//                // If the Member doesn't exist or the password is incorrect, return false
+//                if (!hashedPassword.equals(sm.getHashedPassword())) {
+//                    logger.error(String.format("%s has Invalid username or password", username));
+//                    throw new Error("Invalid username or password");
+//                }
+//                // If the credentials are correct, authenticate the user and return true
+//                boolean res = securityUtils.authenticate(username, password);
+//                if (res) {
+//                    logger.info(String.format("%s the user passed authenticate check and logged in to the systemManager", username));
+//                    return sessionManager.createSessionForSystemManager(sm);
+//                }
+//                return null;
+//            }
+//        }
         isMarketOpen();
         // Retrieve the stored Member's object for the given username
         Member member;
