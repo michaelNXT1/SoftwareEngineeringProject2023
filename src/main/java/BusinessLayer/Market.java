@@ -412,9 +412,7 @@ public class Market {
                         .filter(p -> p.getProductName().equals(productName)).toList());
             }
         }
-        IProductRepository productRepository = new ProductDAO();
-        productRepository.addAllProducts(productList);
-        g.setSearchResults(productRepository);
+        g.setSearchResults(productList);
         g.setSearchKeyword(productName);
         return productList.stream()
                 .map(ProductDTO::new)
@@ -435,9 +433,7 @@ public class Market {
                         .filter(p -> p.getCategory().equals(productCategory)).toList());
             }
         }
-        IProductRepository productRepository = new ProductDAO();
-        productRepository.addAllProducts(productList);
-        g.setSearchResults(productRepository);
+        g.setSearchResults(productList);
         g.setSearchKeyword(productCategory);
         return productList.stream()
                 .map(ProductDTO::new)
@@ -458,9 +454,7 @@ public class Market {
                         .filter(p -> p.getProductName().contains(productSubstring)).toList());
             }
         }
-        IProductRepository productRepository = new ProductDAO();
-        productRepository.addAllProducts(productList);
-        g.setSearchResults(productRepository);
+        g.setSearchResults(productList);
         g.setSearchKeyword(productSubstring);
         return productList.stream()
                 .map(ProductDTO::new)
@@ -474,7 +468,7 @@ public class Market {
         isMarketOpen();
         Guest g = sessionManager.getSession(sessionId);
         logger.info(String.format("%s getting Search results", sessionId));
-        return g.getSearchResults().getAllProducts().stream().map(ProductDTO::new).toList();
+        return g.getSearchResults().stream().map(ProductDTO::new).toList();
     }
 
     //use case 2.9 - by category

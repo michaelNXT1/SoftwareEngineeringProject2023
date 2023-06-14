@@ -219,7 +219,7 @@ public abstract class ServiceTests extends TestCase {
     }
 
 
-    public Integer addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType) {
+    public long addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType) {
         return this.bridge.addProductDiscount(sessionId, storeId, productId, discountPercentage, compositionType);
     }
 

@@ -21,7 +21,7 @@ public class PurchaseTests extends ServiceTests {
     public void setUp(){
         super.setUp();
         register("alon1", "alon0601");
-        register("alon12", "alon0601");
+        register("alon123", "alon0601");
         sessionID1 = login("alon1","alon0601");
         storeID2 = openStore(sessionID1, "newStore3");
         productID2 = addProduct(sessionID1, storeID2,"test2",3.9,"milk",9,"1");
@@ -52,7 +52,7 @@ public class PurchaseTests extends ServiceTests {
     public void testNotEngItemsQuantityFail(){
         int productID1 = addProduct(sessionID1, storeID2,"test4",3.9,"milk",9,"1");
         logout(sessionID1);
-        String sessionId2 = login("alon12", "alon0601");
+        String sessionId2 = login("alon123", "alon0601");
         addToCart(sessionId2, storeID2, productID2, 5);
         buyCart(sessionId2);
         logout(sessionId2);
@@ -67,7 +67,7 @@ public class PurchaseTests extends ServiceTests {
         addMaxQuantityDiscountPolicy(sessionID1, storeID, 0,productID1, 6);
         addMinBagTotalDiscountPolicy(sessionID1, storeID, 0, 1);
         logout(sessionID1);
-        String sessionId2 = login("alon12", "alon0601");
+        String sessionId2 = login("alon123", "alon0601");
         addPaymentMethod(sessionId2,"1234","06","2026","540");
         addSupplyDetails(sessionId2,"alon","ASd","asd","sad","asd");
         addToCart(sessionID1,storeID,productID1,5);
@@ -84,7 +84,7 @@ public class PurchaseTests extends ServiceTests {
         int mbID = addMinBagTotalDiscountPolicy(sessionID1, storeID, 0, 1);
         joinPolicies(sessionID1,storeID,qdId,mbID,0);
         logout(sessionID1);
-        String sessionId2 = login("alon12", "alon0601");
+        String sessionId2 = login("alon123", "alon0601");
         addPaymentMethod(sessionId2,"1234","06","2026","540");
         addSupplyDetails(sessionId2,"alon","ASd","asd","sad","asd");
         addToCart(sessionID1,storeID,productID1,5);
@@ -97,15 +97,15 @@ public class PurchaseTests extends ServiceTests {
     public void testXOrPoliciesPurchaseSuccess() {
         int storeID = openStore(sessionID1, "newStore");
         int productID1 = addProduct(sessionID1, storeID, "test", 3.9, "milk", 9, "10");
-        addProductDiscount(sessionID1, storeID, productID1, 0.1, 0);
-        int qdId = addMaxQuantityDiscountPolicy(sessionID1, storeID, 0,productID1, 6);
-        int mbID = addMinBagTotalDiscountPolicy(sessionID1, storeID, 0, 1);
+        long discouId = addProductDiscount(sessionID1, storeID, productID1, 0.1, 0);
+        int qdId = addMaxQuantityDiscountPolicy(sessionID1, storeID, (int) discouId,productID1, 6);
+        int mbID = addMinBagTotalDiscountPolicy(sessionID1, storeID, (int) discouId, 1);
         joinPolicies(sessionID1,storeID,qdId,mbID,0);
         logout(sessionID1);
-        String sessionId2 = login("alon12", "alon0601");
+        String sessionId2 = login("alon123", "alon0601");
         addPaymentMethod(sessionId2,"1234","06","2026","540");
         addSupplyDetails(sessionId2,"alon","ASd","asd","sad","asd");
-        addToCart(sessionID1,storeID,productID1,5);
+        addToCart(sessionId2,storeID,productID1,5);
         PurchaseDTO purchaseDTO = buyCart(sessionId2);
         double ans =  3.9*0.9;
         assertTrue(purchaseDTO.getTotalPrice() == ans);
@@ -118,7 +118,7 @@ public class PurchaseTests extends ServiceTests {
         addProductDiscount(sessionID1, storeID, productID1, 0.1, 0);
         addMinBagTotalDiscountPolicy(sessionID1, storeID, 0, 2);
         logout(sessionID1);
-        String sessionId2 = login("alon12", "alon0601");
+        String sessionId2 = login("alon123", "alon0601");
         addPaymentMethod(sessionId2,"1234","06","2026","540");
         addSupplyDetails(sessionId2,"alon","ASd","asd","sad","asd");
         addToCart(sessionID1,storeID,productID1,7);
@@ -135,7 +135,7 @@ public class PurchaseTests extends ServiceTests {
         addProductDiscount(sessionID1, storeID, productID1, 0.1, 0);
         addMinBagTotalDiscountPolicy(sessionID1, storeID, 0, 6);
         logout(sessionID1);
-        String sessionId2 = login("alon12", "alon0601");
+        String sessionId2 = login("alon123", "alon0601");
         addPaymentMethod(sessionId2,"1234","06","2026","540");
         addSupplyDetails(sessionId2,"alon","ASd","asd","sad","asd");
         addToCart(sessionID1,storeID,productID1,5);

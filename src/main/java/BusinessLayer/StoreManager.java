@@ -1,8 +1,6 @@
 package BusinessLayer;
 
 import BusinessLayer.Logger.SystemLogger;
-import DAOs.SetPermissionTypeDAO;
-import Repositories.ISetPermissionTypeRepository;
 import ServiceLayer.DTOs.PositionDTO;
 import jakarta.persistence.*;
 
@@ -36,15 +34,18 @@ public class StoreManager implements Position {
     @ManyToOne
     @JoinColumn(name = "assigner")
     private Member assigner;
-    @Transient
-    private ISetPermissionTypeRepository permissions;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "manager_permissions" ,joinColumns = @JoinColumn(name = "manager_id"))
+    @Column(name = "permissions")
+    private Set<permissionType> permissions;
     @Transient
     private Object permissionLock = new Object();
 
     public StoreManager(Store store, Member assigner,Member thisMember) {
         this.store = store;
         this.assigner = assigner;
-        permissions = new SetPermissionTypeDAO(new HashSet<>());
+        permissions = new HashSet<>();
         this.positionMember = thisMember;
     }
 
@@ -83,9 +84,6 @@ public class StoreManager implements Position {
         this.assigner = assigner;
     }
 
-    public void setPermissions(ISetPermissionTypeRepository permissions) {
-        this.permissions = permissions;
-    }
 
     public Object getPermissionLock() {
         return permissionLock;
@@ -336,26 +334,25 @@ public class StoreManager implements Position {
 
     @Override
     public void setPermissions(Set<PositionDTO.permissionType> permissions) {
-        this.permissions = new SetPermissionTypeDAO(new HashSet<>());
         for (PositionDTO.permissionType permission : permissions)
-            this.permissions.addPermission(permissionType.valueOf(permission.name()));
+            this.permissions.add(permissionType.valueOf(permission.name()));
     }
 
     @Override
     public Set<PositionDTO.permissionType> getPermissions() {
         Set<PositionDTO.permissionType> ret = new HashSet<>();
-        for (permissionType permission : permissions.getAllPermissions())
+        for (permissionType permission : permissions)
             ret.add(PositionDTO.permissionType.valueOf(permission.name()));
         return ret;
     }
 
     public void addPermission(StoreManager.permissionType newPermission) { //permission for store manager only
-        permissions.addPermission(newPermission);
+        permissions.add(newPermission);
     }
 
     @Override
     public void removePermission(permissionType permission) {
-        permissions.removePermission(permission);
+        permissions.remove(permission);
     }
 
     @Override

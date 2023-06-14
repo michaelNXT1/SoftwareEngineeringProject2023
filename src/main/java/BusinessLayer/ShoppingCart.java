@@ -115,7 +115,7 @@ public class ShoppingCart {
             throw new Exception("Purchase failed, cart is empty");
         }
         Map<ShoppingBag, List<PurchaseProduct>> shoppingBagMap = new HashMap<>();
-        for (ShoppingBag sb : shoppingBags.getAllShoppingBags().stream().filter(fb->fb.getId() == this.id).toList()) {
+        for (ShoppingBag sb : shoppingBags.getAllShoppingBags().stream().filter(fb->fb.getShoppingCartId().equals(this.id)).toList()) {
             Pair<List<PurchaseProduct>, Boolean> sbp = sb.purchaseShoppingBag();
             if (sbp.getSecond()) {
                 shoppingBagMap.put(sb, sbp.getFirst());

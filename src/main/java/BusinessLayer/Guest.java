@@ -26,7 +26,7 @@ public class Guest {
 
     private String searchKeyword;
 
-    private IProductRepository searchResults;
+    private List<Product> searchResults;
     private IPurchaseRepository purchaseHistory;
     private IShoppingCartRepo shoppingCartRepo = new ShoppingCartDAO();
     private PaymentDetails paymentDetails;
@@ -53,7 +53,7 @@ public class Guest {
         IdCounter++;
         shoppingCart = new ShoppingCart(this.id);
         shoppingCartRepo.addShoppingCart(shoppingCart);
-        searchResults = new ProductDAO();
+        searchResults = new ArrayList<>();
         purchaseHistory = new PurchaseDAO();
         paymentDetails = null;
         supplyDetails = null;
@@ -97,21 +97,21 @@ public class Guest {
         shoppingCart.removeProduct(s, productId);
     }
 
-    public IProductRepository getSearchResults() {
+    public List<Product> getSearchResults() {
         return searchResults;
     }
 
-    public void setSearchResults(IProductRepository searchResults) {
+    public void setSearchResults(List<Product> searchResults) {
         this.searchResults = searchResults;
     }
 
     public List<Product> filterSearchResultsByCategory(String category) {
-        List<Product> allProducts = searchResults.getAllProducts();
+        List<Product> allProducts = searchResults;
         return allProducts.stream().filter(p -> p.getCategory().equals(category)).collect(Collectors.toList());
     }
 
     public List<Product> filterSearchResultsByPrice(double minPrice, double maxPrice) {
-        List<Product> allProducts = searchResults.getAllProducts();
+        List<Product> allProducts = searchResults;
         return allProducts.stream().filter(p -> minPrice <= p.getPrice() && p.getPrice() <= maxPrice).collect(Collectors.toList());
     }
 

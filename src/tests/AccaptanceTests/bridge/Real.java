@@ -6,6 +6,7 @@ import ServiceLayer.DTOs.PurchaseDTO;
 import ServiceLayer.DTOs.ShoppingCartDTO;
 import ServiceLayer.IMarketManager;
 import ServiceLayer.MarketManager;
+import ServiceLayer.ResponseT;
 
 import java.time.LocalTime;
 import java.util.*;
@@ -262,8 +263,11 @@ public class Real implements Bridge {
     }
 
     @Override
-    public Integer addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType) {
-        return this.manager.addProductDiscount(sessionId, storeId, productId, discountPercentage, compositionType).value;
+    public long addProductDiscount(String sessionId, int storeId, int productId, double discountPercentage, int compositionType) {
+        ResponseT<Long> ans = this.manager.addProductDiscount(sessionId, storeId, productId, discountPercentage, compositionType);
+        if(!ans.getError_occurred())
+            return ans.value;
+        return -1;
     }
 
     @Override
