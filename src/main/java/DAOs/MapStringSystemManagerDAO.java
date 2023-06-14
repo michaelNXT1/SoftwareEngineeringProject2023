@@ -5,11 +5,14 @@ import Repositories.IMapStringSystemManagerRepository;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class MapStringSystemManagerDAO implements IMapStringSystemManagerRepository {
+
+    private Map<String,SystemManager> sessionToSystemManager = new HashMap<>();
 
     @Override
     public void addSystemManager(String key, SystemManager systemManager) {
@@ -17,7 +20,10 @@ public class MapStringSystemManagerDAO implements IMapStringSystemManagerReposit
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
-            session.persist(systemManager);
+            if(getSystemManager(key) == null) {
+                sessionToSystemManager.put(key, systemManager);
+                session.persist(systemManager);
+            }
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -39,6 +45,7 @@ public class MapStringSystemManagerDAO implements IMapStringSystemManagerReposit
             SystemManager systemManager = session.get(SystemManager.class, key);
             if (systemManager != null) {
                 session.remove(systemManager);
+                sessionToSystemManager.remove(key);
             }
             transaction.commit();
         } catch (Exception e) {
@@ -56,7 +63,10 @@ public class MapStringSystemManagerDAO implements IMapStringSystemManagerReposit
         Session session = HibernateUtil.getSessionFactory().openSession();
         SystemManager systemManager = null;
         try {
-            systemManager = session.get(SystemManager.class, key);
+            if(sessionToSystemManager.containsKey(key))
+                systemManager = sessionToSystemManager.get(key);
+            else
+                systemManager = session.get(SystemManager.class, key);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
