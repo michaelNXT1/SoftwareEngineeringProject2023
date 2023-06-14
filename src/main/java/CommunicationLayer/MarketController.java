@@ -27,7 +27,7 @@ public class MarketController implements IMarketController {
     private final NotificationController notificationBroker;
 
     private MarketController() {
-        this.marketManager = new MarketManager(null,false);
+        this.marketManager = new MarketManager("initFile1",false);
         this.notificationBroker = new NotificationController();
     }
 
