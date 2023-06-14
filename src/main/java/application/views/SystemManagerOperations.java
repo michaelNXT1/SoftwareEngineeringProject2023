@@ -11,8 +11,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PreserveOnRefresh;
+import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
-
+@Route(value = "SystemManagerOperations")
 @PreserveOnRefresh
 public class SystemManagerOperations extends VerticalLayout {
         private Button removeMember;
@@ -25,7 +26,7 @@ public class SystemManagerOperations extends VerticalLayout {
             this.header = new Header();
             this.header.setText("System Manager Operation");
             this.removeMember = new Button("removeMember", e -> removeMember());
-            this.removeMember = new Button("informationAboutMembers", e -> informationAboutMembers());
+            this.informationAboutMembers = new Button("informationAboutMembers", e -> informationAboutMembers());
             this.marketController = MarketController.getInstance();
 
             add(header,removeMember, informationAboutMembers);

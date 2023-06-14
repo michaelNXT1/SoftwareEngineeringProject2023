@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 @PageTitle("GetInformationAboutMember ")
-@Route(value = "getInformationAboutMember ", layout = MainLayout.class)
+@Route(value = "getInformationAboutMember ")
 public class GetInformationAboutMembers extends VerticalLayout {
     private MarketController marketController;
     private Grid<MemberDTO> grid;
