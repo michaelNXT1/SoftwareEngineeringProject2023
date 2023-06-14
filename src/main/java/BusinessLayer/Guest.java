@@ -3,32 +3,46 @@ package BusinessLayer;
 import DAOs.ProductDAO;
 import DAOs.PurchaseDAO;
 import Repositories.IProductRepository;
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import Repositories.IPurchaseRepository;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.persistence.*;
+
 import static org.atmosphere.annotation.AnnotationUtil.logger;
 
-@Entity
 public class Guest {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
-    @OneToOne(cascade = CascadeType.ALL)
+
     private ShoppingCart shoppingCart;
+
     private String searchKeyword;
-    @OneToOne(cascade = CascadeType.ALL)
+
     private IProductRepository searchResults;
-    @OneToMany(cascade = CascadeType.ALL)
     private IPurchaseRepository purchaseHistory;
-    @OneToOne(cascade = CascadeType.ALL)
     private PaymentDetails paymentDetails;
-    @OneToOne(cascade = CascadeType.ALL)
     private SupplyDetails supplyDetails;
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setShoppingCart(ShoppingCart shoppingCart) {
+        this.shoppingCart = shoppingCart;
+    }
+
+    public void setPaymentDetails(PaymentDetails paymentDetails) {
+        this.paymentDetails = paymentDetails;
+    }
+
+    public void setSupplyDetails(SupplyDetails supplyDetails) {
+        this.supplyDetails = supplyDetails;
+    }
+
     public Guest() {
-        this.id = 0L; // Initializing with a default value
         shoppingCart = new ShoppingCart();
         searchResults = new ProductDAO();
         purchaseHistory = new PurchaseDAO();
@@ -43,7 +57,12 @@ public class Guest {
     public ShoppingCart displayShoppingCart() {  //2.11
         return shoppingCart;
     }
-
+    public IPurchaseRepository getPurchaseHistory(){
+        return this.purchaseHistory;
+    }
+    public void setPurchaseHistory(IPurchaseRepository purchaseHistory){
+        this.purchaseHistory = purchaseHistory;
+    }
     public void changeProductQuantity(int productId, int newQuantity, Store s) throws Exception {    //2.12
         shoppingCart.setProductQuantity(s, productId, newQuantity);
     }
@@ -66,8 +85,8 @@ public class Guest {
         shoppingCart.removeProduct(s, productId);
     }
 
-    public List<Product> getSearchResults() {
-        return searchResults.getAllProducts();
+    public IProductRepository getSearchResults() {
+        return searchResults;
     }
 
     public void setSearchResults(IProductRepository searchResults) {
@@ -122,9 +141,6 @@ public class Guest {
         purchaseHistory.removePurchase(purchase);
     }
 
-    public Collection<Purchase> getPurchaseHistory() {
-        return purchaseHistory.getAllPurchases();
-    }
 
     public ShoppingCart getShoppingCart() {
         return shoppingCart;

@@ -1,7 +1,7 @@
 package CommunicationLayer;
 
-import ServiceLayer.DTOs.*;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
+import ServiceLayer.DTOs.*;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 import ServiceLayer.MarketManager;
@@ -19,54 +19,54 @@ import java.util.Set;
 @CrossOrigin()
 @RestController
 @Component
+@RequestMapping("/market")
 public class MarketController implements IMarketController {
 
     private static MarketController instance = null;
     private final MarketManager marketManager;
     private final NotificationController notificationBroker;
 
-
-    private MarketController() throws Exception {
-        this.marketManager = new MarketManager();
+    private MarketController() {
+        this.marketManager = new MarketManager(null,false);
         this.notificationBroker = new NotificationController();
     }
 
 
-    public static MarketController getInstance() throws Exception {
+    public static MarketController getInstance() {
         if (instance == null) {
             instance = new MarketController();
         }
         return instance;
     }
 
-    @GetMapping("/signUpSystemManager")
+    @PostMapping("/signUpSystemManager")
     @ResponseBody
     @Override
     public Response signUpSystemManager(@RequestParam(value = "username", defaultValue = "") String username,
                                         @RequestParam(value = "password", defaultValue = "") String password) {
-        return marketManager.signUpSystemManager(username, password);
+        return this.marketManager.signUpSystemManager(username, password);
     }
 
-    @GetMapping("/enterMarket")
+    @PostMapping("/enterMarket")
     @ResponseBody
     @Override
     public ResponseT<String> enterMarket() {
-        return marketManager.enterMarket();
+        return this.marketManager.enterMarket();
     }
 
     @GetMapping("/exitMarket")
     @ResponseBody
     @Override
-    public Response exitMarket(@RequestParam(value = "username", defaultValue = "") String sessionId) {
-        return marketManager.exitMarket(sessionId);
+    public Response exitMarket(@RequestParam(value = "sessionId", defaultValue = "") String sessionId) {
+        return this.marketManager.exitMarket(sessionId);
     }
 
     @GetMapping("/signUp")
     @ResponseBody
-    public Response signUp(
-            @RequestParam(value = "username", defaultValue = "") String username,
-            @RequestParam(value = "password", defaultValue = "") String password) {
-        return marketManager.signUp(username, password);
+    @Override
+    public Response signUp(@RequestParam(value = "username", defaultValue = "") String username,
+                           @RequestParam(value = "password", defaultValue = "") String password) {
+        return this.marketManager.signUp(username, password);
     }
 
     @GetMapping("/login")
@@ -74,7 +74,7 @@ public class MarketController implements IMarketController {
     public ResponseT<String> login(
             @RequestParam(value = "username", defaultValue = "") String username,
             @RequestParam(value = "password", defaultValue = "") String password) {
-        return marketManager.login(username, password,notificationBroker);
+        return marketManager.login(username, password, notificationBroker);
     }
 
 
@@ -172,6 +172,7 @@ public class MarketController implements IMarketController {
                                                                   @RequestParam(value = "maxPrice", defaultValue = "-1") double maxPrice) {
         return marketManager.filterSearchResultsByPrice(sessionId, minPrice, maxPrice);
     }
+
 
     @GetMapping("/addProductToCart")
     @ResponseBody
@@ -559,6 +560,26 @@ public class MarketController implements IMarketController {
     @Override
     public ResponseT<Set<PositionDTO.permissionType>> getPermissions(String sessionId, int storeId, String username) {
         return marketManager.getPermissions(sessionId, storeId, username);
+    }
+
+    @Override
+    public ResponseT<Boolean> hasPaymentMethod(String sessionId) {
+        return marketManager.hasPaymentMethod(sessionId);
+    }
+
+    @Override
+    public ResponseT<Double> getProductDiscountPercentageInCart(String sessionId, int storeId, int productId) {
+        return marketManager.getProductDiscountPercentageInCart(sessionId, storeId, productId);
+    }
+
+    @Override
+    public Response addSupplyDetails(String sessionId, String name, String address, String city, String country, String zip) {
+        return marketManager.addSupplyDetails(sessionId, name, address, city, country, zip);
+    }
+
+    @Override
+    public ResponseT<List<PurchaseDTO>> getUserPurchaseHistory(String sessionId) {
+        return marketManager.getUserPurchaseHistory(sessionId);
     }
 
     @GetMapping("/editProductInCart")

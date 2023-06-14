@@ -25,9 +25,9 @@ public class ShoppingBagDTO {
     public ShoppingBagDTO(ShoppingBag shoppingBag) {
         productList = new HashMap<>();
         this.store = new StoreDTO(shoppingBag.getStore());
-        for (Integer productId : shoppingBag.getProductList().getAllItems().keySet()) {
-            ProductDTO productDTO = new ProductDTO(Objects.requireNonNull(shoppingBag.getStore().getProducts().getAllProducts().keySet().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null)));
-            productList.put(productDTO, shoppingBag.getProductList().get(productId));
+        for (Product product : shoppingBag.getProductList()) {
+            ProductDTO productDTO = new ProductDTO(product);
+            productList.put(productDTO, product.getAmount());
         }
     }
 

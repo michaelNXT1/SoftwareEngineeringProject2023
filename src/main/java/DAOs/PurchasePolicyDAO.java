@@ -74,4 +74,27 @@ public class PurchasePolicyDAO implements IPurchasePolicyRepository{
 
         return purchasePolicies;
     }
+
+    @Override
+    public void clear() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+
+        try {
+            transaction = session.beginTransaction();
+            session.createQuery("DELETE FROM PurchasePolicyOperation").executeUpdate();
+            session.createQuery("DELETE FROM CategoryTimeRestrictionPurchasePolicy").executeUpdate();
+            session.createQuery("DELETE FROM MaxQuantityPurchasePolicy").executeUpdate();
+            session.createQuery("DELETE FROM MinQuantityPurchasePolicy").executeUpdate();
+            session.createQuery("DELETE FROM ProductTimeRestrictionPurchasePolicy").executeUpdate();
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
 }

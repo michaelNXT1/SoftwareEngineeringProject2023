@@ -16,7 +16,7 @@ public class ShoppingBagDAO implements IShoppingBagRepository {
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
-            session.persist(shoppingBag);
+            session.saveOrUpdate(shoppingBag);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -65,7 +65,7 @@ public class ShoppingBagDAO implements IShoppingBagRepository {
         Session session = HibernateUtil.getSessionFactory().openSession();
         List<ShoppingBag> shoppingBags = null;
         try {
-            shoppingBags = session.createQuery("FROM shopping_bag", ShoppingBag.class).list();
+            shoppingBags = session.createQuery("FROM ShoppingBag", ShoppingBag.class).list();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -79,7 +79,7 @@ public class ShoppingBagDAO implements IShoppingBagRepository {
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
-            Query<ShoppingBag> query = session.createQuery("DELETE FROM shopping_bag", ShoppingBag.class);
+            Query<ShoppingBag> query = session.createQuery("DELETE FROM ShoppingBag", ShoppingBag.class);
             query.executeUpdate();
             transaction.commit();
         } catch (Exception e) {

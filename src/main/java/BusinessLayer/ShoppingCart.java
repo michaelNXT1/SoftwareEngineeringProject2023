@@ -11,7 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.persistence.*;
+//import javax.persistence.*;
+import jakarta.persistence.*;
+
 
 
 @Entity
@@ -20,8 +22,7 @@ public class ShoppingCart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "shopping_bag_id")
+    @Transient
     public IShoppingBagRepository shoppingBags;
     @Transient //Marks a property or field as transient, indicating that it should not be persisted in the database.
     private SystemLogger logger;
@@ -106,5 +107,14 @@ public class ShoppingCart {
 
 
     public void revertPurchase(Purchase purchase) {
+    }
+
+    public double getProductDiscountPercentageInCart(Store s, int productId) throws Exception {
+        ShoppingBag shoppingBag = shoppingBags.getAllShoppingBags().stream().filter(sb -> sb.getStore().equals(s)).findFirst().orElse(null);
+        if (shoppingBag == null) {
+            logger.error(String.format("this store %s is not existing in this cart", s.getStoreName()));
+            throw new Exception("store doesn't exist in cart");
+        }
+        return shoppingBag.getProductDiscountPercentageInCart(productId);
     }
 }

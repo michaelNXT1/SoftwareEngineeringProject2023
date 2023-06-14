@@ -24,6 +24,7 @@ public class MapStringSystemManagerDAO implements IMapStringSystemManagerReposit
                 transaction.rollback();
             }
             e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -69,7 +70,7 @@ public class MapStringSystemManagerDAO implements IMapStringSystemManagerReposit
         Session session = HibernateUtil.getSessionFactory().openSession();
         Map<String, SystemManager> systemManagerMap = null;
         try {
-            systemManagerMap = session.createQuery("FROM system_managers", SystemManager.class).getResultStream()
+            systemManagerMap = session.createQuery("FROM SystemManager", SystemManager.class).getResultStream()
                     .collect(Collectors.toMap(SystemManager::getUsername, Function.identity()));
         } catch (Exception e) {
             e.printStackTrace();

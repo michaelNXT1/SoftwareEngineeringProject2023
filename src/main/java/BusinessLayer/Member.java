@@ -3,8 +3,10 @@ package BusinessLayer;
 import BusinessLayer.Logger.SystemLogger;
 
 import CommunicationLayer.NotificationBroker;
+import CommunicationLayer.NotificationController;
 import DAOs.NotificationDAO;
 import DAOs.PositionDAO;
+import DAOs.StoreOwnerDAO;
 import Repositories.INotificationRepository;
 import Repositories.IPositionRepository;
 import Security.SecurityUtils;
@@ -12,19 +14,23 @@ import ServiceLayer.DTOs.StoreDTO;
 
 
 import Notification.Notification;
-import javax.persistence.*;
+import jakarta.persistence.*;
+
+//import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Entity
 @Table(name = "members")
 public class Member extends Guest {
-    @OneToOne(cascade = CascadeType.ALL)
-    private INotificationRepository notifications;
+    @Transient
+    private INotificationRepository notifications= new NotificationDAO();;
+    @Transient
     private NotificationBroker notificationBroker;
     @Id
-    @Column(unique = true)
+    @Column
     private String username;
 
     @Column
@@ -33,14 +39,12 @@ public class Member extends Guest {
     @Transient
     private IPositionRepository positions = new PositionDAO();//all the positions of this member, note that position act as a state
     @Transient
-    private SystemLogger logger;
+    private SystemLogger logger = new SystemLogger();
 
     public Member(String username, String hashedPassword) {
         super();
         this.username = username;
         this.hashedPassword = hashedPassword;
-        this.logger = new SystemLogger();
-        this.notifications = new NotificationDAO();
     }
 
     public Member() {
@@ -87,7 +91,7 @@ public class Member extends Guest {
     public Position getStorePosition(Store store) {
         synchronized (positions) {
             for (Position position : positions.getAllPositions()) {
-                if (position.getStore().equals(store)) {
+                if (position.getStore().getStoreName().equals(store.getStoreName()) && position.getPositionMember().username.equals(this.username)) {
                     return position;
                 }
             }
@@ -101,15 +105,14 @@ public class Member extends Guest {
             logger.error(String.format("the member is already have a different position in this store : %s", store.getStoreName()));
             throw new Exception("the member is already have a different position in this store");
         } else {
-            positions.addPosition(new StoreManager(store, assigner));
-            store.addEmployee(this);
+            positions.addPosition(new StoreManager(store, assigner,this));
         }
     }
 
     public void sendRealTimeNotification(){
         if(!(notifications == null || notifications.getAllNotifications().isEmpty())) {
             for (Notification notification : notifications.getAllNotifications()) {
-                this.notificationBroker.sendNotificationToUser(notification, this.username);
+                this.notificationBroker.sendRealTimeNotification(notification, this.username);
             }
             notifications.clear();
         }
@@ -117,7 +120,7 @@ public class Member extends Guest {
 
     public void sendNotification(Notification shopNotification) {
         if (this.notificationBroker != null) {
-            notificationBroker.sendNotificationToUser(shopNotification, this.username);
+            notificationBroker.sendRealTimeNotification(shopNotification, this.username);
         }else {
             this.notifications.addNotification(shopNotification);
         }
@@ -129,21 +132,20 @@ public class Member extends Guest {
             throw new Exception("the member is already have a different position in this store");
         } else {
             logger.info(String.format("%s promote to be the owner of %s", getUsername(), store.getStoreName()));
-            positions.addPosition(new StoreOwner(store, assigner));
-            store.addEmployee(this);
+            positions.addPosition(new StoreOwner(store, assigner,this));
         }
     }
 
     @Override
     public Store openStore(String name, int storeID) {
         Store newStore = new Store(storeID, name, this);
-        StoreFounder newStoreFounder = new StoreFounder(newStore);
-        newStore.setOpen(true);
+        StoreFounder newStoreFounder = new StoreFounder(newStore,this);
+        StoreOwner newStoreOwner = new StoreOwner(newStore,this,this);
         try {
             positions.addPosition(newStoreFounder);
+            positions.addPosition(newStoreOwner);
         } catch (Exception e) {
             // Rollback if either operation fails
-            positions.removePosition(newStoreFounder);
             throw e;
         }
         return newStore;

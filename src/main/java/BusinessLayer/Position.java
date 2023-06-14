@@ -10,6 +10,8 @@ public interface Position {
 
     Member getAssigner();
 
+    Member getPositionMember();
+    void setPositionMember(Member positionMember);
     void setPositionOfMemberToStoreManager(Store store, Member member, Member assigner) throws Exception; //5.9
 
     void setPositionOfMemberToStoreOwner(Store store, Member member, Member assigner) throws Exception;   //5.8

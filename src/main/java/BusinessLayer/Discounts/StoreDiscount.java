@@ -4,10 +4,13 @@ import BusinessLayer.Product;
 import BusinessLayer.Store;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
 import ServiceLayer.DTOs.Discounts.StoreDiscountDTO;
-import javax.persistence.*;
+//import javax.persistence.*;
+import jakarta.persistence.*;
+
 
 @Entity
 @Table(name = "store_discounts")
+@DiscriminatorValue("CHILD")
 public class StoreDiscount extends Discount {
     @ManyToOne
     @JoinColumn(name = "store_id")
@@ -28,7 +31,7 @@ public class StoreDiscount extends Discount {
 
     @Override
     public boolean checkApplies(Product p) {
-        return store.getProducts().getAllProducts().keySet().contains(p);
+        return store.getProducts().getAllProducts().contains(p);
     }
 
     @Override

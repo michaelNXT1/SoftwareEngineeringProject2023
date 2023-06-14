@@ -2,43 +2,67 @@ package BusinessLayer;
 
 import BusinessLayer.Logger.SystemLogger;
 import ServiceLayer.DTOs.PositionDTO;
+import jakarta.persistence.*;
 
-import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "positions")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "position_type", discriminatorType = DiscriminatorType.STRING)
 public class StoreFounder implements Position {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @OneToOne
     @JoinColumn(name = "store_id")
     private Store store;
-
     @ManyToOne
-    @JoinColumn(name = "store_owners")
-    private Member assigner;
+    @JoinColumn(name = "positionMember")
+    private Member positionMember;
     @Transient //Marks a property or field as transient, indicating that it should not be persisted in the database.
-    private final SystemLogger logger;
+    private SystemLogger logger;
 
-    @Column(name = "position_type", insertable = false, updatable = false)
-    private String positionType;
-
-    public StoreFounder(Store store) {
-        this.id = 0L; // Initializing with a default value
+    public StoreFounder(Store store, Member member) {
         this.store = store;
-        this.assigner = null;
         this.logger = new SystemLogger();
+        this.positionMember = member;
     }
 
+    public StoreFounder() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setStore(Store store) {
+        this.store = store;
+    }
+
+    public Member getPositionMember() {
+        return positionMember;
+    }
+
+    public void setPositionMember(Member positionMember) {
+        this.positionMember = positionMember;
+    }
+
+    public SystemLogger getLogger() {
+        return logger;
+    }
+
+    public void setLogger(SystemLogger logger) {
+        this.logger = logger;
+    }
+
+    @Override
     public Member getAssigner() {
-        return assigner;
+        return null;
     }
 
     @Override
@@ -180,6 +204,7 @@ public class StoreFounder implements Position {
     public void closeStore() throws IllegalAccessException {
         store.setOpen(false);
     }
+
 
     @Override
     public List<Member> getStoreEmployees() {

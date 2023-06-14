@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!DOCTYPE hibernate-configuration PUBLIC
@@ -26,3 +27,61 @@
 
     </session-factory>
 </hibernate-configuration>
+=======
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+
+        <!-- Connection settings -->
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/sadnadb</property>
+        <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.connection.password">admin</property>
+
+        <!-- SQL dialect -->
+        <property name="current_session_context_class">thread</property>
+
+        <!-- Print executed SQL to stdout -->
+        <property name="show_sql">true</property>
+
+        <!-- Update database on startup -->
+        <property name="hibernate.hbm2ddl.auto">update</property>
+
+        <!-- Annotated entity classes -->
+        <mapping class="BusinessLayer.Member"/>
+        <mapping class="BusinessLayer.Store"/>
+        <mapping class="BusinessLayer.Purchase"/>
+        <mapping class="BusinessLayer.Product"/>
+        <mapping class="BusinessLayer.ShoppingBag"/>
+        <mapping class="BusinessLayer.PurchaseProduct"/>
+        <mapping class="BusinessLayer.ShoppingCart"/>
+        <mapping class="BusinessLayer.PaymentDetails"/>
+        <mapping class="BusinessLayer.SupplyDetails"/>
+        <mapping class="BusinessLayer.SystemManager"/>
+        <mapping class="BusinessLayer.StoreOwner"/>
+        <mapping class="BusinessLayer.StoreFounder"/>
+        <mapping class="BusinessLayer.StoreManager"/>
+        <mapping class="BusinessLayer.Category"/>
+        <mapping class="Notification.Notification"/>
+        <mapping class="BusinessLayer.Discounts.Discount"/>
+        <mapping class="BusinessLayer.Discounts.ProductDiscount"/>
+        <mapping class="BusinessLayer.Discounts.CategoryDiscount"/>
+        <mapping class="BusinessLayer.Discounts.StoreDiscount"/>
+        <mapping class="BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy"/>
+        <mapping class="BusinessLayer.Policies.DiscountPolicies.PolicyTypes.MaxQuantityDiscountPolicy"/>
+        <mapping class="BusinessLayer.Policies.DiscountPolicies.PolicyTypes.MinBagTotalDiscountPolicy"/>
+        <mapping class="BusinessLayer.Policies.DiscountPolicies.PolicyTypes.MinQuantityDiscountPolicy"/>
+        <mapping class="BusinessLayer.Policies.DiscountPolicies.DiscountPolicyOperation"/>
+        <mapping class="BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy"/>
+        <mapping class="BusinessLayer.Policies.PurchasePolicies.PolicyTypes.CategoryTimeRestrictionPurchasePolicy"/>
+        <mapping class="BusinessLayer.Policies.PurchasePolicies.PolicyTypes.MaxQuantityPurchasePolicy"/>
+        <mapping class="BusinessLayer.Policies.PurchasePolicies.PolicyTypes.MinQuantityPurchasePolicy"/>
+        <mapping class="BusinessLayer.Policies.PurchasePolicies.PolicyTypes.ProductTimeRestrictionPurchasePolicy"/>
+        <mapping class="BusinessLayer.Policies.PurchasePolicies.PurchasePolicyOperation"/>
+
+    </session-factory>
+</hibernate-configuration>
+>>>>>>> f5f2891cbefd1c4a3f98ae121eb9a748c1d35a8d

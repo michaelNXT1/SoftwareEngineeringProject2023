@@ -47,7 +47,9 @@ public class PositionDAO implements IPositionRepository {
         Session session = HibernateUtil.getSessionFactory().openSession();
         List<Position> positions = null;
         try {
-            positions = session.createQuery("FROM positions", Position.class).list();
+            positions = session.createQuery("FROM StoreOwner", Position.class).list();
+            positions.addAll(session.createQuery("FROM StoreManager", Position.class).list());
+            positions.addAll(session.createQuery("FROM StoreFounder", Position.class).list());
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -56,5 +58,27 @@ public class PositionDAO implements IPositionRepository {
         return positions;
     }
 
+
+
+
+    public void clear() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+
+        try {
+            transaction = session.beginTransaction();
+            session.createQuery("DELETE FROM StoreOwner").executeUpdate();
+            session.createQuery("DELETE FROM StoreManager").executeUpdate();
+            session.createQuery("DELETE FROM StoreFounder").executeUpdate();
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
     // Add other methods as needed
 }

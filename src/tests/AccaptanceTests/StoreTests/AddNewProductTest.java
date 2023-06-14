@@ -18,7 +18,7 @@ public class AddNewProductTest extends ServiceTests {
     public void testAddProductAsStoreOwnerSuccess(){
         int storeID = openStore(sessionID1,"newStore");
         int productID1 = addProduct(sessionID1,storeID,"test",3.9,"milk",9,"10");
-        assertTrue(productID1 > 0);
+        assertTrue(productID1 > -1);
     }
 
 

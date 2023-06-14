@@ -18,16 +18,9 @@ public class MapStringGuestDAO implements IMapStringGuestRepository {
     @Override
     public void put(String key, Guest guest) {
         Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction transaction = null;
         try {
-            transaction = session.beginTransaction();
-            session.persist(guest);
-            transaction.commit();
             guestMap.put(key, guest);
         } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
             e.printStackTrace();
         } finally {
             session.close();
@@ -42,19 +35,12 @@ public class MapStringGuestDAO implements IMapStringGuestRepository {
     @Override
     public void remove(String key) {
         Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction transaction = null;
         try {
-            transaction = session.beginTransaction();
             Guest guest = guestMap.get(key);
-            if (guest != null) {
-                session.remove(guest);
                 guestMap.remove(key);
-            }
-            transaction.commit();
+
         } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
+
             e.printStackTrace();
         } finally {
             session.close();

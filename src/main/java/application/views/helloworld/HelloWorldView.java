@@ -2,6 +2,7 @@ package application.views.helloworld;
 
 import CommunicationLayer.IMarketController;
 import CommunicationLayer.MarketController;
+import CommunicationLayer.NotificationController;
 import application.views.MainLayout;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.Text;
@@ -15,13 +16,13 @@ import com.vaadin.flow.router.*;
 
 @PageTitle("Hello World")
 @Route(value = "hello", layout = MainLayout.class)
-@RouteAlias(value = "", layout = MainLayout.class)
 @PreserveOnRefresh
 public class HelloWorldView extends HorizontalLayout {
 
+
     private final TextField name;
 
-    public HelloWorldView() throws Exception {
+    public HelloWorldView() {
         IMarketController marketController = MarketController.getInstance();
         name = new TextField("Your name");
         Button sayHello = new Button("Say hello");

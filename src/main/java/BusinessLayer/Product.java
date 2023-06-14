@@ -1,7 +1,9 @@
 package BusinessLayer;
 
+import jakarta.persistence.*;
+
 import static org.atmosphere.annotation.AnnotationUtil.logger;
-import javax.persistence.*;
+//import javax.persistence.*;
 
 @Entity
 @Table(name = "products")
@@ -14,13 +16,13 @@ public class Product {
     @Column(name = "product_id")
     private int productId;
 
-    @Column(name = "product_name")
+    @Column(name = "product_name", columnDefinition = "text")
     private String productName;
 
     @Column(name = "price")
     private double price;
 
-    @Column(name = "category")
+    @Column(name = "category", columnDefinition = "text")
     private String category;
 
     @Column(name = "rating")
@@ -29,12 +31,9 @@ public class Product {
     @Column(name = "amount")
     private int amount;
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "text")
     private String description;
 
-    @OneToOne
-    @JoinColumn(name = "purchase_type_id")
-    private PurchaseType purchaseType;
 
     public Product(int storeId, int productId, String productName, double price, String category, String description) throws Exception {
         if (price < 0) {
@@ -50,7 +49,6 @@ public class Product {
             throw new Exception("product category is empty");
         }
         this.storeId = storeId;
-        this.purchaseType = new BuyItNow(this);
         this.productId = productId;
         this.productName = productName;
         this.price = price;
@@ -63,9 +61,10 @@ public class Product {
 
     }
 
-    public void setPurchaseType(PurchaseType purchaseType) {
-        this.purchaseType = purchaseType;
+    public void setStoreId(int storeId) {
+        this.storeId = storeId;
     }
+
 
     public int getStoreId() {
         return storeId;

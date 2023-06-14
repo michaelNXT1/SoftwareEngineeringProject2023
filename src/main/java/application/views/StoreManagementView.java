@@ -1,16 +1,13 @@
 package application.views;
 
 import CommunicationLayer.MarketController;
-import CommunicationLayer.NotificationController;
+import ServiceLayer.DTOs.*;
 import ServiceLayer.DTOs.Discounts.CategoryDiscountDTO;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
 import ServiceLayer.DTOs.Discounts.ProductDiscountDTO;
 import ServiceLayer.DTOs.Discounts.StoreDiscountDTO;
-import ServiceLayer.DTOs.MemberDTO;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
-import ServiceLayer.DTOs.PositionDTO;
-import ServiceLayer.DTOs.ProductDTO;
 import ServiceLayer.Response;
 import ServiceLayer.ResponseT;
 import com.vaadin.flow.component.Component;
@@ -23,6 +20,7 @@ import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridSortOrder;
 import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
@@ -61,7 +59,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
     private int storeId;
 
     @Autowired
-    public StoreManagementView() {
+    public StoreManagementView() throws Exception {
         this.marketController = MarketController.getInstance();
         this.header = new Header();
         add(header);
@@ -87,11 +85,17 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         discountGrids.add(productDiscountLayout, categoryDiscountLayout, storeDiscountLayout);
         discountGrids.setWidthFull();
 
-        add(productAndPolicyGrids, new H1("Discount Lists"), discountGrids);
+        add(
+                productAndPolicyGrids,
+                new H1("Discount Lists"),
+                discountGrids,
+                new Button("View Purchases", e -> viewPurchasesDialog()),
+                new Button("Close Store", e -> CloseStore())
+        );
 
         setWidthFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
-        setDefaultHorizontalComponentAlignment(Alignment.START);
+        setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         getStyle().set("text-align", "center");
     }
 
@@ -103,6 +107,48 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         successVl.add(new Label(msg), new Button("Close", e -> successDialog.close()));
         successDialog.add(successVl);
         successDialog.open();
+    }
+
+    private void viewPurchasesDialog() {
+        Dialog dialog = new Dialog();
+        Header header = new Header();
+        header.setText("Store purchases");
+
+        Grid<PurchaseDTO> purchaseGrid = new Grid<>(PurchaseDTO.class, false);
+        ResponseT<List<PurchaseDTO>> purchaseListResponse = marketController.getPurchaseHistory(MainLayout.getSessionId(), storeId);
+        purchaseGrid.setItems(purchaseListResponse.getError_occurred() ? new ArrayList<>() : purchaseListResponse.value);
+        purchaseGrid.addColumn(PurchaseDTO::getPurchaseId).setHeader("#").setSortable(true).setTextAlign(ColumnTextAlign.START).setAutoWidth(true);
+        purchaseGrid.addColumn(PurchaseDTO::getPurchaseDateTime).setHeader("Purchase Date & Time").setSortable(true).setTextAlign(ColumnTextAlign.START).setAutoWidth(true);
+        purchaseGrid.addComponentColumn(purchaseDTO -> new Button("view details", e -> viewPurchaseDetailsDialog(purchaseDTO))).setFlexGrow(0).setAutoWidth(true);
+        purchaseGrid.setWidthFull();
+
+        VerticalLayout vl = new VerticalLayout(header, purchaseGrid);
+        dialog.add(vl);
+        dialog.setWidthFull();
+        dialog.open();
+    }
+
+    private void viewPurchaseDetailsDialog(PurchaseDTO purchase) {
+        Dialog dialog = new Dialog();
+        Header header = new Header();
+        header.setText("Purchase #" + purchase.getPurchaseId());
+
+        Grid<PurchaseProductDTO> purchaseGrid = new Grid<>(PurchaseProductDTO.class, false);
+        purchaseGrid.setItems(purchase.getProductDTOList());
+        purchaseGrid.addColumn(PurchaseProductDTO::getProductName).setHeader("Product name").setSortable(true).setTextAlign(ColumnTextAlign.START).setAutoWidth(true);
+        purchaseGrid.addColumn(PurchaseProductDTO::getPrice).setHeader("Price").setSortable(true).setTextAlign(ColumnTextAlign.START).setAutoWidth(true);
+        purchaseGrid.addColumn(PurchaseProductDTO::getQuantity).setHeader("Quantity").setSortable(true).setTextAlign(ColumnTextAlign.START).setAutoWidth(true);
+        purchaseGrid.setWidthFull();
+
+        VerticalLayout vl = new VerticalLayout(header, purchaseGrid);
+        dialog.add(vl);
+        dialog.setWidthFull();
+        dialog.open();
+    }
+
+    private void CloseStore() {
+        Response r = marketController.closeStore(MainLayout.getSessionId(), storeId);
+        Notification.show(r.getError_occurred() ? r.error_message : "Store closed successfully", 3000, Notification.Position.MIDDLE);
     }
 
     @Override
@@ -136,7 +182,10 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         VerticalLayout products = new VerticalLayout();
         HorizontalLayout productsHL = new HorizontalLayout();
         Div productsDiv = new Div();
-        productsHL.add(new H1("Product List"), productsDiv, new Button("+", e -> addProductDialog()));
+        boolean hasPermission = marketController.hasPermission(MainLayout.getSessionId(), storeId, PositionDTO.permissionType.Inventory).value;
+        Button addProductButton = new Button("+", e -> addProductDialog());
+        addProductButton.setEnabled(hasPermission);
+        productsHL.add(new H1("Product List"), productsDiv, addProductButton);
         productsHL.setFlexGrow(1, productsDiv);
         productsHL.setWidthFull();
         productGrid = new Grid<>(ProductDTO.class, false);
@@ -146,8 +195,16 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         productGrid.addColumn(ProductDTO::getPrice).setHeader("Price").setSortable(true).setTextAlign(ColumnTextAlign.START).setFlexGrow(0);
         productGrid.addColumn(ProductDTO::getRating).setHeader("Rating").setSortable(true).setTextAlign(ColumnTextAlign.START).setFlexGrow(0);
         productGrid.addColumn(productDTO -> productMap.get(productDTO)).setHeader("Quantity").setSortable(true).setTextAlign(ColumnTextAlign.START).setFlexGrow(1);
-        productGrid.addComponentColumn(productDTO -> new Button("Edit", e -> editProductDialog(productDTO))).setFlexGrow(0).setAutoWidth(true);
-        productGrid.addComponentColumn(productDTO -> new Button("Remove", e -> removeProductDialog(productDTO.getProductId()))).setFlexGrow(0).setAutoWidth(true);
+        productGrid.addComponentColumn(productDTO -> {
+            if (hasPermission)
+                return new Button("Edit", e -> editProductDialog(productDTO));
+            return new Div();
+        }).setFlexGrow(0).setAutoWidth(true);
+        productGrid.addComponentColumn(productDTO -> {
+            if (hasPermission)
+                return new Button("Remove", e -> removeProductDialog(productDTO.getProductId()));
+            return new Div();
+        }).setFlexGrow(0).setAutoWidth(true);
         productGrid.sort(List.of(new GridSortOrder<>(productGrid.getColumnByKey("Id"), SortDirection.ASCENDING)));
         products.add(productsHL, productGrid);
         return products;
@@ -177,7 +234,9 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         VerticalLayout employees = new VerticalLayout();
         HorizontalLayout employeesHL = new HorizontalLayout();
         Div employeesDiv = new Div();
-        employeesHL.add(new H1("Employees List"), employeesDiv, new Button("+", e -> addEmployeeDialog()));
+        Button addEmployeeButton = new Button("+", e -> addEmployeeDialog());
+        employeesHL.add(new H1("Employees List"), employeesDiv, addEmployeeButton);
+        addEmployeeButton.setEnabled(marketController.hasPermission(MainLayout.getSessionId(), storeId, PositionDTO.permissionType.setNewPosition).value);
         employeesHL.setFlexGrow(1, employeesDiv);
         employeesHL.setWidthFull();
         employeesGrid = new Grid<>(MemberDTO.class, false);
@@ -194,6 +253,8 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
                 div.setText("You");
                 return div;
             }
+            if (!marketController.hasPermission(MainLayout.getSessionId(), storeId, PositionDTO.permissionType.setPermissions).value)
+                return new Div();
             PositionDTO position = memberDTO.getPositions().stream().filter(p -> p.getStore().getStoreId() == storeId).findFirst().orElse(null);
             if (position != null && position.getAssigner().getUsername().equals(marketController.getUsername(MainLayout.getSessionId()).value))
                 return switch (position.getPositionName()) {
@@ -756,7 +817,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         checkboxGroup.addThemeVariants(CheckboxGroupVariant.LUMO_VERTICAL);
 
         ResponseT<Set<PositionDTO.permissionType>> permissions = marketController.getPermissions(MainLayout.getSessionId(), storeId, employee.getUsername());
-        Set<String> stringPermissions=new HashSet<>();
+        Set<String> stringPermissions = new HashSet<>();
         if (!permissions.getError_occurred())
             stringPermissions = PositionDTO.mapStrings(permissions.value);
         checkboxGroup.setValue(stringPermissions);
@@ -1166,12 +1227,6 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
 
     }
 
-    private Span generateColumnHeader() {
-        Span header = new Span("Discount<br/>Percentage");
-        header.getElement().setProperty("innerHTML", "Discount<br/>Percentage");
-        return header;
-    }
-
     private String getProductName(ProductDiscountDTO productDiscountDTO) {
         return Objects.requireNonNull(productMap.keySet().stream().filter(productDTO -> productDTO.getProductId() == productDiscountDTO.getProductId()).findFirst().orElse(null)).getProductName();
     }
@@ -1187,6 +1242,12 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
             ret.append(bdpDTO.toString()).append(ls.indexOf(bdpDTO) != ls.size() - 1 ? "\nAND\n" : "");
         div.setText(ret.toString());
         return div;
+    }
+
+    private Span generateColumnHeader() {
+        Span header = new Span("Discount<br/>Percentage");
+        header.getElement().setProperty("innerHTML", "Discount<br/>Percentage");
+        return header;
     }
 
 }

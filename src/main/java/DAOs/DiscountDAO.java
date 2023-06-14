@@ -1,88 +1,75 @@
 package DAOs;
 
-import BusinessLayer.Member;
-import Repositories.IMemberRepository;
+import BusinessLayer.Discounts.Discount;
+import BusinessLayer.Product;
+import Repositories.IDiscountRepo;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.query.Query;
-
 
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class MemberDAO implements IMemberRepository {
-
-    public void addMember(Member member) {
+public class DiscountDAO implements IDiscountRepo {
+    @Override
+    public void addDiscount(Discount discount) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
-            session.persist(member);
+            session.persist(discount);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
-    }
-
-    public void removeMember(Member member) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction transaction = null;
-        try {
-            transaction = session.beginTransaction();
-            session.remove(member);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            e.printStackTrace();
-        } finally {
-            session.close();
-        }
-    }
-
-
-    public Member getMember(String key) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Member member = null;
-        try {
-            member = session.get(Member.class, key);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            session.close();
-        }
-        return member;
     }
 
     @Override
-    public List<Member> getAllMember() {
+    public void removeDiscount(Discount discount) {
         Session session = HibernateUtil.getSessionFactory().openSession();
-        List<Member> members = null;
+        Transaction transaction = null;
         try {
-            String hql = "FROM Member";
-            Query<Member> query = session.createQuery(hql, Member.class);
-            members = query.list();
+            transaction = session.beginTransaction();
+            session.remove(discount);
+            transaction.commit();
         } catch (Exception e) {
-            e.printStackTrace();
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw e;
         } finally {
             session.close();
         }
-        return members;
     }
 
+    @Override
+    public Discount get(Integer id) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Discount discount = null;
+        try {
+            discount = session.get(Discount.class, id);
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            session.close();
+        }
+        return discount;
+    }
 
+    @Override
     public void clear() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
 
         try {
             transaction = session.beginTransaction();
-            session.createQuery("DELETE FROM Member").executeUpdate();
+            session.createQuery("DELETE FROM CategoryDiscount").executeUpdate();
+            session.createQuery("DELETE FROM ProductDiscount").executeUpdate();
+            session.createQuery("DELETE FROM StoreDiscount").executeUpdate();
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -94,5 +81,19 @@ public class MemberDAO implements IMemberRepository {
         }
     }
 
-
+    @Override
+    public ConcurrentLinkedQueue<Discount> getAllDiscounts() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        List<Discount> discounts = null;
+        try {
+            discounts = session.createQuery("FROM StoreDiscount", Discount.class).list();
+            discounts.addAll(session.createQuery("FROM ProductDiscount", Discount.class).list());
+            discounts.addAll(session.createQuery("FROM StoreDiscount", Discount.class).list());
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            session.close();
+        }
+        return (ConcurrentLinkedQueue<Discount>) discounts;
+    }
 }

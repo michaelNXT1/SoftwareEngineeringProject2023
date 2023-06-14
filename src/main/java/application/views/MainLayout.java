@@ -44,20 +44,27 @@ import java.util.stream.Collectors;
  */
 public class MainLayout extends AppLayout {
     private static String sessionId;
-
+    private final Map<String, Runnable> searchActionMap = new HashMap<>();
     MarketController marketController = MarketController.getInstance();
     private TextField searchBox;
-    private final Map<String, Runnable> searchActionMap = new HashMap<>();
     private Select<String> searchType;
     private Button loginButton;
     private Button signUpButton;
     private Button logoutButton;
 
-    public MainLayout() throws Exception {
+    public MainLayout() {
         sessionId = marketController.enterMarket().value;
         config();
         addToNavbar(createHeaderContent());
         addDrawerContent();
+    }
+
+    public static String getSessionId() {
+        return sessionId;
+    }
+
+    public static void setSessionId(String sessionId) {
+        MainLayout.sessionId = sessionId;
     }
 
     private void config() {
@@ -68,6 +75,8 @@ public class MainLayout extends AppLayout {
 
         marketController.signUp("Michael", "1234");
         sessionId = marketController.login("Michael", "1234").value;
+        marketController.addPaymentMethod(sessionId, "a", "a", "a", "a");
+        marketController.addSupplyDetails(sessionId,"a","a","a","a","a");
         marketController.openStore(sessionId, "Shufersal");
         marketController.openStore(sessionId, "Ebay");
         Map<String, Integer> productMap = new HashMap<>();
@@ -97,6 +106,9 @@ public class MainLayout extends AppLayout {
         marketController.setPositionOfMemberToStoreManager(sessionId, 0, "Shoham");
         marketController.addStoreManagerPermissions(sessionId, "Shoham", 0, 4);
 
+        marketController.addProductToCart(sessionId, 0, 1, 4);
+        marketController.addProductToCart(sessionId, 0, 2, 4);
+
         marketController.logout(sessionId);
 
         sessionId = marketController.login("Alon", "1234").value;
@@ -119,14 +131,6 @@ public class MainLayout extends AppLayout {
         addToDrawer(header, scroller, createFooter());
     }
 
-    public static void setSessionId(String sessionId) {
-        MainLayout.sessionId = sessionId;
-    }
-
-    public static String getSessionId() {
-        return sessionId;
-    }
-
     private Component createHeaderContent() {
         VerticalLayout vl = new VerticalLayout();
         vl.setWidthFull();
@@ -140,11 +144,10 @@ public class MainLayout extends AppLayout {
         centerLayout.addClassNames(Display.FLEX, AlignItems.CENTER, Padding.Horizontal.LARGE);
         rightLayout.addClassNames(Display.FLEX, AlignItems.END, Padding.Horizontal.LARGE);
 
-        H1 appName = new H1("AIMSS inc.");
+        H1 appName = new H1("AIMSS incs.");
         appName.setWidthFull();
 
-        Button homeButton = new Button("Home", e -> UI.getCurrent().navigate(HelloWorldView.class));
-        Button aboutButton = new Button("About", e -> UI.getCurrent().navigate(AboutView.class));
+        Button homeButton = new Button("Home", e -> UI.getCurrent().navigate(AboutView.class));
         Select<String> select = initActionSelect();
         searchBox = new TextField();
         searchBox.setPlaceholder("Search product");
@@ -162,7 +165,7 @@ public class MainLayout extends AppLayout {
 
         Div div1 = new Div(), div2 = new Div(), div3 = new Div();
         leftLayout.add(appName);
-        centerLayout.add(div1, homeButton, aboutButton, select, searchBox, searchType, searchButton, cartButton, div2);
+        centerLayout.add(div1, homeButton, select, searchBox, searchType, searchButton, cartButton, div2);
         centerLayout.setFlexGrow(1, div1);
         centerLayout.setFlexGrow(1, div2);
 
@@ -184,7 +187,7 @@ public class MainLayout extends AppLayout {
             Notification.show(r.error_message, 3000, Notification.Position.MIDDLE);
         else {
             Notification.show("you logged out successfully", 3000, Notification.Position.MIDDLE);
-            UI.getCurrent().navigate(HelloWorldView.class);
+            UI.getCurrent().navigate(AboutView.class);
             boolean isLoggedIn = marketController.isLoggedIn(sessionId).value;
             loginButton.setVisible(!isLoggedIn);
             signUpButton.setVisible(!isLoggedIn);
@@ -192,7 +195,7 @@ public class MainLayout extends AppLayout {
         }
 
         if (sessionId != null)
-            UI.getCurrent().navigate(HelloWorldView.class);
+            UI.getCurrent().navigate(AboutView.class);
     }
 
     private void SearchProducts() {
@@ -206,15 +209,19 @@ public class MainLayout extends AppLayout {
         Select<String> select = new Select<>();
         Map<String, Runnable> actionsMap = new HashMap<>();
         actionsMap.put("Add Payment Method", () -> UI.getCurrent().navigate(AddPaymentMethod.class));
+        actionsMap.put("Add Delivery Address", () -> UI.getCurrent().navigate(AddDeliveryAddress.class));
         actionsMap.put("Open a New Store", () -> UI.getCurrent().navigate(OpenStore.class));
-        actionsMap.put("Close Store", () -> UI.getCurrent().navigate(CloseStore.class));
         actionsMap.put("My Stores", () -> UI.getCurrent().navigate(ManagerStoresView.class));
+        actionsMap.put("My Purchases", () -> UI.getCurrent().navigate(UserPurchases.class));
 
         actionsMap.put("Get information about members", () -> UI.getCurrent().navigate(GetInformationAboutMembers.class));
         actionsMap.put("System Manager Registration", () -> UI.getCurrent().navigate(SignUpSystemManager.class));
 
         select.setItems(actionsMap.keySet().stream().sorted().collect(Collectors.toList()));
-        select.addValueChangeListener(event -> actionsMap.get(event.getValue()).run());
+        select.addValueChangeListener(event -> {
+            actionsMap.get(event.getValue()).run();
+            select.clear();
+        });
         select.setPlaceholder("Actions");
         return select;
     }

@@ -3,10 +3,13 @@ package BusinessLayer.Discounts;
 import BusinessLayer.Product;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
 import ServiceLayer.DTOs.Discounts.ProductDiscountDTO;
-import javax.persistence.*;
+//import javax.persistence.*;
+import jakarta.persistence.*;
+
 
 @Entity
 @Table(name = "product_discounts")
+@DiscriminatorValue("CHILD")
 public class ProductDiscount extends Discount {
     @Column(name = "product_id")
     private final int productId;
