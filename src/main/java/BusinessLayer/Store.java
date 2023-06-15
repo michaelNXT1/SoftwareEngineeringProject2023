@@ -188,6 +188,7 @@ public class Store {
         Product p = getProduct(productId);
         synchronized (p) {
             p.setProductName(newName);
+            products.updateProduct(p);
         }
     }
 
@@ -196,6 +197,7 @@ public class Store {
         Product p = getProduct(productId);
         synchronized (p) {
             p.setPrice(newPrice);
+            products.updateProduct(p);
         }
     }
 
@@ -213,6 +215,7 @@ public class Store {
         Product p = getProduct(productId);
         synchronized (p) {
             p.setDescription(newDescription);
+            products.updateProduct(p);
         }
     }
 
