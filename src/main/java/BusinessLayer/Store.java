@@ -204,6 +204,7 @@ public class Store {
         Product p = getProduct(productId);
         synchronized (p) {
             p.setCategory(newCategory);
+            products.updateProduct(p);
         }
     }
 

@@ -7,6 +7,7 @@ import Repositories.IPurchaseProductRepository;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,7 +18,7 @@ public class Purchase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Transient
-    private IPurchaseProductRepository productList;
+    private List<PurchaseProduct> productList = new ArrayList<>();
     public enum PurchaseType {
         BuyItNow,
         Raffle,
@@ -26,7 +27,7 @@ public class Purchase {
     }
     @Enumerated(EnumType.STRING)
     protected PurchaseType type;
-    public Purchase(IPurchaseProductRepository productList) {
+    public Purchase(List<PurchaseProduct> productList) {
         this.productList = productList;
         this.purchaseDateTime = LocalDateTime.now();
         type = PurchaseType.BuyItNow;
@@ -38,16 +39,16 @@ public class Purchase {
     }
 
     public void addProduct(PurchaseProduct p) {
-        productList.addPurchaseProduct(p);
+        productList.add(p);
     }
 
     public double getTotalPrice() {
-        List<PurchaseProduct> purchaseProducts = productList.getAllPurchaseProducts();
+        List<PurchaseProduct> purchaseProducts = productList;
         return purchaseProducts.stream().mapToDouble(PurchaseProduct::getPrice).sum();
     }
 
 
-    public IPurchaseProductRepository getProductList() {
+    public List<PurchaseProduct> getProductList() {
         return this.productList;
     }
 
@@ -60,7 +61,7 @@ public class Purchase {
     }
 
 
-    public void setProductList(IPurchaseProductRepository productList) {
+    public void setProductList(List<PurchaseProduct> productList) {
         this.productList = productList;
     }
 
