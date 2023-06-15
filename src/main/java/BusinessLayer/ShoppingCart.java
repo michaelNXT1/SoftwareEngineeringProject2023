@@ -133,10 +133,7 @@ public class ShoppingCart {
                 .collect(Collectors.toList());
         logger.info("This shopping bag has been cleaned");
 
-        IPurchaseProductRepository purchaseProductDAO = new PurchaseProductDAO();
-        purchaseProductDAO.addAllPurchaseProducts(flattenedList); // Add the purchase products to the database
-
-        return new Purchase(purchaseProductDAO);
+        return new Purchase(flattenedList);
     }
 
 

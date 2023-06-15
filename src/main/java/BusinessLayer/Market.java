@@ -595,7 +595,7 @@ public class Market {
                 throw new Exception("Purchase failed, payment system hasn't managed to charge");
             }
             purchase = g.purchaseShoppingCart();
-            for (PurchaseProduct p : purchase.getProductList().getAllPurchaseProducts()) {
+            for (PurchaseProduct p : purchase.getProductList()) {
                 logger.info(String.format("purchase completed you just bought %d from %s", p.getQuantity(), p.getProductName()));
                 Store s = getStore(sessionId, p.getStoreId());
                 List<Member> managers = s.getManagers();

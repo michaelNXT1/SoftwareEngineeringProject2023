@@ -83,7 +83,7 @@ class ShoppingCartTest extends TestCase {
     @Test
     void purchaseShoppingCart() throws Exception {
         Purchase purchase = shoppingCart.purchaseShoppingCart();
-        assertTrue(purchase.getProductList().getAllPurchaseProducts().contains(product2));
+        assertTrue(purchase.getProductList().contains(product2));
     }
     @Test
     void purchaseShoppingCartWhenSupplySystemFailed() throws Exception {

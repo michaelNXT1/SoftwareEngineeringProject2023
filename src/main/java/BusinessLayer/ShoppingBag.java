@@ -42,7 +42,7 @@ public class ShoppingBag {
     public ShoppingBag(Store store, Long shoppingCartID) {
         this.shoppingCartId = shoppingCartID;
         this.store = store;
-        bagPurchase = new Purchase(new PurchaseProductDAO());
+        bagPurchase = new Purchase(new ArrayList<>());
         purchaseRepository.savePurchase(bagPurchase);
     }
 
@@ -112,7 +112,7 @@ public class ShoppingBag {
     //Use case 2.14
     public Pair<PurchaseProduct, Boolean> purchaseProduct(int productId) {
         try {
-            PurchaseProduct pp = store.subtractForPurchase(productId,productListId.get(store.getProduct(productId)));
+            PurchaseProduct pp = store.subtractForPurchase(productId,productListId.get(store.getProduct(productId).getProductId()));
             double discountPercentage = store.getProductDiscountPercentage(productId,productListId);
             pp.setPrice(pp.getPrice() * (1.0 - discountPercentage));
             this.productListId.remove(productId);
