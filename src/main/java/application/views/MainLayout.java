@@ -2,19 +2,19 @@ package application.views;
 
 
 import CommunicationLayer.MarketController;
+import ServiceLayer.Response;
 import ServiceLayer.ResponseT;
 import application.components.AppNav;
 import application.components.AppNavItem;
 import application.views.about.AboutView;
 import application.views.category.CategoryView;
-import application.views.helloworld.HelloWorldView;
-import application.views.login.LoginView;
 import application.views.openStore.OpenStore;
 import application.views.registration.RegistrationView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
@@ -25,6 +25,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import com.vaadin.flow.theme.lumo.LumoUtility.AlignItems;
@@ -102,7 +103,7 @@ public class MainLayout extends AppLayout {
         marketController.addMinQuantityDiscountPolicy(sessionId, store_id, Math.toIntExact(discounts.get(2)), productMap.get("Bread"), 5, true);
         marketController.addMinQuantityDiscountPolicy(sessionId, store_id, Math.toIntExact(discounts.get(2)), productMap.get("Bun"), 5, true);
 
-        marketController.addMaxQuantityPolicy(sessionId, store_id ,productMap.get("Apple"), 5);
+        marketController.addMaxQuantityPolicy(sessionId, store_id, productMap.get("Apple"), 5);
         marketController.addCategoryTimeRestrictionPolicy(sessionId, store_id, "Snacks", LocalTime.of(7, 0, 0), LocalTime.of(23, 0, 0));
 
         marketController.setPositionOfMemberToStoreOwner(sessionId, store_id, "Alon");
@@ -158,7 +159,7 @@ public class MainLayout extends AppLayout {
         Button searchButton = new Button("", VaadinIcon.SEARCH.create(), e -> SearchProducts());
         Button cartButton = new Button("Cart", VaadinIcon.CART.create(), e -> UI.getCurrent().navigate(ShoppingCart.class));
 
-        loginButton = new Button("Login", e -> UI.getCurrent().navigate(LoginView.class));
+        loginButton = new Button("Login", e -> loginDialog());
         signUpButton = new Button("Sign Up", e -> UI.getCurrent().navigate(RegistrationView.class));
         logoutButton = new Button("Logout", e -> logout());
         boolean isLoggedIn = marketController.isLoggedIn(sessionId).value;
@@ -180,6 +181,42 @@ public class MainLayout extends AppLayout {
         layout.setFlexGrow(1, rightLayout);
         vl.add(layout);
         return vl;
+    }
+
+    private void loginDialog() {
+        Dialog dialog = new Dialog();
+        TextField usernameField;
+        PasswordField passwordField;
+        Button submitButton;
+        Header lheader = new Header();
+        lheader.setText("Login");
+        usernameField = new TextField("Username");
+        passwordField = new PasswordField("Password");
+        submitButton = new Button("Login", e -> {
+            String username = usernameField.getValue();
+            String password = passwordField.getValue();
+            Response r = marketController.login(username, password);
+            MainLayout.setSessionId(((ResponseT<String>) r).value);
+            if (r.getError_occurred())
+                Notification.show(r.error_message, 3000, Notification.Position.MIDDLE);
+            else {
+                Notification.show("you logged in successfully", 3000, Notification.Position.MIDDLE);
+                dialog.close();
+                postLogin();
+            }
+        });
+        marketController = MarketController.getInstance();
+
+        dialog.add(new VerticalLayout(lheader, usernameField, passwordField, submitButton));
+        dialog.open();
+    }
+
+    public void postLogin() {
+        UI.getCurrent().navigate(AboutView.class);
+        boolean isLoggedIn = marketController.isLoggedIn(sessionId).value;
+        loginButton.setVisible(!isLoggedIn);
+        signUpButton.setVisible(!isLoggedIn);
+        logoutButton.setVisible(isLoggedIn);
     }
 
     private void logout() {

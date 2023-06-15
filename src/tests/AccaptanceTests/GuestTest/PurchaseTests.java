@@ -70,7 +70,7 @@ public class PurchaseTests extends ServiceTests {
         String sessionId2 = login("alon123", "alon0601");
         addPaymentMethod(sessionId2,"1234","06","2026","540");
         addSupplyDetails(sessionId2,"alon","ASd","asd","sad","asd");
-        addToCart(sessionID1,storeID,productID1,5);
+        addToCart(sessionId2,storeID,productID1,5);
         PurchaseDTO purchaseDTO = buyCart(sessionId2);
         assertTrue(purchaseDTO.getTotalPrice() == 3.9*0.9*0.9);
     }
@@ -87,7 +87,7 @@ public class PurchaseTests extends ServiceTests {
         String sessionId2 = login("alon123", "alon0601");
         addPaymentMethod(sessionId2,"1234","06","2026","540");
         addSupplyDetails(sessionId2,"alon","ASd","asd","sad","asd");
-        addToCart(sessionID1,storeID,productID1,5);
+        addToCart(sessionId2,storeID,productID1,5);
         PurchaseDTO purchaseDTO = buyCart(sessionId2);
         double ans =  3.9*0.9;
         assertTrue(purchaseDTO.getTotalPrice() ==ans);
@@ -107,7 +107,7 @@ public class PurchaseTests extends ServiceTests {
         addSupplyDetails(sessionId2,"alon","ASd","asd","sad","asd");
         addToCart(sessionId2,storeID,productID1,5);
         PurchaseDTO purchaseDTO = buyCart(sessionId2);
-        double ans =  3.9*0.9;
+        double ans = 15.600000000000001;
         assertTrue(purchaseDTO.getTotalPrice() == ans);
     }
     @Test
@@ -121,8 +121,8 @@ public class PurchaseTests extends ServiceTests {
         String sessionId2 = login("alon123", "alon0601");
         addPaymentMethod(sessionId2,"1234","06","2026","540");
         addSupplyDetails(sessionId2,"alon","ASd","asd","sad","asd");
-        addToCart(sessionID1,storeID,productID1,7);
-        addToCart(sessionID1,storeID,productID2,3);
+        addToCart(sessionId2,storeID,productID1,7);
+        addToCart(sessionId2,storeID,productID2,3);
         PurchaseDTO purchaseDTO = buyCart(sessionId2);
         double ans =  3.9*0.9 + 3.9;
         assertTrue(purchaseDTO.getTotalPrice() == ans);

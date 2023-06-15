@@ -15,7 +15,7 @@ public class PurchaseDTO {
     private final List<PurchaseProductDTO> productDTOList;
 
     public PurchaseDTO(Purchase p) {
-        productDTOList = p.getProductList().getAllPurchaseProducts().stream().map(PurchaseProductDTO::new).collect(Collectors.toList());
+        productDTOList = p.getProductList().stream().map(PurchaseProductDTO::new).collect(Collectors.toList());
         this.purchaseId=p.getId();
         this.purchaseDateTime=p.getPurchaseDateTime();
     }

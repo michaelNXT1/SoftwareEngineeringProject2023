@@ -4,6 +4,7 @@ import BusinessLayer.*;
 import BusinessLayer.Member;
 import junit.framework.TestCase;
 
+import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 
 public class StoreOwnerTest extends TestCase {
@@ -25,6 +26,7 @@ public class StoreOwnerTest extends TestCase {
         storeOwner = new StoreOwner(store,member,member);
         p = null;
     }
+    @Test
 
     public void testChangeStoreManagerPermissions() {
         StoreManager storeManager = new StoreManager(store,member,member);
@@ -32,6 +34,7 @@ public class StoreOwnerTest extends TestCase {
         assertTrue(storeManager.getPermissions().contains(StoreManager.permissionType.Inventory));
         storeOwner.removeStoreManagerPermissions(storeManager, StoreManager.permissionType.Inventory);
     }
+    @Test
 
     public void testRemoveProductFromStore() throws Exception {
         p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"aa");
@@ -39,6 +42,7 @@ public class StoreOwnerTest extends TestCase {
         storeOwner.removeProductFromStore(productId);
         assertNull(store.getProduct(p.getProductId()));
     }
+    @Test
 
     public void testEditProductName() throws Exception {
         p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"aa");
@@ -46,6 +50,7 @@ public class StoreOwnerTest extends TestCase {
         storeOwner.editProductName(productId, "Product 2");
         assertEquals(p.getProductName(),"Product 2");
     }
+    @Test
 
     public void testEditProductPrice() throws Exception {
         p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"aa");
@@ -53,6 +58,7 @@ public class StoreOwnerTest extends TestCase {
         storeOwner.editProductPrice(productId, 60.0);
         assertEquals(p.getProductPrice(),60.0);
     }
+    @Test
 
     public void testEditProductCategory() throws Exception {
         p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"aa");
@@ -60,6 +66,7 @@ public class StoreOwnerTest extends TestCase {
         storeOwner.editProductCategory(productId, "new category");
         assertEquals(p.getCategory(),"new category");
     }
+    @Test
 
     public void testEditProductDescription() throws Exception {
         p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"aa");
@@ -67,16 +74,19 @@ public class StoreOwnerTest extends TestCase {
         storeOwner.editProductDescription(productId, "new description");
         assertEquals(p.getDescription(),Long.parseLong("new description"));
     }
+    @Test
 
     public void testAddProduct() throws Exception {
         p = storeOwner.addProduct(store,"Product 1", 10.0, "proxyProduct", 100,"aa");
         assertEquals(p,store.getProduct(p.getProductId()));
     }
+    @Test
 
     public void testGetPurchaseHistory() {
         assertTrue(storeOwner.getPurchaseHistory(store).isEmpty());
     }
 
+    @Test
 
     public void testCloseStore() throws IllegalAccessException {
         try {

@@ -2,12 +2,14 @@ package UnitTests;
 
 import BusinessLayer.ExternalSystems.PaymentSystem;
 import BusinessLayer.ExternalSystems.SupplySystem;
+import BusinessLayer.Market;
 import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
 
 public class ExternalSystemsTest extends TestCase {
-
+    Market market = new Market(null,true);
     PaymentSystem paymentSystem;
     SupplySystem supplySystem;
 
@@ -15,8 +17,13 @@ public class ExternalSystemsTest extends TestCase {
     public void setUp() {
         paymentSystem = new PaymentSystem();
         supplySystem = new SupplySystem();
-    }
 
+
+    }
+    @AfterEach
+    public void tearDown() {
+        market.clearAllData();
+    }
     @Test
     public void testHandShake() {
         assertTrue(paymentSystem.handshake());
