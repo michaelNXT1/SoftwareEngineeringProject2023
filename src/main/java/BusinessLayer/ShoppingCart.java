@@ -24,7 +24,7 @@ public class ShoppingCart {
     @Column
     private Long userId;
     @Transient
-    public IShoppingBagRepository shoppingBags = new ShoppingBagDAO();;
+    public IShoppingBagRepository shoppingBags = new ShoppingBagDAO();
     @Transient
     private List<ShoppingBag> shoppingBags2;
     @Transient
@@ -98,7 +98,7 @@ public class ShoppingCart {
     public void removeProduct(Store s, int productId) throws Exception {
         List<ShoppingBag> allShoppingBags = shoppingBags.getAllShoppingBags();
         ShoppingBag shoppingBag = allShoppingBags.stream()
-                .filter(sb -> sb.getStore().equals(s))
+                .filter(sb -> sb.getStore().getStoreId()==s.getStoreId())
                 .findFirst()
                 .orElse(null);
         if (shoppingBag == null) {
@@ -140,7 +140,7 @@ public class ShoppingCart {
     private ShoppingBag getShoppingBag(Store s) {
         List<ShoppingBag> shoppingBags1 = shoppingBags.getAllShoppingBags().stream()
                 .filter(sb -> sb.getStore().equals(s)).toList();
-        ShoppingBag shoppingBag = null;
+        ShoppingBag shoppingBag;
         if(shoppingBags1.isEmpty()) {
             shoppingBag = new ShoppingBag(s,this.id);
         }
