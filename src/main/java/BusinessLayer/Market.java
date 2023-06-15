@@ -207,6 +207,16 @@ public class Market {
                         }
                         break;
 
+                    case "change-product-quantity": try {
+                            sessionId = sessionManager.getSessionIdByGuestName(args[0]);
+                            storeId = getStoreByName(sessionId, args[1]).getStoreId();
+                            changeProductQuantity(sessionId,storeId,Integer.parseInt(args[2]),Integer.parseInt(args[3]));
+                        }
+                        catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                        break;
+
 
                     default:
                         try {
