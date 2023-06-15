@@ -3,10 +3,8 @@ package BusinessLayer;
 import BusinessLayer.Logger.SystemLogger;
 
 import CommunicationLayer.NotificationBroker;
-import CommunicationLayer.NotificationController;
 import DAOs.NotificationDAO;
 import DAOs.PositionDAO;
-import DAOs.StoreOwnerDAO;
 import Repositories.INotificationRepository;
 import Repositories.IPositionRepository;
 import Security.SecurityUtils;
@@ -18,9 +16,7 @@ import jakarta.persistence.*;
 
 //import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Entity
 @Table(name = "members")
@@ -193,5 +189,9 @@ public class Member extends Guest {
             ret.add(new StoreDTO(p.getStore()));
         }
         return ret;
+    }
+
+    public void removePosition(Position userP) {
+        positions.removePosition(userP);
     }
 }

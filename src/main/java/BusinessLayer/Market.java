@@ -1158,7 +1158,20 @@ public class Market {
         }
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
-        p.removeStoreOwner(storeOwnerToRemove, m);
+        try {
+            p.removeStoreOwner(storeOwnerToRemove, m);
+            for (Member u:users.getAllMembers().values()
+                 ) {
+                for (Position userP:u.getPositions().getAllPositions()
+                     ) {
+                    if (userP.getAssigner().equals(storeOwnerToRemove))
+                        u.removePosition(userP);
+                }
+            }
+        }
+        catch (Exception e){
+
+        }
         logger.info(String.format("%s removed from being storeManager", storeOwnerName));
     }
 
