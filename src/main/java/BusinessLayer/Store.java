@@ -322,7 +322,8 @@ public class Store {
     }
 
     public void joinDiscountPolicies(int policyId1, int policyId2, int operator) throws Exception {
-        BaseDiscountPolicy found_1 = productDiscountPolicyMap.getDiscountPolicyById(policyId1), found_2 = found_1 = productDiscountPolicyMap.getDiscountPolicyById(policyId1);
+        BaseDiscountPolicy found_1 = productDiscountPolicyMap.getDiscountPolicyById(policyId1);
+        BaseDiscountPolicy found_2 = productDiscountPolicyMap.getDiscountPolicyById(policyId2);
         if (found_1 == null) {
             logger.error("couldn't find discount policy of id" + policyId1);
             throw new Exception("couldn't find discount policy of id" + policyId1);
