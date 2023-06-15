@@ -1,30 +1,27 @@
 package BusinessLayer;
 
 import BusinessLayer.Logger.SystemLogger;
-import DAOs.PurchaseProductDAO;
 import DAOs.ShoppingBagDAO;
-import Repositories.IPurchaseProductRepository;
 import Repositories.IShoppingBagRepository;
 import Utils.Pair;
+import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-//import javax.persistence.*;
-import jakarta.persistence.*;
-import jakarta.transaction.Transactional;
 
 
 @Entity
 public class ShoppingCart {
+    @Transient
+    public IShoppingBagRepository shoppingBags = new ShoppingBagDAO();
     @Id
     @GeneratedValue
     private Long id;
     @Column
     private Long userId;
-    @Transient
-    public IShoppingBagRepository shoppingBags = new ShoppingBagDAO();;
     @Transient
     private List<ShoppingBag> shoppingBags2;
     @Transient
@@ -33,7 +30,7 @@ public class ShoppingCart {
 
     public ShoppingCart(Long userName) {
         this.userId = userName;
-        shoppingBags2 = shoppingBags.getAllShoppingBags().stream().filter(sb->sb.getId().equals(this.id)).toList();
+        shoppingBags2 = shoppingBags.getAllShoppingBags().stream().filter(sb -> sb.getId().equals(this.id)).toList();
         this.logger = new SystemLogger();
     }
 
@@ -46,7 +43,7 @@ public class ShoppingCart {
     public void setProductQuantity(Store s, int productId, int quantity) throws Exception {
         //TODO: add purchase type check
         if (quantity < 0) {
-            logger.error(String.format("this quantity %d is less then 0",quantity));
+            logger.error(String.format("this quantity %d is less then 0", quantity));
             throw new Exception("cannot change quantity to less then 0");
         }
         ShoppingBag shoppingBag = getShoppingBag(s);
@@ -98,7 +95,7 @@ public class ShoppingCart {
     public void removeProduct(Store s, int productId) throws Exception {
         List<ShoppingBag> allShoppingBags = shoppingBags.getAllShoppingBags();
         ShoppingBag shoppingBag = allShoppingBags.stream()
-                .filter(sb -> sb.getStore().equals(s))
+                .filter(sb -> sb.getStore().getStoreId() == s.getStoreId())
                 .findFirst()
                 .orElse(null);
         if (shoppingBag == null) {
@@ -115,7 +112,7 @@ public class ShoppingCart {
             throw new Exception("Purchase failed, cart is empty");
         }
         Map<ShoppingBag, List<PurchaseProduct>> shoppingBagMap = new HashMap<>();
-        for (ShoppingBag sb : shoppingBags.getAllShoppingBags().stream().filter(fb->fb.getShoppingCartId().equals(this.id)).toList()) {
+        for (ShoppingBag sb : shoppingBags.getAllShoppingBags().stream().filter(fb -> fb.getShoppingCartId().equals(this.id)).toList()) {
             Pair<List<PurchaseProduct>, Boolean> sbp = sb.purchaseShoppingBag();
             if (sbp.getSecond()) {
                 shoppingBagMap.put(sb, sbp.getFirst());
@@ -140,11 +137,10 @@ public class ShoppingCart {
     private ShoppingBag getShoppingBag(Store s) {
         List<ShoppingBag> shoppingBags1 = shoppingBags.getAllShoppingBags().stream()
                 .filter(sb -> sb.getStore().equals(s)).toList();
-        ShoppingBag shoppingBag = null;
-        if(shoppingBags1.isEmpty()) {
-            shoppingBag = new ShoppingBag(s,this.id);
-        }
-        else {
+        ShoppingBag shoppingBag;
+        if (shoppingBags1.isEmpty()) {
+            shoppingBag = new ShoppingBag(s, this.id);
+        } else {
             shoppingBag = shoppingBags1.get(0);
         }
         return shoppingBag;
