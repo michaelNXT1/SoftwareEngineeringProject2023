@@ -433,14 +433,6 @@ public class Store {
         return employees;
     }
 
-    @ElementCollection
-    @CollectionTable(name = "store_categories",
-            joinColumns = @JoinColumn(name = "store_id"))
-    @Column(name = "category")
-    public IStringSetRepository getCategories() {
-        return categories;
-    }
-
     public List<String> getStoreOwners() {
         return storeOwners.getAllStoreOwners();
     }
