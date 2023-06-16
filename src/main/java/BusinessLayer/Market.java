@@ -77,9 +77,14 @@ public class Market {
         paymentSystem = new PaymentSystemProxy();
         paymentSystem.setPaymentSystem(new PaymentSystem());
         clearAllData();
-//        signUpSystemManager("admin","admin");
-        if(path != null)
-            parseFile(path);
+        if(path != null) {
+            try {
+                parseFile(path);
+                logger.info("great success");
+            }catch (Exception e){
+                logger.error("cannot load the parse file because " + e.getMessage());
+            }
+        }
         testModeSupplySystem(isTestMode);
         testModePaymentSystem(isTestMode);
     }
@@ -355,33 +360,7 @@ public class Market {
         }
     }
 
-//    //use case 2.3
-//    public String loginSystemManager(String username, String password) throws Exception {
-//        logger.info(String.format("%s trying to log in to the systemManager", username));
-//        // Retrieve the stored Member's object for the given username
-//        SystemManager sm = systemManagers.get(username);
-//
-//        String hashedPassword = new String(passwordEncoder.digest(password.getBytes()));
-//        // If the Member doesn't exist or the password is incorrect, return false
-//        if (sm == null || !hashedPassword.equals(sm.getPassword())) {
-//            logger.error(String.format("%s has Invalid username or password", username));
-//            throw new Error("Invalid username or password");
-//        }
-//
-//        // If the credentials are correct, authenticate the user and return true
-//        boolean res = securityUtils.authenticate(username, password);
-//        if (res) {
-//            logger.info(String.format("%s the user passed authenticate check and logged in to the systemManager", username));
-//            String sessionId = sessionManager.createSessionForSystemManager(sm);
-//            return sessionId;
-//        }
-//        return null;
-//    }
-//
-//    public void logoutSystemManager(String sessionId) throws Exception {
-//        logger.info(String.format("%s trying to log out of the system", sessionId));
-//        sessionManager.deleteSessionForSystemManager(sessionId);
-//    }
+
 
     //use case 3.1
     public String logout(String sessionId) throws Exception {
