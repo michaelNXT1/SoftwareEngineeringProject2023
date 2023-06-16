@@ -227,7 +227,7 @@ public class StoreOwner implements Position {
 
     @Override
     public void removeStoreOwner(Member storeOwnerToRemove, Guest m) throws Exception {
-        if (!assigner.equals(m)) {
+        if (!assigner.getUsername().equals(m.getUsername())) {
             logger.error(String.format("%s is not the assigner of %s", m.getUsername(), storeOwnerToRemove.getUsername()));
             throw new Exception("can remove only store owner assigned by him");
         }
