@@ -305,19 +305,16 @@ public class Store {
 
     //Discount policies
     public Integer addMinQuantityDiscountPolicy(int discountId, int productId, int minQuantity, boolean allowNone) throws Exception {
-        productDiscountPolicyMap.addDiscountPolicy(new MinQuantityDiscountPolicy(purchasePolicyCounter++, checkProductExists(productId), minQuantity, allowNone,this.storeId,discountId));
-        return purchasePolicyCounter - 1;
+        return productDiscountPolicyMap.addDiscountPolicy(new MinQuantityDiscountPolicy(purchasePolicyCounter++, checkProductExists(productId), minQuantity, allowNone,this.storeId,discountId));
     }
 
     public Integer addMaxQuantityDiscountPolicy(int discountId, int productId, int maxQuantity) throws Exception {
-        productDiscountPolicyMap.addDiscountPolicy(new MaxQuantityDiscountPolicy(purchasePolicyCounter++, checkProductExists(productId), maxQuantity,this.storeId,discountId));
-        return purchasePolicyCounter - 1;
+        return productDiscountPolicyMap.addDiscountPolicy(new MaxQuantityDiscountPolicy(purchasePolicyCounter++, checkProductExists(productId), maxQuantity,this.storeId,discountId));
 
     }
 
     public Integer addMinBagTotalDiscountPolicy(int discountId, double minTotal) throws Exception {
-        productDiscountPolicyMap.addDiscountPolicy(new MinBagTotalDiscountPolicy(purchasePolicyCounter++, minTotal,this.storeId,discountId));
-        return purchasePolicyCounter - 1;
+        return productDiscountPolicyMap.addDiscountPolicy(new MinBagTotalDiscountPolicy(purchasePolicyCounter++, minTotal,this.storeId,discountId));
 
     }
 
@@ -332,13 +329,15 @@ public class Store {
             logger.error("couldn't find discount policy of id" + policyId2);
             throw new Exception("couldn't find discount policy of id" + policyId2);
         }
-        if(found_2.getDiscount_id() != found_1.getDiscount_id()){
+        if(found_2.getDiscount_id().longValue() != found_1.getDiscount_id().longValue()){
             logger.error("the two policies refers to two different discounts policy1 discount " + found_1.getDiscount_id() + "policy2 discount" + found_2.getDiscount_id());
             throw new Exception("he two policies refers to two different discounts");
         }
         productDiscountPolicyMap.addDiscountPolicy(new DiscountPolicyOperation(discountPolicyCounter++, found_1, operator, found_2,this.storeId, Math.toIntExact(found_1.getDiscount_id())));
-        productDiscountPolicyMap.removeDiscountPolicy(found_1);
-        productDiscountPolicyMap.removeDiscountPolicy(found_2);
+        found_1.setValid(false);
+        found_2.setValid(false);
+        productDiscountPolicyMap.updateBaseDiscountPolicy(found_1);
+        productDiscountPolicyMap.updateBaseDiscountPolicy(found_2);
     }
 
     public void removeDiscountPolicy(int policyId) throws Exception {
@@ -363,7 +362,7 @@ public class Store {
             productList.put(getProduct(i), productIdList.get(i));
         }
         Product product = checkProductExists(productId);
-        List<BaseDiscountPolicy> baseDiscountPolicies = productDiscountPolicyMap.getAllDiscountPolicies().stream().filter(pdp -> pdp.getStore() == this.storeId).toList();
+        List<BaseDiscountPolicy> baseDiscountPolicies = productDiscountPolicyMap.getAllDiscountPolicies().stream().filter(pdp -> pdp.isValid() && pdp.getStore() == this.storeId).toList();
         for (BaseDiscountPolicy baseDiscountPolicy: baseDiscountPolicies) {
             Discount discount = discountRepo.get(baseDiscountPolicy.getDiscount_id());
 

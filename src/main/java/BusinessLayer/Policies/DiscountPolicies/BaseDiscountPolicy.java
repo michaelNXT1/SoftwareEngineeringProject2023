@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 @DiscriminatorColumn(name = "BaseDiscountPolicy", discriminatorType = DiscriminatorType.STRING)
 public abstract class BaseDiscountPolicy {
     @Id
+    @GeneratedValue
     @Column(name = "policy_id")
     protected int policyId;
 
@@ -28,6 +29,9 @@ public abstract class BaseDiscountPolicy {
 
     @Column(name = "discount_id")
     protected Long discount_id;
+
+    @Column(name = "valid")
+    protected boolean valid;
 
     @Transient
     protected final SystemLogger logger;
@@ -48,9 +52,9 @@ public abstract class BaseDiscountPolicy {
 
     public BaseDiscountPolicy(int policyId, int store_id,Long discounts) {
         this.logger = new SystemLogger();
-        this.policyId = policyId;
         this.store_id = store_id;
         this.discount_id = discounts;
+        this.valid=true;
     }
 
     public Integer getStore_id() {
@@ -91,4 +95,12 @@ public abstract class BaseDiscountPolicy {
     }
 
     public abstract BaseDiscountPolicyDTO copyConstruct() throws Exception;
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
+    }
+
+    public boolean isValid() {
+        return valid;
+    }
 }
