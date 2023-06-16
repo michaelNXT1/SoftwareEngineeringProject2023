@@ -31,7 +31,7 @@ public class PurchaseDTO {
 
 
     public double getTotalPrice() {
-        return productDTOList.stream().mapToDouble(pp->pp.getPrice()*pp.getQuantity()).sum();
+        return Math.round(productDTOList.stream().mapToDouble(pp->pp.getPrice()*pp.getQuantity()).sum()*100.0)/100.0;
     }
 
     public Long getPurchaseId() {
