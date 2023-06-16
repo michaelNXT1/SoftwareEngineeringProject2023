@@ -33,7 +33,7 @@ public class BaseDiscountPolicyMapDAO implements IBaseDiscountPolicyMapRepositor
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -52,7 +52,7 @@ public class BaseDiscountPolicyMapDAO implements IBaseDiscountPolicyMapRepositor
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
             this.discountPolicies.remove(discount);
@@ -66,7 +66,7 @@ public class BaseDiscountPolicyMapDAO implements IBaseDiscountPolicyMapRepositor
         try {
             discountPolicy = session.get(BaseDiscountPolicy.class, discount.getId());
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -81,7 +81,7 @@ public class BaseDiscountPolicyMapDAO implements IBaseDiscountPolicyMapRepositor
         try {
             baseDiscountPolicy = session.get(BaseDiscountPolicy.class, key);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -99,7 +99,7 @@ public class BaseDiscountPolicyMapDAO implements IBaseDiscountPolicyMapRepositor
             discountPolicyMap.addAll( session.createQuery("FROM MinBagTotalDiscountPolicy", BaseDiscountPolicy.class).list());
             discountPolicyMap.addAll( session.createQuery("FROM MinQuantityDiscountPolicy", BaseDiscountPolicy.class).list());
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -123,7 +123,7 @@ public class BaseDiscountPolicyMapDAO implements IBaseDiscountPolicyMapRepositor
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }

@@ -21,7 +21,7 @@ public class PositionDAO implements IPositionRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -38,7 +38,7 @@ public class PositionDAO implements IPositionRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -52,7 +52,7 @@ public class PositionDAO implements IPositionRepository {
             positions.addAll(session.createQuery("FROM StoreManager", Position.class).list());
             positions.addAll(session.createQuery("FROM StoreFounder", Position.class).list());
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -75,7 +75,7 @@ public class PositionDAO implements IPositionRepository {
             query.setParameter("username", username);
             positions.addAll(query.list());
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -97,7 +97,7 @@ public class PositionDAO implements IPositionRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }

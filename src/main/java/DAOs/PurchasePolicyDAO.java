@@ -31,7 +31,7 @@ public class PurchasePolicyDAO implements IPurchasePolicyRepository{
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
             purchasePolicies.add(purchasePolicy);
@@ -51,7 +51,7 @@ public class PurchasePolicyDAO implements IPurchasePolicyRepository{
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
             purchasePolicies.remove(purchasePolicy);
@@ -67,7 +67,7 @@ public class PurchasePolicyDAO implements IPurchasePolicyRepository{
             Query<BasePurchasePolicy> query = session.createQuery("FROM BasePurchasePolicy", BasePurchasePolicy.class);
             purchasePolicies = query.list();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -92,7 +92,7 @@ public class PurchasePolicyDAO implements IPurchasePolicyRepository{
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }

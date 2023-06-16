@@ -21,7 +21,7 @@ public class MapStringGuestDAO implements IMapStringGuestRepository {
         try {
             guestMap.put(key, guest);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -41,7 +41,7 @@ public class MapStringGuestDAO implements IMapStringGuestRepository {
 
         } catch (Exception e) {
 
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }

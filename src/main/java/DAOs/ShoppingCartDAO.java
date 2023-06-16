@@ -23,7 +23,7 @@ public class ShoppingCartDAO implements IShoppingCartRepo {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -41,7 +41,7 @@ public class ShoppingCartDAO implements IShoppingCartRepo {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -54,7 +54,7 @@ public class ShoppingCartDAO implements IShoppingCartRepo {
         try {
             shoppingCart = session.get(ShoppingCart.class, id);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -68,7 +68,7 @@ public class ShoppingCartDAO implements IShoppingCartRepo {
         try {
             shoppingBags = session.createQuery("FROM ShoppingCart", ShoppingCart.class).list();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -88,7 +88,7 @@ public class ShoppingCartDAO implements IShoppingCartRepo {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
