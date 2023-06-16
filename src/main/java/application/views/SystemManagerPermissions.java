@@ -43,15 +43,13 @@ public class SystemManagerPermissions extends VerticalLayout {
         private void login() {
             String username = usernameField.getValue();
             String password = passwordField.getValue();
-            Response r = marketController.loginSystemManager(username,password);
-            MainLayout.setSessionId(((ResponseT<String>) r).value);
+            ResponseT<String> r = marketController.loginSystemManager(username,password);
             if (r.getError_occurred())
                 Notification.show(r.error_message, 3000, Notification.Position.MIDDLE);
             else {
                 Notification.show("you logged in successfully", 3000, Notification.Position.MIDDLE);
                 UI.getCurrent().navigate(SystemManagerOperations.class);
-
-
+                MainLayout.setSessionId(r.value);
             }
 
         }

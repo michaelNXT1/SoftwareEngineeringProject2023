@@ -8,7 +8,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PreserveOnRefresh;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
-    @Route(value = "removeMember",layout = MainLayout.class)
+    @Route(value = "removeMember")
     @PreserveOnRefresh
     public class RemoveMember extends VerticalLayout{
         private TextField usernameField;

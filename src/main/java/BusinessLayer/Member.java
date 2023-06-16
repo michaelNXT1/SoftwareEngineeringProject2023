@@ -3,12 +3,9 @@ package BusinessLayer;
 import BusinessLayer.Logger.SystemLogger;
 
 import CommunicationLayer.NotificationBroker;
-import CommunicationLayer.NotificationController;
 import DAOs.MemberDAO;
 import DAOs.NotificationDAO;
 import DAOs.PositionDAO;
-import DAOs.StoreOwnerDAO;
-import Repositories.INotificationRepository;
 import Repositories.IPositionRepository;
 import Security.SecurityUtils;
 import ServiceLayer.DTOs.StoreDTO;
@@ -19,9 +16,7 @@ import jakarta.persistence.*;
 
 //import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Entity
 @Table(name = "members")
@@ -48,16 +43,19 @@ public class Member extends Guest {
         super();
         this.username = username;
         this.hashedPassword = hashedPassword;
-        shoppingCartRepo.addShoppingCart(shoppingCart);
     }
 
     public Member() {
 
     }
-
+    @Override
+    public void addShoppingCart(){
+        shoppingCart = new ShoppingCart(this.username);
+        shoppingCartRepo.addShoppingCart(shoppingCart);
+    }
     @Override
     public ShoppingCart displayShoppingCart(Long id) {  //2.11
-        List<ShoppingCart> myShoppingCart = shoppingCartRepo.getAllShoppingCart().stream().filter(sc->sc.getUserId() == this.getId()).toList();
+        List<ShoppingCart> myShoppingCart = shoppingCartRepo.getAllShoppingCart().stream().filter(sc->sc.getUserName().equals(this.username)).toList();
         if(!myShoppingCart.isEmpty())
             return myShoppingCart.get(0);
         return null;
