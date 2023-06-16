@@ -82,7 +82,7 @@ public class PurchaseTests extends ServiceTests {
         addProductDiscount(sessionID1, storeID, productID1, 0.1, 0);
         int qdId = addMaxQuantityDiscountPolicy(sessionID1, storeID, 0,productID1, 6);
         int mbID = addMinBagTotalDiscountPolicy(sessionID1, storeID, 0, 1);
-        joinPolicies(sessionID1,storeID,qdId,mbID,0);
+        joinDiscountPolicies(sessionID1,storeID,qdId,mbID,0);
         logout(sessionID1);
         String sessionId2 = login("alon123", "alon0601");
         addPaymentMethod(sessionId2,"1234","06","2026","540");
