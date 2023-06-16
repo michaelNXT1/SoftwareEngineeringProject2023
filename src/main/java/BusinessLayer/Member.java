@@ -67,7 +67,7 @@ public class Member extends Guest {
     public void setPosition(Position newPosition) {
         boolean found = false;
         for (Position p : positions.getAllPositions()) {
-            if (p.getStore().equals(newPosition.getStore())) {
+            if (p.getStore().getStoreId()==newPosition.getStore().getStoreId()) {
                 positions.removePosition(p);
                 positions.addPosition(newPosition);
                 found = true;
@@ -168,13 +168,13 @@ public class Member extends Guest {
     public void notBeingStoreOwner(Guest m, Store store) throws Exception {
         Position storeOwnerP = null;
         for (Position p : positions.getAllPositions())
-            if (p instanceof StoreOwner && p.getStore().equals(store))
+            if (p instanceof StoreOwner && p.getStore().getStoreId()==store.getStoreId())
                 storeOwnerP = p;
         if (storeOwnerP == null) {
             logger.error(String.format("%s is not a store owner", username));
             throw new Exception(String.format("%s is not a store owner", username));
         }
-        if (!storeOwnerP.getAssigner().equals(m)) {
+        if (!storeOwnerP.getAssigner().getUsername().equals(m.getUsername())) {
             logger.error(String.format("%s is not the assigner of %s", m.getUsername(), getUsername()));
             throw new Exception("can remove only store owner assigned by him");
         }
