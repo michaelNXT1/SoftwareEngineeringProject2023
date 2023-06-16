@@ -7,7 +7,7 @@ signUp(U5,123);
 signUp(U6,123);
 login(U2,123);
 open-store(U2,S1);
-add-product(U2,S1,BAMBA,30,snacks,20,Baked peanut snack);
+add-product(U2,S1,BAMBA,20,snacks,20,Baked peanut snack);
 appoint-manager(U2,S1,U3);
 add-store-manager-permissions(U2,S1,U3,2);
 appoint-owner(U2,S1,U4);

@@ -45,13 +45,20 @@ public class Member extends Guest {
         super();
         this.username = username;
         this.hashedPassword = hashedPassword;
+        shoppingCartRepo.addShoppingCart(shoppingCart);
     }
 
     public Member() {
 
     }
 
-
+    @Override
+    public ShoppingCart displayShoppingCart(Long id) {  //2.11
+        List<ShoppingCart> myShoppingCart = shoppingCartRepo.getAllShoppingCart().stream().filter(sc->sc.getUserId() == this.getId()).toList();
+        if(!myShoppingCart.isEmpty())
+            return myShoppingCart.get(0);
+        return null;
+    }
     // getter, setter
     public void setNotificationBroker(NotificationBroker notificationBroker){
         this.notificationBroker = notificationBroker;

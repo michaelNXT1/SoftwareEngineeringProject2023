@@ -1,5 +1,6 @@
 package Repositories;
 
+import BusinessLayer.Guest;
 import BusinessLayer.ShoppingCart;
 
 import java.util.List;
