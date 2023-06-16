@@ -23,7 +23,7 @@ public class MapIntegerStoreDAO implements IMapIntegerStoreRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -44,7 +44,7 @@ public class MapIntegerStoreDAO implements IMapIntegerStoreRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -57,7 +57,7 @@ public class MapIntegerStoreDAO implements IMapIntegerStoreRepository {
         try {
             store = session.get(Store.class, key);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -72,7 +72,7 @@ public class MapIntegerStoreDAO implements IMapIntegerStoreRepository {
             storeMap = session.createQuery("FROM Store", Store.class).getResultStream()
                     .collect(Collectors.toMap(Store::getStoreId, Function.identity()));
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -90,7 +90,7 @@ public class MapIntegerStoreDAO implements IMapIntegerStoreRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }

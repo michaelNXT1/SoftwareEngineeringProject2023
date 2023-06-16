@@ -74,7 +74,7 @@ public class DiscountDAO implements IDiscountRepo {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }

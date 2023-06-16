@@ -28,7 +28,7 @@ public class SetPermissionTypeDAO implements ISetPermissionTypeRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -49,7 +49,7 @@ public class SetPermissionTypeDAO implements ISetPermissionTypeRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }

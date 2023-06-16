@@ -40,6 +40,8 @@ public class PurchasePolicyTest extends ServiceTests {
         int productID1 = addProduct(sessionID1, storeID, "test", 3.9, "milk", 9, "10");
         addMinQuantityPolicy(sessionID1, storeID, productID1, 2, false);
         addToCart(sessionID1, storeID, productID1, 3);
+        addPaymentMethod(sessionID1,"1234","06","2026","540");
+        addSupplyDetails(sessionID1,"alon","ASd","asd","sad","asd");
         assertNotNull(buyCart(sessionID1));
     }
 

@@ -24,7 +24,7 @@ public class PurchaseDAO implements IPurchaseRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -41,7 +41,7 @@ public class PurchaseDAO implements IPurchaseRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -53,7 +53,7 @@ public class PurchaseDAO implements IPurchaseRepository {
         try {
             purchase = session.get(Purchase.class, id);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }

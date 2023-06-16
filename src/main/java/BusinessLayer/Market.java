@@ -52,6 +52,7 @@ public class Market {
     private IPositionRepository positionRepository = new PositionDAO();
     private IBaseDiscountPolicyRepository  baseDiscountPolicyMapDAO= new BaseDiscountPolicyDAO();
     private IPurchasePolicyRepository purchasePolicyRepository = new PurchasePolicyDAO();
+    private INotificationRepository notificationRepository = new NotificationDAO();
     private IDiscountRepo discountRepo = new DiscountDAO();
     private IProductRepository productRepository = new ProductDAO();
     private IShoppingCartRepo shoppingCartRepo = new ShoppingCartDAO();
@@ -94,6 +95,7 @@ public class Market {
         stringSetRepository.clear();
         positionRepository.clear();
         users.clear();
+        notificationRepository.clear();
         discountRepo.clear();
         stores.clear();
         systemManagers.clear();
@@ -136,7 +138,7 @@ public class Market {
                             throw new RuntimeException(e);
                         }
                         break;
-                    case "logout" :
+                    case "logout":
                         try {
                             sessionId = sessionManager.getSessionIdByGuestName(args[0]);
                             logout(sessionId);
@@ -393,7 +395,9 @@ public class Market {
             return enterMarket();
         } catch (Exception e) {
             isMarketOpen();
+            Guest g = sessionManager.getSession(sessionId);
             sessionManager.deleteSession(sessionId);
+            users.logout(((Member) g).getUsername());
             logger.info(String.format("%s logged out of the system as member", sessionId));
             return enterMarket();
         }

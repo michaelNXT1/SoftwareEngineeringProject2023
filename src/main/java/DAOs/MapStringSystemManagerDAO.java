@@ -47,7 +47,6 @@ public class MapStringSystemManagerDAO implements IMapStringSystemManagerReposit
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
             throw e;
         } finally {
             session.close();
@@ -70,7 +69,7 @@ public class MapStringSystemManagerDAO implements IMapStringSystemManagerReposit
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -86,7 +85,7 @@ public class MapStringSystemManagerDAO implements IMapStringSystemManagerReposit
             else
                 systemManager = session.get(SystemManager.class, key);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -101,7 +100,7 @@ public class MapStringSystemManagerDAO implements IMapStringSystemManagerReposit
             systemManagerMap = session.createQuery("FROM SystemManager", SystemManager.class).getResultStream()
                     .collect(Collectors.toMap(SystemManager::getUsername, Function.identity()));
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -127,7 +126,7 @@ public class MapStringSystemManagerDAO implements IMapStringSystemManagerReposit
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }

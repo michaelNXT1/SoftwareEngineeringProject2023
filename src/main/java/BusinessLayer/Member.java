@@ -4,6 +4,7 @@ import BusinessLayer.Logger.SystemLogger;
 
 import CommunicationLayer.NotificationBroker;
 import CommunicationLayer.NotificationController;
+import DAOs.MemberDAO;
 import DAOs.NotificationDAO;
 import DAOs.PositionDAO;
 import DAOs.StoreOwnerDAO;
@@ -25,8 +26,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @Entity
 @Table(name = "members")
 public class Member extends Guest {
-    @Transient
-    private INotificationRepository notifications= new NotificationDAO();;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "member_notifications" ,joinColumns = @JoinColumn(name = "member_name"))
+    @Column
+    private List<Notification> notifications= new ArrayList<>();;
     @Transient
     private NotificationBroker notificationBroker;
     @Id
@@ -117,19 +120,22 @@ public class Member extends Guest {
     }
 
     public void sendRealTimeNotification(){
-        if(notificationBroker!= null && !(notifications == null || notifications.getAllNotifications().isEmpty())) {
-            for (Notification notification : notifications.getAllNotifications()) {
+        if(notificationBroker!= null && !(notifications == null || notifications.isEmpty())) {
+            for (Notification notification : notifications) {
                 this.notificationBroker.sendRealTimeNotification(notification, this.username);
             }
             notifications.clear();
         }
+        new MemberDAO().updateMember(this);
     }
 
     public void sendNotification(Notification shopNotification) {
         if (this.notificationBroker != null) {
             notificationBroker.sendRealTimeNotification(shopNotification, this.username);
         }else {
-            this.notifications.addNotification(shopNotification);
+            this.notifications.add(shopNotification);
+            new NotificationDAO().addNotification(shopNotification);
+            new MemberDAO().updateMember(this);
         }
     }
 

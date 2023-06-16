@@ -9,5 +9,6 @@ public interface IShoppingBagRepository {
     void removeShoppingBag(ShoppingBag shoppingBag);
     ShoppingBag getShoppingBagById(int id);
     List<ShoppingBag> getAllShoppingBags();
+    void updateShoppingBag(ShoppingBag shoppingBag);
     void clearShoppingBags();
 }
