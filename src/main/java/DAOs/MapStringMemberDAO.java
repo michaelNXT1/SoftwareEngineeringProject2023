@@ -31,7 +31,7 @@ public class MapStringMemberDAO implements IMapStringMemberRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -71,7 +71,23 @@ public class MapStringMemberDAO implements IMapStringMemberRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
+        } finally {
+            session.close();
+        }
+    }
+
+    @Override
+    public void logout(String key) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Member member = null;
+        try {
+            member = get(key);
+            if (member != null) {
+                memberMap.remove(key);
+            }
+        } catch (Exception e) {
+            throw e;
         } finally {
             session.close();
         }
@@ -95,7 +111,7 @@ public class MapStringMemberDAO implements IMapStringMemberRepository {
             members = session.createQuery("FROM Member", Member.class).getResultStream()
                     .collect(Collectors.toMap(Member::getUsername, Function.identity()));
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -113,7 +129,7 @@ public class MapStringMemberDAO implements IMapStringMemberRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }

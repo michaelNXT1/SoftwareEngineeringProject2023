@@ -9,8 +9,11 @@ import java.util.Map;
 public interface IMemberRepository {
     void addMember(Member member);
     void removeMember(Member member);
+
     Member getMember(String key);
     List<Member> getAllMember();
+
+    void updateMember(Member member);
 
     // Add other methods as needed
 }

@@ -56,7 +56,7 @@ public class SetCategoryDAO implements IStringSetRepository {
             Query<Category> query = session.createQuery(hql, Category.class);
             categories = query.list();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
