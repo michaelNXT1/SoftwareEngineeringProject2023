@@ -11,7 +11,7 @@ public class GetMembersInformation extends ServiceTests {
     public void setUp(){
         super.setUp();
         signUpSystemManager("alon12","alon0601");
-        sessionId1 = login("alon12", "alon0601");
+        sessionId1 = loginSystemManager("alon12", "alon0601");
     }
 
     public void testGetMembersInformationSuccess(){

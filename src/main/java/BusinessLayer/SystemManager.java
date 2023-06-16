@@ -7,10 +7,13 @@ public class SystemManager {
 
     private String username;
     private String hashedPassword;
+    @Column
+    private String sessionId;
 
     public SystemManager(String username, String hashedPassword) {
         this.username = username;
         this.hashedPassword = hashedPassword;
+        this.sessionId = null;
     }
 
     public SystemManager() {
@@ -24,6 +27,14 @@ public class SystemManager {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 
     @Column

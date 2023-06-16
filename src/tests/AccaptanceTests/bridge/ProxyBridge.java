@@ -527,6 +527,16 @@ public class ProxyBridge implements Bridge {
         }
     }
 
+    @Override
+    public String loginSystemManager(String username, String password) {
+        if(real != null){
+            return real.loginSystemManager(username, password);
+        }
+        else{
+            return null;
+        }
+    }
+
 //    @Override
 //    public String loginSystemManager(String username, String password) {
 //        if(real != null){
