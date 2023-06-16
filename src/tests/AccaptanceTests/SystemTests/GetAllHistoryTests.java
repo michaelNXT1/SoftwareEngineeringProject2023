@@ -10,6 +10,7 @@ public class GetAllHistoryTests extends ServiceTests {
     public void setUp(){
         super.setUp();
         register("alon1", "alon0601");
+        signUpSystemManager("admin", "admin");
         sessionID = loginSystemManager("admin", "admin");
 
     }
