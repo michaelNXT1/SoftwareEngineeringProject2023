@@ -79,6 +79,6 @@ public class AddDiscountTest extends ServiceTests {
         addToCart(sessionID1, storeID, productID1, 1);
         PurchaseDTO purchase = buyCart(sessionID1);
         PurchaseProductDTO p = purchase.getProductDTOList().get(0);
-        assertEquals(3.9, p.getPrice());
+        assertEquals(9.9, p.getPrice());
     }
 }

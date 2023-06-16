@@ -18,7 +18,7 @@ public class PurchaseProductDAO implements IPurchaseProductRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -36,7 +36,7 @@ public class PurchaseProductDAO implements IPurchaseProductRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -49,7 +49,7 @@ public class PurchaseProductDAO implements IPurchaseProductRepository {
         try {
             purchaseProducts = session.createQuery("FROM PurchaseProduct", PurchaseProduct.class).list();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -70,7 +70,7 @@ public class PurchaseProductDAO implements IPurchaseProductRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }

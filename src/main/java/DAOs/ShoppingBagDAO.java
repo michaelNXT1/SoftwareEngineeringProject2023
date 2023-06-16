@@ -22,7 +22,7 @@ public class ShoppingBagDAO implements IShoppingBagRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -40,7 +40,7 @@ public class ShoppingBagDAO implements IShoppingBagRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -53,7 +53,7 @@ public class ShoppingBagDAO implements IShoppingBagRepository {
         try {
             shoppingBag = session.get(ShoppingBag.class, id);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -67,7 +67,7 @@ public class ShoppingBagDAO implements IShoppingBagRepository {
         try {
             shoppingBags = session.createQuery("FROM ShoppingBag", ShoppingBag.class).list();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -86,7 +86,7 @@ public class ShoppingBagDAO implements IShoppingBagRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }

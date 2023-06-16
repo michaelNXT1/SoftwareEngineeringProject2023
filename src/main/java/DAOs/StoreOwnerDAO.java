@@ -28,7 +28,7 @@ public class StoreOwnerDAO implements IStoreOwnerRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
             this.storeOwners.add(storeOwner.getPositionName());
@@ -48,7 +48,7 @@ public class StoreOwnerDAO implements IStoreOwnerRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
             this.storeOwners.remove(storeOwner);
@@ -64,7 +64,7 @@ public class StoreOwnerDAO implements IStoreOwnerRepository {
             Query<String> query = session.createQuery("FROM String", String.class);
             storeOwners = query.list();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }

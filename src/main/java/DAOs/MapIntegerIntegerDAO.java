@@ -27,7 +27,7 @@ public class MapIntegerIntegerDAO implements IMapIntegerIntegerRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -54,7 +54,7 @@ public class MapIntegerIntegerDAO implements IMapIntegerIntegerRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
