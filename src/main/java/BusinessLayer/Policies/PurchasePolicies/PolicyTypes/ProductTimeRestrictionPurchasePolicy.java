@@ -44,7 +44,7 @@ public class ProductTimeRestrictionPurchasePolicy extends BasePurchasePolicy {
     @Override
     public boolean evaluate(Map<Product, Integer> productList) {
         for (Product p : productList.keySet())
-            if (p == product)
+            if (p.getProductId() == product.getProductId())
                 return LocalTime.now().isBefore(endTime) && LocalTime.now().isAfter(startTime);
         return true;
     }

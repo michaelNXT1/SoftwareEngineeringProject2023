@@ -769,7 +769,7 @@ public class Market {
         if (storeManagerPosition == null) {
             logger.error(String.format("%s has not have that position in this store", storeManager));
             throw new Exception("the name of the store manager has not have that position in this store");
-        } else if (!storeManagerPosition.getAssigner().equals(m)) {
+        } else if (!storeManagerPosition.getAssigner().getUsername().equals(m.getUsername())) {
             throw new Exception("only the systemManager's assigner can edit his permissions");
         } else {
             logger.info(String.format("%s have new permissions to %s", storeManager, getStore(sessionId, storeId)));
@@ -808,7 +808,7 @@ public class Market {
         if (storeManagerPosition == null) {
             logger.error(String.format("%s has not have that position in this store", storeManager));
             throw new Exception("the name of the store manager has not have that position in this store");
-        } else if (storeManagerPosition.getAssigner().equals(m)) {
+        } else if (storeManagerPosition.getAssigner().getUsername().equals(m.getUsername())) {
             throw new Exception("only the systemManager's assigner can edit his permissions");
         } else {
             logger.info(String.format("%s have new permissions %d to %s", storeManager, permission, getStore(sessionId, storeID)));
