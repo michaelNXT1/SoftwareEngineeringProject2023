@@ -1,5 +1,6 @@
 package DAOs;
 
+import BusinessLayer.Guest;
 import BusinessLayer.Purchase;
 import BusinessLayer.ShoppingBag;
 import BusinessLayer.ShoppingCart;
@@ -8,9 +9,11 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ShoppingCartDAO implements IShoppingCartRepo {
+
     @Override
     public void addShoppingCart(ShoppingCart shoppingCart) {
         Session session = HibernateUtil.getSessionFactory().openSession();

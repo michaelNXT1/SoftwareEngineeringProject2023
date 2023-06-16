@@ -22,13 +22,13 @@ public class Guest {
     private static Long IdCounter = 0L;
     private Long id;
 
-    private ShoppingCart shoppingCart;
+    protected ShoppingCart shoppingCart;
 
     private String searchKeyword;
 
     private List<Product> searchResults;
     private IPurchaseRepository purchaseHistory;
-    private IShoppingCartRepo shoppingCartRepo = new ShoppingCartDAO();
+    protected IShoppingCartRepo shoppingCartRepo = new ShoppingCartDAO();
     private PaymentDetails paymentDetails;
     private SupplyDetails supplyDetails;
 
@@ -52,7 +52,6 @@ public class Guest {
         this.id = IdCounter;
         IdCounter++;
         shoppingCart = new ShoppingCart(this.id);
-        shoppingCartRepo.addShoppingCart(shoppingCart);
         searchResults = new ArrayList<>();
         purchaseHistory = new PurchaseDAO();
         paymentDetails = null;
@@ -64,10 +63,7 @@ public class Guest {
     }
 
     public ShoppingCart displayShoppingCart(Long id) {  //2.11
-        List<ShoppingCart> myShoppingCart = shoppingCartRepo.getAllShoppingCart().stream().filter(sc->sc.getUserId() == this.id).toList();
-        if(!myShoppingCart.isEmpty())
-            return myShoppingCart.get(0);
-        return null;
+        return shoppingCart;
     }
     public IPurchaseRepository getPurchaseHistory(){
         return this.purchaseHistory;
