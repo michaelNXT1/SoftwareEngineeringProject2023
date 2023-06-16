@@ -273,6 +273,7 @@ public class Market {
         Guest guest = new Guest();
         logger.info("new guest try to entered the system");
         String sessionId = sessionManager.createSession(guest);
+        guest.addShoppingCart();
         logger.info(String.format("new guest entered the system with sessionID: %s", sessionId));
         return sessionId;
     }
@@ -301,6 +302,7 @@ public class Market {
         Member newMember = new Member(username, hashedPassword);
         synchronized (userLock) {
             // store new Member's object in users map
+            newMember.addShoppingCart();
             users.put(username, newMember);
             logger.info(String.format("%s signed up to the system", username));
         }
@@ -327,7 +329,8 @@ public class Market {
                 return null;
             }
         }
-        return null;
+        logger.error("%s dont have system manager permissions");
+        throw new Exception("this is not a system manager");
     }
     //use case 2.3
     //use case 2.3
@@ -351,6 +354,8 @@ public class Market {
                 logger.info(String.format("%s passed authenticate check and logged in to the system", username));
                 member.setNotificationBroker(notificationBroker);
                 member.sendRealTimeNotification();
+                ShoppingCart shoppingCart = shoppingCartRepo.getAllShoppingCart().stream().filter(sc -> sc.getUserName().equals(member.getUsername())).toList().get(0);
+                member.setShoppingCart(shoppingCart);
                 return sessionManager.createSession(member);
             }
             logger.error(String.format("%s did not passed authenticate check and logged in to the system", username));

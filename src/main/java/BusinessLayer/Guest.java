@@ -51,11 +51,14 @@ public class Guest {
     public Guest() {
         this.id = IdCounter;
         IdCounter++;
-        shoppingCart = new ShoppingCart(this.id);
         searchResults = new ArrayList<>();
         purchaseHistory = new PurchaseDAO();
         paymentDetails = null;
         supplyDetails = null;
+    }
+
+    public void addShoppingCart(){
+        shoppingCart = new ShoppingCart(null);
     }
 
     public void addProductToShoppingCart(Store s, int productId, int itemsAmount) throws Exception { //2.10
@@ -149,6 +152,21 @@ public class Guest {
         purchaseHistory.removePurchase(purchase);
     }
 
+    public static Long getIdCounter() {
+        return IdCounter;
+    }
+
+    public static void setIdCounter(Long idCounter) {
+        IdCounter = idCounter;
+    }
+
+    public IShoppingCartRepo getShoppingCartRepo() {
+        return shoppingCartRepo;
+    }
+
+    public void setShoppingCartRepo(IShoppingCartRepo shoppingCartRepo) {
+        this.shoppingCartRepo = shoppingCartRepo;
+    }
 
     public ShoppingCart getShoppingCart() {
         return shoppingCart;

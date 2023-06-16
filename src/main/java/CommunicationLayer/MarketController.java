@@ -65,7 +65,7 @@ public class MarketController implements IMarketController {
     @Override
     public Response removeMember(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
                                  @RequestParam(value = "memberName", defaultValue = "") String memberName) {
-        return marketManager.openStore(sessionId, memberName);
+        return marketManager.removeMember(sessionId, memberName);
     }
 
     @GetMapping("/signUp")

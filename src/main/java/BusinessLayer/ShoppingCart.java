@@ -21,15 +21,15 @@ public class ShoppingCart {
     @GeneratedValue
     private Long id;
     @Column
-    private Long userId;
+    private String userName;
     @Transient
     private List<ShoppingBag> shoppingBags2;
     @Transient
 
     private SystemLogger logger;
 
-    public ShoppingCart(Long userName) {
-        this.userId = userName;
+    public ShoppingCart(String userName) {
+        this.userName = userName;
         shoppingBags2 = shoppingBags.getAllShoppingBags().stream().filter(sb -> sb.getId().equals(this.id)).toList();
         this.logger = new SystemLogger();
     }
@@ -59,12 +59,12 @@ public class ShoppingCart {
         this.id = id;
     }
 
-    public Long getUserId() {
-        return userId;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void String(String userName) {
+        this.userName = userName;
     }
 
     public IShoppingBagRepository getShoppingBags() {

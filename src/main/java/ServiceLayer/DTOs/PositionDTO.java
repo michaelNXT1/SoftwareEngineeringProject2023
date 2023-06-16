@@ -70,4 +70,12 @@ public class PositionDTO {
         }
         return ret;
     }
+
+    @Override
+    public String toString(){
+        if(this.assigner != null)
+            return this.positionName + " in " + this.store.getStoreName() + " his assigner " + this.assigner.getUsername();
+        else
+            return this.positionName + " in " + this.store.getStoreName();
+    }
 }
