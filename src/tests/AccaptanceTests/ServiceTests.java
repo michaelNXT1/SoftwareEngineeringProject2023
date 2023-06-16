@@ -78,7 +78,7 @@ public abstract class ServiceTests extends TestCase {
         return this.bridge.login(username, password);
     }
     public String loginSystemManager(String username, String password){
-        return bridge.login(username, password);
+        return bridge.loginSystemManager(username, password);
     }
     public boolean logoutSystemManager(String sessionId){
         return this.bridge.logout(sessionId);

@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 public interface IMarketManager {
+    ResponseT<String> loginSystemManager(String username, String password, NotificationBroker notificationBroker);
     Response signUpSystemManager(String username, String password);
 
     ResponseT<String> enterMarket();

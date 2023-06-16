@@ -15,6 +15,24 @@ public class MapStringSystemManagerDAO implements IMapStringSystemManagerReposit
     private Map<String,SystemManager> sessionToSystemManager = new HashMap<>();
 
     @Override
+    public void updateSystemManager(SystemManager systemManager) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+        try {
+            transaction = session.beginTransaction();
+            session.update(systemManager);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw e;
+        } finally {
+            session.close();
+        }
+    }
+
+    @Override
     public void addSystemManager(String key, SystemManager systemManager) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;

@@ -12,6 +12,7 @@ public class RemoveMemberTest extends ServiceTests {
         super.setUp();
         register("shoham", "sh20754");
         register("alon1","alal");
+        signUpSystemManager("admin","admin");
         sessionID1 = loginSystemManager("admin", "admin");
     }
 

@@ -319,7 +319,8 @@ public class Market {
                 boolean res = securityUtils.authenticate(username, password);
                 if (res) {
                     logger.info(String.format("%s the user passed authenticate check and logged in to the systemManager", username));
-                    return sessionManager.createSessionForSystemManager(sm);
+                    String sessionId =  sessionManager.createSessionForSystemManager(sm);
+                    return sessionId;
                 }
                 return null;
             }

@@ -66,34 +66,37 @@ public class SessionManager {
     }
 
     public String createSessionForSystemManager(SystemManager sm) throws Exception {
-        if (systemManagerSessions.containsValue(sm)) {
+        if (sm.getSessionId() != null) {
             logger.error(String.format("%s is already logged in", sm.getUsername()));
             throw new Exception("this user is already logged in");
         }
         String sessionId;
         synchronized (this.sessionLock) {
             sessionId = generateSessionId();
-            systemManagerSessions.addSystemManager(sessionId, sm);
         }
+        sm.setSessionId(sessionId);
+        systemManagerSessions.updateSystemManager(sm);
         return sessionId;
     }
 
     public void deleteSessionForSystemManager(String sessionId) throws Exception {
-        SystemManager sm = systemManagerSessions.getSystemManager(sessionId);
-        if (sm == null) {
+        List<SystemManager> systemManagers = systemManagerSessions.getAllSystemManagers().values().stream().filter(sm1 -> sm1.getSessionId().equals(sessionId)).toList();
+        if (systemManagers.size() == 0) {
             logger.error("user session doesnt exist");
             throw new Exception("user session doesnt exist");
         }
-        systemManagerSessions.removeSystemManager(sessionId);
+        SystemManager sm = systemManagers.get(0);
+        sm.setSessionId(null);
+        systemManagerSessions.updateSystemManager(sm);
     }
 
     public SystemManager getSessionForSystemManager(String sessionId) throws Exception {
-        SystemManager sm = systemManagerSessions.getSystemManager(sessionId);
-        if (sm == null) {
+         List<SystemManager> systemManagers = systemManagerSessions.getAllSystemManagers().values().stream().filter(sm1 -> sm1.getSessionId().equals(sessionId)).toList();
+        if (systemManagers.size() == 0 || sessionId == null) {
             logger.error("system manager session doesnt exist");
             throw new Exception("system manager session doesnt exist");
         }
-        return sm;
+        return systemManagers.get(0);
     }
 
     public String getSessionIdByGuestName(String name) throws Exception {

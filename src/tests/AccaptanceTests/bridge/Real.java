@@ -315,6 +315,11 @@ public class Real implements Bridge {
         return !manager.removeMember(sessionId, memberName).getError_occurred();
     }
 
+    @Override
+    public String loginSystemManager(String username, String password) {
+        return manager.loginSystemManager(username,password,null).value;
+    }
+
 //    @Override
 //    public String loginSystemManager(String username, String password) {
 //        return manager.loginSystemManager(username, password).value;
