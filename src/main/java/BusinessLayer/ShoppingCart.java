@@ -103,6 +103,7 @@ public class ShoppingCart {
             throw new Exception("Store doesn't exist in cart");
         }
         shoppingBag.removeProduct(productId);
+        shoppingBags.updateShoppingBag(shoppingBag);
     }
 
     //Use case 2.14

@@ -74,6 +74,24 @@ public class ShoppingBagDAO implements IShoppingBagRepository {
         return shoppingBags;
     }
 
+    @Override
+    public void updateShoppingBag(ShoppingBag shoppingBag) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+        try {
+            transaction = session.beginTransaction();
+            session.update(shoppingBag);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw e;
+        } finally {
+            session.close();
+        }
+    }
+
     public void clearShoppingBags() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;

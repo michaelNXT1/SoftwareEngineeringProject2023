@@ -363,11 +363,13 @@ public class Store {
         }
         Product product = checkProductExists(productId);
         List<BaseDiscountPolicy> baseDiscountPolicies = productDiscountPolicyMap.getAllDiscountPolicies().stream().filter(pdp -> pdp.isValid() && pdp.getStore() == this.storeId).toList();
+        List<Long> completedDiscounts=new ArrayList<>();
         for (BaseDiscountPolicy baseDiscountPolicy: baseDiscountPolicies) {
             Discount discount = discountRepo.get(baseDiscountPolicy.getDiscount_id());
 
-            if (discount.checkApplies(product) && productDiscountPolicyMap.getAllDiscountPolicies().stream().allMatch(pdp -> pdp.evaluate(productList))) {
+            if (!completedDiscounts.contains(discount.getId())&&discount.checkApplies(product) && productDiscountPolicyMap.getAllDiscountPolicies().stream().allMatch(pdp -> pdp.evaluate(productList))) {
                 discountPercentage = discount.calculateNewPercentage(discountPercentage);
+                completedDiscounts.add(discount.getId());
             }
         }
 

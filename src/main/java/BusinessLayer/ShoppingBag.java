@@ -105,8 +105,8 @@ public class ShoppingBag {
 
     //Use case 2.13
     public void removeProduct(int productId) throws Exception {
-        Product p = store.getProduct(productId);
-        productListId.remove(p);
+        store.getProduct(productId);
+        productListId.remove(productId);
     }
 
     //Use case 2.14
