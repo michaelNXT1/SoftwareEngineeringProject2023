@@ -10,6 +10,7 @@ import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 import ServiceLayer.Response;
 import ServiceLayer.ResponseT;
+import application.views.StoreManagement.ProductManagementView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
@@ -18,7 +19,6 @@ import com.vaadin.flow.component.checkbox.CheckboxGroupVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.GridSortOrder;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -28,10 +28,8 @@ import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.NumberField;
-import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.timepicker.TimePicker;
-import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.data.renderer.NumberRenderer;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.shared.Registration;
@@ -46,11 +44,11 @@ import java.util.stream.Collectors;
 public class StoreManagementView extends VerticalLayout implements HasUrlParameter<String> {
     private final MarketController marketController;
     private final Header header;
+    private final ProductManagementView products;
     private Map<ProductDTO, Integer> productMap;
     private List<MemberDTO> employeesList;
     private List<BasePurchasePolicyDTO> purchasePolicyList;
     private Map<DiscountDTO, List<BaseDiscountPolicyDTO>> discountPolicyMap;
-    private Grid<ProductDTO> productGrid;
     private Grid<BasePurchasePolicyDTO> purchasePolicyGrid;
     private Grid<MemberDTO> employeesGrid;
     private Grid<ProductDiscountDTO> productDiscountGrid;
@@ -59,12 +57,12 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
     private int storeId;
 
     @Autowired
-    public StoreManagementView() throws Exception {
+    public StoreManagementView() {
         this.marketController = MarketController.getInstance();
         this.header = new Header();
         add(header);
 
-        VerticalLayout products = initProductGrid();
+        products = new ProductManagementView(marketController, storeId);
         VerticalLayout purchasePolicies = initPurchasePolicyGrid();
         VerticalLayout employees = initEmployeesGrid();
         HorizontalLayout productAndPolicyGrids = new HorizontalLayout();
@@ -156,7 +154,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         storeId = Integer.parseInt(parameter);
         header.setText("Store Management: " + marketController.getStore(MainLayout.getSessionId(), storeId).value.getStoreName());
         productMap = marketController.getProductsByStore(storeId).value;
-        productGrid.setItems(productMap.keySet().stream().toList());
+        products.setProductGrid(productMap.keySet().stream().toList());
         purchasePolicyList = marketController.getPurchasePoliciesByStoreId(storeId).value;
         purchasePolicyGrid.setItems(purchasePolicyList);
         ResponseT<List<MemberDTO>> employeeListResponse = marketController.getStoreEmployees(MainLayout.getSessionId(), storeId);
@@ -176,38 +174,6 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         productDiscountGrid.setItems(productDiscountDTOS);
         categoryDiscountGrid.setItems(categoryDiscountDTOS);
         storeDiscountGrid.setItems(storeDiscountDTOS);
-    }
-
-    private VerticalLayout initProductGrid() {
-        VerticalLayout products = new VerticalLayout();
-        HorizontalLayout productsHL = new HorizontalLayout();
-        Div productsDiv = new Div();
-        boolean hasPermission = marketController.hasPermission(MainLayout.getSessionId(), storeId, PositionDTO.permissionType.Inventory).value;
-        Button addProductButton = new Button("+", e -> addProductDialog());
-        addProductButton.setEnabled(hasPermission);
-        productsHL.add(new H1("Product List"), productsDiv, addProductButton);
-        productsHL.setFlexGrow(1, productsDiv);
-        productsHL.setWidthFull();
-        productGrid = new Grid<>(ProductDTO.class, false);
-        productGrid.addColumn(ProductDTO::getProductId).setHeader("Id").setSortable(true).setTextAlign(ColumnTextAlign.START).setKey("Id").setFlexGrow(0);
-        productGrid.addColumn(ProductDTO::getProductName).setHeader("Name").setSortable(true).setTextAlign(ColumnTextAlign.START).setFlexGrow(2);
-        productGrid.addColumn(ProductDTO::getCategory).setHeader("Category").setSortable(true).setTextAlign(ColumnTextAlign.START).setFlexGrow(2);
-        productGrid.addColumn(productDTO -> productDTO.getPrice() + "§").setHeader("Price").setSortable(true).setTextAlign(ColumnTextAlign.START).setFlexGrow(0);
-        productGrid.addColumn(ProductDTO::getRating).setHeader("Rating").setSortable(true).setTextAlign(ColumnTextAlign.START).setFlexGrow(0);
-        productGrid.addColumn(ProductDTO::getAmount).setHeader("Quantity").setSortable(true).setTextAlign(ColumnTextAlign.START).setFlexGrow(1);
-        productGrid.addComponentColumn(productDTO -> {
-            if (hasPermission)
-                return new Button("Edit", e -> editProductDialog(productDTO));
-            return new Div();
-        }).setFlexGrow(0).setAutoWidth(true);
-        productGrid.addComponentColumn(productDTO -> {
-            if (hasPermission)
-                return new Button("Remove", e -> removeProductDialog(productDTO.getProductId()));
-            return new Div();
-        }).setFlexGrow(0).setAutoWidth(true);
-        productGrid.sort(List.of(new GridSortOrder<>(productGrid.getColumnByKey("Id"), SortDirection.ASCENDING)));
-        products.add(productsHL, productGrid);
-        return products;
     }
 
     private VerticalLayout initPurchasePolicyGrid() {
@@ -313,217 +279,6 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         storeDiscountGrid.addComponentColumn(discountDTO -> new Button("Modify", e -> modifyDiscountDialog(discountDTO))).setFlexGrow(0).setAutoWidth(true);
         storeDiscountLayout.add(storeDiscountHL, storeDiscountGrid);
         return storeDiscountLayout;
-    }
-
-    private void addProductDialog() {
-        Dialog dialog = new Dialog();
-        Header header = new Header();
-        header.setText("Add New Product");
-        Label errorSuccessLabel = new Label();
-        TextField productNameField = new TextField();
-        NumberField priceField = new NumberField();
-        Select<String> categoryField = new Select<>();
-        TextField newCategoryField = new TextField();
-        IntegerField quantityField = new IntegerField();
-        TextArea descriptionField = new TextArea();
-        Button submitButton = new Button("Submit", event -> {
-            if (priceField.getValue() == null)
-                errorSuccessLabel.setText("Price can't be empty");
-            else if (quantityField.getValue() == null)
-                errorSuccessLabel.setText("Quantity can't be empty");
-            else {
-                ResponseT<ProductDTO> response = marketController.addProduct(
-                        MainLayout.getSessionId(),
-                        storeId,
-                        productNameField.getValue(),
-                        priceField.getValue(),
-                        newCategoryField.isVisible() ? newCategoryField.getValue() : categoryField.getValue(),
-                        quantityField.getValue(),
-                        descriptionField.getValue());
-                if (response.getError_occurred())
-                    errorSuccessLabel.setText(response.error_message);
-                else
-                    successMessage(dialog, errorSuccessLabel, "Product added successfully!");
-            }
-        });
-        Button cancelButton = new Button("Cancel", event -> dialog.close());
-
-        productNameField.setPlaceholder("Product name");
-        priceField.setPlaceholder("Price");
-        categoryField.setPlaceholder("Category");
-        newCategoryField.setPlaceholder("New category");
-        quantityField.setPlaceholder("Quantity");
-        descriptionField.setPlaceholder("Description");
-
-        List<String> lst = new ArrayList<>();
-        lst.add("new");
-        lst.addAll(marketController.getAllCategories().value);
-        categoryField.setItems(lst);
-        categoryField.addComponents("new", new Hr());
-        categoryField.addValueChangeListener(event -> newCategoryField.setVisible(event.getValue().equals("new")));
-
-        newCategoryField.setVisible(false);
-
-        VerticalLayout vl = new VerticalLayout();
-        vl.add(header, errorSuccessLabel, productNameField, priceField, categoryField, newCategoryField, quantityField, descriptionField, submitButton, cancelButton);
-        dialog.add(vl);
-        dialog.open();
-    }
-
-    private void editProductDialog(ProductDTO product) {
-        Dialog dialog = new Dialog();
-        Header header = new Header();
-        header.setText("Edit product details");
-        Label errorSuccessLabel = new Label();
-        Select<String> productFieldSelect = new Select<>();
-        productFieldSelect.setItems("Product Name", "Category", "Price", "Description");
-        productFieldSelect.setPlaceholder("Field to change");
-        productFieldSelect.setItemEnabledProvider(
-                item -> !"Description".equals(item));
-        VerticalLayout vl = new VerticalLayout();
-        vl.add(header, errorSuccessLabel, productFieldSelect);
-
-        TextField productNameField = new TextField();
-        Select<String> categoryField = new Select<>();
-        TextField newCategoryField = new TextField();
-        NumberField priceField = new NumberField();
-        TextArea descriptionField = new TextArea();
-
-        productNameField.setPlaceholder("Product name");
-        priceField.setPlaceholder("Price");
-        categoryField.setPlaceholder("Category");
-        newCategoryField.setPlaceholder("New category");
-        descriptionField.setPlaceholder("Description");
-
-        List<String> lst = new ArrayList<>();
-        lst.add("new");
-        lst.addAll(marketController.getAllCategories().value);
-        categoryField.setItems(lst);
-        categoryField.addComponents("new", new Hr());
-        categoryField.addValueChangeListener(event -> newCategoryField.setVisible(event.getValue().equals("new")));
-
-        List<Component> components = new ArrayList<>();
-        components.add(productNameField);
-        components.add(priceField);
-        components.add(categoryField);
-        components.add(newCategoryField);
-        components.add(descriptionField);
-        components.forEach(component -> component.setVisible(false));
-
-        categoryField.setValue(product.getCategory());
-
-        newCategoryField.setVisible(false);
-
-        Button submitButton = new Button("Submit");
-        submitButton.setEnabled(false);
-        final Registration[] clickListener = new Registration[1];
-        productFieldSelect.addValueChangeListener(e -> {
-            submitButton.setEnabled(true);
-            switch (e.getValue()) {
-                case "Product Name" -> {
-                    if (clickListener[0] != null)
-                        clickListener[0].remove();
-                    components.forEach(component -> component.setVisible(false));
-                    productNameField.setVisible(true);
-                    clickListener[0] = submitButton.addClickListener(event -> {
-                        Response response = marketController.editProductName(
-                                MainLayout.getSessionId(),
-                                storeId,
-                                product.getProductId(),
-                                productNameField.getValue());
-                        if (response.getError_occurred())
-                            errorSuccessLabel.setText(response.error_message);
-                        else
-                            successMessage(dialog, errorSuccessLabel, "Name changed successfully");
-                    });
-                }
-                case "Category" -> {
-                    if (clickListener[0] != null)
-                        clickListener[0].remove();
-                    components.forEach(component -> component.setVisible(false));
-                    categoryField.setVisible(true);
-                    newCategoryField.setVisible(true);
-                    clickListener[0] = submitButton.addClickListener(event -> {
-                        Response response = marketController.editProductCategory(
-                                MainLayout.getSessionId(),
-                                storeId,
-                                product.getProductId(),
-                                Objects.equals(categoryField.getValue(), "new") ? newCategoryField.getValue() : categoryField.getValue());
-                        if (response.getError_occurred())
-                            errorSuccessLabel.setText(response.error_message);
-                        else
-                            successMessage(dialog, errorSuccessLabel, "Category changed successfully");
-                    });
-                }
-                case "Price" -> {
-                    if (clickListener[0] != null)
-                        clickListener[0].remove();
-                    components.forEach(component -> component.setVisible(false));
-                    priceField.setVisible(true);
-                    clickListener[0] = submitButton.addClickListener(event -> {
-                        if (priceField.getValue() == null) {
-                            errorSuccessLabel.setText("Price can't be empty");
-                            return;
-                        }
-                        Response response = marketController.editProductPrice(
-                                MainLayout.getSessionId(),
-                                storeId,
-                                product.getProductId(),
-                                priceField.getValue());
-                        if (response.getError_occurred())
-                            errorSuccessLabel.setText(response.error_message);
-                        else
-                            successMessage(dialog, errorSuccessLabel, "Price changed successfully");
-                    });
-                }
-                case "Description" -> {
-                    if (clickListener[0] != null)
-                        clickListener[0].remove();
-                    components.forEach(component -> component.setVisible(false));
-                    descriptionField.setVisible(true);
-//                    clickListener[0] = submitButton.addClickListener(event -> {
-//                        Response response = marketController.editProductDescription(
-//                                MainLayout.getSessionId(),
-//                                storeId,
-//                                productId,
-//                                descriptionField.getValue());
-//                        if (response.getError_occurred())
-//                            errorSuccessLabel.setText(response.error_message);
-//                        else
-//                            successMessage(dialog, errorSuccessLabel, "Description changed successfully");
-//                    });
-                }
-                default -> {
-                }
-            }
-        });
-        vl.add(productNameField, categoryField, newCategoryField, priceField, descriptionField, submitButton);
-        dialog.add(vl);
-        vl.setJustifyContentMode(JustifyContentMode.CENTER);
-        vl.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-        vl.getStyle().set("text-align", "center");
-        dialog.open();
-    }
-
-    private void removeProductDialog(int productId) {
-        Dialog dialog = new Dialog();
-        VerticalLayout vl = new VerticalLayout();
-        Label errorSuccessLabel = new Label();
-        Label label = new Label("Are you sure? This cannot be undone.");
-        HorizontalLayout hl = new HorizontalLayout();
-        hl.add(
-                new Button("Remove", e -> {
-                    Response response = marketController.removeProductFromStore(MainLayout.getSessionId(), storeId, productId);
-                    if (response.getError_occurred()) {
-                        errorSuccessLabel.setText(response.error_message);
-                    } else
-                        successMessage(dialog, errorSuccessLabel, "Policy removed successfully");
-                }),
-                new Button("Cancel", e -> dialog.close())
-        );
-        vl.add(errorSuccessLabel, label, hl);
-        dialog.add(vl);
-        dialog.open();
     }
 
     private void addPurchasePolicyDialog() {
