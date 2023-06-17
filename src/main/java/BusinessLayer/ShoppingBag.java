@@ -1,11 +1,9 @@
 package BusinessLayer;
 
 import DAOs.PurchaseDAO;
-import DAOs.PurchaseProductDAO;
 import Repositories.IPurchaseRepository;
 import Utils.Pair;
 import jakarta.persistence.*;
-import org.hibernate.engine.internal.Cascade;
 
 //import javax.persistence.*;
 import java.util.ArrayList;
@@ -95,7 +93,7 @@ public class ShoppingBag {
         Product p = store.getProduct(productId);
         if (quantity == 0)
             productListId.remove(productId);
-        else if (p.getAmount() >= quantity)
+        else if (p.getQuantity() >= quantity)
             productListId.put(productId,quantity);
         else {
             logger.error("Requested product quantity not available.");

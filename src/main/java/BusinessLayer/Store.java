@@ -101,7 +101,7 @@ public class Store {
         synchronized (Market.purchaseLock) {
             Product p = products.getProductById(productId);
             synchronized (p.getProductName().intern()) {
-                p.setAmount(p.getAmount() + amountToAdd);
+                p.setQuantity(p.getQuantity() + amountToAdd);
                 products.updateProduct(p);
             }
         }
@@ -110,7 +110,7 @@ public class Store {
     public PurchaseProduct subtractForPurchase(int productId, int quantity) throws Exception {
         Product p = getProduct(productId);
         synchronized (p) {
-            p.setAmount(p.getAmount() - quantity);
+            p.setQuantity(p.getQuantity() - quantity);
             products.updateProduct(p);
         }
         return new PurchaseProduct(p, quantity, storeId);
@@ -140,7 +140,7 @@ public class Store {
                 logger.error("cannot set quantity to less then 0");
                 throw new Exception("cannot set quantity to less then 0");
             }
-            p = new Product(storeId, this.productIdCounter.getAndIncrement(), productName, price, category, description,quantity);
+            p = new Product(storeId, this.productIdCounter.getAndIncrement(), productName, price, category, quantity, description, 0);
             if(!categories.getAllCategory().stream().anyMatch(c-> c.getCategoryName().equals(category)))
                 categories.addString(new Category(category));
             products.saveProduct(p);

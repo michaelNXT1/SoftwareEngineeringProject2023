@@ -20,7 +20,7 @@ public class ProductDTO {
         this.price = p.getProductPrice();
         this.category = p.getCategory();
         this.rating = p.getRating();
-        this.amount = p.getAmount();
+        this.amount = p.getQuantity();
         this.description = p.getDescription();
     }
 
