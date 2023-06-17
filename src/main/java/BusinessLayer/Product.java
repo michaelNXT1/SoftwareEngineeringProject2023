@@ -157,6 +157,10 @@ public class Product {
         this.description = newDescription;
     }
 
+    public PurchaseType getPurchaseType() {
+        return purchaseType;
+    }
+
     private static boolean stringIsEmpty(String value) {
         return value == null || value.equals("");
     }

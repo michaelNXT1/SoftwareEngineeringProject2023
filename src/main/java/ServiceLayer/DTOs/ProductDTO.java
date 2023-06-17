@@ -2,8 +2,13 @@ package ServiceLayer.DTOs;
 
 
 import BusinessLayer.Product;
+import ServiceLayer.DTOs.Policies.PurchasePolicies.PurchasePolicyOperationDTO;
 
 public class ProductDTO {
+    public enum PurchaseType{
+        BUY_IT_NOW,
+        OFFER
+    }
     private final int storeId;
     private int productId;
     private String productName;
@@ -12,6 +17,7 @@ public class ProductDTO {
     private double rating;
     private int amount;
     private String description;
+    private PurchaseType purchaseType;
 
     public ProductDTO(Product p) {
         this.storeId = p.getStoreId();
@@ -22,6 +28,10 @@ public class ProductDTO {
         this.rating = p.getRating();
         this.amount = p.getQuantity();
         this.description = p.getDescription();
+        switch (p.getPurchaseType()) {
+            case BUY_IT_NOW -> this.purchaseType = PurchaseType.BUY_IT_NOW;
+            case OFFER -> this.purchaseType = PurchaseType.OFFER;
+        }
     }
 
     public int getProductId() {
