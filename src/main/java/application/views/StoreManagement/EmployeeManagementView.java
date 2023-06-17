@@ -29,13 +29,13 @@ import java.util.Set;
 
 public class EmployeeManagementView extends VerticalLayout {
     private final int storeId;
-    private List<MemberDTO> employeesList;
     private final Grid<MemberDTO> employeesGrid;
     private final MarketController marketController;
+    private List<MemberDTO> employeesList;
 
-    public EmployeeManagementView(MarketController marketController, int storeId){
-        this.storeId=storeId;
-        this.marketController=marketController;
+    public EmployeeManagementView(MarketController marketController, int storeId) {
+        this.storeId = storeId;
+        this.marketController = marketController;
         HorizontalLayout employeesHL = new HorizontalLayout();
         Div employeesDiv = new Div();
         Button addEmployeeButton = new Button("+", e -> addEmployeeDialog());
@@ -71,8 +71,18 @@ public class EmployeeManagementView extends VerticalLayout {
         add(employeesHL, employeesGrid);
     }
 
-    public void setEmployeesList(List<MemberDTO> employeesList){
-        this.employeesList=employeesList;
+    private static void successMessage(Dialog dialog, Label errorSuccessLabel, String msg) {
+        errorSuccessLabel.setText("");
+        dialog.close();
+        Dialog successDialog = new Dialog();
+        VerticalLayout successVl = new VerticalLayout();
+        successVl.add(new Label(msg), new Button("Close", e -> successDialog.close()));
+        successDialog.add(successVl);
+        successDialog.open();
+    }
+
+    public void setEmployeesList(List<MemberDTO> employeesList) {
+        this.employeesList = employeesList;
         employeesGrid.setItems(employeesList);
     }
 
@@ -179,15 +189,5 @@ public class EmployeeManagementView extends VerticalLayout {
         vl.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         vl.getStyle().set("text-align", "center");
         dialog.open();
-    }
-
-    private static void successMessage(Dialog dialog, Label errorSuccessLabel, String msg) {
-        errorSuccessLabel.setText("");
-        dialog.close();
-        Dialog successDialog = new Dialog();
-        VerticalLayout successVl = new VerticalLayout();
-        successVl.add(new Label(msg), new Button("Close", e -> successDialog.close()));
-        successDialog.add(successVl);
-        successDialog.open();
     }
 }
