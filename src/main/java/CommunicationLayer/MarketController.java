@@ -582,6 +582,11 @@ public class MarketController implements IMarketController {
     }
 
     @Override
+    public ResponseT<Boolean> hasDeliveryAddress(String sessionId) {
+        return marketManager.hasDeliveryAddress(sessionId);
+    }
+
+    @Override
     public ResponseT<Double> getProductDiscountPercentageInCart(String sessionId, int storeId, int productId) {
         return marketManager.getProductDiscountPercentageInCart(sessionId, storeId, productId);
     }
@@ -594,6 +599,11 @@ public class MarketController implements IMarketController {
     @Override
     public ResponseT<List<PurchaseDTO>> getUserPurchaseHistory(String sessionId) {
         return marketManager.getUserPurchaseHistory(sessionId);
+    }
+
+    @Override
+    public Response makeOffer(String sessionId, int storeId, int productId, Double pricePerItem, Integer quantity) {
+        return marketManager.getOffer(sessionId, storeId, productId, pricePerItem, quantity);
     }
 
     @GetMapping("/editProductInCart")

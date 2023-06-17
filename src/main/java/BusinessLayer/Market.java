@@ -1258,6 +1258,12 @@ public class Market {
         return m.getPaymentDetails() != null;
     }
 
+    public boolean hasDeliveryAddress(String sessionId) throws Exception {
+        isMarketOpen();
+        Guest m = sessionManager.getSession(sessionId);
+        return m.getSupplyDetails() != null;
+    }
+
     public double getProductDiscountPercentageInCart(String sessionId, int storeId, int productId) throws Exception {
         isMarketOpen();
         Store s = getStore(sessionId, storeId);

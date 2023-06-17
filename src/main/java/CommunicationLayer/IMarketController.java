@@ -221,4 +221,8 @@ public interface IMarketController {
     Response addSupplyDetails(String sessionId, String name, String address, String city, String country, String zip);
 
     ResponseT<List<PurchaseDTO>> getUserPurchaseHistory(String sessionId);
+
+    Response makeOffer(String sessionId, int storeId, int productId, Double pricePerItem, Integer quantity);
+
+    ResponseT<Boolean> hasDeliveryAddress(String sessionId);
 }
