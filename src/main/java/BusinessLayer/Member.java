@@ -77,7 +77,10 @@ public class Member extends Guest {
             }
         }
     }
-
+    @Override
+    public ShoppingCart getShoppingCart() {
+        return shoppingCartRepo.getAllShoppingCart().stream().filter(sc->sc.getUserName().equals(this.getUsername())).toList().get(0);
+    }
     public String getPassword() {
         return hashedPassword;
     }
@@ -168,7 +171,7 @@ public class Member extends Guest {
     public void notBeingStoreOwner(Guest m, Store store) throws Exception {
         Position storeOwnerP = null;
         for (Position p : positions.getAllPositions())
-            if (p instanceof StoreOwner && p.getStore().getStoreId()==store.getStoreId())
+            if (p instanceof StoreOwner && p.getStore().getStoreId()==store.getStoreId() && p.getPositionMember().username.equals(this.username))
                 storeOwnerP = p;
         if (storeOwnerP == null) {
             logger.error(String.format("%s is not a store owner", username));
@@ -178,7 +181,6 @@ public class Member extends Guest {
             logger.error(String.format("%s is not the assigner of %s", m.getUsername(), getUsername()));
             throw new Exception("can remove only store owner assigned by him");
         }
-        store.removeEmployee(this);
         positions.removePosition(storeOwnerP);
         logger.info(String.format("remove %s from being store owner", getUsername()));
     }
