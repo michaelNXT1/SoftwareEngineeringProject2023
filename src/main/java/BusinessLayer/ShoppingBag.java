@@ -115,7 +115,6 @@ public class ShoppingBag {
             PurchaseProduct pp = store.subtractForPurchase(productId,productListId.get(store.getProduct(productId).getProductId()));
             double discountPercentage = store.getProductDiscountPercentage(productId,productListId);
             pp.setPrice(pp.getPrice() * (1.0 - discountPercentage));
-            this.productListId.remove(productId);
             return new Pair<>(pp, true);
         } catch (Exception e) {
             return new Pair<>(null, false);

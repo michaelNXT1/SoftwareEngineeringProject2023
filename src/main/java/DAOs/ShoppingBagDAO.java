@@ -16,7 +16,7 @@ public class ShoppingBagDAO implements IShoppingBagRepository {
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
-            session.persist(shoppingBag);
+            session.saveOrUpdate(shoppingBag);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {

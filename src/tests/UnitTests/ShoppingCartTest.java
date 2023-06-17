@@ -25,7 +25,7 @@ class ShoppingCartTest extends TestCase {
 
     @BeforeEach
     void beforeEach() throws Exception {
-        shoppingCart = new ShoppingCart(member.getId());
+        shoppingCart = new ShoppingCart(member.getUsername());
         product1 = new Product(storeId1,1,"wine", 3, "60.0", "alcohol",3);
         product2 = new Product(storeId1,2, "cheese", 9.5, "milk","fads",4);
         product3 = new Product(storeId1,3, "steak", 120.0, "meat","asd",5);

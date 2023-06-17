@@ -404,7 +404,7 @@ public class Store {
     }
 
     public void removeEmployee(Member member) {
-        employees.removeMember(member);
+
     }
 
     public Map<Discount, List<BaseDiscountPolicy>> getProductDiscountPolicyMap() {

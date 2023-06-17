@@ -25,13 +25,11 @@ public class ShoppingCart {
     @Transient
     private List<ShoppingBag> shoppingBags2;
     @Transient
-
-    private SystemLogger logger;
+    private SystemLogger logger = new SystemLogger();
 
     public ShoppingCart(String userName) {
         this.userName = userName;
         shoppingBags2 = shoppingBags.getAllShoppingBags().stream().filter(sb -> sb.getId().equals(this.id)).toList();
-        this.logger = new SystemLogger();
     }
 
     public ShoppingCart() {
@@ -113,6 +111,7 @@ public class ShoppingCart {
             throw new Exception("Purchase failed, cart is empty");
         }
         Map<ShoppingBag, List<PurchaseProduct>> shoppingBagMap = new HashMap<>();
+        List<ShoppingBag> shoppingBags1 = shoppingBags.getAllShoppingBags();
         for (ShoppingBag sb : shoppingBags.getAllShoppingBags().stream().filter(fb -> fb.getShoppingCartId().equals(this.id)).toList()) {
             Pair<List<PurchaseProduct>, Boolean> sbp = sb.purchaseShoppingBag();
             if (sbp.getSecond()) {
@@ -137,7 +136,7 @@ public class ShoppingCart {
 
     private ShoppingBag getShoppingBag(Store s) {
         List<ShoppingBag> shoppingBags1 = shoppingBags.getAllShoppingBags().stream()
-                .filter(sb -> sb.getStore().getStoreId()==s.getStoreId()).toList();
+                .filter(sb ->sb.getShoppingCartId().equals(this.id) && sb.getStore().getStoreId()==s.getStoreId()).toList();
         ShoppingBag shoppingBag;
         if (shoppingBags1.isEmpty()) {
             shoppingBag = new ShoppingBag(s, this.id);
