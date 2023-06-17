@@ -136,7 +136,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         Grid<PurchaseProductDTO> purchaseGrid = new Grid<>(PurchaseProductDTO.class, false);
         purchaseGrid.setItems(purchase.getProductDTOList());
         purchaseGrid.addColumn(PurchaseProductDTO::getProductName).setHeader("Product name").setSortable(true).setTextAlign(ColumnTextAlign.START).setAutoWidth(true);
-        purchaseGrid.addColumn(PurchaseProductDTO::getPrice).setHeader("Price").setSortable(true).setTextAlign(ColumnTextAlign.START).setAutoWidth(true);
+        purchaseGrid.addColumn(purchaseProductDTO -> purchaseProductDTO.getPrice() + "§").setHeader("Price").setSortable(true).setTextAlign(ColumnTextAlign.START).setAutoWidth(true);
         purchaseGrid.addColumn(PurchaseProductDTO::getQuantity).setHeader("Quantity").setSortable(true).setTextAlign(ColumnTextAlign.START).setAutoWidth(true);
         purchaseGrid.setWidthFull();
 
@@ -192,9 +192,9 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         productGrid.addColumn(ProductDTO::getProductId).setHeader("Id").setSortable(true).setTextAlign(ColumnTextAlign.START).setKey("Id").setFlexGrow(0);
         productGrid.addColumn(ProductDTO::getProductName).setHeader("Name").setSortable(true).setTextAlign(ColumnTextAlign.START).setFlexGrow(2);
         productGrid.addColumn(ProductDTO::getCategory).setHeader("Category").setSortable(true).setTextAlign(ColumnTextAlign.START).setFlexGrow(2);
-        productGrid.addColumn(ProductDTO::getPrice).setHeader("Price").setSortable(true).setTextAlign(ColumnTextAlign.START).setFlexGrow(0);
+        productGrid.addColumn(productDTO -> productDTO.getPrice() + "§").setHeader("Price").setSortable(true).setTextAlign(ColumnTextAlign.START).setFlexGrow(0);
         productGrid.addColumn(ProductDTO::getRating).setHeader("Rating").setSortable(true).setTextAlign(ColumnTextAlign.START).setFlexGrow(0);
-        productGrid.addColumn(productDTO -> productMap.get(productDTO)).setHeader("Quantity").setSortable(true).setTextAlign(ColumnTextAlign.START).setFlexGrow(1);
+        productGrid.addColumn(ProductDTO::getAmount).setHeader("Quantity").setSortable(true).setTextAlign(ColumnTextAlign.START).setFlexGrow(1);
         productGrid.addComponentColumn(productDTO -> {
             if (hasPermission)
                 return new Button("Edit", e -> editProductDialog(productDTO));

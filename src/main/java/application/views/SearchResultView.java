@@ -80,7 +80,7 @@ SearchResultView extends VerticalLayout {
         grid.addColumn(ProductDTO::getProductName).setHeader("Product Name");
         grid.addColumn(ProductDTO::getCategory).setHeader("Category");
         grid.addColumn(this::getStoreName).setHeader("Store Name");
-        grid.addColumn(ProductDTO::getPrice).setHeader("Price");
+        grid.addColumn(productDTO->productDTO.getPrice()+"§").setHeader("Price");
         grid.addComponentColumn(product -> {
             HorizontalLayout hl = new HorizontalLayout();
             IntegerField quantity = new IntegerField();
@@ -142,7 +142,7 @@ SearchResultView extends VerticalLayout {
         priceField.setValue(product.getPrice());
         quantityField.setValue(quantity);
 
-        Label totalLabel = new Label("You will pay a total of " + quantityField.getValue() * priceField.getValue());
+        Label totalLabel = new Label("You will pay a total of " + quantityField.getValue() * priceField.getValue()+"§");
 
         priceField.addValueChangeListener(r -> totalLabel.setText("You will pay a total of " + quantityField.getValue() * priceField.getValue()));
         quantityField.addValueChangeListener(r -> totalLabel.setText("You will pay a total of " + quantityField.getValue() * priceField.getValue()));

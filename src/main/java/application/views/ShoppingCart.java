@@ -43,7 +43,7 @@ ShoppingCart extends VerticalLayout {
         productGrid.addColumn(this::getStoreName).setHeader("Store Name");
         productGrid.addComponentColumn(this::initPriceColumn).setHeader("Price per item");
         productGrid.addComponentColumn(this::initQuantityColumn).setHeader("Quantity");
-        totalSpan = new Span("Total: " + String.format("%.2f", calculateTotalPrice()));
+        totalSpan = new Span("Total: " + String.format("%.2f", calculateTotalPrice())+"§");
         Button purchaseButton = new Button("Purchase cart", e -> purchaseShoppingCart());
         Span paymentDetails = paymentDetailsErr(purchaseButton);
         Span deliveryAddress = deliveryAddressErr(purchaseButton);
@@ -164,16 +164,16 @@ ShoppingCart extends VerticalLayout {
         ResponseT<Double> productDiscount = marketController.getProductDiscountPercentageInCart(MainLayout.getSessionId(), p.getStoreId(), p.getProductId());
         if (productDiscount.getError_occurred())
             return p.getPrice() * productDTOList.get(p);
-        return String.format("%.2f", p.getPrice() * (1.0 - productDiscount.value) * productDTOList.get(p));
+        return String.format("%.2f", p.getPrice() * (1.0 - productDiscount.value) * productDTOList.get(p))+"§";
     }
 
     private Component initPriceColumn(ProductDTO productDTO) {
         ResponseT<Double> productDiscount = marketController.getProductDiscountPercentageInCart(MainLayout.getSessionId(), productDTO.getStoreId(), productDTO.getProductId());
         if (productDiscount.getError_occurred())
-            return new Span(String.format("%.2f", productDTO.getPrice()));
+            return new Span(String.format("%.2f", productDTO.getPrice())+"§");
         double discountPercentage = productDiscount.value;
         if (discountPercentage == 0.0)
-            return new Span(String.format("%.2f", productDTO.getPrice()));
-        return new Html("<span><s>" + String.format("%.2f", productDTO.getPrice()) + "</s> " + String.format("%.2f", productDTO.getPrice() * (1.0 - discountPercentage)) + "</span>");
+            return new Span(String.format("%.2f", productDTO.getPrice())+"§");
+        return new Html("<span><s>" + String.format("%.2f", productDTO.getPrice()) + "§</s> " + String.format("%.2f", productDTO.getPrice() * (1.0 - discountPercentage)) + "§</span>");
     }
 }
