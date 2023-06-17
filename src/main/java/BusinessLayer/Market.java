@@ -1188,7 +1188,7 @@ public class Market {
         checkStoreExists(storeId);
         Map<ProductDTO, Integer> newMap = new HashMap<>();
         for (Product p: stores.getStore(storeId).getProducts().getAllProducts().stream().filter(p -> p.getStoreId() == storeId).toList())
-            newMap.put(new ProductDTO(p), p.getProductId());
+            newMap.put(new ProductDTO(p), p.getQuantity());
         return newMap;
     }
 
