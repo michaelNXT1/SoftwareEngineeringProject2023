@@ -35,7 +35,7 @@ public class Product {
     private String description;
 
 
-    public Product(int storeId, int productId, String productName, double price, String category, String description,int quantity) throws Exception {
+    public Product(int storeId, int productId, String productName, double price, String category, String description, int quantity) throws Exception {
         if (price < 0) {
             logger.error("cannot add product with negative price");
             throw new Exception("cannot add product with negative price");
