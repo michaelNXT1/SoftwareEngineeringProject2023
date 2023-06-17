@@ -129,7 +129,6 @@ SearchResultView extends VerticalLayout {
                 }
             }
         });
-        Button cancelButton = new Button("Cancel", event -> dialog.close());
 
         Span paymentDetails = paymentDetailsErr(submitButton);
         Span deliveryAddress = deliveryAddressErr(submitButton);
@@ -149,7 +148,7 @@ SearchResultView extends VerticalLayout {
         quantityField.addValueChangeListener(r -> totalLabel.setText("You will pay a total of " + quantityField.getValue() * priceField.getValue()));
 
         VerticalLayout vl = new VerticalLayout();
-        vl.add(header, errorSuccessLabel, priceField, quantityField, totalLabel, submitButton, paymentDetails, deliveryAddress, cancelButton);
+        vl.add(header, errorSuccessLabel, priceField, quantityField, totalLabel, submitButton, paymentDetails, deliveryAddress);
         vl.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         dialog.add(vl);
         dialog.open();
