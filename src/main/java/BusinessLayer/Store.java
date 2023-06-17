@@ -141,7 +141,7 @@ public class Store {
                 throw new Exception("cannot set quantity to less then 0");
             }
             p = new Product(storeId, this.productIdCounter.getAndIncrement(), productName, price, category, quantity, description, 0);
-            if(!categories.getAllCategory().stream().anyMatch(c-> c.getCategoryName().equals(category)))
+            if(categories.getAllCategory().stream().noneMatch(c-> c.getCategoryName().equals(category)))
                 categories.addString(new Category(category));
             products.saveProduct(p);
         }
