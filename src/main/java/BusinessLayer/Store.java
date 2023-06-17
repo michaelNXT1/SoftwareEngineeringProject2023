@@ -16,6 +16,8 @@ import jakarta.persistence.*;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+
 @Entity
 @Table(name = "stores")
 public class Store {
@@ -272,7 +274,7 @@ public class Store {
 
     public long addCategoryDiscount(String category, double discountPercentage, int compositionType) throws Exception {
         List<Category> categoryStrings = categories.getAllCategory();
-        if (!categoryStrings.stream().anyMatch(c-> c.getCategoryName().equals(category))) {
+        if (categoryStrings.stream().noneMatch(c-> c.getCategoryName().equals(category))) {
             logger.error("Category doesn't exist");
             throw new Exception("Category doesn't exist");
         }
@@ -409,16 +411,15 @@ public class Store {
 
     public Map<Discount, List<BaseDiscountPolicy>> getProductDiscountPolicyMap() {
         Map<Discount, List<BaseDiscountPolicy>> discountPolicyMap = new HashMap<>();
-        List<BaseDiscountPolicy> allBaseDiscount = productDiscountPolicyMap.getAllDiscountPolicies().stream().filter(bpb->bpb.getStore() == this.storeId).toList();
-        Set<Discount> discounts = new HashSet<>();
-        for (BaseDiscountPolicy b:allBaseDiscount) {
-            discounts.add(discountRepo.get(b.getDiscount_id()));
-        }
+        List<Discount> discounts=new DiscountDAO().getAllDiscounts().stream().toList();
         for(Discount d: discounts){
-            List<BaseDiscountPolicy> thisDiscounts = allBaseDiscount.stream().filter(bpb->bpb.getDiscount_id() == d.getDiscountId()).toList();
+            List<BaseDiscountPolicy> thisDiscounts = productDiscountPolicyMap.getAllDiscountPolicies().stream().filter(
+                    pdp -> pdp.isValid() &&
+                            pdp.getStore() == this.storeId &&
+                            pdp.getDiscount_id().longValue() == d.getDiscountId().longValue()
+            ).collect(Collectors.toList());
             discountPolicyMap.put(d,thisDiscounts);
         }
-
         return discountPolicyMap;
     }
 

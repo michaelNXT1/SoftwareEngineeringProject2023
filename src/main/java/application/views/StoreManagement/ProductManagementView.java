@@ -96,7 +96,7 @@ public class ProductManagementView extends VerticalLayout {
                 if (response.getError_occurred())
                     errorSuccessLabel.setText(response.error_message);
                 else
-                    successMessage(dialog, errorSuccessLabel, "Product added successfully!");
+                    StoreManagementView.successMessage(dialog, errorSuccessLabel, "Product added successfully!");
             }
         });
         Button cancelButton = new Button("Cancel", event -> dialog.close());
@@ -187,7 +187,7 @@ public class ProductManagementView extends VerticalLayout {
                         if (response.getError_occurred())
                             errorSuccessLabel.setText(response.error_message);
                         else
-                            successMessage(dialog, errorSuccessLabel, "Name changed successfully");
+                            StoreManagementView.successMessage(dialog, errorSuccessLabel, "Name changed successfully");
                     });
                 }
                 case "Category" -> {
@@ -205,7 +205,7 @@ public class ProductManagementView extends VerticalLayout {
                         if (response.getError_occurred())
                             errorSuccessLabel.setText(response.error_message);
                         else
-                            successMessage(dialog, errorSuccessLabel, "Category changed successfully");
+                            StoreManagementView.successMessage(dialog, errorSuccessLabel, "Category changed successfully");
                     });
                 }
                 case "Price" -> {
@@ -226,7 +226,7 @@ public class ProductManagementView extends VerticalLayout {
                         if (response.getError_occurred())
                             errorSuccessLabel.setText(response.error_message);
                         else
-                            successMessage(dialog, errorSuccessLabel, "Price changed successfully");
+                            StoreManagementView.successMessage(dialog, errorSuccessLabel, "Price changed successfully");
                     });
                 }
                 case "Description" -> {
@@ -270,22 +270,12 @@ public class ProductManagementView extends VerticalLayout {
                     if (response.getError_occurred()) {
                         errorSuccessLabel.setText(response.error_message);
                     } else
-                        successMessage(dialog, errorSuccessLabel, "Policy removed successfully");
+                        StoreManagementView.successMessage(dialog, errorSuccessLabel, "Policy removed successfully");
                 }),
                 new Button("Cancel", e -> dialog.close())
         );
         vl.add(errorSuccessLabel, label, hl);
         dialog.add(vl);
         dialog.open();
-    }
-
-    private static void successMessage(Dialog dialog, Label errorSuccessLabel, String msg) {
-        errorSuccessLabel.setText("");
-        dialog.close();
-        Dialog successDialog = new Dialog();
-        VerticalLayout successVl = new VerticalLayout();
-        successVl.add(new Label(msg), new Button("Close", e -> successDialog.close()));
-        successDialog.add(successVl);
-        successDialog.open();
     }
 }

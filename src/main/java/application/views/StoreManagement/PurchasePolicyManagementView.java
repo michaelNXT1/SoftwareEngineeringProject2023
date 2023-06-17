@@ -54,16 +54,6 @@ public class PurchasePolicyManagementView extends VerticalLayout {
         add(purchasePoliciesHL, purchasePolicyGrid);
     }
 
-    private static void successMessage(Dialog dialog, Label errorSuccessLabel, String msg) {
-        errorSuccessLabel.setText("");
-        dialog.close();
-        Dialog successDialog = new Dialog();
-        VerticalLayout successVl = new VerticalLayout();
-        successVl.add(new Label(msg), new Button("Close", e -> successDialog.close()));
-        successDialog.add(successVl);
-        successDialog.open();
-    }
-
     public void setPurchasePolicyGrid(List<BasePurchasePolicyDTO> basePurchasePolicyDTOList, Map<ProductDTO, Integer> productMap) {
         this.productMap = productMap;
         this.purchasePolicyList = basePurchasePolicyDTOList;
@@ -131,7 +121,7 @@ public class PurchasePolicyManagementView extends VerticalLayout {
                         if (response.getError_occurred())
                             errorSuccessLabel.setText(response.error_message);
                         else
-                            successMessage(dialog, errorSuccessLabel, "Policy added successfully");
+                            StoreManagementView.successMessage(dialog, errorSuccessLabel, "Policy added successfully");
                     });
                 }
                 case "Product Max Quantity" -> {
@@ -150,7 +140,7 @@ public class PurchasePolicyManagementView extends VerticalLayout {
                         if (response.getError_occurred())
                             errorSuccessLabel.setText(response.error_message);
                         else
-                            successMessage(dialog, errorSuccessLabel, "Policy added successfully");
+                            StoreManagementView.successMessage(dialog, errorSuccessLabel, "Policy added successfully");
                     });
                 }
                 case "Product Min Quantity" -> {
@@ -171,7 +161,7 @@ public class PurchasePolicyManagementView extends VerticalLayout {
                         if (response.getError_occurred())
                             errorSuccessLabel.setText(response.error_message);
                         else
-                            successMessage(dialog, errorSuccessLabel, "Policy added successfully");
+                            StoreManagementView.successMessage(dialog, errorSuccessLabel, "Policy added successfully");
                     });
                 }
                 case "Product Time Restriction" -> {
@@ -191,7 +181,7 @@ public class PurchasePolicyManagementView extends VerticalLayout {
                         if (response.getError_occurred())
                             errorSuccessLabel.setText(response.error_message);
                         else
-                            successMessage(dialog, errorSuccessLabel, "Policy added successfully");
+                            StoreManagementView.successMessage(dialog, errorSuccessLabel, "Policy added successfully");
                     });
                 }
                 default -> {
@@ -251,7 +241,7 @@ public class PurchasePolicyManagementView extends VerticalLayout {
             if (response.getError_occurred())
                 errorSuccessLabel.setText(response.error_message);
             else
-                successMessage(dialog, errorSuccessLabel, "Policies joined successfully");
+                StoreManagementView.successMessage(dialog, errorSuccessLabel, "Policies joined successfully");
         });
         VerticalLayout vl = new VerticalLayout();
         vl.add(header, errorSuccessLabel, leftPurchaseSelect, rightPurchaseSelect, joinOperatorSelect, joinPreview, submitButton);
@@ -274,7 +264,7 @@ public class PurchasePolicyManagementView extends VerticalLayout {
                     if (response.getError_occurred()) {
                         errorSuccessLabel.setText(response.error_message);
                     } else
-                        successMessage(dialog, errorSuccessLabel, "Policy removed successfully");
+                        StoreManagementView.successMessage(dialog, errorSuccessLabel, "Policy removed successfully");
                 }),
                 new Button("Cancel", e -> dialog.close())
         );

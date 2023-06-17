@@ -71,16 +71,6 @@ public class EmployeeManagementView extends VerticalLayout {
         add(employeesHL, employeesGrid);
     }
 
-    private static void successMessage(Dialog dialog, Label errorSuccessLabel, String msg) {
-        errorSuccessLabel.setText("");
-        dialog.close();
-        Dialog successDialog = new Dialog();
-        VerticalLayout successVl = new VerticalLayout();
-        successVl.add(new Label(msg), new Button("Close", e -> successDialog.close()));
-        successDialog.add(successVl);
-        successDialog.open();
-    }
-
     public void setEmployeesList(List<MemberDTO> employeesList) {
         this.employeesList = employeesList;
         employeesGrid.setItems(employeesList);
@@ -110,7 +100,7 @@ public class EmployeeManagementView extends VerticalLayout {
                     if (response.getError_occurred())
                         errorSuccessLabel.setText(response.error_message);
                     else
-                        successMessage(dialog, errorSuccessLabel, "Manager added successfully!");
+                        StoreManagementView.successMessage(dialog, errorSuccessLabel, "Manager added successfully!");
                 }
                 case "Owner" -> {
                     Response response = marketController.setPositionOfMemberToStoreOwner(
@@ -120,7 +110,7 @@ public class EmployeeManagementView extends VerticalLayout {
                     if (response.getError_occurred())
                         errorSuccessLabel.setText(response.error_message);
                     else
-                        successMessage(dialog, errorSuccessLabel, "Manager added successfully!");
+                        StoreManagementView.successMessage(dialog, errorSuccessLabel, "Manager added successfully!");
                 }
             }
         });
@@ -143,7 +133,7 @@ public class EmployeeManagementView extends VerticalLayout {
                     if (response.getError_occurred())
                         errorSuccessLabel.setText(response.error_message);
                     else
-                        successMessage(dialog, errorSuccessLabel, "Owner removed successfully");
+                        StoreManagementView.successMessage(dialog, errorSuccessLabel, "Owner removed successfully");
                 }),
                 new Button("Cancel", e -> dialog.close())
         );
@@ -178,7 +168,7 @@ public class EmployeeManagementView extends VerticalLayout {
             if (response.getError_occurred())
                 errorSuccessLabel.setText(response.error_message);
             else
-                successMessage(dialog, errorSuccessLabel, "Permissions set successfully!");
+                StoreManagementView.successMessage(dialog, errorSuccessLabel, "Permissions set successfully!");
         });
 
 
