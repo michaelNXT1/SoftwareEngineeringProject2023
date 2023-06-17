@@ -73,12 +73,30 @@ public class ProductManagementView extends VerticalLayout {
         Header header = new Header();
         header.setText("Add New Product");
         Label errorSuccessLabel = new Label();
+
         TextField productNameField = new TextField();
-        NumberField priceField = new NumberField();
         Select<String> categoryField = new Select<>();
         TextField newCategoryField = new TextField();
-        IntegerField quantityField = new IntegerField();
+        NumberField priceField = new NumberField();
         TextArea descriptionField = new TextArea();
+
+        productNameField.setPlaceholder("Product name");
+        priceField.setPlaceholder("Price");
+        categoryField.setPlaceholder("Category");
+        newCategoryField.setPlaceholder("New category");
+        descriptionField.setPlaceholder("Description");
+
+        List<String> lst = new ArrayList<>();
+        lst.add("new");
+        lst.addAll(marketController.getAllCategories().value);
+        categoryField.setItems(lst);
+        categoryField.addComponents("new", new Hr());
+        categoryField.addValueChangeListener(event -> newCategoryField.setVisible(event.getValue().equals("new")));
+
+        newCategoryField.setVisible(false);
+        IntegerField quantityField = new IntegerField();
+        quantityField.setPlaceholder("Quantity");
+
         Button submitButton = new Button("Submit", event -> {
             if (priceField.getValue() == null)
                 errorSuccessLabel.setText("Price can't be empty");
@@ -98,25 +116,12 @@ public class ProductManagementView extends VerticalLayout {
         });
         Button cancelButton = new Button("Cancel", event -> dialog.close());
 
-        productNameField.setPlaceholder("Product name");
-        priceField.setPlaceholder("Price");
-        categoryField.setPlaceholder("Category");
-        newCategoryField.setPlaceholder("New category");
-        quantityField.setPlaceholder("Quantity");
-        descriptionField.setPlaceholder("Description");
 
-        List<String> lst = new ArrayList<>();
-        lst.add("new");
-        lst.addAll(marketController.getAllCategories().value);
-        categoryField.setItems(lst);
-        categoryField.addComponents("new", new Hr());
-        categoryField.addValueChangeListener(event -> newCategoryField.setVisible(event.getValue().equals("new")));
-
-        newCategoryField.setVisible(false);
-
-        VerticalLayout vl = new VerticalLayout();
-        vl.add(header, errorSuccessLabel, productNameField, priceField, categoryField, newCategoryField, quantityField, descriptionField, submitButton, cancelButton);
+        VerticalLayout vl = new VerticalLayout(header, errorSuccessLabel, productNameField, priceField, categoryField, newCategoryField, quantityField, descriptionField, submitButton, cancelButton);
         dialog.add(vl);
+        vl.setJustifyContentMode(JustifyContentMode.CENTER);
+        vl.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+        vl.getStyle().set("text-align", "center");
         dialog.open();
     }
 
@@ -125,13 +130,6 @@ public class ProductManagementView extends VerticalLayout {
         Header header = new Header();
         header.setText("Edit product details");
         Label errorSuccessLabel = new Label();
-        Select<String> productFieldSelect = new Select<>();
-        productFieldSelect.setItems("Product Name", "Category", "Price", "Description");
-        productFieldSelect.setPlaceholder("Field to change");
-        productFieldSelect.setItemEnabledProvider(
-                item -> !"Description".equals(item));
-        VerticalLayout vl = new VerticalLayout();
-        vl.add(header, errorSuccessLabel, productFieldSelect);
 
         TextField productNameField = new TextField();
         Select<String> categoryField = new Select<>();
@@ -152,6 +150,14 @@ public class ProductManagementView extends VerticalLayout {
         categoryField.addComponents("new", new Hr());
         categoryField.addValueChangeListener(event -> newCategoryField.setVisible(event.getValue().equals("new")));
 
+        newCategoryField.setVisible(false);
+
+        Select<String> productFieldSelect = new Select<>();
+        productFieldSelect.setItems("Product Name", "Category", "Price", "Description");
+        productFieldSelect.setPlaceholder("Field to change");
+        productFieldSelect.setItemEnabledProvider(
+                item -> !"Description".equals(item));
+
         List<Component> components = new ArrayList<>();
         components.add(productNameField);
         components.add(priceField);
@@ -161,8 +167,6 @@ public class ProductManagementView extends VerticalLayout {
         components.forEach(component -> component.setVisible(false));
 
         categoryField.setValue(product.getCategory());
-
-        newCategoryField.setVisible(false);
 
         Button submitButton = new Button("Submit");
         submitButton.setEnabled(false);
@@ -198,16 +202,14 @@ public class ProductManagementView extends VerticalLayout {
                 }
                 case "Description" -> {
                     handleFieldSelection(descriptionField, components, clickListener);
-//                    clickListener[0] = submitButton.addClickListener(event -> {
-//                        Response response = marketController.editProductDescription(MainLayout.getSessionId(), storeId, productId, descriptionField.getValue());
-//                        handleResponse(response, errorSuccessLabel, dialog, "Description changed successfully");
-//                    });
-                }
-                default -> {
+                    clickListener[0] = submitButton.addClickListener(event -> {
+                        Response response = marketController.editProductDescription(MainLayout.getSessionId(), storeId, product.getProductId(), descriptionField.getValue());
+                        handleResponse(response, errorSuccessLabel, dialog, "Description changed successfully");
+                    });
                 }
             }
         });
-        vl.add(productNameField, categoryField, newCategoryField, priceField, descriptionField, submitButton);
+        VerticalLayout vl = new VerticalLayout(header, errorSuccessLabel, productFieldSelect, productNameField, categoryField, newCategoryField, priceField, descriptionField, submitButton);
         dialog.add(vl);
         vl.setJustifyContentMode(JustifyContentMode.CENTER);
         vl.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
