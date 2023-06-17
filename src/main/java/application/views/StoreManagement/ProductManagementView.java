@@ -64,7 +64,7 @@ public class ProductManagementView extends VerticalLayout {
         add(productsHL, productGrid);
     }
 
-    public void setProductGrid(List<ProductDTO> productDTOList){
+    public void setProductGrid(List<ProductDTO> productDTOList) {
         productGrid.setItems(productDTOList);
     }
 
@@ -93,10 +93,7 @@ public class ProductManagementView extends VerticalLayout {
                         newCategoryField.isVisible() ? newCategoryField.getValue() : categoryField.getValue(),
                         quantityField.getValue(),
                         descriptionField.getValue());
-                if (response.getError_occurred())
-                    errorSuccessLabel.setText(response.error_message);
-                else
-                    StoreManagementView.successMessage(dialog, errorSuccessLabel, "Product added successfully!");
+                handleResponse(response, errorSuccessLabel, dialog, "Product added successfully!");
             }
         });
         Button cancelButton = new Button("Cancel", event -> dialog.close());
@@ -174,76 +171,36 @@ public class ProductManagementView extends VerticalLayout {
             submitButton.setEnabled(true);
             switch (e.getValue()) {
                 case "Product Name" -> {
-                    if (clickListener[0] != null)
-                        clickListener[0].remove();
-                    components.forEach(component -> component.setVisible(false));
-                    productNameField.setVisible(true);
+                    handleFieldSelection(productNameField, components, clickListener);
                     clickListener[0] = submitButton.addClickListener(event -> {
-                        Response response = marketController.editProductName(
-                                MainLayout.getSessionId(),
-                                storeId,
-                                product.getProductId(),
-                                productNameField.getValue());
-                        if (response.getError_occurred())
-                            errorSuccessLabel.setText(response.error_message);
-                        else
-                            StoreManagementView.successMessage(dialog, errorSuccessLabel, "Name changed successfully");
+                        Response response = marketController.editProductName(MainLayout.getSessionId(), storeId, product.getProductId(), productNameField.getValue());
+                        handleResponse(response, errorSuccessLabel, dialog, "Name changed successfully");
                     });
                 }
                 case "Category" -> {
-                    if (clickListener[0] != null)
-                        clickListener[0].remove();
-                    components.forEach(component -> component.setVisible(false));
-                    categoryField.setVisible(true);
+                    handleFieldSelection(categoryField, components, clickListener);
                     newCategoryField.setVisible(true);
                     clickListener[0] = submitButton.addClickListener(event -> {
-                        Response response = marketController.editProductCategory(
-                                MainLayout.getSessionId(),
-                                storeId,
-                                product.getProductId(),
-                                Objects.equals(categoryField.getValue(), "new") ? newCategoryField.getValue() : categoryField.getValue());
-                        if (response.getError_occurred())
-                            errorSuccessLabel.setText(response.error_message);
-                        else
-                            StoreManagementView.successMessage(dialog, errorSuccessLabel, "Category changed successfully");
+                        Response response = marketController.editProductCategory(MainLayout.getSessionId(), storeId, product.getProductId(), Objects.equals(categoryField.getValue(), "new") ? newCategoryField.getValue() : categoryField.getValue());
+                        handleResponse(response, errorSuccessLabel, dialog, "Category changed successfully");
                     });
                 }
                 case "Price" -> {
-                    if (clickListener[0] != null)
-                        clickListener[0].remove();
-                    components.forEach(component -> component.setVisible(false));
-                    priceField.setVisible(true);
+                    handleFieldSelection(priceField, components, clickListener);
                     clickListener[0] = submitButton.addClickListener(event -> {
                         if (priceField.getValue() == null) {
                             errorSuccessLabel.setText("Price can't be empty");
                             return;
                         }
-                        Response response = marketController.editProductPrice(
-                                MainLayout.getSessionId(),
-                                storeId,
-                                product.getProductId(),
-                                priceField.getValue());
-                        if (response.getError_occurred())
-                            errorSuccessLabel.setText(response.error_message);
-                        else
-                            StoreManagementView.successMessage(dialog, errorSuccessLabel, "Price changed successfully");
+                        Response response = marketController.editProductPrice(MainLayout.getSessionId(), storeId, product.getProductId(), priceField.getValue());
+                        handleResponse(response, errorSuccessLabel, dialog, "Price changed successfully");
                     });
                 }
                 case "Description" -> {
-                    if (clickListener[0] != null)
-                        clickListener[0].remove();
-                    components.forEach(component -> component.setVisible(false));
-                    descriptionField.setVisible(true);
+                    handleFieldSelection(descriptionField, components, clickListener);
 //                    clickListener[0] = submitButton.addClickListener(event -> {
-//                        Response response = marketController.editProductDescription(
-//                                MainLayout.getSessionId(),
-//                                storeId,
-//                                productId,
-//                                descriptionField.getValue());
-//                        if (response.getError_occurred())
-//                            errorSuccessLabel.setText(response.error_message);
-//                        else
-//                            successMessage(dialog, errorSuccessLabel, "Description changed successfully");
+//                        Response response = marketController.editProductDescription(MainLayout.getSessionId(), storeId, productId, descriptionField.getValue());
+//                        handleResponse(response, errorSuccessLabel, dialog, "Description changed successfully");
 //                    });
                 }
                 default -> {
@@ -256,6 +213,20 @@ public class ProductManagementView extends VerticalLayout {
         vl.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         vl.getStyle().set("text-align", "center");
         dialog.open();
+    }
+
+    private void handleFieldSelection(Component field, List<Component> components, Registration[] clickListener) {
+        if (clickListener[0] != null)
+            clickListener[0].remove();
+        components.forEach(component -> component.setVisible(false));
+        field.setVisible(true);
+    }
+
+    private void handleResponse(Response response, Label errorSuccessLabel, Dialog dialog, String Name_changed_successfully) {
+        if (response.getError_occurred())
+            errorSuccessLabel.setText(response.error_message);
+        else
+            StoreManagementView.successMessage(dialog, errorSuccessLabel, Name_changed_successfully);
     }
 
     private void removeProductDialog(int productId) {

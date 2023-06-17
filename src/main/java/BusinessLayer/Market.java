@@ -669,7 +669,7 @@ public class Market {
         p.editProductPrice(productId, newPrice);
         List<Member> managers = s.getManagers();
         for (Member manager : managers) {
-            manager.sendNotification(new Notification(String.format("%s changed %s price from %0.2f to %0.2f in %s store", g.getUsername(), product.getProductName(), oldPrice, newPrice, s.getStoreName())));
+            manager.sendNotification(new Notification(String.format("%s changed %s price from %.2f to %.2f in %s store", g.getUsername(), product.getProductName(), oldPrice, newPrice, s.getStoreName())));
         }
     }
 
