@@ -107,6 +107,10 @@ public class ProductDTO {
         return storeId;
     }
 
+    public PurchaseType getPurchaseType() {
+        return purchaseType;
+    }
+
     @Override
     public String toString() {
         return String.format(this.productName);
