@@ -370,7 +370,7 @@ public class StoreManager implements Position {
     }
 
     @Override
-    public void removeStoreOwner(Member systemManagerToRemove, Guest m) throws Exception {
+    public boolean removeStoreOwner(Member systemManagerToRemove, Guest m) throws Exception {
         logger.error("store manager hasn't permission to perform this action");
         throw new IllegalAccessException("This member hasn't permission to perform this action");
     }

@@ -1148,12 +1148,13 @@ public class Market {
         }
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
-        p.removeStoreOwner(storeOwnerToRemove, m);
+        boolean hasRemoved = p.removeStoreOwner(storeOwnerToRemove, m);
         try {
             recursionRemovePosition(storeOwnerToRemove, storeId);
         }
         catch (Exception e){
-            setPositionOfMemberToStoreOwner(sessionId,storeId,storeOwnerName);
+            if (hasRemoved)
+                setPositionOfMemberToStoreOwner(sessionId,storeId,storeOwnerName);
             logger.error(String.format("failed to recursion removed %s from being storeManager", storeOwnerName));
             throw new Exception("failed to recursion removed %s from being storeManager");
         }
@@ -1161,20 +1162,21 @@ public class Market {
     }
 
     private void recursionRemovePosition(Member removedPosition, int storeId) throws Exception {
+        boolean hasRemoved = false;
         for (Member m:users.getAllMembers().values()
              ) {
             for (Position p:m.getPositions()
                  ) {
                 if (p.getAssigner()!=null && p.getAssigner().getUsername().equals(removedPosition.getUsername()) && p.getStore().getStoreId() == storeId)
                     try {
-                        m.removePosition(p);
+                        hasRemoved = m.removePosition(p);
                         recursionRemovePosition(m, storeId);
                     }
                 catch (Exception e) {
-                    m.addPosition(p);
-                    throw new Exception("failed to recursion removed %s from being storeManager");
+                        if (hasRemoved)
+                            m.addPosition(p);
+                        throw new Exception("failed to recursion removed %s from being storeManager");
                 }
-
             }
 
         }
