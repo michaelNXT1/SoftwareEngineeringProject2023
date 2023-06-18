@@ -37,7 +37,7 @@ public class OfferManagementView extends VerticalLayout {
         offerGrid.addColumn(offerDTO -> offerDTO.getOfferingUser().getUsername()).setHeader("Offered by").setSortable(true).setTextAlign(ColumnTextAlign.START);
         offerGrid.addComponentColumn(offerDTO -> {
             String username = marketController.getUsername(MainLayout.getSessionId()).value;
-            MemberDTO member = offerDTO.getApprovingMembers().keySet().stream().filter(memberDTO -> memberDTO.getUsername() == username).findFirst().orElse(null);
+            MemberDTO member = offerDTO.getApprovingMembers().keySet().stream().filter(memberDTO -> memberDTO.getUsername().equals(username)).findFirst().orElse(null);
             int offerResponse = offerDTO.getApprovingMembers().get(member);
             HorizontalLayout buttonHl = new HorizontalLayout();
             switch (offerResponse) {
