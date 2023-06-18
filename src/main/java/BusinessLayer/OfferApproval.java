@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 @Table(name = "offer_approval")
 public class OfferApproval {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
     @Column(name = "offer_id")
     private int offerId;
@@ -24,6 +24,26 @@ public class OfferApproval {
 
     public OfferApproval() {
 
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setOfferId(int offerId) {
+        this.offerId = offerId;
+    }
+
+    public void setEmployee(Member employee) {
+        this.employee = employee;
+    }
+
+    public boolean isResponse() {
+        return response;
     }
 
     public int getOfferId() {

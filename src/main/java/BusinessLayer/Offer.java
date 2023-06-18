@@ -24,19 +24,14 @@ public class Offer {
     @Column(name = "quantity")
     private int quantity;
     @Transient
-    private IOfferApprovalRepository offerApprovalRepository;
+    private IOfferApprovalRepository offerApprovalRepository = new OfferApprovalDAO();
 
-    public Offer(Member offeringUser, int storeId, int productId, double pricePerItem, int quantity, List<Member> approvingMembers) {
-        offerApprovalRepository = new OfferApprovalDAO();
+    public Offer(Member offeringUser, int storeId, int productId, double pricePerItem, int quantity) {
         this.offeringUser = offeringUser;
         this.storeId = storeId;
         this.productId = productId;
         this.pricePerItem = pricePerItem;
         this.quantity = quantity;
-        for (Member m : approvingMembers) {
-            OfferApproval offerApproval = new OfferApproval(offerId, m, false);
-            offerApprovalRepository.saveOfferApproval(offerApproval);
-        }
     }
 
     public Offer() {
@@ -47,5 +42,11 @@ public class Offer {
                 oa.getOfferId() == offerId && oa.getEmployee().getUsername().equals(approvingMember.getUsername())).findFirst().orElse(null);
         offerApproval.setResponse(response);
         offerApprovalRepository.saveOfferApproval(offerApproval);
+    }
+    public void addOfferApproval(List<Member> approvingMembers){
+        for (Member m : approvingMembers) {
+            OfferApproval offerApproval = new OfferApproval(offerId, m, false);
+            offerApprovalRepository.saveOfferApproval(offerApproval);
+        }
     }
 }

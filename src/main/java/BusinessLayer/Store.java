@@ -522,7 +522,9 @@ public class Store {
     public void makeOffer(Member g, int productId, Double pricePerItem, Integer quantity) throws Exception {
         Product p = getProduct(productId);
         List<Member> employees = getEmployees();
-        offers.saveOffer(new Offer(g, storeId, productId, pricePerItem, quantity, employees));
+        Offer offer = new Offer(g, storeId, productId, pricePerItem, quantity);
+        offers.saveOffer(offer);
+        offer.addOfferApproval(employees);
         for (Member m : employees) {
             try {
                 m.sendNotification(new Notification(String.format("User %s offers to pay %.2f§ for %d %ss", g.getUsername(), pricePerItem * quantity, quantity, p.getProductName())));
