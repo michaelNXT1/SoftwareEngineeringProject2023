@@ -114,10 +114,9 @@ public class ProductManagementView extends VerticalLayout {
                 handleResponse(response, errorSuccessLabel, dialog, "Product added successfully!");
             }
         });
-        Button cancelButton = new Button("Cancel", event -> dialog.close());
 
 
-        VerticalLayout vl = new VerticalLayout(header, errorSuccessLabel, productNameField, priceField, categoryField, newCategoryField, quantityField, descriptionField, submitButton, cancelButton);
+        VerticalLayout vl = new VerticalLayout(header, errorSuccessLabel, productNameField, priceField, categoryField, newCategoryField, quantityField, descriptionField, purchaseTypeField, submitButton);
         dialog.add(vl);
         vl.setJustifyContentMode(JustifyContentMode.CENTER);
         vl.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
