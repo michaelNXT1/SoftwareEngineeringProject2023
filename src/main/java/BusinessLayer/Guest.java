@@ -179,4 +179,8 @@ public class Guest {
     public Long getId() {
         return id;
     }
+
+    public void makeOffer(Store s, int productId, Double pricePerItem, Integer quantity) throws Exception {
+        throw new Exception("cannot make offer as guest");
+    }
 }

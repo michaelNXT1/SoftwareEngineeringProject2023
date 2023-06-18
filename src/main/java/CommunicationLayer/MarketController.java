@@ -609,7 +609,7 @@ public class MarketController implements IMarketController {
 
     @Override
     public Response makeOffer(String sessionId, int storeId, int productId, Double pricePerItem, Integer quantity) {
-        return marketManager.getOffer(sessionId, storeId, productId, pricePerItem, quantity);
+        return marketManager.makeOffer(sessionId, storeId, productId, pricePerItem, quantity);
     }
 
     @GetMapping("/editProductInCart")

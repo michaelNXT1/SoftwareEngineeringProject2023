@@ -207,4 +207,9 @@ public class Member extends Guest {
         }
         return ret;
     }
+
+    @Override
+    public void makeOffer(Store s, int productId, Double pricePerItem, Integer quantity) throws Exception {
+        s.makeOffer(this, productId, pricePerItem, quantity);
+    }
 }

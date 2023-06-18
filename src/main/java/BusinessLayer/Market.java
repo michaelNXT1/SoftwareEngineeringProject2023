@@ -579,6 +579,12 @@ public class Market {
         return new PurchaseDTO(purchase);
     }
 
+    public void makeOffer(String sessionId, int storeId, int productId, Double pricePerItem, Integer quantity) throws Exception {
+        Guest g = sessionManager.getSession(sessionId);
+        Store s = getStore(sessionId, storeId);
+        g.makeOffer(s, productId, pricePerItem, quantity);
+    }
+
     //use case 3.2
     @Transactional
     public int openStore(String sessionId, String storeName) throws Exception {

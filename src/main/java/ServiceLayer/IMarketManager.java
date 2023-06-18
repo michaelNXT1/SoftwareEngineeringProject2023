@@ -149,7 +149,7 @@ public interface IMarketManager {
 
     ResponseT<List<PurchaseDTO>> getUserPurchaseHistory(String sessionId);
 
-    Response getOffer(String sessionId, int storeId, int productId, Double pricePerItem, Integer quantity);
+    Response makeOffer(String sessionId, int storeId, int productId, Double pricePerItem, Integer quantity);
 
 //        Response logoutSystemManager(String sessionId);
 

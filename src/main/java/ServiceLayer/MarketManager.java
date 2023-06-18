@@ -693,9 +693,13 @@ public class MarketManager implements IMarketManager {
     }
 
     @Override
-    public Response getOffer(String sessionId, int storeId, int productId, Double pricePerItem, Integer quantity) {
-        //TODO: implement
-        return new Response();
+    public Response makeOffer(String sessionId, int storeId, int productId, Double pricePerItem, Integer quantity) {
+        try {
+            market.makeOffer(sessionId, storeId, productId, pricePerItem, quantity);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
     }
 
     public Response addMaxQuantityPurchasePolicy(String sessionId, int storeId, int productId, int maxQuantity) {

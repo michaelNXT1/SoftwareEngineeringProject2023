@@ -1,14 +1,23 @@
 package BusinessLayer;
 
-import BusinessLayer.Discounts.*;
+import BusinessLayer.Discounts.CategoryDiscount;
+import BusinessLayer.Discounts.Discount;
+import BusinessLayer.Discounts.ProductDiscount;
+import BusinessLayer.Discounts.StoreDiscount;
 import BusinessLayer.Logger.SystemLogger;
 import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
 import BusinessLayer.Policies.DiscountPolicies.DiscountPolicyOperation;
-import BusinessLayer.Policies.DiscountPolicies.PolicyTypes.*;
+import BusinessLayer.Policies.DiscountPolicies.PolicyTypes.MaxQuantityDiscountPolicy;
+import BusinessLayer.Policies.DiscountPolicies.PolicyTypes.MinBagTotalDiscountPolicy;
+import BusinessLayer.Policies.DiscountPolicies.PolicyTypes.MinQuantityDiscountPolicy;
+import BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy;
+import BusinessLayer.Policies.PurchasePolicies.PolicyTypes.CategoryTimeRestrictionPurchasePolicy;
+import BusinessLayer.Policies.PurchasePolicies.PolicyTypes.MaxQuantityPurchasePolicy;
+import BusinessLayer.Policies.PurchasePolicies.PolicyTypes.MinQuantityPurchasePolicy;
+import BusinessLayer.Policies.PurchasePolicies.PolicyTypes.ProductTimeRestrictionPurchasePolicy;
 import BusinessLayer.Policies.PurchasePolicies.PurchasePolicyOperation;
-import BusinessLayer.Policies.PurchasePolicies.*;
-import BusinessLayer.Policies.PurchasePolicies.PolicyTypes.*;
 import DAOs.*;
+import Notification.Notification;
 import Repositories.*;
 import ServiceLayer.DTOs.ProductDTO;
 import jakarta.persistence.*;
@@ -49,6 +58,9 @@ public class Store {
     private IBaseDiscountPolicyMapRepository productDiscountPolicyMap;
     @Transient
     private IDiscountRepo discountRepo = new DiscountDAO();
+
+    @Transient
+    private IOfferRepository offers=new OfferDAO();
     @Transient //Marks a property or field as transient, indicating that it should not be persisted in the database.
     private AtomicInteger productIdCounter;
     @Transient //Marks a property or field as transient, indicating that it should not be persisted in the database.
@@ -505,5 +517,18 @@ public class Store {
 
     public void setLogger(SystemLogger logger) {
         this.logger = logger;
+    }
+
+    public void makeOffer(Member g, int productId, Double pricePerItem, Integer quantity) throws Exception {
+        Product p = getProduct(productId);
+        List<Member> employees = getEmployees();
+        offers.saveOffer(new Offer(g, storeId, productId, pricePerItem, quantity, employees));
+        for (Member m : employees) {
+            try {
+                m.sendNotification(new Notification(String.format("User %s offers to pay %.2f§ for %d %ss", g.getUsername(), pricePerItem * quantity, quantity, p.getProductName())));
+            } catch (Exception e) {
+                m.sendNotification(new Notification(String.format("Guest offers to pay %.2f§ for %d %ss", pricePerItem * quantity, quantity, p.getProductName())));
+            }
+        }
     }
 }
