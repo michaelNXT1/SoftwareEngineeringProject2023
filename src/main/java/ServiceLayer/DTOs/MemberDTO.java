@@ -18,7 +18,7 @@ public class MemberDTO {
     public MemberDTO(Member member) {
             this.username = member.getUsername();
             this.email = member.getEmail();
-            this.positions = member.getPositions().getAllPositions().stream().filter(p -> p.getPositionMember().getUsername().equals(this.username))
+            this.positions = member.getPositions().stream().filter(p -> p.getPositionMember().getUsername().equals(this.username))
                 .map(PositionDTO::new)
                 .collect(Collectors.toList());
             this.shoppingCart = new ShoppingCartDTO(member.getShoppingCart());

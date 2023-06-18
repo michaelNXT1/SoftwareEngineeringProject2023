@@ -87,7 +87,7 @@ public interface Position {
 
     List<Member> getStoreEmployees() throws IllegalAccessException;
 
-    void removeStoreOwner(Member storeOwnerToRemove, Guest m) throws Exception;
+    boolean removeStoreOwner(Member storeOwnerToRemove, Guest m) throws Exception;
 
     Store getStore();
 

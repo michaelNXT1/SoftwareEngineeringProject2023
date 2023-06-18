@@ -16,6 +16,7 @@ import jakarta.persistence.*;
 
 //import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Entity
@@ -168,7 +169,7 @@ public class Member extends Guest {
         return !positions.getAllPositions().isEmpty();
     }
 
-    public void notBeingStoreOwner(Guest m, Store store) throws Exception {
+    public boolean notBeingStoreOwner(Guest m, Store store) throws Exception {
         Position storeOwnerP = null;
         for (Position p : positions.getAllPositions())
             if (p instanceof StoreOwner && p.getStore().getStoreId()==store.getStoreId() && p.getPositionMember().username.equals(this.username))
@@ -183,10 +184,17 @@ public class Member extends Guest {
         }
         positions.removePosition(storeOwnerP);
         logger.info(String.format("remove %s from being store owner", getUsername()));
+        return true;
     }
 
-    public IPositionRepository getPositions() {
-        return positions;
+    public List<Position> getPositions() {
+        List<Position> thisMemberPosition = new LinkedList<>();
+        for (Position p:positions.getAllPositions()
+             ) {
+            if (p.getPositionMember().getUsername().equals(this.username))
+                thisMemberPosition.add(p);
+        }
+        return thisMemberPosition;
     }
 
     public void setPositions(IPositionRepository positions) {
@@ -206,5 +214,15 @@ public class Member extends Guest {
             ret.add(new StoreDTO(p.getStore()));
         }
         return ret;
+    }
+
+    public boolean removePosition(Position userP) {
+        positions.removePosition(userP);
+        logger.info(String.format("remove %s from being %s duo to the remove foo his assigner", getUsername(),userP.getClass()));
+        return true;
+    }
+
+    public void addPosition(Position p) {
+        positions.addPosition(p);
     }
 }
