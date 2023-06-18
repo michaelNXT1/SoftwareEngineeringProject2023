@@ -112,7 +112,7 @@ public class Market {
         return stores.getAllStores().values().stream().filter(s -> s.getStoreName().equals(storeName)).toList().stream().map(StoreDTO::new).findFirst().get();
     }
 
-    private void parseFile(String filePath)  {
+    public void parseFile(String filePath)  {
 
         if (filePath!= null){
             String sessionId = "";
