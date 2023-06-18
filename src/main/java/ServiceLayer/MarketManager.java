@@ -689,13 +689,42 @@ public class MarketManager implements IMarketManager {
         } catch (Exception e) {
             return ResponseT.fromValue(e.getMessage());
         }
-        
+
     }
 
     @Override
     public Response makeOffer(String sessionId, int storeId, int productId, Double pricePerItem, Integer quantity) {
         try {
             market.makeOffer(sessionId, storeId, productId, pricePerItem, quantity);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseT<List<OfferDTO>> getOffersByStore(int storeId) {
+        try {
+            return ResponseT.fromValue(market.getOffersByStore(storeId));
+        } catch (Exception e) {
+            return ResponseT.fromValue(e.getMessage());
+        }
+    }
+
+    @Override
+    public Response rejectOffer(String sessionId, int storeId, int offerId) {
+        try {
+            market.rejectOffer(sessionId, storeId, offerId);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
+    @Override
+    public Response acceptOffer(String sessionId, int storeId, int offerId) {
+        try {
+            market.acceptOffer(sessionId, storeId, offerId);
             return new Response();
         } catch (Exception e) {
             return new Response(e.getMessage());

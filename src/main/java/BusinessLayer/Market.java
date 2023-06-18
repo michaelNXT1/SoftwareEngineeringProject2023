@@ -1298,4 +1298,25 @@ public class Market {
             paymentSystem.setPaymentSystem(null);
         }
     }
+
+    public List<OfferDTO> getOffersByStore(int storeId) throws Exception {
+        checkMarketOpen();
+        checkStoreExists(storeId);
+        Store s = stores.getStore(storeId);
+        return s.getStoreOffers().stream().map(OfferDTO::new).collect(Collectors.toList());
+    }
+
+    public void rejectOffer(String sessionId, int storeId, int offerId) throws Exception {
+        checkMarketOpen();
+        checkStoreExists(storeId);
+        Position p=checkPositionLegal(sessionId, storeId);
+        p.rejectOffer(offerId);
+    }
+
+    public void acceptOffer(String sessionId, int storeId, int offerId) throws Exception {
+        checkMarketOpen();
+        checkStoreExists(storeId);
+        Position p=checkPositionLegal(sessionId, storeId);
+        p.acceptOffer(offerId, paymentSystem, supplySystem);
+    }
 }

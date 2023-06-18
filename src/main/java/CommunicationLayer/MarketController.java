@@ -593,6 +593,23 @@ public class MarketController implements IMarketController {
     }
 
     @Override
+    public ResponseT<List<OfferDTO>> getOffersByStore(int storeId) {
+
+        return marketManager.getOffersByStore(storeId);
+    }
+
+    @Override
+    public Response rejectOffer(String sessionId, int storeId, int offerId) {
+
+        return marketManager.rejectOffer(sessionId, storeId, offerId);
+    }
+
+    @Override
+    public Response acceptOffer(String sessionId, int storeId, int offerId) {
+        return marketManager.acceptOffer(sessionId, storeId, offerId);
+    }
+
+    @Override
     public ResponseT<Double> getProductDiscountPercentageInCart(String sessionId, int storeId, int productId) {
         return marketManager.getProductDiscountPercentageInCart(sessionId, storeId, productId);
     }

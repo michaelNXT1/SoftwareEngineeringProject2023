@@ -250,4 +250,14 @@ public class StoreOwner implements Position {
         return "Owner";
     }
 
+    @Override
+    public void rejectOffer(int offerId) throws Exception {
+        store.rejectOffer(positionMember, offerId);
+    }
+
+    @Override
+    public void acceptOffer(int offerId, PaymentSystemProxy paymentSystem, SupplySystemProxy supplySystem) throws Exception {
+        store.acceptOffer(positionMember, offerId, paymentSystem, supplySystem);
+    }
+
 }

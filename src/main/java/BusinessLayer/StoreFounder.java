@@ -238,4 +238,14 @@ public class StoreFounder implements Position {
     public String getPositionName() {
         return "Founder";
     }
+
+    @Override
+    public void rejectOffer(int offerId) throws Exception {
+        store.rejectOffer(positionMember, offerId);
+    }
+
+    @Override
+    public void acceptOffer(int offerId, PaymentSystemProxy paymentSystem, SupplySystemProxy supplySystem) throws Exception {
+        store.acceptOffer(positionMember, offerId, paymentSystem, supplySystem);
+    }
 }

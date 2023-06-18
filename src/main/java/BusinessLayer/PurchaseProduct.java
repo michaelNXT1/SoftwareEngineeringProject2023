@@ -35,6 +35,15 @@ public class PurchaseProduct {
         this.quantity = quantity;
     }
 
+    public PurchaseProduct(int productId, int storeId, String productName, String productCategory, double price, int quantity) {
+        this.productId = productId;
+        this.storeId = storeId;
+        this.productName = productName;
+        this.productCategory = productCategory;
+        this.price = price;
+        this.quantity = quantity;
+    }
+
     public PurchaseProduct() {
     }
 

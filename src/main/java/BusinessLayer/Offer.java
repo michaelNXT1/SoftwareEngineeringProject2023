@@ -17,8 +17,9 @@ public class Offer {
     private Member offeringUser;
     @Column(name = "store_id")
     private int storeId;
-    @Column(name = "product_id")
-    private int productId;
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product productId;
     @Column(name = "price_per_item")
     private double pricePerItem;
     @Column(name = "quantity")
@@ -26,7 +27,7 @@ public class Offer {
     @Transient
     private IOfferApprovalRepository offerApprovalRepository = new OfferApprovalDAO();
 
-    public Offer(Member offeringUser, int storeId, int productId, double pricePerItem, int quantity) {
+    public Offer(Member offeringUser, int storeId, Product productId, double pricePerItem, int quantity) {
         this.offeringUser = offeringUser;
         this.storeId = storeId;
         this.productId = productId;
@@ -37,7 +38,7 @@ public class Offer {
     public Offer() {
     }
 
-    public void respondToOffer(Member approvingMember, boolean response) {
+    public void respondToOffer(Member approvingMember, int response) {
         OfferApproval offerApproval = offerApprovalRepository.getAllOfferApprovals().stream().filter(oa ->
                 oa.getOfferId() == offerId && oa.getEmployee().getUsername().equals(approvingMember.getUsername())).findFirst().orElse(null);
         offerApproval.setResponse(response);
@@ -45,8 +46,36 @@ public class Offer {
     }
     public void addOfferApproval(List<Member> approvingMembers){
         for (Member m : approvingMembers) {
-            OfferApproval offerApproval = new OfferApproval(offerId, m, false);
+            OfferApproval offerApproval = new OfferApproval(offerId, m, -1);
             offerApprovalRepository.saveOfferApproval(offerApproval);
         }
+    }
+
+    public int getOfferId() {
+        return offerId;
+    }
+
+    public Member getOfferingUser() {
+        return offeringUser;
+    }
+
+    public Product getProductId() {
+        return productId;
+    }
+
+    public double getPricePerItem() {
+        return pricePerItem;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public int getStoreId() {
+        return storeId;
+    }
+
+    public IOfferApprovalRepository getOfferApprovalRepository() {
+        return offerApprovalRepository;
     }
 }

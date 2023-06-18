@@ -390,4 +390,14 @@ public class StoreManager implements Position {
     public String getPositionName() {
         return "Manager";
 }
+
+    @Override
+    public void rejectOffer(int offerId) throws Exception {
+        store.rejectOffer(positionMember, offerId);
+    }
+
+    @Override
+    public void acceptOffer(int offerId, PaymentSystemProxy paymentSystem, SupplySystemProxy supplySystem) {
+        store.acceptOffer(positionMember, offerId, paymentSystem, supplySystem);
+    }
 }

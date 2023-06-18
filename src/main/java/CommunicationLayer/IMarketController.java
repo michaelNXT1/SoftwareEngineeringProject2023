@@ -229,4 +229,9 @@ public interface IMarketController {
 
     Response editProductDescription(String sessionId, int storeId, int productId, String value);
 
+    ResponseT<List<OfferDTO>> getOffersByStore(int storeId);
+
+    Response rejectOffer(String sessionId, int storeId, int offerId);
+
+    Response acceptOffer(String sessionId, int storeId, int offerId);
 }

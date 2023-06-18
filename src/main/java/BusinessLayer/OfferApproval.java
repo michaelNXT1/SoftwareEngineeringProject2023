@@ -14,9 +14,9 @@ public class OfferApproval {
     @JoinColumn(name = "employee")
     private Member employee;
     @Column
-    private boolean response;
+    private int response;
 
-    public OfferApproval(int offerId, Member employee, boolean response) {
+    public OfferApproval(int offerId, Member employee, int response) {
         this.offerId = offerId;
         this.employee = employee;
         this.response = response;
@@ -42,7 +42,7 @@ public class OfferApproval {
         this.employee = employee;
     }
 
-    public boolean isResponse() {
+    public int getResponse() {
         return response;
     }
 
@@ -54,7 +54,7 @@ public class OfferApproval {
         return employee;
     }
 
-    public void setResponse(boolean response) {
+    public void setResponse(int response) {
         this.response = response;
     }
 }

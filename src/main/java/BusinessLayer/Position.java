@@ -1,5 +1,7 @@
 package BusinessLayer;
 
+import BusinessLayer.ExternalSystems.PaymentSystem;
+import BusinessLayer.ExternalSystems.SupplySystem;
 import ServiceLayer.DTOs.PositionDTO;
 import ServiceLayer.DTOs.ProductDTO;
 
@@ -95,4 +97,8 @@ public interface Position {
     boolean hasPermission(PositionDTO.permissionType employeeList);
 
     String getPositionName();
+
+    void rejectOffer(int offerId) throws Exception;
+
+    void acceptOffer(int offerId, PaymentSystemProxy paymentSystem, SupplySystemProxy supplySystem) throws Exception;
 }

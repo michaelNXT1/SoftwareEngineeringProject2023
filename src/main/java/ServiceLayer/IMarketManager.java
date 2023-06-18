@@ -151,6 +151,12 @@ public interface IMarketManager {
 
     Response makeOffer(String sessionId, int storeId, int productId, Double pricePerItem, Integer quantity);
 
+    ResponseT<List<OfferDTO>> getOffersByStore(int storeId);
+
+    Response rejectOffer(String sessionId, int storeId, int offerId);
+
+    Response acceptOffer(String sessionId, int storeId, int offerId);
+
 //        Response logoutSystemManager(String sessionId);
 
 //        ResponseT<String> loginSystemManager(String username, String password);
