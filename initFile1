@@ -1,8 +1,15 @@
 signUp(u1,123);
 signUp(u2,123);
 signUp(u3,123);
+signUp(u4,123);
 login(u1,123);
+login(u2,123);
+login(u3,123);
 open-store(u1,s1);
-appoint-owner(u1,s1,u2);3
+appoint-owner(u1,s1,u2);
 appoint-owner(u2,s1,u3);
+appoint-owner(u3,s1,u4);
+remove-owner(u1,s1,u2);
 logout(u1);
+logout(u2);
+logout(u3);
