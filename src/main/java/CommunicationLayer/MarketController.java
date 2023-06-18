@@ -587,6 +587,11 @@ public class MarketController implements IMarketController {
     }
 
     @Override
+    public Response editProductDescription(String sessionId, int storeId, int productId, String value) {
+        return null;
+    }
+
+    @Override
     public ResponseT<Double> getProductDiscountPercentageInCart(String sessionId, int storeId, int productId) {
         return marketManager.getProductDiscountPercentageInCart(sessionId, storeId, productId);
     }

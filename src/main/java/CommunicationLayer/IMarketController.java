@@ -225,4 +225,7 @@ public interface IMarketController {
     Response makeOffer(String sessionId, int storeId, int productId, Double pricePerItem, Integer quantity);
 
     ResponseT<Boolean> hasDeliveryAddress(String sessionId);
+
+    Response editProductDescription(String sessionId, int storeId, int productId, String value);
+
 }
