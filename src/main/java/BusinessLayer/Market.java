@@ -52,6 +52,7 @@ public class Market {
     private IPositionRepository positionRepository = new PositionDAO();
     private IBaseDiscountPolicyRepository  baseDiscountPolicyMapDAO= new BaseDiscountPolicyDAO();
     private IPurchasePolicyRepository purchasePolicyRepository = new PurchasePolicyDAO();
+    private INotificationRepository notificationRepository = new NotificationDAO();
     private IDiscountRepo discountRepo = new DiscountDAO();
     private IProductRepository productRepository = new ProductDAO();
     private IShoppingCartRepo shoppingCartRepo = new ShoppingCartDAO();
@@ -77,9 +78,14 @@ public class Market {
         paymentSystem = new PaymentSystemProxy();
         paymentSystem.setPaymentSystem(new PaymentSystem());
         clearAllData();
-//        signUpSystemManager("admin","admin");
-        if(path != null)
-            parseFile(path);
+        if(path != null) {
+            try {
+                parseFile(path);
+                logger.info("great success");
+            }catch (Exception e){
+                logger.error("cannot load the parse file because " + e.getMessage());
+            }
+        }
         testModeSupplySystem(isTestMode);
         testModePaymentSystem(isTestMode);
     }
@@ -94,6 +100,7 @@ public class Market {
         stringSetRepository.clear();
         positionRepository.clear();
         users.clear();
+        notificationRepository.clear();
         discountRepo.clear();
         stores.clear();
         systemManagers.clear();
@@ -136,7 +143,7 @@ public class Market {
                             throw new RuntimeException(e);
                         }
                         break;
-                    case "logout" :
+                    case "logout":
                         try {
                             sessionId = sessionManager.getSessionIdByGuestName(args[0]);
                             logout(sessionId);
@@ -281,6 +288,7 @@ public class Market {
         Guest guest = new Guest();
         logger.info("new guest try to entered the system");
         String sessionId = sessionManager.createSession(guest);
+        guest.addShoppingCart();
         logger.info(String.format("new guest entered the system with sessionID: %s", sessionId));
         return sessionId;
     }
@@ -309,6 +317,7 @@ public class Market {
         Member newMember = new Member(username, hashedPassword);
         synchronized (userLock) {
             // store new Member's object in users map
+            newMember.addShoppingCart();
             users.put(username, newMember);
             logger.info(String.format("%s signed up to the system", username));
         }
@@ -329,35 +338,19 @@ public class Market {
                 boolean res = securityUtils.authenticate(username, password);
                 if (res) {
                     logger.info(String.format("%s the user passed authenticate check and logged in to the systemManager", username));
-                    return sessionManager.createSessionForSystemManager(sm);
+                    String sessionId =  sessionManager.createSessionForSystemManager(sm);
+                    return sessionId;
                 }
                 return null;
             }
         }
-        return null;
+        logger.error("%s dont have system manager permissions");
+        throw new Exception("this is not a system manager");
     }
     //use case 2.3
     //use case 2.3
     public String login(String username, String password, NotificationBroker notificationBroker) throws Exception {
         logger.info(String.format("%s try to logg in to the system", username));
-//        SystemManager sm = systemManagers.getSystemManager(username);
-//        synchronized (username.intern()) {
-//            if (sm != null) {
-//                String hashedPassword = new String(passwordEncoder.digest(password.getBytes()));
-//                // If the Member doesn't exist or the password is incorrect, return false
-//                if (!hashedPassword.equals(sm.getHashedPassword())) {
-//                    logger.error(String.format("%s has Invalid username or password", username));
-//                    throw new Error("Invalid username or password");
-//                }
-//                // If the credentials are correct, authenticate the user and return true
-//                boolean res = securityUtils.authenticate(username, password);
-//                if (res) {
-//                    logger.info(String.format("%s the user passed authenticate check and logged in to the systemManager", username));
-//                    return sessionManager.createSessionForSystemManager(sm);
-//                }
-//                return null;
-//            }
-//        }
         isMarketOpen();
         // Retrieve the stored Member's object for the given username
         Member member;
@@ -376,6 +369,8 @@ public class Market {
                 logger.info(String.format("%s passed authenticate check and logged in to the system", username));
                 member.setNotificationBroker(notificationBroker);
                 member.sendRealTimeNotification();
+                ShoppingCart shoppingCart = shoppingCartRepo.getAllShoppingCart().stream().filter(sc -> sc.getUserName().equals(member.getUsername())).toList().get(0);
+                member.setShoppingCart(shoppingCart);
                 return sessionManager.createSession(member);
             }
             logger.error(String.format("%s did not passed authenticate check and logged in to the system", username));
@@ -383,33 +378,7 @@ public class Market {
         }
     }
 
-//    //use case 2.3
-//    public String loginSystemManager(String username, String password) throws Exception {
-//        logger.info(String.format("%s trying to log in to the systemManager", username));
-//        // Retrieve the stored Member's object for the given username
-//        SystemManager sm = systemManagers.get(username);
-//
-//        String hashedPassword = new String(passwordEncoder.digest(password.getBytes()));
-//        // If the Member doesn't exist or the password is incorrect, return false
-//        if (sm == null || !hashedPassword.equals(sm.getPassword())) {
-//            logger.error(String.format("%s has Invalid username or password", username));
-//            throw new Error("Invalid username or password");
-//        }
-//
-//        // If the credentials are correct, authenticate the user and return true
-//        boolean res = securityUtils.authenticate(username, password);
-//        if (res) {
-//            logger.info(String.format("%s the user passed authenticate check and logged in to the systemManager", username));
-//            String sessionId = sessionManager.createSessionForSystemManager(sm);
-//            return sessionId;
-//        }
-//        return null;
-//    }
-//
-//    public void logoutSystemManager(String sessionId) throws Exception {
-//        logger.info(String.format("%s trying to log out of the system", sessionId));
-//        sessionManager.deleteSessionForSystemManager(sessionId);
-//    }
+
 
     //use case 3.1
     public String logout(String sessionId) throws Exception {
@@ -420,7 +389,9 @@ public class Market {
             return enterMarket();
         } catch (Exception e) {
             isMarketOpen();
+            Guest g = sessionManager.getSession(sessionId);
             sessionManager.deleteSession(sessionId);
+            users.logout(((Member) g).getUsername());
             logger.info(String.format("%s logged out of the system as member", sessionId));
             return enterMarket();
         }
@@ -708,7 +679,7 @@ public class Market {
         p.editProductPrice(productId, newPrice);
         List<Member> managers = s.getManagers();
         for (Member manager : managers) {
-            manager.sendNotification(new Notification(String.format("%s changed %s price from %0.2f to %0.2f in %s store", g.getUsername(), product.getProductName(), oldPrice, newPrice, s.getStoreName())));
+            manager.sendNotification(new Notification(String.format("%s changed %s price from %.2f to %.2f in %s store", g.getUsername(), product.getProductName(), oldPrice, newPrice, s.getStoreName())));
         }
     }
 
@@ -813,7 +784,7 @@ public class Market {
         if (storeManagerPosition == null) {
             logger.error(String.format("%s has not have that position in this store", storeManager));
             throw new Exception("the name of the store manager has not have that position in this store");
-        } else if (!storeManagerPosition.getAssigner().equals(m)) {
+        } else if (!storeManagerPosition.getAssigner().getUsername().equals(m.getUsername())) {
             throw new Exception("only the systemManager's assigner can edit his permissions");
         } else {
             logger.info(String.format("%s have new permissions to %s", storeManager, getStore(sessionId, storeId)));
@@ -852,7 +823,7 @@ public class Market {
         if (storeManagerPosition == null) {
             logger.error(String.format("%s has not have that position in this store", storeManager));
             throw new Exception("the name of the store manager has not have that position in this store");
-        } else if (storeManagerPosition.getAssigner().equals(m)) {
+        } else if (storeManagerPosition.getAssigner().getUsername().equals(m.getUsername())) {
             throw new Exception("only the systemManager's assigner can edit his permissions");
         } else {
             logger.info(String.format("%s have new permissions %d to %s", storeManager, permission, getStore(sessionId, storeID)));
@@ -1240,7 +1211,7 @@ public class Market {
         checkStoreExists(storeId);
         Map<ProductDTO, Integer> newMap = new HashMap<>();
         for (Product p: stores.getStore(storeId).getProducts().getAllProducts().stream().filter(p -> p.getStoreId() == storeId).toList())
-            newMap.put(new ProductDTO(p), p.getProductId());
+            newMap.put(new ProductDTO(p), p.getQuantity());
         return newMap;
     }
 
@@ -1308,6 +1279,12 @@ public class Market {
         isMarketOpen();
         Guest m = sessionManager.getSession(sessionId);
         return m.getPaymentDetails() != null;
+    }
+
+    public boolean hasDeliveryAddress(String sessionId) throws Exception {
+        isMarketOpen();
+        Guest m = sessionManager.getSession(sessionId);
+        return m.getSupplyDetails() != null;
     }
 
     public double getProductDiscountPercentageInCart(String sessionId, int storeId, int productId) throws Exception {

@@ -3,7 +3,6 @@ package ConcurrencyTests;
 
 import BusinessLayer.Market;
 import junit.framework.TestCase;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
@@ -41,7 +40,7 @@ public class ConcurrencyTest extends TestCase {
         int productID =setUpStoreWithAmount(id,storeid,100);
         buyFromStoreAmount(storeid,productID,5);
         try {
-            assertEquals(100-(THREADS*5),market.getStore(id, storeid).getProduct(productID).getAmount());
+            assertEquals(100-(THREADS*5),market.getStore(id, storeid).getProduct(productID).getQuantity());
         } catch (Exception e) {
             fail();
         }

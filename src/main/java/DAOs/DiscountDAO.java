@@ -74,14 +74,14 @@ public class DiscountDAO implements IDiscountRepo {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
     }
 
     @Override
-    public ConcurrentLinkedQueue<Discount> getAllDiscounts() {
+    public List<Discount> getAllDiscounts() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         List<Discount> discounts = null;
         try {
@@ -93,6 +93,6 @@ public class DiscountDAO implements IDiscountRepo {
         } finally {
             session.close();
         }
-        return (ConcurrentLinkedQueue<Discount>) discounts;
+        return discounts;
     }
 }

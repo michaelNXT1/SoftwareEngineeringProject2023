@@ -63,34 +63,33 @@ public class PurchaseTests extends ServiceTests {
     public void testAndPoliciesPurchaseSuccess() {
         int storeID = openStore(sessionID1, "newStore");
         int productID1 = addProduct(sessionID1, storeID, "test", 3.9, "milk", 9, "10");
-        addProductDiscount(sessionID1, storeID, productID1, 0.1, 0);
-        addMaxQuantityDiscountPolicy(sessionID1, storeID, 0,productID1, 6);
-        addMinBagTotalDiscountPolicy(sessionID1, storeID, 0, 1);
+        int discountId= (int) addProductDiscount(sessionID1, storeID, productID1, 0.1, 0);
+        addMaxQuantityDiscountPolicy(sessionID1, storeID, discountId,productID1, 6);
+        addMinBagTotalDiscountPolicy(sessionID1, storeID, discountId, 1);
         logout(sessionID1);
         String sessionId2 = login("alon123", "alon0601");
         addPaymentMethod(sessionId2,"1234","06","2026","540");
         addSupplyDetails(sessionId2,"alon","ASd","asd","sad","asd");
         addToCart(sessionId2,storeID,productID1,5);
         PurchaseDTO purchaseDTO = buyCart(sessionId2);
-        assertTrue(purchaseDTO.getTotalPrice() == 3.9*0.9*0.9);
+        assertEquals(5*3.9 * 0.9, purchaseDTO.getTotalPrice());
     }
 
     @Test
     public void testOrPoliciesPurchaseSuccess() {
         int storeID = openStore(sessionID1, "newStore");
         int productID1 = addProduct(sessionID1, storeID, "test", 3.9, "milk", 9, "10");
-        addProductDiscount(sessionID1, storeID, productID1, 0.1, 0);
-        int qdId = addMaxQuantityDiscountPolicy(sessionID1, storeID, 0,productID1, 6);
-        int mbID = addMinBagTotalDiscountPolicy(sessionID1, storeID, 0, 1);
-        joinPolicies(sessionID1,storeID,qdId,mbID,0);
+        int discountId = (int) addProductDiscount(sessionID1, storeID, productID1, 0.1, 0);
+        int qdId = addMaxQuantityDiscountPolicy(sessionID1, storeID, discountId, productID1, 6);
+        int mbID = addMinBagTotalDiscountPolicy(sessionID1, storeID, discountId, 1);
+        joinDiscountPolicies(sessionID1, storeID, qdId, mbID, 0);
         logout(sessionID1);
         String sessionId2 = login("alon123", "alon0601");
-        addPaymentMethod(sessionId2,"1234","06","2026","540");
-        addSupplyDetails(sessionId2,"alon","ASd","asd","sad","asd");
-        addToCart(sessionId2,storeID,productID1,5);
+        addPaymentMethod(sessionId2, "1234", "06", "2026", "540");
+        addSupplyDetails(sessionId2, "alon", "ASd", "asd", "sad", "asd");
+        addToCart(sessionId2, storeID, productID1, 5);
         PurchaseDTO purchaseDTO = buyCart(sessionId2);
-        double ans =  3.9*0.9;
-        assertTrue(purchaseDTO.getTotalPrice() ==ans);
+        assertEquals(Math.round(5 * 3.9 * 0.9 * 100.0) / 100.0, purchaseDTO.getTotalPrice());
     }
 
     @Test
@@ -107,16 +106,16 @@ public class PurchaseTests extends ServiceTests {
         addSupplyDetails(sessionId2,"alon","ASd","asd","sad","asd");
         addToCart(sessionId2,storeID,productID1,5);
         PurchaseDTO purchaseDTO = buyCart(sessionId2);
-        double ans = 15.600000000000001;
-        assertTrue(purchaseDTO.getTotalPrice() == ans);
+        double ans = Math.round(5 * 3.9 * 0.9 * 100.0) / 100.0;
+        assertEquals(purchaseDTO.getTotalPrice(), ans);
     }
     @Test
     public void testAddMinBagTotalDiscountPolicyPurchaseSuccess() {
         int storeID = openStore(sessionID1, "newStore");
         int productID1 = addProduct(sessionID1, storeID, "test", 3.9, "milk", 9, "10");
         int productID2 = addProduct(sessionID1, storeID, "test1", 3.9, "milk", 9, "10");
-        addProductDiscount(sessionID1, storeID, productID1, 0.1, 0);
-        addMinBagTotalDiscountPolicy(sessionID1, storeID, 0, 2);
+        int discountId= (int) addProductDiscount(sessionID1, storeID, productID1, 0.1, 0);
+        addMinBagTotalDiscountPolicy(sessionID1, storeID, discountId, 2);
         logout(sessionID1);
         String sessionId2 = login("alon123", "alon0601");
         addPaymentMethod(sessionId2,"1234","06","2026","540");
@@ -124,16 +123,16 @@ public class PurchaseTests extends ServiceTests {
         addToCart(sessionId2,storeID,productID1,7);
         addToCart(sessionId2,storeID,productID2,3);
         PurchaseDTO purchaseDTO = buyCart(sessionId2);
-        double ans =  3.9*0.9 + 3.9;
-        assertTrue(purchaseDTO.getTotalPrice() == ans);
+        double ans =  Math.round((7*3.9*0.9+3*3.9)*100.0)/100.0;
+        assertEquals(purchaseDTO.getTotalPrice(), ans);
     }
 
     @Test
     public void testAddMinBagTotalDiscountPolicyPurchaseFail() {
         int storeID = openStore(sessionID1, "newStore");
         int productID1 = addProduct(sessionID1, storeID, "test", 3.9, "milk", 9, "10");
-        addProductDiscount(sessionID1, storeID, productID1, 0.1, 0);
-        addMinBagTotalDiscountPolicy(sessionID1, storeID, 0, 6);
+        int discountId= (int) addProductDiscount(sessionID1, storeID, productID1, 0.1, 0);
+        addMinBagTotalDiscountPolicy(sessionID1, storeID, discountId, 6);
         logout(sessionID1);
         String sessionId2 = login("alon123", "alon0601");
         addPaymentMethod(sessionId2,"1234","06","2026","540");

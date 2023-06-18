@@ -39,7 +39,7 @@ public class MapProductIntegerDAO implements IMapProductIntegerRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }

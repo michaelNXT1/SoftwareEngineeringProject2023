@@ -19,7 +19,7 @@ public class BaseDiscountPolicyDAO implements IBaseDiscountPolicyRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -35,11 +35,10 @@ public class BaseDiscountPolicyDAO implements IBaseDiscountPolicyRepository {
             return true;
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
-        return false;
     }
 
     public List<BaseDiscountPolicy> getAllDiscountPolicies() {
@@ -48,7 +47,7 @@ public class BaseDiscountPolicyDAO implements IBaseDiscountPolicyRepository {
         try {
             discountPolicies = session.createQuery("FROM base_discount_policy", BaseDiscountPolicy.class).list();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -62,11 +61,10 @@ public class BaseDiscountPolicyDAO implements IBaseDiscountPolicyRepository {
             // Retrieve the discount policy by policyId
             return session.get(BaseDiscountPolicy.class, policyId);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
-        return null;
     }
 
     @Override
@@ -86,7 +84,7 @@ public class BaseDiscountPolicyDAO implements IBaseDiscountPolicyRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }

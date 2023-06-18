@@ -1,11 +1,9 @@
 package BusinessLayer;
 
 import DAOs.PurchaseDAO;
-import DAOs.PurchaseProductDAO;
 import Repositories.IPurchaseRepository;
 import Utils.Pair;
 import jakarta.persistence.*;
-import org.hibernate.engine.internal.Cascade;
 
 //import javax.persistence.*;
 import java.util.ArrayList;
@@ -95,7 +93,7 @@ public class ShoppingBag {
         Product p = store.getProduct(productId);
         if (quantity == 0)
             productListId.remove(productId);
-        else if (p.getAmount() >= quantity)
+        else if (p.getQuantity() >= quantity)
             productListId.put(productId,quantity);
         else {
             logger.error("Requested product quantity not available.");
@@ -105,8 +103,8 @@ public class ShoppingBag {
 
     //Use case 2.13
     public void removeProduct(int productId) throws Exception {
-        Product p = store.getProduct(productId);
-        productListId.remove(p);
+        store.getProduct(productId);
+        productListId.remove(productId);
     }
 
     //Use case 2.14
@@ -115,7 +113,6 @@ public class ShoppingBag {
             PurchaseProduct pp = store.subtractForPurchase(productId,productListId.get(store.getProduct(productId).getProductId()));
             double discountPercentage = store.getProductDiscountPercentage(productId,productListId);
             pp.setPrice(pp.getPrice() * (1.0 - discountPercentage));
-            this.productListId.remove(productId);
             return new Pair<>(pp, true);
         } catch (Exception e) {
             return new Pair<>(null, false);

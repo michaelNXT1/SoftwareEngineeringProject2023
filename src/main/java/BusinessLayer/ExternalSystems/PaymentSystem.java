@@ -3,6 +3,7 @@ package BusinessLayer.ExternalSystems;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
@@ -12,6 +13,7 @@ import org.apache.http.client.HttpClient;
 
 import java.io.*;
 
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +50,13 @@ public class PaymentSystem implements IPaymentSystem {
         params.add(new BasicNameValuePair("ccv", ccv));
         params.add(new BasicNameValuePair("id", cardId));
 
-        String response = send(params);
+        String response = null;
+        try {
+             response = send(params);
+        }catch(Exception e) {
+            return -1;
+            
+        }
         int transactionId;
         try{
             transactionId = Integer.parseInt(response);
@@ -76,32 +84,28 @@ public class PaymentSystem implements IPaymentSystem {
     private String send(List<NameValuePair> parameters) {
         try {
             httpPost.setEntity(new UrlEncodedFormEntity(parameters, "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
 
-        HttpResponse response = null;
-        try {
-            response = httpClient.execute(httpPost);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            // Set the request timeout to 60 minutes (3600000 milliseconds)
+            RequestConfig requestConfig = RequestConfig.custom()
+                    .setSocketTimeout(3600000)
+                    .setConnectTimeout(3600000)
+                    .build();
+            httpPost.setConfig(requestConfig);
 
-        if (response == null) return null;
-
-        HttpEntity entity = response.getEntity();
-        if (entity != null) {
-            try (InputStream inputStream = entity.getContent()) {
-                StringBuilder sb = new StringBuilder();
-                int c;
-                while((c = inputStream.read()) >= 0) {
-                    sb.append((char) c);
+            HttpResponse response = httpClient.execute(httpPost);
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                try (InputStream inputStream = entity.getContent()) {
+                    StringBuilder sb = new StringBuilder();
+                    int c;
+                    while ((c = inputStream.read()) >= 0) {
+                        sb.append((char) c);
+                    }
+                    return sb.toString();
                 }
-                return sb.toString();
-
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         return null;

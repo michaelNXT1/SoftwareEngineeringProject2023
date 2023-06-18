@@ -3,6 +3,7 @@ package BusinessLayer;
 import BusinessLayer.Logger.SystemLogger;
 
 import CommunicationLayer.NotificationBroker;
+import DAOs.MemberDAO;
 import DAOs.NotificationDAO;
 import DAOs.PositionDAO;
 import Repositories.INotificationRepository;
@@ -21,8 +22,10 @@ import java.util.List;
 @Entity
 @Table(name = "members")
 public class Member extends Guest {
-    @Transient
-    private INotificationRepository notifications= new NotificationDAO();;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "member_notifications" ,joinColumns = @JoinColumn(name = "member_name"))
+    @Column
+    private List<Notification> notifications= new ArrayList<>();;
     @Transient
     private NotificationBroker notificationBroker;
     @Id
@@ -46,8 +49,18 @@ public class Member extends Guest {
     public Member() {
 
     }
-
-
+    @Override
+    public void addShoppingCart(){
+        shoppingCart = new ShoppingCart(this.username);
+        shoppingCartRepo.addShoppingCart(shoppingCart);
+    }
+    @Override
+    public ShoppingCart displayShoppingCart(Long id) {  //2.11
+        List<ShoppingCart> myShoppingCart = shoppingCartRepo.getAllShoppingCart().stream().filter(sc->sc.getUserName().equals(this.username)).toList();
+        if(!myShoppingCart.isEmpty())
+            return myShoppingCart.get(0);
+        return null;
+    }
     // getter, setter
     public void setNotificationBroker(NotificationBroker notificationBroker){
         this.notificationBroker = notificationBroker;
@@ -55,7 +68,7 @@ public class Member extends Guest {
     public void setPosition(Position newPosition) {
         boolean found = false;
         for (Position p : positions.getAllPositions()) {
-            if (p.getStore().equals(newPosition.getStore())) {
+            if (p.getStore().getStoreId()==newPosition.getStore().getStoreId()) {
                 positions.removePosition(p);
                 positions.addPosition(newPosition);
                 found = true;
@@ -65,7 +78,10 @@ public class Member extends Guest {
             }
         }
     }
-
+    @Override
+    public ShoppingCart getShoppingCart() {
+        return shoppingCartRepo.getAllShoppingCart().stream().filter(sc->sc.getUserName().equals(this.getUsername())).toList().get(0);
+    }
     public String getPassword() {
         return hashedPassword;
     }
@@ -106,19 +122,22 @@ public class Member extends Guest {
     }
 
     public void sendRealTimeNotification(){
-        if(notificationBroker!= null && !(notifications == null || notifications.getAllNotifications().isEmpty())) {
-            for (Notification notification : notifications.getAllNotifications()) {
+        if(notificationBroker!= null && !(notifications == null || notifications.isEmpty())) {
+            for (Notification notification : notifications) {
                 this.notificationBroker.sendRealTimeNotification(notification, this.username);
             }
             notifications.clear();
         }
+        new MemberDAO().updateMember(this);
     }
 
     public void sendNotification(Notification shopNotification) {
         if (this.notificationBroker != null) {
             notificationBroker.sendRealTimeNotification(shopNotification, this.username);
         }else {
-            this.notifications.addNotification(shopNotification);
+            this.notifications.add(shopNotification);
+            new NotificationDAO().addNotification(shopNotification);
+            new MemberDAO().updateMember(this);
         }
     }
 
@@ -153,17 +172,16 @@ public class Member extends Guest {
     public void notBeingStoreOwner(Guest m, Store store) throws Exception {
         Position storeOwnerP = null;
         for (Position p : positions.getAllPositions())
-            if (p instanceof StoreOwner && p.getStore().equals(store))
+            if (p instanceof StoreOwner && p.getStore().getStoreId()==store.getStoreId() && p.getPositionMember().username.equals(this.username))
                 storeOwnerP = p;
         if (storeOwnerP == null) {
             logger.error(String.format("%s is not a store owner", username));
             throw new Exception(String.format("%s is not a store owner", username));
         }
-        if (!storeOwnerP.getAssigner().equals(m)) {
+        if (!storeOwnerP.getAssigner().getUsername().equals(m.getUsername())) {
             logger.error(String.format("%s is not the assigner of %s", m.getUsername(), getUsername()));
             throw new Exception("can remove only store owner assigned by him");
         }
-        store.removeEmployee(this);
         positions.removePosition(storeOwnerP);
         logger.info(String.format("remove %s from being store owner", getUsername()));
     }

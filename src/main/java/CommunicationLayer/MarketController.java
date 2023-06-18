@@ -65,7 +65,7 @@ public class MarketController implements IMarketController {
     @Override
     public Response removeMember(@RequestParam(value = "sessionId", defaultValue = "") String sessionId,
                                  @RequestParam(value = "memberName", defaultValue = "") String memberName) {
-        return marketManager.openStore(sessionId, memberName);
+        return marketManager.removeMember(sessionId, memberName);
     }
 
     @GetMapping("/signUp")
@@ -582,6 +582,16 @@ public class MarketController implements IMarketController {
     }
 
     @Override
+    public ResponseT<Boolean> hasDeliveryAddress(String sessionId) {
+        return marketManager.hasDeliveryAddress(sessionId);
+    }
+
+    @Override
+    public Response editProductDescription(String sessionId, int storeId, int productId, String value) {
+        return null;
+    }
+
+    @Override
     public ResponseT<Double> getProductDiscountPercentageInCart(String sessionId, int storeId, int productId) {
         return marketManager.getProductDiscountPercentageInCart(sessionId, storeId, productId);
     }
@@ -594,6 +604,11 @@ public class MarketController implements IMarketController {
     @Override
     public ResponseT<List<PurchaseDTO>> getUserPurchaseHistory(String sessionId) {
         return marketManager.getUserPurchaseHistory(sessionId);
+    }
+
+    @Override
+    public Response makeOffer(String sessionId, int storeId, int productId, Double pricePerItem, Integer quantity) {
+        return marketManager.getOffer(sessionId, storeId, productId, pricePerItem, quantity);
     }
 
     @GetMapping("/editProductInCart")

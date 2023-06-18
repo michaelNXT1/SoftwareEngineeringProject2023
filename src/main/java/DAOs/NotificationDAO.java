@@ -27,7 +27,7 @@ public class NotificationDAO implements INotificationRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
             notifications.add(notification);
@@ -47,7 +47,7 @@ public class NotificationDAO implements INotificationRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
             notifications.remove(notification);
@@ -62,7 +62,7 @@ public class NotificationDAO implements INotificationRepository {
         try {
             notifications.addAll(session.createQuery("FROM Notification", Notification.class).list());
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -83,7 +83,7 @@ public class NotificationDAO implements INotificationRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }

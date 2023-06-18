@@ -34,7 +34,7 @@ public class MaxQuantityPurchasePolicy extends BasePurchasePolicy {
     @Override
     public boolean evaluate(Map<Product, Integer> productList) {
         for (Product p : productList.keySet())
-            if (p == product)
+            if (p.getProductId() == product.getProductId())
                 return productList.get(p) <= maxQuantity;
         return true;
     }

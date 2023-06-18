@@ -34,8 +34,8 @@ public class RemoveStoreOwnerTest extends ServiceTests {
         assertFalse(removeStoreOwner(sessionId1, storeOwnerToRemove, storeId));
     }
     public void testRemoveStoreOwnerFailStoreOwnerToRemoveIsNotOwnerOfTheStore(){
-        openStore(sessionId1, "shofersal");
-        assertFalse(removeStoreOwner(sessionId1, storeOwnerToRemove, storeId)); //store owner but not in the specific store
+        int store_id = openStore(sessionId1, "shofersal");
+        assertFalse(removeStoreOwner(sessionId1, storeOwnerToRemove, store_id)); //store owner but not in the specific store
         register("shoham", "sh20754");
         assertFalse(removeStoreOwner(sessionId1, "shoham", storeId)); //not a store owner
     }

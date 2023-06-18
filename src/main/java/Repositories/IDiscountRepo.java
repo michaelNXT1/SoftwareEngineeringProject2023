@@ -2,6 +2,7 @@ package Repositories;
 
 import BusinessLayer.Discounts.Discount;
 
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public interface IDiscountRepo {
@@ -10,5 +11,5 @@ public interface IDiscountRepo {
 
     Discount get(Long id);
     void clear();
-    ConcurrentLinkedQueue<Discount> getAllDiscounts();
+    List<Discount> getAllDiscounts();
 }

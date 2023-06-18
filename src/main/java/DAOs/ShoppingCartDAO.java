@@ -1,5 +1,6 @@
 package DAOs;
 
+import BusinessLayer.Guest;
 import BusinessLayer.Purchase;
 import BusinessLayer.ShoppingBag;
 import BusinessLayer.ShoppingCart;
@@ -8,9 +9,11 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ShoppingCartDAO implements IShoppingCartRepo {
+
     @Override
     public void addShoppingCart(ShoppingCart shoppingCart) {
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -23,7 +26,7 @@ public class ShoppingCartDAO implements IShoppingCartRepo {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -41,7 +44,7 @@ public class ShoppingCartDAO implements IShoppingCartRepo {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -54,7 +57,7 @@ public class ShoppingCartDAO implements IShoppingCartRepo {
         try {
             shoppingCart = session.get(ShoppingCart.class, id);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -68,7 +71,7 @@ public class ShoppingCartDAO implements IShoppingCartRepo {
         try {
             shoppingBags = session.createQuery("FROM ShoppingCart", ShoppingCart.class).list();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
@@ -88,7 +91,7 @@ public class ShoppingCartDAO implements IShoppingCartRepo {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
         } finally {
             session.close();
         }
