@@ -80,16 +80,21 @@ SearchResultView extends VerticalLayout {
         grid.addColumn(ProductDTO::getProductName).setHeader("Product Name");
         grid.addColumn(ProductDTO::getCategory).setHeader("Category");
         grid.addColumn(this::getStoreName).setHeader("Store Name");
-        grid.addColumn(productDTO->productDTO.getPrice()+"§").setHeader("Price");
+        grid.addColumn(productDTO -> productDTO.getPrice() + "§").setHeader("Price");
         grid.addComponentColumn(product -> {
             HorizontalLayout hl = new HorizontalLayout();
             IntegerField quantity = new IntegerField();
             quantity.setValue(1);
             quantity.setStepButtonsVisible(true);
             quantity.setMin(1);
-            Button addToCartButton = new Button("Add to Cart", e -> addToCart(product, quantity.getValue()));
-            Button makeOfferButton = new Button("Make Offer", e -> makeOfferDialog(product, quantity.getValue()));
-            hl.add(quantity, addToCartButton, makeOfferButton);
+            Button purchaseButton = new Button();
+            switch (product.getPurchaseType()) {
+                case BUY_IT_NOW ->
+                        purchaseButton = new Button("Add to Cart", e -> addToCart(product, quantity.getValue()));
+                case OFFER ->
+                        purchaseButton = new Button("Make Offer", e -> makeOfferDialog(product, quantity.getValue()));
+            }
+            hl.add(quantity, purchaseButton);
             return hl;
         });
         grid.setItems(items);
@@ -142,7 +147,7 @@ SearchResultView extends VerticalLayout {
         priceField.setValue(product.getPrice());
         quantityField.setValue(quantity);
 
-        Label totalLabel = new Label("You will pay a total of " + quantityField.getValue() * priceField.getValue()+"§");
+        Label totalLabel = new Label("You will pay a total of " + quantityField.getValue() * priceField.getValue() + "§");
 
         priceField.addValueChangeListener(r -> totalLabel.setText("You will pay a total of " + quantityField.getValue() * priceField.getValue()));
         quantityField.addValueChangeListener(r -> totalLabel.setText("You will pay a total of " + quantityField.getValue() * priceField.getValue()));
