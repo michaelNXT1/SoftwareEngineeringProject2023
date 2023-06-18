@@ -16,6 +16,8 @@ import jakarta.persistence.*;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+
 @Entity
 @Table(name = "stores")
 public class Store {
@@ -101,7 +103,7 @@ public class Store {
         synchronized (Market.purchaseLock) {
             Product p = products.getProductById(productId);
             synchronized (p.getProductName().intern()) {
-                p.setAmount(p.getAmount() + amountToAdd);
+                p.setQuantity(p.getQuantity() + amountToAdd);
                 products.updateProduct(p);
             }
         }
@@ -110,7 +112,7 @@ public class Store {
     public PurchaseProduct subtractForPurchase(int productId, int quantity) throws Exception {
         Product p = getProduct(productId);
         synchronized (p) {
-            p.setAmount(p.getAmount() - quantity);
+            p.setQuantity(p.getQuantity() - quantity);
             products.updateProduct(p);
         }
         return new PurchaseProduct(p, quantity, storeId);
@@ -140,8 +142,8 @@ public class Store {
                 logger.error("cannot set quantity to less then 0");
                 throw new Exception("cannot set quantity to less then 0");
             }
-            p = new Product(storeId, this.productIdCounter.getAndIncrement(), productName, price, category, description,quantity);
-            if(!categories.getAllCategory().stream().anyMatch(c-> c.getCategoryName().equals(category)))
+            p = new Product(storeId, this.productIdCounter.getAndIncrement(), productName, price, category, quantity, description, 0);
+            if(categories.getAllCategory().stream().noneMatch(c-> c.getCategoryName().equals(category)))
                 categories.addString(new Category(category));
             products.saveProduct(p);
         }
@@ -272,7 +274,7 @@ public class Store {
 
     public long addCategoryDiscount(String category, double discountPercentage, int compositionType) throws Exception {
         List<Category> categoryStrings = categories.getAllCategory();
-        if (!categoryStrings.stream().anyMatch(c-> c.getCategoryName().equals(category))) {
+        if (categoryStrings.stream().noneMatch(c-> c.getCategoryName().equals(category))) {
             logger.error("Category doesn't exist");
             throw new Exception("Category doesn't exist");
         }
@@ -409,16 +411,15 @@ public class Store {
 
     public Map<Discount, List<BaseDiscountPolicy>> getProductDiscountPolicyMap() {
         Map<Discount, List<BaseDiscountPolicy>> discountPolicyMap = new HashMap<>();
-        List<BaseDiscountPolicy> allBaseDiscount = productDiscountPolicyMap.getAllDiscountPolicies().stream().filter(bpb->bpb.getStore() == this.storeId).toList();
-        Set<Discount> discounts = new HashSet<>();
-        for (BaseDiscountPolicy b:allBaseDiscount) {
-            discounts.add(discountRepo.get(b.getDiscount_id()));
-        }
+        List<Discount> discounts=new DiscountDAO().getAllDiscounts().stream().toList();
         for(Discount d: discounts){
-            List<BaseDiscountPolicy> thisDiscounts = allBaseDiscount.stream().filter(bpb->bpb.getDiscount_id() == d.getDiscountId()).toList();
+            List<BaseDiscountPolicy> thisDiscounts = productDiscountPolicyMap.getAllDiscountPolicies().stream().filter(
+                    pdp -> pdp.isValid() &&
+                            pdp.getStore() == this.storeId &&
+                            pdp.getDiscount_id().longValue() == d.getDiscountId().longValue()
+            ).collect(Collectors.toList());
             discountPolicyMap.put(d,thisDiscounts);
         }
-
         return discountPolicyMap;
     }
 

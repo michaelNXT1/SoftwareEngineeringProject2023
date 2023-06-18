@@ -669,7 +669,7 @@ public class Market {
         p.editProductPrice(productId, newPrice);
         List<Member> managers = s.getManagers();
         for (Member manager : managers) {
-            manager.sendNotification(new Notification(String.format("%s changed %s price from %0.2f to %0.2f in %s store", g.getUsername(), product.getProductName(), oldPrice, newPrice, s.getStoreName())));
+            manager.sendNotification(new Notification(String.format("%s changed %s price from %.2f to %.2f in %s store", g.getUsername(), product.getProductName(), oldPrice, newPrice, s.getStoreName())));
         }
     }
 
@@ -1188,7 +1188,7 @@ public class Market {
         checkStoreExists(storeId);
         Map<ProductDTO, Integer> newMap = new HashMap<>();
         for (Product p: stores.getStore(storeId).getProducts().getAllProducts().stream().filter(p -> p.getStoreId() == storeId).toList())
-            newMap.put(new ProductDTO(p), p.getProductId());
+            newMap.put(new ProductDTO(p), p.getQuantity());
         return newMap;
     }
 
@@ -1256,6 +1256,12 @@ public class Market {
         isMarketOpen();
         Guest m = sessionManager.getSession(sessionId);
         return m.getPaymentDetails() != null;
+    }
+
+    public boolean hasDeliveryAddress(String sessionId) throws Exception {
+        isMarketOpen();
+        Guest m = sessionManager.getSession(sessionId);
+        return m.getSupplyDetails() != null;
     }
 
     public double getProductDiscountPercentageInCart(String sessionId, int storeId, int productId) throws Exception {

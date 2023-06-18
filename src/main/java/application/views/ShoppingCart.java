@@ -1,7 +1,6 @@
 package application.views;
 
 import CommunicationLayer.MarketController;
-import CommunicationLayer.NotificationController;
 import ServiceLayer.DTOs.ProductDTO;
 import ServiceLayer.DTOs.PurchaseDTO;
 import ServiceLayer.DTOs.ShoppingCartDTO;
@@ -44,21 +43,14 @@ ShoppingCart extends VerticalLayout {
         productGrid.addColumn(this::getStoreName).setHeader("Store Name");
         productGrid.addComponentColumn(this::initPriceColumn).setHeader("Price per item");
         productGrid.addComponentColumn(this::initQuantityColumn).setHeader("Quantity");
-        totalSpan = new Span("Total: " + String.format("%.2f", calculateTotalPrice()));
+        totalSpan = new Span("Total: " + String.format("%.2f", calculateTotalPrice())+"§");
         Button purchaseButton = new Button("Purchase cart", e -> purchaseShoppingCart());
-        Span paymentDetails = new Span("Please add payment details.");
+        Span paymentDetails = paymentDetailsErr(purchaseButton);
+        Span deliveryAddress = deliveryAddressErr(purchaseButton);
         VerticalLayout vl = new VerticalLayout();
-        vl.add(totalSpan, purchaseButton, paymentDetails);
-        vl.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         productGrid.addColumn(this::initTotalColumn).setHeader("Total").setFooter(vl).setKey("price");
-        ResponseT<Boolean> paymentDetailsExist = marketController.hasPaymentMethod(MainLayout.getSessionId());
-        if (paymentDetailsExist.getError_occurred()) {
-            purchaseButton.setEnabled(false);
-            paymentDetails.setText(paymentDetailsExist.error_message);
-        } else {
-            purchaseButton.setEnabled(paymentDetailsExist.value);
-            paymentDetails.setVisible(!paymentDetailsExist.value);
-        }
+        vl.add(totalSpan, purchaseButton, paymentDetails, deliveryAddress);
+        vl.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         productGrid.setItems(productDTOList.keySet());
         cartEmptySpan = new Span("Your cart is empty");
         cartEmptySpan.setVisible(false);
@@ -67,6 +59,34 @@ ShoppingCart extends VerticalLayout {
         setJustifyContentMode(JustifyContentMode.CENTER);
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         getStyle().set("text-align", "center");
+    }
+
+    private Span paymentDetailsErr(Button submitButton) {
+        Span paymentDetails = new Span("Please add payment details.");
+        ResponseT<Boolean> paymentDetailsExist = marketController.hasPaymentMethod(MainLayout.getSessionId());
+        if (paymentDetailsExist.getError_occurred()) {
+            submitButton.setEnabled(false);
+            paymentDetails.setText(paymentDetailsExist.error_message);
+        } else {
+            if (!paymentDetailsExist.value)
+                submitButton.setEnabled(false);
+            paymentDetails.setVisible(!paymentDetailsExist.value);
+        }
+        return paymentDetails;
+    }
+
+    private Span deliveryAddressErr(Button submitButton) {
+        Span deliveryAddress = new Span("Please add delivery address.");
+        ResponseT<Boolean> deliveryAddressExists = marketController.hasDeliveryAddress(MainLayout.getSessionId());
+        if (deliveryAddressExists.getError_occurred()) {
+            submitButton.setEnabled(false);
+            deliveryAddress.setText(deliveryAddressExists.error_message);
+        } else {
+            if (!deliveryAddressExists.value)
+                submitButton.setEnabled(false);
+            deliveryAddress.setVisible(!deliveryAddressExists.value);
+        }
+        return deliveryAddress;
     }
 
     private void purchaseShoppingCart() {
@@ -144,16 +164,16 @@ ShoppingCart extends VerticalLayout {
         ResponseT<Double> productDiscount = marketController.getProductDiscountPercentageInCart(MainLayout.getSessionId(), p.getStoreId(), p.getProductId());
         if (productDiscount.getError_occurred())
             return p.getPrice() * productDTOList.get(p);
-        return String.format("%.2f", p.getPrice() * (1.0 - productDiscount.value) * productDTOList.get(p));
+        return String.format("%.2f", p.getPrice() * (1.0 - productDiscount.value) * productDTOList.get(p))+"§";
     }
 
     private Component initPriceColumn(ProductDTO productDTO) {
         ResponseT<Double> productDiscount = marketController.getProductDiscountPercentageInCart(MainLayout.getSessionId(), productDTO.getStoreId(), productDTO.getProductId());
         if (productDiscount.getError_occurred())
-            return new Span(String.format("%.2f", productDTO.getPrice()));
+            return new Span(String.format("%.2f", productDTO.getPrice())+"§");
         double discountPercentage = productDiscount.value;
         if (discountPercentage == 0.0)
-            return new Span(String.format("%.2f", productDTO.getPrice()));
-        return new Html("<span><s>" + String.format("%.2f", productDTO.getPrice()) + "</s> " + String.format("%.2f", productDTO.getPrice() * (1.0 - discountPercentage)) + "</span>");
+            return new Span(String.format("%.2f", productDTO.getPrice())+"§");
+        return new Html("<span><s>" + String.format("%.2f", productDTO.getPrice()) + "§</s> " + String.format("%.2f", productDTO.getPrice() * (1.0 - discountPercentage)) + "§</span>");
     }
 }

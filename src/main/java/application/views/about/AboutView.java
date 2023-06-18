@@ -33,46 +33,45 @@ public class AboutView extends VerticalLayout {
         row1.setWidthFull();
         row1.setJustifyContentMode(JustifyContentMode.CENTER);
 
-        Image womanImage1 = new Image("images/woman2.png", "Woman 1");
+        Image womanImage1 = new Image("images/Shoham.png", "Woman 1");
         womanImage1.setWidth("200px");
-        Paragraph womanCaption1 = new Paragraph("SHOHAN  -CEO");
+        VerticalLayout vlShoham=new VerticalLayout(womanImage1,new Paragraph("Shoham  -CEO"));
+        vlShoham.setWidth("200px");
+        vlShoham.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 
-        Image womanImage2 = new Image("images/woman2.png", "Woman 2");
+        Image womanImage2 = new Image("images/Shani.png", "Woman 2");
         womanImage2.setWidth("200px");
-        Paragraph womanCaption2 = new Paragraph("SHANI  -CEO");
+        VerticalLayout vlShani=new VerticalLayout(womanImage2,new Paragraph("Shani  -CEO"));
+        vlShani.setWidth("200px");
+        vlShani.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 
-        Image manImage1 = new Image("images/man2.png", "Man 1");
+        Image manImage1 = new Image("images/Michael.png", "Man 1");
         manImage1.setWidth("200px");
-        Paragraph manCaption1 = new Paragraph("MICHAEL  -CEO");
+        VerticalLayout vlMichael=new VerticalLayout(manImage1,new Paragraph("Michael  -CEO"));
+        vlMichael.setWidth("200px");
+        vlMichael.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 
-        row1.add(womanImage1, womanImage2, manImage1);
+        row1.add(vlShoham, vlShani, vlMichael);
         add(row1);
-        HorizontalLayout row11 = new HorizontalLayout();
-        row11.setWidthFull();
-        row11.setJustifyContentMode(JustifyContentMode.CENTER);
-        row11.add( womanCaption1, womanCaption2, manCaption1);
-        add(row11);
 
         HorizontalLayout row2 = new HorizontalLayout();
         row2.setWidthFull();
         row2.setJustifyContentMode(JustifyContentMode.CENTER);
 
-        Image manImage2 = new Image("images/man2.png", "Man 2");
+        Image manImage2 = new Image("images/Alon.png", "Man 2");
         manImage2.setWidth("200px");
-        Paragraph manCaption2 = new Paragraph("ALON  -CEO");
+        VerticalLayout vlAlon=new VerticalLayout(manImage2,new Paragraph("Alon  -CEO"));
+        vlAlon.setWidth("200px");
+        vlAlon.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 
-        Image manImage3 = new Image("images/man2.png", "Man 3");
+        Image manImage3 = new Image("images/Idan.png", "Man 3");
         manImage3.setWidth("200px");
-        Paragraph manCaption3 = new Paragraph("IDAN   -CEO");
+        VerticalLayout vlIdan=new VerticalLayout(manImage3,new Paragraph("Idan  -CEO"));
+        vlIdan.setWidth("200px");
+        vlIdan.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 
-        row2.add(manImage2, manImage3);
+        row2.add(vlAlon, vlIdan);
         add(row2);
-
-        HorizontalLayout row22 = new HorizontalLayout();
-        row22.setWidthFull();
-        row22.setJustifyContentMode(JustifyContentMode.CENTER);
-        row22.add( manCaption2, manCaption3);
-        add(row22);
 
         add(new Paragraph("our rockstar 🤗"));
 

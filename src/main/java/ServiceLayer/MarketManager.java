@@ -534,6 +534,16 @@ public class MarketManager implements IMarketManager {
     }
 
     @Override
+    public ResponseT<Boolean> hasDeliveryAddress(String sessionId) {
+
+        try {
+            return ResponseT.fromValue(market.hasDeliveryAddress(sessionId));
+        } catch (Exception e) {
+            return ResponseT.fromError(e.getMessage());
+        }
+    }
+
+    @Override
     public ResponseT<Double> getProductDiscountPercentageInCart(String sessionId, int storeId, int productId) {
         try {
             return ResponseT.fromValue(market.getProductDiscountPercentageInCart(sessionId, storeId, productId));
@@ -680,6 +690,12 @@ public class MarketManager implements IMarketManager {
             return ResponseT.fromValue(e.getMessage());
         }
         
+    }
+
+    @Override
+    public Response getOffer(String sessionId, int storeId, int productId, Double pricePerItem, Integer quantity) {
+        //TODO: implement
+        return new Response();
     }
 
     public Response addMaxQuantityPurchasePolicy(String sessionId, int storeId, int productId, int maxQuantity) {

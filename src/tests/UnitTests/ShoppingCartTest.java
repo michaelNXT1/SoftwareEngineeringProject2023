@@ -26,9 +26,9 @@ class ShoppingCartTest extends TestCase {
     @BeforeEach
     void beforeEach() throws Exception {
         shoppingCart = new ShoppingCart(member.getUsername());
-        product1 = new Product(storeId1,1,"wine", 3, "60.0", "alcohol",3);
-        product2 = new Product(storeId1,2, "cheese", 9.5, "milk","fads",4);
-        product3 = new Product(storeId1,3, "steak", 120.0, "meat","asd",5);
+        product1 = new Product(storeId1,1,"wine", 3, "60.0", 3, "alcohol", 0);
+        product2 = new Product(storeId1,2, "cheese", 9.5, "milk", 4, "fads", 0);
+        product3 = new Product(storeId1,3, "steak", 120.0, "meat",5,"asd", 0);
         market = new Market(null,true);
         market.signUp(userName1, password1);
         market.signUpSystemManager(userName1, password1);
@@ -71,7 +71,7 @@ class ShoppingCartTest extends TestCase {
     void changeProductQuantity() throws Exception {
         market.addProduct(sessionId1, storeId1, product1.getProductName(),20.0,"cat",50,"wow");
         market.changeProductQuantity(sessionId1, storeId1, product1.getProductId(),12);
-        assertEquals(product1.getAmount(),12);
+        assertEquals(product1.getQuantity(),12);
     }
 
     @Test

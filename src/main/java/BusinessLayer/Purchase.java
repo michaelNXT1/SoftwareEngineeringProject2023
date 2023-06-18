@@ -1,9 +1,5 @@
 package BusinessLayer;
-import DAOs.PurchaseProductDAO;
-import Repositories.IProductRepository;
-import Repositories.IPurchaseProductRepository;
 
-//import javax.persistence.*;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -19,23 +15,13 @@ public class Purchase {
     private Long id;
     @Transient
     private List<PurchaseProduct> productList = new ArrayList<>();
-    public enum PurchaseType {
-        BuyItNow,
-        Raffle,
-        Auction,
-        Offer
-    }
-    @Enumerated(EnumType.STRING)
-    protected PurchaseType type;
     public Purchase(List<PurchaseProduct> productList) {
         this.productList = productList;
         this.purchaseDateTime = LocalDateTime.now();
-        type = PurchaseType.BuyItNow;
     }
 
 
     public Purchase() {
-        type = PurchaseType.BuyItNow;
     }
 
     public void addProduct(PurchaseProduct p) {

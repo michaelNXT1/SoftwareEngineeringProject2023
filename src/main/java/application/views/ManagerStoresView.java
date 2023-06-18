@@ -31,7 +31,9 @@ public class ManagerStoresView extends VerticalLayout {
         grid.addColumn(storeDTO -> stores.indexOf(storeDTO) + 1).setHeader("#").setSortable(true).setTextAlign(ColumnTextAlign.START);
         grid.addColumn(StoreDTO::getStoreName).setHeader("Store Name").setSortable(true).setTextAlign(ColumnTextAlign.START);
         grid.addColumn(s -> s.isOpen() ? "Open" : "Closed").setHeader("Status").setSortable(true).setTextAlign(ColumnTextAlign.START);
-        grid.addComponentColumn(store -> new Button("Manage", e -> UI.getCurrent().navigate("StoreManagementView/" + store.getStoreId())));
+        grid.addComponentColumn(store -> new Button("Manage", e -> {
+            UI.getCurrent().navigate("StoreManagementView/" + store.getStoreId());
+        }));
         grid.setItems(stores);
         grid.setVisible(!stores.isEmpty());
         add(grid);

@@ -1,13 +1,21 @@
 package BusinessLayer;
 
+import BusinessLayer.Policies.PurchasePolicies.PurchasePolicyOperation;
 import jakarta.persistence.*;
 
 import static org.atmosphere.annotation.AnnotationUtil.logger;
 //import javax.persistence.*;
 
+
 @Entity
 @Table(name = "products")
 public class Product {
+
+    public enum PurchaseType{
+        BUY_IT_NOW,
+        OFFER
+    }
+
     @Column(name = "store_id")
     private int storeId;
 
@@ -28,34 +36,42 @@ public class Product {
     @Column(name = "rating")
     private double rating;
 
-    @Column(name = "amount")
-    private int amount;
+    @Column(name = "quantity")
+    private int quantity;
 
     @Column(name = "description", columnDefinition = "text")
     private String description;
 
+    @Enumerated(EnumType.STRING)
+    private PurchaseType purchaseType;
 
-    public Product(int storeId, int productId, String productName, double price, String category, String description,int quantity) throws Exception {
-        if (price < 0) {
-            logger.error("cannot add product with negative price");
-            throw new Exception("cannot add product with negative price");
-        }
+
+    public Product(int storeId, int productId, String productName, double price, String category, int quantity, String description, int purchaseType) throws Exception {
         if (stringIsEmpty(productName)) {
             logger.error("product name is empty");
             throw new Exception("product name is empty");
+        }
+        if (price < 0) {
+            logger.error("cannot add product with negative price");
+            throw new Exception("cannot add product with negative price");
         }
         if (stringIsEmpty(category)) {
             logger.error("product category is empty");
             throw new Exception("product category is empty");
         }
-        this.amount = quantity;
+        if (quantity < 0) {
+            logger.error("cannot add product with negative quantity");
+            throw new Exception("cannot add product with negative quantity");
+        }
         this.storeId = storeId;
         this.productId = productId;
         this.productName = productName;
         this.price = price;
         this.category = category;
-        this.rating = 0;
+        this.quantity = quantity;
         this.description = description;
+        this.purchaseType= PurchaseType.values()[purchaseType];
+        this.rating = 0;
     }
 
     public Product() {
@@ -121,12 +137,12 @@ public class Product {
         this.rating = rating;
     }
 
-    public int getAmount() {
-        return amount;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
+    public void setQuantity(int amount) {
+        this.quantity = amount;
     }
 
     public double getProductPrice() {
@@ -139,6 +155,10 @@ public class Product {
 
     public void setDescription(String newDescription) {
         this.description = newDescription;
+    }
+
+    public PurchaseType getPurchaseType() {
+        return purchaseType;
     }
 
     private static boolean stringIsEmpty(String value) {

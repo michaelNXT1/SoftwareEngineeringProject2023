@@ -1,19 +1,22 @@
 package application.views;
 
 import CommunicationLayer.MarketController;
-import CommunicationLayer.NotificationController;
 import ServiceLayer.DTOs.ProductDTO;
 import ServiceLayer.Response;
 import ServiceLayer.ResponseT;
 import Utils.Pair;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Header;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.router.PreserveOnRefresh;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +51,7 @@ SearchResultView extends VerticalLayout {
     private final Map<String, Pair<Integer, Integer>> priceMap = priceList.stream().collect(Collectors.toMap(Pair::getFirst, Pair::getSecond));
 
     @Autowired
-    public SearchResultView() throws Exception {
+    public SearchResultView() {
         this.marketController = MarketController.getInstance();
         Header header = new Header();
         header.setText("Search results for " + marketController.getSearchKeyword(MainLayout.getSessionId()).value);
@@ -77,7 +80,7 @@ SearchResultView extends VerticalLayout {
         grid.addColumn(ProductDTO::getProductName).setHeader("Product Name");
         grid.addColumn(ProductDTO::getCategory).setHeader("Category");
         grid.addColumn(this::getStoreName).setHeader("Store Name");
-        grid.addColumn(ProductDTO::getPrice).setHeader("Price");
+        grid.addColumn(productDTO->productDTO.getPrice()+"§").setHeader("Price");
         grid.addComponentColumn(product -> {
             HorizontalLayout hl = new HorizontalLayout();
             IntegerField quantity = new IntegerField();
@@ -85,12 +88,99 @@ SearchResultView extends VerticalLayout {
             quantity.setStepButtonsVisible(true);
             quantity.setMin(1);
             Button addToCartButton = new Button("Add to Cart", e -> addToCart(product, quantity.getValue()));
-            hl.add(quantity, addToCartButton);
+            Button makeOfferButton = new Button("Make Offer", e -> makeOfferDialog(product, quantity.getValue()));
+            hl.add(quantity, addToCartButton, makeOfferButton);
             return hl;
         });
         grid.setItems(items);
         grid.setVisible(!items.isEmpty());
         return grid;
+    }
+
+    private void makeOfferDialog(ProductDTO product, Integer quantity) {
+        Dialog dialog = new Dialog();
+        Header header = new Header();
+        header.setText("Make offer for " + product.getProductName());
+        Label errorSuccessLabel = new Label();
+        IntegerField quantityField = new IntegerField();
+        NumberField priceField = new NumberField();
+        Button submitButton = new Button("Commit to Pay", event -> {
+            if (priceField.getValue() == null)
+                errorSuccessLabel.setText("Price can't be empty");
+            else if (quantityField.getValue() == null)
+                errorSuccessLabel.setText("Quantity can't be empty");
+            else {
+                Response response = marketController.makeOffer(
+                        MainLayout.getSessionId(),
+                        product.getStoreId(),
+                        product.getProductId(),
+                        priceField.getValue(),
+                        quantityField.getValue());
+                if (response.getError_occurred())
+                    errorSuccessLabel.setText(response.error_message);
+                else {
+                    errorSuccessLabel.setText("");
+                    dialog.close();
+                    Dialog successDialog = new Dialog();
+                    VerticalLayout successVl = new VerticalLayout();
+                    successVl.add(new Label("offer made successfully!"), new Button("Close", e -> successDialog.close()));
+                    successDialog.add(successVl);
+                    successDialog.open();
+                }
+            }
+        });
+
+        Span paymentDetails = paymentDetailsErr(submitButton);
+        Span deliveryAddress = deliveryAddressErr(submitButton);
+
+        priceField.setPlaceholder("Price");
+        quantityField.setPlaceholder("Quantity");
+
+        priceField.setLabel("Price per item");
+        quantityField.setLabel("Quantity");
+
+        priceField.setValue(product.getPrice());
+        quantityField.setValue(quantity);
+
+        Label totalLabel = new Label("You will pay a total of " + quantityField.getValue() * priceField.getValue()+"§");
+
+        priceField.addValueChangeListener(r -> totalLabel.setText("You will pay a total of " + quantityField.getValue() * priceField.getValue()));
+        quantityField.addValueChangeListener(r -> totalLabel.setText("You will pay a total of " + quantityField.getValue() * priceField.getValue()));
+
+        VerticalLayout vl = new VerticalLayout();
+        vl.add(header, errorSuccessLabel, priceField, quantityField, totalLabel, submitButton, paymentDetails, deliveryAddress);
+        vl.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+        dialog.add(vl);
+        dialog.open();
+
+    }
+
+    private Span paymentDetailsErr(Button submitButton) {
+        Span paymentDetails = new Span("Please add payment details.");
+        ResponseT<Boolean> paymentDetailsExist = marketController.hasPaymentMethod(MainLayout.getSessionId());
+        if (paymentDetailsExist.getError_occurred()) {
+            submitButton.setEnabled(false);
+            paymentDetails.setText(paymentDetailsExist.error_message);
+        } else {
+            if (!paymentDetailsExist.value)
+                submitButton.setEnabled(false);
+            paymentDetails.setVisible(!paymentDetailsExist.value);
+        }
+        return paymentDetails;
+    }
+
+    private Span deliveryAddressErr(Button submitButton) {
+        Span deliveryAddress = new Span("Please add delivery address.");
+        ResponseT<Boolean> deliveryAddressExists = marketController.hasDeliveryAddress(MainLayout.getSessionId());
+        if (deliveryAddressExists.getError_occurred()) {
+            submitButton.setEnabled(false);
+            deliveryAddress.setText(deliveryAddressExists.error_message);
+        } else {
+            if (!deliveryAddressExists.value)
+                submitButton.setEnabled(false);
+            deliveryAddress.setVisible(!deliveryAddressExists.value);
+        }
+        return deliveryAddress;
     }
 
     private Select<String> initCategorySelect() {

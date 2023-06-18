@@ -115,6 +115,8 @@ public interface IMarketManager {
     ResponseT<List<String>> getDiscountPolicyTypes();
     ResponseT<Set<PositionDTO.permissionType>> getPermissions(String sessionId, int storeId, String username);
     ResponseT<Boolean> hasPaymentMethod(String sessionId);
+
+    ResponseT<Boolean> hasDeliveryAddress(String sessionId);
     ResponseT<Double> getProductDiscountPercentageInCart(String sessionId, int storeId, int productId);
 
     Response addPaymentMethod(String sessionId, String cardNumber, String month, String year, String cvv);
@@ -146,6 +148,8 @@ public interface IMarketManager {
     Response addSupplyDetails(String sessionId, String name, String address, String city, String country, String zip);
 
     ResponseT<List<PurchaseDTO>> getUserPurchaseHistory(String sessionId);
+
+    Response getOffer(String sessionId, int storeId, int productId, Double pricePerItem, Integer quantity);
 
 //        Response logoutSystemManager(String sessionId);
 
