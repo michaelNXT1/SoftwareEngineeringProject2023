@@ -2,6 +2,7 @@ package BusinessLayer;
 
 import BusinessLayer.Logger.SystemLogger;
 import ServiceLayer.DTOs.PositionDTO;
+import ServiceLayer.DTOs.ProductDTO;
 import jakarta.persistence.*;
 
 import java.time.LocalTime;
@@ -101,8 +102,8 @@ public class StoreOwner implements Position {
 
     }
 
-    public Product addProduct(Store store, String productName, double price, String category, int quantity, String description) throws Exception {
-        return store.addProduct(productName, price, category, quantity, description);
+    public Product addProduct(Store store, String productName, double price, String category, int quantity, String description, ProductDTO.PurchaseType purchaseType) throws Exception {
+        return store.addProduct(productName, price, category, quantity, description, purchaseType);
     }
 
     @Override

@@ -36,8 +36,8 @@ class MarketTest extends TestCase {
         market.openStore(sessionID1, "Mamtakim");
 //        product1 = new Product(111, "milk", 6.14, "milk");
 //        product2 = new Product(123, "Carlsberg beer", 10.5, "alcohol");
-        market.getStore(sessionID1, 0).addProduct("milk", 50, "milk", 15,"aa");
-        market.getStore(sessionID1, 1).addProduct("beer", 50, "alcohol", 100,"bb");
+        market.getStore(sessionID1, 0).addProduct("milk", 50, "milk", 15,"aa", ProductDTO.PurchaseType.BUY_IT_NOW);
+        market.getStore(sessionID1, 1).addProduct("beer", 50, "alcohol", 100,"bb", ProductDTO.PurchaseType.BUY_IT_NOW);
     }
 
     @org.junit.jupiter.api.Test

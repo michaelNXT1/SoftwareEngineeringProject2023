@@ -60,7 +60,7 @@ public interface IMarketManager {
 
     ResponseT<List<PurchaseDTO>> getPurchaseHistory(String sessionId, int storeId);
 
-    ResponseT<ProductDTO> addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description);
+    ResponseT<ProductDTO> addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description, ProductDTO.PurchaseType purchaseType);
 
     Response editProductName(String sessionId, int storeId, int productId, String newName);
 

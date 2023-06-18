@@ -263,9 +263,9 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public ResponseT<ProductDTO> addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description) {
+    public ResponseT<ProductDTO> addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description, ProductDTO.PurchaseType purchaseType) {
         try {
-            return ResponseT.fromValue(market.addProduct(sessionId, storeId, productName, price, category, quantity, description));
+            return ResponseT.fromValue(market.addProduct(sessionId, storeId, productName, price, category, quantity, description, purchaseType));
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }

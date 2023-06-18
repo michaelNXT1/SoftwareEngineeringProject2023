@@ -2,13 +2,26 @@ package ServiceLayer.DTOs;
 
 
 import BusinessLayer.Product;
-import ServiceLayer.DTOs.Policies.PurchasePolicies.PurchasePolicyOperationDTO;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ProductDTO {
-    public enum PurchaseType{
+    public enum PurchaseType {
         BUY_IT_NOW,
         OFFER
     }
+
+    public static Map<String, ProductDTO.PurchaseType> stringToPermMap = new HashMap<>();
+    public static Map<ProductDTO.PurchaseType, String> permToStringMap = new HashMap<>();
+
+    static {
+        stringToPermMap.put("Buy it Now", PurchaseType.BUY_IT_NOW);
+        stringToPermMap.put("Make Offer", PurchaseType.OFFER);
+        permToStringMap.put(PurchaseType.BUY_IT_NOW, "Buy it Now");
+        permToStringMap.put(PurchaseType.OFFER, "Make Offer");
+    }
+
     private final int storeId;
     private int productId;
     private String productName;

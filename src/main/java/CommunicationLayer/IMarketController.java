@@ -1,5 +1,6 @@
 package CommunicationLayer;
 
+import BusinessLayer.Product;
 import ServiceLayer.DTOs.*;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
@@ -82,7 +83,7 @@ public interface IMarketController {
     getPurchaseHistory(String sessionId, int storeId);
 
     ResponseT<ProductDTO>
-    addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description);
+    addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description, ProductDTO.PurchaseType purchaseType);
 
     Response
     editProductName(String sessionId, int storeId, int productId, String newName);

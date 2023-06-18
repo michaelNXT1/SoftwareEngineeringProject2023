@@ -2,6 +2,7 @@ package application.views;
 
 
 import CommunicationLayer.MarketController;
+import ServiceLayer.DTOs.ProductDTO;
 import ServiceLayer.Response;
 import ServiceLayer.ResponseT;
 import application.components.AppNav;
@@ -82,16 +83,16 @@ public class MainLayout extends AppLayout {
         int store_id = marketController.openStore(sessionId, "Shufersal").value;
         marketController.openStore(sessionId, "Ebay");
         Map<String, Integer> productMap = new HashMap<>();
-        productMap.put("Klik Marbles", marketController.addProduct(sessionId, store_id, "Klik Marbles", 6.8, "Snacks", 50, "").value.getProductId());
-        productMap.put("Banana", marketController.addProduct(sessionId, store_id, "Banana", 7.9, "Fruit", 50, "").value.getProductId());
-        productMap.put("Bread", marketController.addProduct(sessionId, store_id, "Bread", 10.0, "Pastries", 50, "").value.getProductId());
-        productMap.put("Watermelon", marketController.addProduct(sessionId, store_id, "Watermelon", 35.4, "Fruit", 50, "").value.getProductId());
-        productMap.put("Milk", marketController.addProduct(sessionId, store_id, "Milk", 6.75, "Dairy", 50, "").value.getProductId());
-        productMap.put("Bamba", marketController.addProduct(sessionId, store_id, "Bamba", 4.3, "Snacks", 50, "").value.getProductId());
-        productMap.put("Yogurt", marketController.addProduct(sessionId, store_id, "Yogurt", 5.3, "Dairy", 50, "").value.getProductId());
-        productMap.put("Lay's", marketController.addProduct(sessionId, store_id, "Lay's", 4.0, "Snacks", 50, "").value.getProductId());
-        productMap.put("Apple", marketController.addProduct(sessionId, store_id, "Apple", 11.9, "Fruit", 50, "").value.getProductId());
-        productMap.put("Bun", marketController.addProduct(sessionId, store_id, "Bun", 4.0, "Pastries", 50, "").value.getProductId());
+        productMap.put("Klik Marbles", marketController.addProduct(sessionId, store_id, "Klik Marbles", 6.8, "Snacks", 50, "", ProductDTO.PurchaseType.BUY_IT_NOW).value.getProductId());
+        productMap.put("Banana", marketController.addProduct(sessionId, store_id, "Banana", 7.9, "Fruit", 50, "", ProductDTO.PurchaseType.BUY_IT_NOW).value.getProductId());
+        productMap.put("Bread", marketController.addProduct(sessionId, store_id, "Bread", 10.0, "Pastries", 50, "", ProductDTO.PurchaseType.BUY_IT_NOW).value.getProductId());
+        productMap.put("Watermelon", marketController.addProduct(sessionId, store_id, "Watermelon", 35.4, "Fruit", 50, "", ProductDTO.PurchaseType.BUY_IT_NOW).value.getProductId());
+        productMap.put("Milk", marketController.addProduct(sessionId, store_id, "Milk", 6.75, "Dairy", 50, "", ProductDTO.PurchaseType.BUY_IT_NOW).value.getProductId());
+        productMap.put("Bamba", marketController.addProduct(sessionId, store_id, "Bamba", 4.3, "Snacks", 50, "", ProductDTO.PurchaseType.BUY_IT_NOW).value.getProductId());
+        productMap.put("Yogurt", marketController.addProduct(sessionId, store_id, "Yogurt", 5.3, "Dairy", 50, "", ProductDTO.PurchaseType.BUY_IT_NOW).value.getProductId());
+        productMap.put("Lay's", marketController.addProduct(sessionId, store_id, "Lay's", 4.0, "Snacks", 50, "", ProductDTO.PurchaseType.BUY_IT_NOW).value.getProductId());
+        productMap.put("Apple", marketController.addProduct(sessionId, store_id, "Apple", 11.9, "Fruit", 50, "", ProductDTO.PurchaseType.BUY_IT_NOW).value.getProductId());
+        productMap.put("Bun", marketController.addProduct(sessionId, store_id, "Bun", 4.0, "Pastries", 50, "", ProductDTO.PurchaseType.BUY_IT_NOW).value.getProductId());
 
 
         List<Long> discounts = new ArrayList<>();

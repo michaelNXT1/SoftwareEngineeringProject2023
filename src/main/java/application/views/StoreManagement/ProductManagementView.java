@@ -86,16 +86,21 @@ public class ProductManagementView extends VerticalLayout {
         newCategoryField.setPlaceholder("New category");
         descriptionField.setPlaceholder("Description");
 
-        List<String> lst = new ArrayList<>();
-        lst.add("new");
-        lst.addAll(marketController.getAllCategories().value);
-        categoryField.setItems(lst);
+        List<String> categoryList = new ArrayList<>();
+        categoryList.add("new");
+        categoryList.addAll(marketController.getAllCategories().value);
+        categoryField.setItems(categoryList);
         categoryField.addComponents("new", new Hr());
         categoryField.addValueChangeListener(event -> newCategoryField.setVisible(event.getValue().equals("new")));
 
         newCategoryField.setVisible(false);
+
         IntegerField quantityField = new IntegerField();
         quantityField.setPlaceholder("Quantity");
+
+        Select<String> purchaseTypeField = new Select<>();
+        purchaseTypeField.setItems(ProductDTO.stringToPermMap.keySet());
+        purchaseTypeField.setPlaceholder("Purchase Type");
 
         Button submitButton = new Button("Submit", event -> {
             if (priceField.getValue() == null)
@@ -110,7 +115,8 @@ public class ProductManagementView extends VerticalLayout {
                         priceField.getValue(),
                         newCategoryField.isVisible() ? newCategoryField.getValue() : categoryField.getValue(),
                         quantityField.getValue(),
-                        descriptionField.getValue());
+                        descriptionField.getValue(),
+                        ProductDTO.stringToPermMap.get(purchaseTypeField.getValue()));
                 handleResponse(response, errorSuccessLabel, dialog, "Product added successfully!");
             }
         });

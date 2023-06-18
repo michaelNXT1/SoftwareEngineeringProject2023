@@ -1,6 +1,7 @@
 package BusinessLayer;
 
 import BusinessLayer.Policies.PurchasePolicies.PurchasePolicyOperation;
+import ServiceLayer.DTOs.ProductDTO;
 import jakarta.persistence.*;
 
 import static org.atmosphere.annotation.AnnotationUtil.logger;
@@ -46,7 +47,7 @@ public class Product {
     private PurchaseType purchaseType;
 
 
-    public Product(int storeId, int productId, String productName, double price, String category, int quantity, String description, int purchaseType) throws Exception {
+    public Product(int storeId, int productId, String productName, double price, String category, int quantity, String description, ProductDTO.PurchaseType purchaseType) throws Exception {
         if (stringIsEmpty(productName)) {
             logger.error("product name is empty");
             throw new Exception("product name is empty");
@@ -70,7 +71,7 @@ public class Product {
         this.category = category;
         this.quantity = quantity;
         this.description = description;
-        this.purchaseType= PurchaseType.values()[purchaseType];
+        this.purchaseType= PurchaseType.valueOf(purchaseType.name());
         this.rating = 0;
     }
 

@@ -253,8 +253,9 @@ public class MarketController implements IMarketController {
                                             @RequestParam(value = "price", defaultValue = "-1") double price,
                                             @RequestParam(value = "category", defaultValue = "") String category,
                                             @RequestParam(value = "quantity", defaultValue = "-1") int quantity,
-                                            @RequestParam(value = "description", defaultValue = "") String description) {
-        return marketManager.addProduct(sessionId, storeId, productName, price, category, quantity, description);
+                                            @RequestParam(value = "description", defaultValue = "") String description,
+                                            @RequestParam(value = "description", defaultValue = "") ProductDTO.PurchaseType purchaseType) {
+        return marketManager.addProduct(sessionId, storeId, productName, price, category, quantity, description, purchaseType);
     }
 
     @GetMapping("/editProductName")

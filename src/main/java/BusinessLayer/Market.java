@@ -185,7 +185,7 @@ public class Market {
                         try {
                             sessionId = sessionManager.getSessionIdByGuestName(args[0]);
                             storeId = getStoreByName(sessionId, args[1]).getStoreId();
-                            addProduct(sessionId,storeId,args[2],Double.parseDouble(args[3]),args[4],Integer.parseInt(args[5]),args[6]);
+                            addProduct(sessionId,storeId,args[2],Double.parseDouble(args[3]),args[4],Integer.parseInt(args[5]),args[6], ProductDTO.PurchaseType.BUY_IT_NOW);
                         }
                         catch (Exception e) {
                         throw new RuntimeException(e);
@@ -616,7 +616,7 @@ public class Market {
 
     //use case 5.1
     @Transactional
-    public ProductDTO addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description) throws Exception {
+    public ProductDTO addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description, ProductDTO.PurchaseType purchaseType) throws Exception {
         isMarketOpen();
         Position p;
         synchronized (purchaseLock) {
@@ -627,7 +627,7 @@ public class Market {
             p = checkPositionLegal(sessionId, storeId);
         }
         Store s = stores.getStore(storeId);
-        Product product = p.addProduct(s,productName, price, category, quantity, description);
+        Product product = p.addProduct(s,productName, price, category, quantity, description, purchaseType);
         List<Member> managers = s.getEmployees();
         for (Member manager : managers) {
             logger.info("sending notifications");
