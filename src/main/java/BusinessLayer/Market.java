@@ -58,6 +58,8 @@ public class Market {
     private IShoppingCartRepo shoppingCartRepo = new ShoppingCartDAO();
 
     private IShoppingBagRepository shoppingBagRepository = new ShoppingBagDAO();
+    private IOfferRepository offerRepository=new OfferDAO();
+    private IOfferApprovalRepository offerApprovalRepository=new OfferApprovalDAO();
     private IPurchaseRepository purchaseRepository = new PurchaseDAO();
 
     private String path;
@@ -91,6 +93,8 @@ public class Market {
     }
     @Transactional
     public void clearAllData(){
+        offerApprovalRepository.clear();
+        offerRepository.clear();
         shoppingBagRepository.clearShoppingBags();
         shoppingCartRepo.clear();
         purchaseRepository.clear();

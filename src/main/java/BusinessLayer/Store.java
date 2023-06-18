@@ -525,12 +525,7 @@ public class Store {
         Offer offer = new Offer(g, storeId, productId, pricePerItem, quantity);
         offers.saveOffer(offer);
         offer.addOfferApproval(employees);
-        for (Member m : employees) {
-            try {
+        for (Member m : employees)
                 m.sendNotification(new Notification(String.format("User %s offers to pay %.2f§ for %d %ss", g.getUsername(), pricePerItem * quantity, quantity, p.getProductName())));
-            } catch (Exception e) {
-                m.sendNotification(new Notification(String.format("Guest offers to pay %.2f§ for %d %ss", pricePerItem * quantity, quantity, p.getProductName())));
-            }
-        }
     }
 }
