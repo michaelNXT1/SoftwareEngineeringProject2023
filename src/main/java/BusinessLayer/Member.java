@@ -17,6 +17,7 @@ import jakarta.persistence.*;
 
 //import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Entity
@@ -186,8 +187,14 @@ public class Member extends Guest {
         logger.info(String.format("remove %s from being store owner", getUsername()));
     }
 
-    public IPositionRepository getPositions() {
-        return positions;
+    public List<Position> getPositions() {
+        List<Position> thisMemberPosition = new LinkedList<>();
+        for (Position p:positions.getAllPositions()
+             ) {
+            if (p.getPositionMember().getUsername().equals(this.username))
+                thisMemberPosition.add(p);
+        }
+        return thisMemberPosition;
     }
 
     public void setPositions(IPositionRepository positions) {
@@ -211,5 +218,10 @@ public class Member extends Guest {
 
     public void removePosition(Position userP) {
         positions.removePosition(userP);
+        logger.info(String.format("remove %s from being %s duo to the remove foo his assigner", getUsername(),userP.getClass()));
+    }
+
+    public void addPosition(Position p) {
+        positions.addPosition(p);
     }
 }
