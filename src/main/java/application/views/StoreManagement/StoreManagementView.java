@@ -27,10 +27,10 @@ import java.util.Map;
 public class StoreManagementView extends VerticalLayout implements HasUrlParameter<String> {
     private final MarketController marketController;
     private final Header header;
-    private final ProductManagementView products;
-    private final PurchasePolicyManagementView purchasePolicies;
-    private final EmployeeManagementView employees;
-    private final DiscountManagementView discountGrids;
+    private  ProductManagementView products;
+    private  PurchasePolicyManagementView purchasePolicies;
+    private  EmployeeManagementView employees;
+    private  DiscountManagementView discountGrids;
     private int storeId;
 
     @Autowired
@@ -38,30 +38,6 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         this.marketController = MarketController.getInstance();
         this.header = new Header();
         add(header);
-
-        products = new ProductManagementView(marketController, storeId);
-        purchasePolicies = new PurchasePolicyManagementView(marketController, storeId);
-        employees = new EmployeeManagementView(marketController, storeId);
-        HorizontalLayout productAndPolicyGrids = new HorizontalLayout();
-        products.setWidth("50%");
-        productAndPolicyGrids.add(products, purchasePolicies);
-        if (marketController.hasPermission(MainLayout.getSessionId(), storeId, PositionDTO.permissionType.EmployeeList).value) {
-            purchasePolicies.setWidth("25%");
-            employees.setWidth("25%");
-            productAndPolicyGrids.add(employees);
-        } else
-            purchasePolicies.setWidth("50%");
-        productAndPolicyGrids.setWidthFull();
-        discountGrids = new DiscountManagementView(marketController, storeId);
-        discountGrids.setWidthFull();
-
-        add(
-                productAndPolicyGrids,
-                new H1("Discount Lists"),
-                discountGrids,
-                new Button("View Purchases", e -> viewPurchasesDialog()),
-                new Button("Close Store", e -> CloseStore())
-        );
 
         setWidthFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
@@ -125,6 +101,31 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
     public void setParameter(BeforeEvent beforeEvent, @WildcardParameter String parameter) {
         storeId = Integer.parseInt(parameter);
         header.setText("Store Management: " + marketController.getStore(MainLayout.getSessionId(), storeId).value.getStoreName());
+
+        products = new ProductManagementView(marketController, storeId);
+        purchasePolicies = new PurchasePolicyManagementView(marketController, storeId);
+        employees = new EmployeeManagementView(marketController, storeId);
+        HorizontalLayout productAndPolicyGrids = new HorizontalLayout();
+        products.setWidth("50%");
+        productAndPolicyGrids.add(products, purchasePolicies);
+        if (marketController.hasPermission(MainLayout.getSessionId(), storeId, PositionDTO.permissionType.EmployeeList).value) {
+            purchasePolicies.setWidth("25%");
+            employees.setWidth("25%");
+            productAndPolicyGrids.add(employees);
+        } else
+            purchasePolicies.setWidth("50%");
+        productAndPolicyGrids.setWidthFull();
+        discountGrids = new DiscountManagementView(marketController, storeId);
+        discountGrids.setWidthFull();
+
+        add(
+                productAndPolicyGrids,
+                new H1("Discount Lists"),
+                discountGrids,
+                new Button("View Purchases", e -> viewPurchasesDialog()),
+                new Button("Close Store", e -> CloseStore())
+        );
+
         Map<ProductDTO, Integer> productMap = marketController.getProductsByStore(storeId).value;
         products.setProductGrid(productMap.keySet().stream().toList());
         purchasePolicies.setPurchasePolicyGrid(marketController.getPurchasePoliciesByStoreId(storeId).value, productMap);
