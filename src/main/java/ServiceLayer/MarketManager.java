@@ -281,6 +281,16 @@ public class MarketManager implements IMarketManager {
         }
     }
 
+    @Override
+    public Response bid(String sessionId, int storeId, int productId, Double price) {
+        try {
+            market.bid(sessionId, storeId, productId, price);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
     public Response editProductName(String sessionId, int storeId, int productId, String newName) {
         try {
             market.editProductName(sessionId, storeId, productId, newName);

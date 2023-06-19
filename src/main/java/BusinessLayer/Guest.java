@@ -183,4 +183,8 @@ public class Guest {
     public void makeOffer(Store s, int productId, Double pricePerItem, Integer quantity) throws Exception {
         throw new Exception("cannot make offer as guest");
     }
+
+    public void bid(Store s, int productId, double price) throws Exception {
+        throw new Exception("cannot bid as guest");
+    }
 }

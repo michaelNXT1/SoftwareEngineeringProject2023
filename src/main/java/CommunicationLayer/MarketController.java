@@ -616,6 +616,11 @@ public class MarketController implements IMarketController {
     }
 
     @Override
+    public Response bid(String sessionId, int storeId, int productId, Double price) {
+        return marketManager.bid(sessionId, storeId, productId, price);
+    }
+
+    @Override
     public ResponseT<Double> getProductDiscountPercentageInCart(String sessionId, int storeId, int productId) {
         return marketManager.getProductDiscountPercentageInCart(sessionId, storeId, productId);
     }

@@ -160,6 +160,8 @@ public interface IMarketManager {
 
     ResponseT<ProductDTO> addAuctionProduct(String sessionId, int storeId, String productName, Double price, String category, Integer quantity, String description, LocalDateTime auctionEndDateTime);
 
+    Response bid(String sessionId, int storeId, int productId, Double price);
+
 //        Response logoutSystemManager(String sessionId);
 
 //        ResponseT<String> loginSystemManager(String username, String password);

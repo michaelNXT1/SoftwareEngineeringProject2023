@@ -20,6 +20,7 @@ import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 
 
 import Notification.Notification;
+import jakarta.persistence.Transient;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -61,6 +62,7 @@ public class Market {
     private IShoppingBagRepository shoppingBagRepository = new ShoppingBagDAO();
     private IOfferRepository offerRepository=new OfferDAO();
     private IOfferApprovalRepository offerApprovalRepository=new OfferApprovalDAO();
+    private IBidRepository bidRepository = new BidDAO();
     private IPurchaseRepository purchaseRepository = new PurchaseDAO();
 
     private String path;
@@ -94,6 +96,7 @@ public class Market {
     }
     @Transactional
     public void clearAllData(){
+        bidRepository.clear();
         offerApprovalRepository.clear();
         offerRepository.clear();
         shoppingBagRepository.clearShoppingBags();
@@ -588,6 +591,12 @@ public class Market {
         Guest g = sessionManager.getSession(sessionId);
         Store s = getStore(sessionId, storeId);
         g.makeOffer(s, productId, pricePerItem, quantity);
+    }
+
+    public void bid(String sessionId, int storeId, int productId, double price) throws Exception {
+        Guest g = sessionManager.getSession(sessionId);
+        Store s = getStore(sessionId, storeId);
+        g.bid(s, productId, price);
     }
 
     //use case 3.2

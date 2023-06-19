@@ -64,6 +64,8 @@ public class Store {
 
     @Transient
     private IOfferRepository offers=new OfferDAO();
+    @Transient
+    private IBidRepository bidRepository = new BidDAO();
     @Transient //Marks a property or field as transient, indicating that it should not be persisted in the database.
     private AtomicInteger productIdCounter;
     @Transient //Marks a property or field as transient, indicating that it should not be persisted in the database.
@@ -549,6 +551,12 @@ public class Store {
         offer.addOfferApproval(employees);
         for (Member m : employees)
                 m.sendNotification(new Notification(String.format("User %s offers to pay %.2f§ for %d %ss", g.getUsername(), pricePerItem * quantity, quantity, p.getProductName())));
+    }
+
+    public void bid(Member member, int productId, double price) throws Exception {
+        Product p=getProduct(productId);
+        Bid bid=new Bid(storeId,p, member, price);
+        bidRepository.saveBid(bid);
     }
 
     public List<Offer> getStoreOffers() {
