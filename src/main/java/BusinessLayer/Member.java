@@ -7,7 +7,10 @@ import DAOs.MemberDAO;
 import DAOs.NotificationDAO;
 import DAOs.PositionDAO;
 import Repositories.INotificationRepository;
+import DAOs.*;
+import Repositories.IPaymantRepo;
 import Repositories.IPositionRepository;
+import Repositories.ISupplyRepo;
 import Security.SecurityUtils;
 import ServiceLayer.DTOs.StoreDTO;
 
@@ -31,6 +34,10 @@ public class Member extends Guest {
     private List<Notification> notifications;
     @Transient
     private NotificationBroker notificationBroker;
+    @Transient
+    private IPaymantRepo paymantRepo = new PaymentDAO();
+    @Transient
+    private ISupplyRepo supplyRepo = new SupplyDAO();
     @Id
     @Column
     private String username;
@@ -54,6 +61,17 @@ public class Member extends Guest {
 
     }
     @Override
+    public void addPaymentMethod(String cardNumber, String month, String year, String cvv, String holder, String cardId) {
+        paymentDetails = new PaymentDetails(cardNumber, month, year, cvv, holder, cardId,this.username);
+        paymantRepo.addPayment(paymentDetails);
+
+    }
+    @Override
+    public void addSupplyDetails(String name , String address, String city, String country, String zip) {
+        supplyDetails = new SupplyDetails(name, address, city, country, zip,this.username);
+        supplyRepo.addSupply(supplyDetails);
+    }
+    @Override
     public void addShoppingCart(){
         shoppingCart = new ShoppingCart(this.username);
         shoppingCartRepo.addShoppingCart(shoppingCart);
@@ -63,6 +81,20 @@ public class Member extends Guest {
         List<ShoppingCart> myShoppingCart = shoppingCartRepo.getAllShoppingCart().stream().filter(sc->sc.getUserName().equals(this.username)).toList();
         if(!myShoppingCart.isEmpty())
             return myShoppingCart.get(0);
+        return null;
+    }
+    @Override
+    public PaymentDetails getPaymentDetails() {
+        List<PaymentDetails> myPd = paymantRepo.getAllPayment().stream().filter(pd->pd.getUserName().equals(this.username)).toList();
+        if(!myPd.isEmpty())
+            return myPd.get(0);
+        return null;
+    }
+    @Override
+    public SupplyDetails getSupplyDetails() {
+        List<SupplyDetails> mySd = supplyRepo.getAllSupply().stream().filter(sd->sd.getUserName().equals(this.username)).toList();
+        if(!mySd.isEmpty())
+            return mySd.get(0);
         return null;
     }
     // getter, setter

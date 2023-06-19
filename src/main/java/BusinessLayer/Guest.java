@@ -29,8 +29,8 @@ public class Guest {
     private List<Product> searchResults;
     private IPurchaseRepository purchaseHistory;
     protected IShoppingCartRepo shoppingCartRepo = new ShoppingCartDAO();
-    private PaymentDetails paymentDetails;
-    private SupplyDetails supplyDetails;
+    protected PaymentDetails paymentDetails;
+    protected SupplyDetails supplyDetails;
 
     public void setId(Long id) {
         this.id = id;
@@ -116,10 +116,10 @@ public class Guest {
 
 
     public void addPaymentMethod(String cardNumber, String month, String year, String cvv, String holder, String cardId) {
-        paymentDetails = new PaymentDetails(cardNumber, month, year, cvv, holder, cardId);
+        paymentDetails = new PaymentDetails(cardNumber, month, year, cvv, holder, cardId,null);
     }
     public void addSupplyDetails(String name , String address, String city, String country, String zip) {
-        supplyDetails = new SupplyDetails(name, address, city, country, zip);
+        supplyDetails = new SupplyDetails(name, address, city, country, zip,null);
     }
 
     public Store openStore(String storeName, int storeId) throws Exception {

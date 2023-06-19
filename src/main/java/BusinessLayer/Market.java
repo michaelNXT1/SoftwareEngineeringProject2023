@@ -385,6 +385,7 @@ public class Market {
                 ShoppingCart shoppingCart = shoppingCartRepo.getAllShoppingCart().stream().filter(sc -> sc.getUserName().equals(member.getUsername())).toList().get(0);
                 member.setShoppingCart(shoppingCart);
                 users.login(username);
+                logger.info("login finished");
                 return sessionManager.createSession(member);
             }
             logger.error(String.format("%s did not passed authenticate check and logged in to the system", username));
