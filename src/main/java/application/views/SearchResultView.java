@@ -1,6 +1,7 @@
 package application.views;
 
 import CommunicationLayer.MarketController;
+import ServiceLayer.DTOs.BidDTO;
 import ServiceLayer.DTOs.ProductDTO;
 import ServiceLayer.Response;
 import ServiceLayer.ResponseT;
@@ -21,10 +22,7 @@ import com.vaadin.flow.router.PreserveOnRefresh;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Route(value = "SearchResultView", layout = MainLayout.class)
@@ -80,21 +78,81 @@ SearchResultView extends VerticalLayout {
         grid.addColumn(ProductDTO::getProductName).setHeader("Product Name");
         grid.addColumn(ProductDTO::getCategory).setHeader("Category");
         grid.addColumn(this::getStoreName).setHeader("Store Name");
-        grid.addColumn(productDTO->productDTO.getPrice()+"§").setHeader("Price");
+        grid.addColumn(productDTO -> {
+            if (productDTO.getPurchaseType() != ProductDTO.PurchaseType.AUCTION)
+                return productDTO.getPrice() + "§";
+            return productDTO.getBidders().isEmpty() ? productDTO.getPrice()+"§" : productDTO.getBidders().stream().max(Comparator.comparingDouble(BidDTO::getOfferedPrice)).orElse(null).getOfferedPrice()+"§";
+        }).setHeader("Price");
         grid.addComponentColumn(product -> {
             HorizontalLayout hl = new HorizontalLayout();
             IntegerField quantity = new IntegerField();
             quantity.setValue(1);
             quantity.setStepButtonsVisible(true);
             quantity.setMin(1);
-            Button addToCartButton = new Button("Add to Cart", e -> addToCart(product, quantity.getValue()));
-            Button makeOfferButton = new Button("Make Offer", e -> makeOfferDialog(product, quantity.getValue()));
-            hl.add(quantity, addToCartButton, makeOfferButton);
+            Button purchaseButton = new Button();
+            switch (product.getPurchaseType()) {
+                case BUY_IT_NOW ->
+                        purchaseButton = new Button("Add to Cart", e -> addToCart(product, quantity.getValue()));
+                case OFFER ->
+                        purchaseButton = new Button("Make Offer", e -> makeOfferDialog(product, quantity.getValue()));
+                case AUCTION -> purchaseButton = new Button("Bid", e -> bidDialog(product, quantity.getValue()));
+            }
+            hl.add(quantity, purchaseButton);
             return hl;
         });
         grid.setItems(items);
         grid.setVisible(!items.isEmpty());
         return grid;
+    }
+
+    private void bidDialog(ProductDTO product, Integer value) {
+        Dialog dialog = new Dialog();
+        Header header = new Header();
+        String ret=product.getBidders().isEmpty() ? product.getPrice()+"§" : product.getBidders().stream().max(Comparator.comparingDouble(BidDTO::getOfferedPrice)).orElse(null).getOfferedPrice()+"§";
+        header.setText("Bid for " + product.getProductName()+" (you should bid more than "+ret+")");
+        Label errorSuccessLabel = new Label();
+        NumberField priceField = new NumberField();
+        Button submitButton = new Button("Commit to Pay", event -> {
+            if (priceField.getValue() == null)
+                errorSuccessLabel.setText("Price can't be empty");
+            else {
+                Response response = marketController.bid(
+                        MainLayout.getSessionId(),
+                        product.getStoreId(),
+                        product.getProductId(),
+                        priceField.getValue());
+                if (response.getError_occurred())
+                    errorSuccessLabel.setText(response.error_message);
+                else {
+                    errorSuccessLabel.setText("");
+                    dialog.close();
+                    Dialog successDialog = new Dialog();
+                    VerticalLayout successVl = new VerticalLayout();
+                    successVl.add(new Label("Bid offer made successfully!"), new Button("Close", e -> successDialog.close()));
+                    successDialog.add(successVl);
+                    successDialog.open();
+                }
+            }
+        });
+
+        Span paymentDetails = paymentDetailsErr(submitButton);
+        Span deliveryAddress = deliveryAddressErr(submitButton);
+
+        priceField.setPlaceholder("Price");
+
+        priceField.setLabel("Price");
+
+        priceField.setValue(product.getPrice());
+
+        Label totalLabel = new Label("You will pay a total of " + priceField.getValue() + "§");
+
+        priceField.addValueChangeListener(r -> totalLabel.setText("You will pay a total of " + priceField.getValue() + "§"));
+
+        VerticalLayout vl = new VerticalLayout();
+        vl.add(header, errorSuccessLabel, priceField, totalLabel, submitButton, paymentDetails, deliveryAddress);
+        vl.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+        dialog.add(vl);
+        dialog.open();
     }
 
     private void makeOfferDialog(ProductDTO product, Integer quantity) {
@@ -142,7 +200,7 @@ SearchResultView extends VerticalLayout {
         priceField.setValue(product.getPrice());
         quantityField.setValue(quantity);
 
-        Label totalLabel = new Label("You will pay a total of " + quantityField.getValue() * priceField.getValue()+"§");
+        Label totalLabel = new Label("You will pay a total of " + quantityField.getValue() * priceField.getValue() + "§");
 
         priceField.addValueChangeListener(r -> totalLabel.setText("You will pay a total of " + quantityField.getValue() * priceField.getValue()));
         quantityField.addValueChangeListener(r -> totalLabel.setText("You will pay a total of " + quantityField.getValue() * priceField.getValue()));
@@ -152,7 +210,6 @@ SearchResultView extends VerticalLayout {
         vl.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         dialog.add(vl);
         dialog.open();
-
     }
 
     private Span paymentDetailsErr(Button submitButton) {

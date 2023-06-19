@@ -20,6 +20,7 @@ import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 
 
 import Notification.Notification;
+import jakarta.persistence.Transient;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -58,6 +60,9 @@ public class Market {
     private IShoppingCartRepo shoppingCartRepo = new ShoppingCartDAO();
 
     private IShoppingBagRepository shoppingBagRepository = new ShoppingBagDAO();
+    private IOfferRepository offerRepository=new OfferDAO();
+    private IOfferApprovalRepository offerApprovalRepository=new OfferApprovalDAO();
+    private IBidRepository bidRepository = new BidDAO();
     private IPurchaseRepository purchaseRepository = new PurchaseDAO();
 
     private String path;
@@ -91,6 +96,9 @@ public class Market {
     }
     @Transactional
     public void clearAllData(){
+        bidRepository.clear();
+        offerApprovalRepository.clear();
+        offerRepository.clear();
         shoppingBagRepository.clearShoppingBags();
         shoppingCartRepo.clear();
         purchaseRepository.clear();
@@ -185,7 +193,7 @@ public class Market {
                         try {
                             sessionId = sessionManager.getSessionIdByGuestName(args[0]);
                             storeId = getStoreByName(sessionId, args[1]).getStoreId();
-                            addProduct(sessionId,storeId,args[2],Double.parseDouble(args[3]),args[4],Integer.parseInt(args[5]),args[6]);
+                            addProduct(sessionId,storeId,args[2],Double.parseDouble(args[3]),args[4],Integer.parseInt(args[5]),args[6], ProductDTO.PurchaseType.OFFER);
                         }
                         catch (Exception e) {
                         throw new RuntimeException(e);
@@ -604,6 +612,18 @@ public class Market {
         return new PurchaseDTO(purchase);
     }
 
+    public void makeOffer(String sessionId, int storeId, int productId, Double pricePerItem, Integer quantity) throws Exception {
+        Guest g = sessionManager.getSession(sessionId);
+        Store s = getStore(sessionId, storeId);
+        g.makeOffer(s, productId, pricePerItem, quantity);
+    }
+
+    public void bid(String sessionId, int storeId, int productId, double price) throws Exception {
+        Guest g = sessionManager.getSession(sessionId);
+        Store s = getStore(sessionId, storeId);
+        g.bid(s, productId, price);
+    }
+
     //use case 3.2
     @Transactional
     public int openStore(String sessionId, String storeName) throws Exception {
@@ -641,7 +661,7 @@ public class Market {
 
     //use case 5.1
     @Transactional
-    public ProductDTO addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description) throws Exception {
+    public ProductDTO addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description, ProductDTO.PurchaseType purchaseType) throws Exception {
         isMarketOpen();
         Position p;
         synchronized (purchaseLock) {
@@ -652,7 +672,27 @@ public class Market {
             p = checkPositionLegal(sessionId, storeId);
         }
         Store s = stores.getStore(storeId);
-        Product product = p.addProduct(s,productName, price, category, quantity, description);
+        Product product = p.addProduct(s,productName, price, category, quantity, description, purchaseType);
+        List<Member> managers = s.getEmployees();
+        for (Member manager : managers) {
+            logger.info("sending notifications");
+            manager.sendNotification(new Notification(String.format("%s added to %s with %d quantity", productName, s.getStoreName(), quantity)));
+        }
+        return new ProductDTO(product);
+    }
+
+    public ProductDTO addAuctionProduct(String sessionId, int storeId, String productName, Double price, String category, Integer quantity, String description, LocalDateTime auctionEndDateTime) throws Exception {
+        isMarketOpen();
+        Position p;
+        synchronized(purchaseLock){
+            sessionManager.getSession(sessionId);
+            logger.info("trying adding new auction product");
+            checkStoreExists(storeId);
+            logger.info(String.format("adding auction product to store %s new product name %s price %.02f category %s quantity %d description %s", getStore(sessionId, storeId).getStoreName(), productName, price, category, quantity, description));
+            p = checkPositionLegal(sessionId, storeId);
+        }
+        Store s = stores.getStore(storeId);
+        Product product = p.addAuctionProduct(s,productName, price, category, quantity, description, auctionEndDateTime);
         List<Member> managers = s.getEmployees();
         for (Member manager : managers) {
             logger.info("sending notifications");
@@ -1342,5 +1382,26 @@ public class Market {
         {
             paymentSystem.setPaymentSystem(null);
         }
+    }
+
+    public List<OfferDTO> getOffersByStore(int storeId) throws Exception {
+        checkMarketOpen();
+        checkStoreExists(storeId);
+        Store s = stores.getStore(storeId);
+        return s.getStoreOffers().stream().map(OfferDTO::new).collect(Collectors.toList());
+    }
+
+    public void rejectOffer(String sessionId, int storeId, int offerId) throws Exception {
+        checkMarketOpen();
+        checkStoreExists(storeId);
+        Position p=checkPositionLegal(sessionId, storeId);
+        p.rejectOffer(offerId);
+    }
+
+    public void acceptOffer(String sessionId, int storeId, int offerId) throws Exception {
+        checkMarketOpen();
+        checkStoreExists(storeId);
+        Position p=checkPositionLegal(sessionId, storeId);
+        p.acceptOffer(offerId, paymentSystem, supplySystem);
     }
 }

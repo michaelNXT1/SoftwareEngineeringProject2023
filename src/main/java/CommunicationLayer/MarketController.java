@@ -10,6 +10,7 @@ import ServiceLayer.ResponseT;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
@@ -253,8 +254,9 @@ public class MarketController implements IMarketController {
                                             @RequestParam(value = "price", defaultValue = "-1") double price,
                                             @RequestParam(value = "category", defaultValue = "") String category,
                                             @RequestParam(value = "quantity", defaultValue = "-1") int quantity,
-                                            @RequestParam(value = "description", defaultValue = "") String description) {
-        return marketManager.addProduct(sessionId, storeId, productName, price, category, quantity, description);
+                                            @RequestParam(value = "description", defaultValue = "") String description,
+                                            @RequestParam(value = "description", defaultValue = "") ProductDTO.PurchaseType purchaseType) {
+        return marketManager.addProduct(sessionId, storeId, productName, price, category, quantity, description, purchaseType);
     }
 
     @GetMapping("/editProductName")
@@ -592,6 +594,33 @@ public class MarketController implements IMarketController {
     }
 
     @Override
+    public ResponseT<List<OfferDTO>> getOffersByStore(int storeId) {
+
+        return marketManager.getOffersByStore(storeId);
+    }
+
+    @Override
+    public Response rejectOffer(String sessionId, int storeId, int offerId) {
+
+        return marketManager.rejectOffer(sessionId, storeId, offerId);
+    }
+
+    @Override
+    public Response acceptOffer(String sessionId, int storeId, int offerId) {
+        return marketManager.acceptOffer(sessionId, storeId, offerId);
+    }
+
+    @Override
+    public ResponseT<ProductDTO> addAuctionProduct(String sessionId, int storeId, String productName, Double price, String category, Integer quantity, String description, LocalDateTime auctionEndDateTime) {
+        return marketManager.addAuctionProduct(sessionId, storeId, productName, price, category, quantity, description, auctionEndDateTime);
+    }
+
+    @Override
+    public Response bid(String sessionId, int storeId, int productId, Double price) {
+        return marketManager.bid(sessionId, storeId, productId, price);
+    }
+
+    @Override
     public ResponseT<Double> getProductDiscountPercentageInCart(String sessionId, int storeId, int productId) {
         return marketManager.getProductDiscountPercentageInCart(sessionId, storeId, productId);
     }
@@ -608,7 +637,7 @@ public class MarketController implements IMarketController {
 
     @Override
     public Response makeOffer(String sessionId, int storeId, int productId, Double pricePerItem, Integer quantity) {
-        return marketManager.getOffer(sessionId, storeId, productId, pricePerItem, quantity);
+        return marketManager.makeOffer(sessionId, storeId, productId, pricePerItem, quantity);
     }
 
     @GetMapping("/editProductInCart")

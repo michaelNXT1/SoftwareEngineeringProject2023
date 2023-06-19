@@ -137,7 +137,7 @@ public class Real implements Bridge {
 
 
     public Integer addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description) {
-        ProductDTO p = manager.addProduct(sessionId, storeId, productName, price, category, quantity, description).value;
+        ProductDTO p = manager.addProduct(sessionId, storeId, productName, price, category, quantity, description, ProductDTO.PurchaseType.BUY_IT_NOW).value;
         if (p != null)
             return p.getProductId();
         return null;

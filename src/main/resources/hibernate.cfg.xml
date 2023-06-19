@@ -51,6 +51,9 @@
         <mapping class="BusinessLayer.Policies.PurchasePolicies.PolicyTypes.MinQuantityPurchasePolicy"/>
         <mapping class="BusinessLayer.Policies.PurchasePolicies.PolicyTypes.ProductTimeRestrictionPurchasePolicy"/>
         <mapping class="BusinessLayer.Policies.PurchasePolicies.PurchasePolicyOperation"/>
+        <mapping class="BusinessLayer.Offer"/>
+        <mapping class="BusinessLayer.OfferApproval"/>
+        <mapping class="BusinessLayer.Bid"/>
 
     </session-factory>
 </hibernate-configuration>

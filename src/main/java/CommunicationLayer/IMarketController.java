@@ -1,5 +1,6 @@
 package CommunicationLayer;
 
+import BusinessLayer.Product;
 import ServiceLayer.DTOs.*;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
@@ -7,6 +8,7 @@ import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 import ServiceLayer.Response;
 import ServiceLayer.ResponseT;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
@@ -82,7 +84,7 @@ public interface IMarketController {
     getPurchaseHistory(String sessionId, int storeId);
 
     ResponseT<ProductDTO>
-    addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description);
+    addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description, ProductDTO.PurchaseType purchaseType);
 
     Response
     editProductName(String sessionId, int storeId, int productId, String newName);
@@ -228,4 +230,13 @@ public interface IMarketController {
 
     Response editProductDescription(String sessionId, int storeId, int productId, String value);
 
+    ResponseT<List<OfferDTO>> getOffersByStore(int storeId);
+
+    Response rejectOffer(String sessionId, int storeId, int offerId);
+
+    Response acceptOffer(String sessionId, int storeId, int offerId);
+
+    ResponseT<ProductDTO> addAuctionProduct(String sessionId, int storeId, String productName, Double price, String category, Integer quantity, String description, LocalDateTime auctionEndDateTime);
+
+    Response bid(String sessionId, int storeId, int productId, Double price);
 }

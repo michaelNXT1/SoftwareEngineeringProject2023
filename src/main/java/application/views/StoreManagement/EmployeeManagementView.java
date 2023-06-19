@@ -60,6 +60,8 @@ public class EmployeeManagementView extends VerticalLayout {
             if (!marketController.hasPermission(MainLayout.getSessionId(), storeId, PositionDTO.permissionType.setPermissions).value)
                 return new Div();
             PositionDTO position = memberDTO.getPositions().stream().filter(p -> p.getStore().getStoreId() == storeId).findFirst().orElse(null);
+            if (position != null && position.getAssigner() == null)
+                return new Div();
             if (position != null && position.getAssigner().getUsername().equals(marketController.getUsername(MainLayout.getSessionId()).value))
                 return switch (position.getPositionName()) {
                     case "Owner" -> new Button("Remove", e -> removeOwnerDialog(memberDTO));
