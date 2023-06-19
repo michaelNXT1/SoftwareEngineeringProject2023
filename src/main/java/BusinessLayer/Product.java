@@ -180,6 +180,14 @@ public class Product {
     public PurchaseType getPurchaseType() {
         return purchaseType;
     }
+
+    public IBidRepository getBidRepository() {
+        return bidRepository;
+    }
+
+    public LocalDateTime getAuctionEndTime() {
+        return auctionEndTime;
+    }
 }
 
 

@@ -1,10 +1,15 @@
 package ServiceLayer.DTOs;
 
 
+import BusinessLayer.Bid;
 import BusinessLayer.Product;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ProductDTO {
     public enum PurchaseType {
@@ -34,6 +39,8 @@ public class ProductDTO {
     private int amount;
     private String description;
     private PurchaseType purchaseType;
+    private List<BidDTO> bidders;
+    private LocalDateTime auctionEndTime;
 
     public ProductDTO(Product p) {
         this.storeId = p.getStoreId();
@@ -49,6 +56,10 @@ public class ProductDTO {
             case OFFER -> this.purchaseType = PurchaseType.OFFER;
             case AUCTION -> this.purchaseType = PurchaseType.AUCTION;
         }
+        bidders = new ArrayList<>();
+        for (Bid bid : p.getBidRepository().getAllBids().stream().filter(bid -> bid.getStoreId() == storeId && bid.getProductId().getProductId() == productId).collect(Collectors.toList()))
+            bidders.add(new BidDTO(bid));
+        this.auctionEndTime = p.getAuctionEndTime();
     }
 
     public int getProductId() {
@@ -113,6 +124,14 @@ public class ProductDTO {
 
     public PurchaseType getPurchaseType() {
         return purchaseType;
+    }
+
+    public List<BidDTO> getBidders() {
+        return bidders;
+    }
+
+    public LocalDateTime getAuctionEndTime() {
+        return auctionEndTime;
     }
 
     @Override
