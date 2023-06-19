@@ -32,6 +32,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
     private EmployeeManagementView employees;
     private DiscountManagementView discountGrids;
     private OfferManagementView offers;
+    private AuctionManagementView auctions;
     private int storeId;
 
     @Autowired
@@ -122,11 +123,17 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         offers = new OfferManagementView(marketController, storeId);
         offers.setWidthFull();
 
+        auctions = new AuctionManagementView(marketController, storeId);
+        auctions.setWidthFull();
+
+        HorizontalLayout bottomHl = new HorizontalLayout(offers, auctions);
+        bottomHl.setWidthFull();
+
         add(
                 productAndPolicyGrids,
                 new H1("Discount Lists"),
                 discountGrids,
-                offers,
+                bottomHl,
                 new Button("View Purchases", e -> viewPurchasesDialog()),
                 new Button("Close Store", e -> CloseStore())
         );
@@ -140,6 +147,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         discountGrids.setGrids(productMap);
         List<OfferDTO> offersList = marketController.getOffersByStore(storeId).value;
         offers.setOfferGrid(offersList);
+        auctions.setProductGrid(productMap.keySet().stream().filter(productDTO -> productDTO.getPurchaseType() == ProductDTO.PurchaseType.AUCTION).toList());
     }
 
 }
