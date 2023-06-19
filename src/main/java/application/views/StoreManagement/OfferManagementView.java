@@ -27,7 +27,7 @@ public class OfferManagementView extends VerticalLayout {
         this.marketController = marketController;
         HorizontalLayout hl = new HorizontalLayout();
         Div productsDiv = new Div();
-        hl.add(new H1("Product List"), productsDiv);
+        hl.add(new H1("Offer List"), productsDiv);
         hl.setFlexGrow(1, productsDiv);
         hl.setWidthFull();
         offerGrid = new Grid<>(OfferDTO.class, false);
@@ -42,12 +42,8 @@ public class OfferManagementView extends VerticalLayout {
             HorizontalLayout buttonHl = new HorizontalLayout();
             switch (offerResponse) {
                 case -1 -> {
-                    Button acceptButton = new Button("Accept", e -> {
-                        acceptOffer(offerDTO);
-                    });
-                    Button rejectButton = new Button("Reject", e -> {
-                        rejectOffer(offerDTO);
-                    });
+                    Button acceptButton = new Button("Accept", e -> acceptOffer(offerDTO));
+                    Button rejectButton = new Button("Reject", e -> rejectOffer(offerDTO));
                     buttonHl.add(acceptButton, rejectButton);
                 }
                 case 0 -> buttonHl.add(new Label("You have rejected this offer"));
