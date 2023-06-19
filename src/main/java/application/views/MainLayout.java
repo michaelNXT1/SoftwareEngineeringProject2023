@@ -2,8 +2,6 @@ package application.views;
 
 
 import CommunicationLayer.MarketController;
-import ServiceLayer.DTOs.ProductDTO;
-import ServiceLayer.Response;
 import ServiceLayer.ResponseT;
 import application.components.AppNav;
 import application.components.AppNavItem;
@@ -35,8 +33,6 @@ import com.vaadin.flow.theme.lumo.LumoUtility.FontSize;
 import com.vaadin.flow.theme.lumo.LumoUtility.Padding;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,62 +65,6 @@ public class MainLayout extends AppLayout {
     public static void setSessionId(String sessionId) {
         MainLayout.sessionId = sessionId;
     }
-
-    private void config() {
-        marketController.signUp("Shoham", "1234");
-        marketController.signUp("Alon", "1234");
-        marketController.signUp("Shani", "1234");
-        marketController.signUp("Idan", "1234");
-
-        marketController.signUp("Michael", "1234");
-        sessionId = marketController.login("Michael", "1234").value;
-        marketController.addPaymentMethod(sessionId, "a", "a", "a", "a");
-        marketController.addSupplyDetails(sessionId, "a", "a", "a", "a", "a");
-        int store_id = marketController.openStore(sessionId, "Shufersal").value;
-        marketController.openStore(sessionId, "Ebay");
-        Map<String, Integer> productMap = new HashMap<>();
-        productMap.put("Klik Marbles", marketController.addProduct(sessionId, store_id, "Klik Marbles", 6.8, "Snacks", 50, "", ProductDTO.PurchaseType.BUY_IT_NOW).value.getProductId());
-        productMap.put("Banana", marketController.addProduct(sessionId, store_id, "Banana", 7.9, "Fruit", 50, "", ProductDTO.PurchaseType.BUY_IT_NOW).value.getProductId());
-        productMap.put("Bread", marketController.addProduct(sessionId, store_id, "Bread", 10.0, "Pastries", 50, "", ProductDTO.PurchaseType.BUY_IT_NOW).value.getProductId());
-        productMap.put("Watermelon", marketController.addProduct(sessionId, store_id, "Watermelon", 35.4, "Fruit", 50, "", ProductDTO.PurchaseType.BUY_IT_NOW).value.getProductId());
-        productMap.put("Milk", marketController.addProduct(sessionId, store_id, "Milk", 6.75, "Dairy", 50, "", ProductDTO.PurchaseType.BUY_IT_NOW).value.getProductId());
-        productMap.put("Bamba", marketController.addProduct(sessionId, store_id, "Bamba", 4.3, "Snacks", 50, "", ProductDTO.PurchaseType.BUY_IT_NOW).value.getProductId());
-        productMap.put("Yogurt", marketController.addProduct(sessionId, store_id, "Yogurt", 5.3, "Dairy", 50, "", ProductDTO.PurchaseType.BUY_IT_NOW).value.getProductId());
-        productMap.put("Lay's", marketController.addProduct(sessionId, store_id, "Lay's", 4.0, "Snacks", 50, "", ProductDTO.PurchaseType.BUY_IT_NOW).value.getProductId());
-        productMap.put("Apple", marketController.addProduct(sessionId, store_id, "Apple", 11.9, "Fruit", 50, "", ProductDTO.PurchaseType.BUY_IT_NOW).value.getProductId());
-        productMap.put("Bun", marketController.addProduct(sessionId, store_id, "Bun", 4.0, "Pastries", 50, "", ProductDTO.PurchaseType.BUY_IT_NOW).value.getProductId());
-
-
-        List<Long> discounts = new ArrayList<>();
-        discounts.add(marketController.addProductDiscount(sessionId, store_id, productMap.get("Apple"), 0.1, 0).value);
-        discounts.add(marketController.addCategoryDiscount(sessionId, store_id, "Dairy", 0.5, 0).value);
-        discounts.add(marketController.addCategoryDiscount(sessionId, store_id, "Pastries", 0.05, 0).value);
-        discounts.add(marketController.addStoreDiscount(sessionId, store_id, 0.2, 0).value);
-        marketController.addMinBagTotalDiscountPolicy(sessionId, store_id, Math.toIntExact(discounts.get(0)), 200.0);
-        marketController.addMinQuantityDiscountPolicy(sessionId, store_id, Math.toIntExact(discounts.get(2)), productMap.get("Bread"), 5, true);
-        marketController.addMinQuantityDiscountPolicy(sessionId, store_id, Math.toIntExact(discounts.get(2)), productMap.get("Bun"), 5, true);
-
-        marketController.addMaxQuantityPolicy(sessionId, store_id, productMap.get("Apple"), 5);
-        marketController.addCategoryTimeRestrictionPolicy(sessionId, store_id, "Snacks", LocalTime.of(7, 0, 0), LocalTime.of(23, 0, 0));
-
-        marketController.setPositionOfMemberToStoreOwner(sessionId, store_id, "Alon");
-        marketController.setPositionOfMemberToStoreManager(sessionId, store_id, "Shoham");
-        marketController.addStoreManagerPermissions(sessionId, "Shoham", store_id, 4);
-
-        marketController.addProductToCart(sessionId, store_id, productMap.get("Klik Marbles"), 4);
-        marketController.addProductToCart(sessionId, store_id, productMap.get("Bread"), 4);
-
-        marketController.logout(sessionId);
-
-        sessionId = marketController.login("Alon", "1234").value;
-        marketController.setPositionOfMemberToStoreOwner(sessionId, store_id, "Shani");
-        marketController.logout(sessionId);
-
-        sessionId = marketController.login("Michael", "1234").value;
-//
-//        sessionId = marketController.login("Shoham", "1234").value;
-    }
-
 
     private void addDrawerContent() {
         H1 appName = new H1("Categories");
@@ -196,8 +136,8 @@ public class MainLayout extends AppLayout {
         submitButton = new Button("Login", e -> {
             String username = usernameField.getValue();
             String password = passwordField.getValue();
-            Response r = marketController.login(username, password);
-            MainLayout.setSessionId(((ResponseT<String>) r).value);
+            ResponseT<String> r = marketController.login(username, password);
+            MainLayout.setSessionId(r.value);
             if (r.getError_occurred())
                 Notification.show(r.error_message, 3000, Notification.Position.MIDDLE);
             else {
