@@ -9,7 +9,8 @@ import java.util.Map;
 public class ProductDTO {
     public enum PurchaseType {
         BUY_IT_NOW,
-        OFFER
+        OFFER,
+        AUCTION
     }
 
     public static Map<String, ProductDTO.PurchaseType> stringToPermMap = new HashMap<>();
@@ -18,8 +19,10 @@ public class ProductDTO {
     static {
         stringToPermMap.put("Buy it Now", PurchaseType.BUY_IT_NOW);
         stringToPermMap.put("Make Offer", PurchaseType.OFFER);
+        stringToPermMap.put("Auction", PurchaseType.AUCTION);
         permToStringMap.put(PurchaseType.BUY_IT_NOW, "Buy it Now");
         permToStringMap.put(PurchaseType.OFFER, "Make Offer");
+        permToStringMap.put(PurchaseType.AUCTION, "Auction");
     }
 
     private final int storeId;
@@ -44,6 +47,7 @@ public class ProductDTO {
         switch (p.getPurchaseType()) {
             case BUY_IT_NOW -> this.purchaseType = PurchaseType.BUY_IT_NOW;
             case OFFER -> this.purchaseType = PurchaseType.OFFER;
+            case AUCTION -> this.purchaseType = PurchaseType.AUCTION;
         }
     }
 

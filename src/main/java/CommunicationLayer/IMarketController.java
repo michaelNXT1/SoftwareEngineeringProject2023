@@ -8,6 +8,7 @@ import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 import ServiceLayer.Response;
 import ServiceLayer.ResponseT;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
@@ -234,4 +235,6 @@ public interface IMarketController {
     Response rejectOffer(String sessionId, int storeId, int offerId);
 
     Response acceptOffer(String sessionId, int storeId, int offerId);
+
+    ResponseT<ProductDTO> addAuctionProduct(String sessionId, int storeId, String productName, Double price, String category, Integer quantity, String description, LocalDateTime auctionEndDateTime);
 }

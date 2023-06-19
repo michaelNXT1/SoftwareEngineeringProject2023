@@ -5,7 +5,7 @@ import ServiceLayer.DTOs.PositionDTO;
 import ServiceLayer.DTOs.ProductDTO;
 import jakarta.persistence.*;
 
-//import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.List;
@@ -169,6 +169,16 @@ public class StoreManager implements Position {
         //TODO: Check if he has appropriate access permission
         if (permissions.contains(permissionType.Inventory))
             return store.addProduct(productName, price, category, quantity, description, purchaseType);
+        else {
+            logger.error("this store manager hasn't permission to add product to the store");
+            throw new IllegalAccessException("This member hasn't permission to add product to the store");
+        }
+    }
+
+    @Override
+    public Product addAuctionProduct(Store s, String productName, Double price, String category, Integer quantity, String description, LocalDateTime auctionEndDateTime) throws Exception {
+        if (permissions.contains(permissionType.Inventory))
+            return store.addAuctionProduct(productName, price, category, quantity, description, auctionEndDateTime);
         else {
             logger.error("this store manager hasn't permission to add product to the store");
             throw new IllegalAccessException("This member hasn't permission to add product to the store");

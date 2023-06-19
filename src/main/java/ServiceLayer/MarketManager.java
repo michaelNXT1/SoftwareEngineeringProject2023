@@ -7,6 +7,7 @@ import ServiceLayer.DTOs.*;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
@@ -266,6 +267,15 @@ public class MarketManager implements IMarketManager {
     public ResponseT<ProductDTO> addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description, ProductDTO.PurchaseType purchaseType) {
         try {
             return ResponseT.fromValue(market.addProduct(sessionId, storeId, productName, price, category, quantity, description, purchaseType));
+        } catch (Exception e) {
+            return ResponseT.fromError(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseT<ProductDTO> addAuctionProduct(String sessionId, int storeId, String productName, Double price, String category, Integer quantity, String description, LocalDateTime auctionEndDateTime) {
+        try {
+            return ResponseT.fromValue(market.addAuctionProduct(sessionId, storeId, productName, price, category, quantity, description, auctionEndDateTime));
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
         }

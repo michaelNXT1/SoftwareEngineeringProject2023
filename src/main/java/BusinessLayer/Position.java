@@ -5,6 +5,7 @@ import BusinessLayer.ExternalSystems.SupplySystem;
 import ServiceLayer.DTOs.PositionDTO;
 import ServiceLayer.DTOs.ProductDTO;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
@@ -26,6 +27,8 @@ public interface Position {
     void removeStoreManagerPermissions(Position storeManagerPosition, StoreManager.permissionType Permission) throws IllegalAccessException;   //5.10
 
     Product addProduct(Store store, String productName, double price, String category, int quantity, String description, ProductDTO.PurchaseType purchaseType) throws Exception; //5.1
+
+    Product addAuctionProduct(Store s, String productName, Double price, String category, Integer quantity, String description, LocalDateTime auctionEndDateTime) throws Exception;
 
     void editProductName(int productId, String newName) throws Exception;   //5.2
 

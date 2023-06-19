@@ -38,12 +38,6 @@ public class Offer {
     public Offer() {
     }
 
-    public void respondToOffer(Member approvingMember, int response) {
-        OfferApproval offerApproval = offerApprovalRepository.getAllOfferApprovals().stream().filter(oa ->
-                oa.getOfferId() == offerId && oa.getEmployee().getUsername().equals(approvingMember.getUsername())).findFirst().orElse(null);
-        offerApproval.setResponse(response);
-        offerApprovalRepository.saveOfferApproval(offerApproval);
-    }
     public void addOfferApproval(List<Member> approvingMembers){
         for (Member m : approvingMembers) {
             OfferApproval offerApproval = new OfferApproval(offerId, m, -1);

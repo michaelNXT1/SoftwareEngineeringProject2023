@@ -1,8 +1,11 @@
 package BusinessLayer;
 
-import BusinessLayer.Policies.PurchasePolicies.PurchasePolicyOperation;
+import DAOs.BidDAO;
+import Repositories.IBidRepository;
 import ServiceLayer.DTOs.ProductDTO;
 import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
 
 import static org.atmosphere.annotation.AnnotationUtil.logger;
 //import javax.persistence.*;
@@ -12,9 +15,10 @@ import static org.atmosphere.annotation.AnnotationUtil.logger;
 @Table(name = "products")
 public class Product {
 
-    public enum PurchaseType{
+    public enum PurchaseType {
         BUY_IT_NOW,
-        OFFER
+        OFFER,
+        AUCTION
     }
 
     @Column(name = "store_id")
@@ -46,6 +50,12 @@ public class Product {
     @Enumerated(EnumType.STRING)
     private PurchaseType purchaseType;
 
+    @Transient
+    private IBidRepository bidRepository = new BidDAO();
+
+    @Column(name="auction_end_time")
+    private LocalDateTime auctionEndTime;
+
 
     public Product(int storeId, int productId, String productName, double price, String category, int quantity, String description, ProductDTO.PurchaseType purchaseType) throws Exception {
         if (stringIsEmpty(productName)) {
@@ -71,18 +81,27 @@ public class Product {
         this.category = category;
         this.quantity = quantity;
         this.description = description;
-        this.purchaseType= PurchaseType.valueOf(purchaseType.name());
+        this.purchaseType = PurchaseType.valueOf(purchaseType.name());
         this.rating = 0;
+        this.auctionEndTime=null;
+    }
+
+    public Product(int storeId, int andIncrement, String productName, Double price, String category, Integer quantity, String description, ProductDTO.PurchaseType purchaseType, LocalDateTime auctionEndDateTime) throws Exception {
+        this(storeId, andIncrement, productName, price, category, quantity, description, purchaseType);
+        this.auctionEndTime=auctionEndDateTime;
     }
 
     public Product() {
 
     }
 
+    private static boolean stringIsEmpty(String value) {
+        return value == null || value.equals("");
+    }
+
     public void setStoreId(int storeId) {
         this.storeId = storeId;
     }
-
 
     public int getStoreId() {
         return storeId;
@@ -160,10 +179,6 @@ public class Product {
 
     public PurchaseType getPurchaseType() {
         return purchaseType;
-    }
-
-    private static boolean stringIsEmpty(String value) {
-        return value == null || value.equals("");
     }
 }
 

@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -189,7 +190,7 @@ public class Market {
                         try {
                             sessionId = sessionManager.getSessionIdByGuestName(args[0]);
                             storeId = getStoreByName(sessionId, args[1]).getStoreId();
-                            addProduct(sessionId,storeId,args[2],Double.parseDouble(args[3]),args[4],Integer.parseInt(args[5]),args[6], ProductDTO.PurchaseType.BUY_IT_NOW);
+                            addProduct(sessionId,storeId,args[2],Double.parseDouble(args[3]),args[4],Integer.parseInt(args[5]),args[6], ProductDTO.PurchaseType.OFFER);
                         }
                         catch (Exception e) {
                         throw new RuntimeException(e);
@@ -638,6 +639,26 @@ public class Market {
         }
         Store s = stores.getStore(storeId);
         Product product = p.addProduct(s,productName, price, category, quantity, description, purchaseType);
+        List<Member> managers = s.getEmployees();
+        for (Member manager : managers) {
+            logger.info("sending notifications");
+            manager.sendNotification(new Notification(String.format("%s added to %s with %d quantity", productName, s.getStoreName(), quantity)));
+        }
+        return new ProductDTO(product);
+    }
+
+    public ProductDTO addAuctionProduct(String sessionId, int storeId, String productName, Double price, String category, Integer quantity, String description, LocalDateTime auctionEndDateTime) throws Exception {
+        isMarketOpen();
+        Position p;
+        synchronized(purchaseLock){
+            sessionManager.getSession(sessionId);
+            logger.info("trying adding new auction product");
+            checkStoreExists(storeId);
+            logger.info(String.format("adding auction product to store %s new product name %s price %.02f category %s quantity %d description %s", getStore(sessionId, storeId).getStoreName(), productName, price, category, quantity, description));
+            p = checkPositionLegal(sessionId, storeId);
+        }
+        Store s = stores.getStore(storeId);
+        Product product = p.addAuctionProduct(s,productName, price, category, quantity, description, auctionEndDateTime);
         List<Member> managers = s.getEmployees();
         for (Member manager : managers) {
             logger.info("sending notifications");

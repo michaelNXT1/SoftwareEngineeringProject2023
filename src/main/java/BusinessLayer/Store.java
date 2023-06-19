@@ -22,6 +22,7 @@ import Repositories.*;
 import ServiceLayer.DTOs.ProductDTO;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -158,6 +159,25 @@ public class Store {
                 throw new Exception("cannot set quantity to less then 0");
             }
             p = new Product(storeId, this.productIdCounter.getAndIncrement(), productName, price, category, quantity, description, purchaseType);
+            if(categories.getAllCategory().stream().noneMatch(c-> c.getCategoryName().equals(category)))
+                categories.addString(new Category(category));
+            products.saveProduct(p);
+        }
+        return p;
+    }
+
+    public Product addAuctionProduct(String productName, Double price, String category, Integer quantity, String description, LocalDateTime auctionEndDateTime) throws Exception {
+        if (products.getAllProducts().stream().anyMatch(p -> p.getProductName().equals(productName))) {
+            logger.error(String.format("%s already exist", productName));
+            throw new Exception("Product name already exists");
+        }
+        Product p;
+        synchronized (productName.intern()) {
+            if (quantity < 0) {
+                logger.error("cannot set quantity to less then 0");
+                throw new Exception("cannot set quantity to less then 0");
+            }
+            p = new Product(storeId, this.productIdCounter.getAndIncrement(), productName, price, category, quantity, description, ProductDTO.PurchaseType.AUCTION, auctionEndDateTime);
             if(categories.getAllCategory().stream().noneMatch(c-> c.getCategoryName().equals(category)))
                 categories.addString(new Category(category));
             products.saveProduct(p);

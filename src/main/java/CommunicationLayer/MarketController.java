@@ -10,6 +10,7 @@ import ServiceLayer.ResponseT;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
@@ -607,6 +608,11 @@ public class MarketController implements IMarketController {
     @Override
     public Response acceptOffer(String sessionId, int storeId, int offerId) {
         return marketManager.acceptOffer(sessionId, storeId, offerId);
+    }
+
+    @Override
+    public ResponseT<ProductDTO> addAuctionProduct(String sessionId, int storeId, String productName, Double price, String category, Integer quantity, String description, LocalDateTime auctionEndDateTime) {
+        return marketManager.addAuctionProduct(sessionId, storeId, productName, price, category, quantity, description, auctionEndDateTime);
     }
 
     @Override
