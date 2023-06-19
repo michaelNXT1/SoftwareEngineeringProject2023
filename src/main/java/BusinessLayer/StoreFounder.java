@@ -226,8 +226,12 @@ public class StoreFounder implements Position {
     }
 
     @Override
-    public void removeStoreOwner(Member storeOwnerToRemove, Guest m) throws Exception {
-        storeOwnerToRemove.notBeingStoreOwner(m, getStore());
+    public boolean removeStoreOwner(Member storeOwnerToRemove, Guest m) throws Exception {
+        try {
+            return storeOwnerToRemove.notBeingStoreOwner(m, getStore());
+        }catch (Exception e){
+            return false;
+        }
     }
 
     @Override

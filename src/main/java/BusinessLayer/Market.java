@@ -120,7 +120,7 @@ public class Market {
         return stores.getAllStores().values().stream().filter(s -> s.getStoreName().equals(storeName)).toList().stream().map(StoreDTO::new).findFirst().get();
     }
 
-    private void parseFile(String filePath)  {
+    public void parseFile(String filePath)  {
 
         if (filePath!= null){
             String sessionId = "";
@@ -222,6 +222,25 @@ public class Market {
                         }
                         break;
 
+                    case "change-product-quantity": try {
+                            sessionId = sessionManager.getSessionIdByGuestName(args[0]);
+                            storeId = getStoreByName(sessionId, args[1]).getStoreId();
+                            changeProductQuantity(sessionId,storeId,Integer.parseInt(args[2]),Integer.parseInt(args[3]));
+                        }
+                        catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                        break;
+
+                    case "remove-owner": try {
+                        sessionId = sessionManager.getSessionIdByGuestName(args[0]);
+                        storeId = getStoreByName(sessionId, args[1]).getStoreId();
+                        removeStoreOwner(sessionId,args[2],storeId);
+                        }
+                        catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                        break;
 
                     default:
                         try {
@@ -1169,8 +1188,38 @@ public class Market {
         }
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
-        p.removeStoreOwner(storeOwnerToRemove, m);
+        boolean hasRemoved = p.removeStoreOwner(storeOwnerToRemove, m);
+        try {
+            recursionRemovePosition(storeOwnerToRemove, storeId);
+        }
+        catch (Exception e){
+            if (hasRemoved)
+                setPositionOfMemberToStoreOwner(sessionId,storeId,storeOwnerName);
+            logger.error(String.format("failed to recursion removed %s from being storeManager", storeOwnerName));
+            throw new Exception("failed to recursion removed %s from being storeManager");
+        }
         logger.info(String.format("%s removed from being storeManager", storeOwnerName));
+    }
+
+    private void recursionRemovePosition(Member removedPosition, int storeId) throws Exception {
+        boolean hasRemoved = false;
+        for (Member m:users.getAllMembers().values()
+             ) {
+            for (Position p:m.getPositions()
+                 ) {
+                if (p.getAssigner()!=null && p.getAssigner().getUsername().equals(removedPosition.getUsername()) && p.getStore().getStoreId() == storeId)
+                    try {
+                        hasRemoved = m.removePosition(p);
+                        recursionRemovePosition(m, storeId);
+                    }
+                catch (Exception e) {
+                        if (hasRemoved)
+                            m.addPosition(p);
+                        throw new Exception("failed to recursion removed %s from being storeManager");
+                }
+            }
+
+        }
     }
 
     public Object getSearchKeyword(String sessionId) throws Exception {
