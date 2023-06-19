@@ -26,7 +26,6 @@ public class MapStringMemberDAO implements IMapStringMemberRepository {
             transaction = session.beginTransaction();
             session.persist(member);
             transaction.commit();
-            memberMap.put(key, member);
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
@@ -91,6 +90,27 @@ public class MapStringMemberDAO implements IMapStringMemberRepository {
         } finally {
             session.close();
         }
+    }
+
+    @Override
+    public void login(String key) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Member member = null;
+        try {
+            member = get(key);
+            if (member != null && !memberMap.containsKey(key)) {
+                memberMap.put(key, member);
+            }
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            session.close();
+        }
+    }
+
+    @Override
+    public boolean isLoggedIn(Member m) {
+        return memberMap.containsKey(m.getUsername());
     }
 
     @Override

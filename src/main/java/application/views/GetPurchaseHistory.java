@@ -18,8 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 import java.util.Map;
 
-@PageTitle("GetInformationAboutMember ")
-@Route(value = "getInformationAboutMember ")
+@PageTitle("GetPurchaseHistory ")
+@Route(value = "GetPurchaseHistory ")
 public class GetPurchaseHistory extends VerticalLayout {
     private  Button submitButton;
     private  Header header;

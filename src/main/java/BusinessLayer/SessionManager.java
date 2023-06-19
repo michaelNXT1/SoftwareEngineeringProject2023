@@ -27,10 +27,6 @@ public class SessionManager {
     }
 
     public String createSession(Guest user) throws Exception {
-        if (sessions.containsValue(user)) {
-            logger.error(String.format("%s is already logged in", user.getUsername()));
-            throw new Exception("this user is already logged in");
-        }
         String sessionId;
         synchronized (this.sessionLock) {
             sessionId = generateSessionId();
