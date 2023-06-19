@@ -9,6 +9,8 @@ public interface IMapStringMemberRepository {
     Member get(String key);
     void remove(String key);
     void logout(String key);
+    void login(String key);
+    boolean isLoggedIn(Member m);
     boolean containsKey(String key);
     boolean containsValue(Member member);
     Map<String, Member> getAllMembers();

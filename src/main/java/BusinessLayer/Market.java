@@ -365,6 +365,10 @@ public class Market {
         Member member;
         synchronized (username.intern()) {
             member = users.get(username);
+            if(users.isLoggedIn(member)){
+                logger.error(String.format("%s already logged in", username));
+                throw new Exception(String.format("%s already logged in", username));
+            }
             String hashedPassword = new String(passwordEncoder.digest(password.getBytes()));
             // If the Member doesn't exist or the password is incorrect, throw exception
             if (member == null || !hashedPassword.equals(member.getPassword())) {
@@ -380,6 +384,7 @@ public class Market {
                 member.sendRealTimeNotification();
                 ShoppingCart shoppingCart = shoppingCartRepo.getAllShoppingCart().stream().filter(sc -> sc.getUserName().equals(member.getUsername())).toList().get(0);
                 member.setShoppingCart(shoppingCart);
+                users.login(username);
                 logger.info("login finished");
                 return sessionManager.createSession(member);
             }

@@ -3,6 +3,10 @@ package BusinessLayer;
 import BusinessLayer.Logger.SystemLogger;
 
 import CommunicationLayer.NotificationBroker;
+import DAOs.MemberDAO;
+import DAOs.NotificationDAO;
+import DAOs.PositionDAO;
+import Repositories.INotificationRepository;
 import DAOs.*;
 import Repositories.IPaymantRepo;
 import Repositories.IPositionRepository;
@@ -22,10 +26,12 @@ import java.util.List;
 @Entity
 @Table(name = "members")
 public class Member extends Guest {
+    @Transient
+    private INotificationRepository notificationRepository = new NotificationDAO();
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "member_notifications" ,joinColumns = @JoinColumn(name = "member_name"))
     @Column
-    private List<Notification> notifications= new ArrayList<>();;
+    private List<Notification> notifications;
     @Transient
     private NotificationBroker notificationBroker;
     @Transient
@@ -46,6 +52,7 @@ public class Member extends Guest {
 
     public Member(String username, String hashedPassword) {
         super();
+        this.notifications = new ArrayList<>();
         this.username = username;
         this.hashedPassword = hashedPassword;
     }
