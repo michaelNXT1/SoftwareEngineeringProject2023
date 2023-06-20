@@ -1,7 +1,5 @@
 package DAOs;
 
-import BusinessLayer.Member;
-import BusinessLayer.PaymentDetails;
 import BusinessLayer.SupplyDetails;
 import Repositories.ISupplyRepo;
 import org.hibernate.Session;
@@ -80,5 +78,24 @@ public class SupplyDAO implements ISupplyRepo {
     @Override
     public void updateSupply(SupplyDetails supplyDetails) {
 
+    }
+
+    @Override
+    public void clear() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+
+        try {
+            transaction = session.beginTransaction();
+            session.createQuery("DELETE FROM SupplyDetails ").executeUpdate();
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
     }
 }

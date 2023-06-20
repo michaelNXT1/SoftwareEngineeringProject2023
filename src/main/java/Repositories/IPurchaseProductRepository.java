@@ -10,4 +10,6 @@ public interface IPurchaseProductRepository {
     List<PurchaseProduct> getAllPurchaseProducts();
 
     void addAllPurchaseProducts(List<PurchaseProduct> purchaseProductList);
+
+    void clear();
 }

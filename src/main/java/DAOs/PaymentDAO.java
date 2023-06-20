@@ -1,6 +1,5 @@
 package DAOs;
 
-import BusinessLayer.Member;
 import BusinessLayer.PaymentDetails;
 import Repositories.IPaymantRepo;
 import org.hibernate.Session;
@@ -79,5 +78,24 @@ public class PaymentDAO implements IPaymantRepo {
     @Override
     public void updatePayment(PaymentDetails paymentDetails) {
 
+    }
+
+    @Override
+    public void clear() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+
+        try {
+            transaction = session.beginTransaction();
+            session.createQuery("DELETE FROM PaymentDetails").executeUpdate();
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
     }
 }
