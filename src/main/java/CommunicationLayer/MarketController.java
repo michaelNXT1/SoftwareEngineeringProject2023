@@ -595,7 +595,8 @@ public class MarketController implements IMarketController {
     public ResponseT<Double> getProductDiscountPercentageInCart(String sessionId, int storeId, int productId) {
         return marketManager.getProductDiscountPercentageInCart(sessionId, storeId, productId);
     }
-
+    @GetMapping("/addSupplyDetails")
+    @ResponseBody
     @Override
     public Response addSupplyDetails(String sessionId, String name, String address, String city, String country, String zip) {
         return marketManager.addSupplyDetails(sessionId, name, address, city, country, zip);
