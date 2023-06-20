@@ -410,4 +410,9 @@ public class StoreManager implements Position {
     public void acceptOffer(int offerId, PaymentSystemProxy paymentSystem, SupplySystemProxy supplySystem) throws Exception {
         store.acceptOffer(positionMember, offerId, paymentSystem, supplySystem);
     }
+
+    @Override
+    public void confirmAuction(int productId, PaymentSystemProxy paymentSystem, SupplySystemProxy supplySystem) throws Exception {
+        store.confirmAuction(productId, paymentSystem, supplySystem);
+    }
 }

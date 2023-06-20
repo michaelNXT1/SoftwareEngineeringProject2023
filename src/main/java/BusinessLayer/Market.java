@@ -1410,4 +1410,11 @@ public class Market {
         Position p=checkPositionLegal(sessionId, storeId);
         p.acceptOffer(offerId, paymentSystem, supplySystem);
     }
+
+    public void confirmAuction(String sessionId, int storeId, int productId) throws Exception {
+        checkMarketOpen();
+        checkStoreExists(storeId);
+        Position p = checkPositionLegal(sessionId, storeId);
+        p.confirmAuction(productId, paymentSystem, supplySystem);
+    }
 }

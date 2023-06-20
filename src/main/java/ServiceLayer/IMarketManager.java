@@ -162,6 +162,8 @@ public interface IMarketManager {
 
     Response bid(String sessionId, int storeId, int productId, Double price);
 
+    Response confirmAction(String sessionId, int storeId, int productId);
+
 //        Response logoutSystemManager(String sessionId);
 
 //        ResponseT<String> loginSystemManager(String username, String password);

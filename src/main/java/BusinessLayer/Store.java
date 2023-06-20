@@ -621,4 +621,39 @@ public class Store {
             offer.getOfferingUser().getPurchaseHistory().savePurchase(p);
         }
     }
+
+    public void confirmAuction(int productId, PaymentSystemProxy paymentSystem, SupplySystemProxy supplySystem) throws Exception {
+        Bid bid=bidRepository.getAllBids().stream().filter(bid1 -> bid1.getBidId()==productId).findFirst().orElse(null);
+        if(bid==null)
+            throw new Exception("bid doesn't exist");
+        Product bidProduct = bid.getProductId();
+        bid.getOfferingUser().sendNotification(new Notification(String.format("your offer to pay %.2f§ for %s was accepted, you will now be charged.", bid.getOfferedPrice(), bid.getProductId().getProductName())));
+        PaymentDetails payDetails = bid.getOfferingUser().getPaymentDetails();
+        if (payDetails == null) {
+            logger.info("Purchase failed, need to add payment Details first");
+            throw new Exception("Purchase failed, need to add payment Details first");
+        }
+        SupplyDetails supplyDetails = bid.getOfferingUser().getSupplyDetails();
+        if (supplyDetails == null) {
+            logger.info("Purchase failed, need to add supply Details first");
+            throw new Exception("Purchase failed, need to add supply Details first");
+        }
+        if (supplySystem.supply(supplyDetails.getName(), supplyDetails.getAddress(), supplyDetails.getCity(), supplyDetails.getCountry(), supplyDetails.getZip()) == -1) {
+            logger.info("Purchase failed, supply system charge failed");
+            throw new Exception("Purchase failed, supply system hasn't managed to charge");
+        }
+        if (paymentSystem.pay(payDetails.getCreditCardNumber(), payDetails.getMonth(), payDetails.getYear(), payDetails.getHolder(), payDetails.getCvv(), payDetails.getCardId()) == -1) { //purchase.getTotalPrice())) {
+            logger.info("Purchase failed, payment system charge failed");
+            throw new Exception("Purchase failed, payment system hasn't managed to charge");
+        }
+        Purchase p = new Purchase(new ArrayList<>(), bid.getOfferingUser().getUsername());
+        bid.getOfferingUser().getPurchaseHistory().savePurchase(p);
+        PurchaseProduct pp = subtractForPurchase(bidProduct.getProductId(), 1, Math.toIntExact(p.getId()));
+        pp.setPrice(bid.getOfferedPrice());
+        new PurchaseProductDAO().addPurchaseProduct(pp);
+        p.getProductList().add(pp);
+        addPurchase(p);
+        bid.getOfferingUser().getPurchaseHistory().savePurchase(p);
+        removeProduct(bid.getProductId().getProductId());
+    }
 }
