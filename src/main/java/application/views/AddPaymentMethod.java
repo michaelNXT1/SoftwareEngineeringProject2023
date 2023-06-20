@@ -60,5 +60,7 @@ public class AddPaymentMethod extends VerticalLayout {
         Response response = marketController.addPaymentMethod(MainLayout.getSessionId(), cardNumber, month, year, cvv);
         if (response.getError_occurred())
             Notification.show(response.error_message);
+        else
+            Notification.show("Payment method added successfully");
     }
 }

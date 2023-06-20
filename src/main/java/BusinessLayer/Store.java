@@ -612,8 +612,10 @@ public class Store {
                 throw new Exception("Purchase failed, payment system hasn't managed to charge");
             }
             Purchase p = new Purchase(new ArrayList<>(), responder.getUsername());
+            offer.getOfferingUser().getPurchaseHistory().savePurchase(p);
             PurchaseProduct pp = subtractForPurchase(offerProduct.getProductId(), offer.getQuantity(), Math.toIntExact(p.getId()));
             pp.setPrice(offer.getPricePerItem());
+            new PurchaseProductDAO().addPurchaseProduct(pp);
             p.getProductList().add(pp);
             addPurchase(p);
             offer.getOfferingUser().getPurchaseHistory().savePurchase(p);

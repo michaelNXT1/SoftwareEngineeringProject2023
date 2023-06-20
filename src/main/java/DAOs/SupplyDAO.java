@@ -9,6 +9,7 @@ import org.hibernate.query.Query;
 import java.util.List;
 
 public class SupplyDAO implements ISupplyRepo {
+
     @Override
     public void clear() {
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -16,13 +17,13 @@ public class SupplyDAO implements ISupplyRepo {
 
         try {
             transaction = session.beginTransaction();
-            session.createQuery("DELETE FROM SupplyDetails").executeUpdate();
+            session.createQuery("DELETE FROM SupplyDetails ").executeUpdate();
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
             }
-            throw e;
+            e.printStackTrace();
         } finally {
             session.close();
         }
@@ -97,24 +98,5 @@ public class SupplyDAO implements ISupplyRepo {
     @Override
     public void updateSupply(SupplyDetails supplyDetails) {
 
-    }
-
-    @Override
-    public void clear() {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction transaction = null;
-
-        try {
-            transaction = session.beginTransaction();
-            session.createQuery("DELETE FROM SupplyDetails ").executeUpdate();
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            e.printStackTrace();
-        } finally {
-            session.close();
-        }
     }
 }
