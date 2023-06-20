@@ -13,11 +13,16 @@ public class Purchase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name="username")
+    private String username;
+
     @Transient
     private List<PurchaseProduct> productList = new ArrayList<>();
-    public Purchase(List<PurchaseProduct> productList) {
+    public Purchase(List<PurchaseProduct> productList, String username) {
         this.productList = productList;
         this.purchaseDateTime = LocalDateTime.now();
+        this.username= username;
     }
 
 

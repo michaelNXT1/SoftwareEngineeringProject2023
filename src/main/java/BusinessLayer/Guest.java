@@ -79,6 +79,8 @@ public class Guest {
     }
 
     public Purchase purchaseShoppingCart() throws Exception {    //2.14
+        Purchase p=new Purchase(new ArrayList<>(), getUsername());
+        purchaseHistory.savePurchase(p);
         if (paymentDetails == null) {
             logger.error("no payment details exist");
             throw new Exception("no payment details exist");
@@ -87,7 +89,7 @@ public class Guest {
             logger.error("no supply details exist");
             throw new Exception("no supply details exist");
         }
-        Purchase p = shoppingCart.purchaseShoppingCart();
+        p = shoppingCart.purchaseShoppingCart(p);
         purchaseHistory.savePurchase(p);
         return p;
     }
