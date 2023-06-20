@@ -1207,6 +1207,7 @@ public class Market {
             logger.error(String.format("failed to recursion removed %s from being storeManager", storeOwnerName));
             throw new Exception("failed to recursion removed %s from being storeManager");
         }
+        p.getStore().checkAllOffers(paymentSystem, supplySystem);
         logger.info(String.format("%s removed from being storeManager", storeOwnerName));
     }
 
