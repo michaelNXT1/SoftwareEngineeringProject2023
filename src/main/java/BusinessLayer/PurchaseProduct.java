@@ -86,4 +86,8 @@ public class PurchaseProduct {
     public Long getId() {
         return id;
     }
+
+    public int getPurchaseId() {
+        return purchaseId;
+    }
 }

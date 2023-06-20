@@ -145,7 +145,10 @@ public class Store {
 
     //use case 4.1
     public List<Purchase> getPurchaseList() {
-        return purchaseList.getAllPurchases();
+        List<Purchase> lst=purchaseList.getAllPurchases();
+        for(Purchase p: lst)
+            p.getProductList().addAll(new PurchaseProductDAO().getAllPurchaseProducts().stream().filter(purchaseProduct -> purchaseProduct.getPurchaseId() == p.getId()&&purchaseProduct.getStoreId()==storeId).toList());
+        return lst.stream().filter(purchase -> purchase.getProductList().size()!=0).toList();
     }
 
     //use case 5.1
