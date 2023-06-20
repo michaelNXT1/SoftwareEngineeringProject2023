@@ -58,7 +58,7 @@ public class Guest {
     }
 
     public void addShoppingCart(){
-        shoppingCart = new ShoppingCart(null);
+        shoppingCart = new ShoppingCart("guest");
     }
 
     public void addProductToShoppingCart(Store s, int productId, int itemsAmount) throws Exception { //2.10
