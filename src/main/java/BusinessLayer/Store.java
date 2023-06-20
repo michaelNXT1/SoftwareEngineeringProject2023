@@ -414,7 +414,7 @@ public class Store {
         for (Discount discount : discounts) {
             if(discount.checkApplies(product) && productDiscountPolicyMap.getAllDiscountPolicies().stream().filter(
                     pdp -> pdp.isValid() &&
-                            pdp.getStore() == this.storeId &&
+                            pdp.getStore().intValue() == this.storeId &&
                             pdp.getDiscount_id().longValue() == discount.getDiscountId().longValue()
             ).allMatch(pdp -> pdp.evaluate(productList))){
                 discountPercentage = discount.calculateNewPercentage(discountPercentage);
