@@ -13,6 +13,9 @@
 [Class diagrams document](https://app.diagrams.net/#G1rCyzcCywpeftu5bWJQhvMHmn-BljG2qw)
 
 [Acceptance tests spreadsheet](https://docs.google.com/spreadsheets/d/1QivuhcZaOXG1rgl5f_WqCOW7OVZj7NmEyaRW_v77Jik/edit?usp=sharing)
+
 [glossary document](https://docs.google.com/document/d/e/2PACX-1vQD6Zc1sR9KoZ9N2cAwKIX6lBk0cD2bco3D1dbeFOyNUKbZi22NotK3FPfz819bS2nwm18xerzWcFV7/pub)
+
+[Load&Stress tests](https://docs.google.com/document/d/1UkF8s-5Ikj704FNicx9ZVv_mzD39gecm/edit)
 
 
