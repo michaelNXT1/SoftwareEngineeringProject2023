@@ -14,4 +14,6 @@ public interface ISupplyRepo {
     List<SupplyDetails> getAllSupply();
 
     void updateSupply(SupplyDetails supplyDetails);
+
+    void clear();
 }

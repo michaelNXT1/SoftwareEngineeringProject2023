@@ -105,14 +105,14 @@ public class ShoppingCart {
     }
 
     //Use case 2.14
-    public Purchase purchaseShoppingCart() throws Exception {
+    public Purchase purchaseShoppingCart(Purchase p) throws Exception {
         if (isEmpty()) {
             logger.error("Purchase failed, cart is empty");
             throw new Exception("Purchase failed, cart is empty");
         }
         Map<ShoppingBag, List<PurchaseProduct>> shoppingBagMap = new HashMap<>();
         for (ShoppingBag sb : shoppingBags.getAllShoppingBags().stream().filter(fb -> fb.getShoppingCartId().equals(this.id)).toList()) {
-            Pair<List<PurchaseProduct>, Boolean> sbp = sb.purchaseShoppingBag();
+            Pair<List<PurchaseProduct>, Boolean> sbp = sb.purchaseShoppingBag(p);
             if (sbp.getSecond()) {
                 shoppingBagMap.put(sb, sbp.getFirst());
             } else {
@@ -129,16 +129,17 @@ public class ShoppingCart {
                 .collect(Collectors.toList());
         logger.info("This shopping bag has been cleaned");
 
-        return new Purchase(flattenedList);
+        p.getProductList().addAll(flattenedList);
+        return p;
     }
 
 
     private ShoppingBag getShoppingBag(Store s) {
         List<ShoppingBag> shoppingBags1 = shoppingBags.getAllShoppingBags().stream()
-                .filter(sb ->sb.getShoppingCartId().equals(this.id) && sb.getStore().getStoreId()==s.getStoreId()).toList();
+                .filter(sb -> sb.getShoppingCartId().equals(this.id) && sb.getStore().getStoreId() == s.getStoreId()).toList();
         ShoppingBag shoppingBag;
         if (shoppingBags1.isEmpty()) {
-            shoppingBag = new ShoppingBag(s, this.id);
+            shoppingBag = new ShoppingBag(s, this.id, userName);
         } else {
             shoppingBag = shoppingBags1.get(0);
         }
@@ -155,7 +156,7 @@ public class ShoppingCart {
     }
 
     public double getProductDiscountPercentageInCart(Store s, int productId) throws Exception {
-        ShoppingBag shoppingBag = shoppingBags.getAllShoppingBags().stream().filter(sb -> sb.getStore().getStoreId()==s.getStoreId()).findFirst().orElse(null);
+        ShoppingBag shoppingBag = shoppingBags.getAllShoppingBags().stream().filter(sb -> sb.getStore().getStoreId() == s.getStoreId()).findFirst().orElse(null);
         if (shoppingBag == null) {
             logger.error(String.format("this store %s is not existing in this cart", s.getStoreName()));
             throw new Exception("store doesn't exist in cart");

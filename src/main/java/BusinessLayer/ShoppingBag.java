@@ -1,6 +1,8 @@
 package BusinessLayer;
 
 import DAOs.PurchaseDAO;
+import DAOs.PurchaseProductDAO;
+import Repositories.IPurchaseProductRepository;
 import Repositories.IPurchaseRepository;
 import Utils.Pair;
 import jakarta.persistence.*;
@@ -28,20 +30,18 @@ public class ShoppingBag {
     @Column(name = "product_id")
     private Map<Integer,Integer> productListId = new HashMap<>();
 
-    @OneToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "purchase_id")
-    private Purchase bagPurchase;
+    @Column(name="username")
+    private String username;
 
     @Column
     private Long shoppingCartId;
 
     @Transient
     private IPurchaseRepository purchaseRepository = new PurchaseDAO();
-    public ShoppingBag(Store store, Long shoppingCartID) {
+    public ShoppingBag(Store store, Long shoppingCartID, String username) {
         this.shoppingCartId = shoppingCartID;
         this.store = store;
-        bagPurchase = new Purchase(new ArrayList<>());
-        purchaseRepository.savePurchase(bagPurchase);
+        this.username=username;
     }
 
     public ShoppingBag() {
@@ -62,14 +62,6 @@ public class ShoppingBag {
 
     public void setProductListId(Map<Integer,Integer> productListId) {
         this.productListId = productListId;
-    }
-
-    public Purchase getBagPurchase() {
-        return bagPurchase;
-    }
-
-    public void setBagPurchase(Purchase bagPurchase) {
-        this.bagPurchase = bagPurchase;
     }
 
     public Long getShoppingCartId() {
@@ -108,34 +100,36 @@ public class ShoppingBag {
     }
 
     //Use case 2.14
-    public Pair<PurchaseProduct, Boolean> purchaseProduct(int productId) {
+    public Pair<PurchaseProduct, Boolean> purchaseProduct(int productId, Purchase bagPurchase) {
         try {
-            PurchaseProduct pp = store.subtractForPurchase(productId,productListId.get(store.getProduct(productId).getProductId()));
+            PurchaseProduct pp = store.subtractForPurchase(productId,productListId.get(store.getProduct(productId).getProductId()), Math.toIntExact(bagPurchase.getId()));
             double discountPercentage = store.getProductDiscountPercentage(productId,productListId);
             pp.setPrice(pp.getPrice() * (1.0 - discountPercentage));
+            IPurchaseProductRepository ppr=new PurchaseProductDAO();
+            ppr.addPurchaseProduct(pp);
             return new Pair<>(pp, true);
         } catch (Exception e) {
             return new Pair<>(null, false);
         }
     }
 
-    public Pair<List<PurchaseProduct>, Boolean> purchaseShoppingBag() throws Exception {
+    public Pair<List<PurchaseProduct>, Boolean> purchaseShoppingBag(Purchase bagPurchase) throws Exception {
         if (!store.checkPoliciesFulfilled(productListId)) {
             logger.error("Store purchase policies are not fulfilled in this cart");
             throw new Exception("Store purchase policies are not fulfilled in this cart");
         }
         List<PurchaseProduct> retList = new ArrayList<>();
         for (Map.Entry<Integer, Integer> e : productListId.entrySet()) {
-            Pair<PurchaseProduct, Boolean> ppp = purchaseProduct(e.getKey());
+            Pair<PurchaseProduct, Boolean> ppp = purchaseProduct(e.getKey(),  bagPurchase);
             if (ppp.getSecond()) {
                 retList.add(ppp.getFirst());
-                bagPurchase.addProduct(ppp.getFirst());
+//                bagPurchase.addProduct(ppp.getFirst());
             } else {
                 revertPurchase(retList);
                 return new Pair<>(null, false);
             }
         }
-        store.addPurchase(bagPurchase);
+//        store.addPurchase(bagPurchase);
         productListId.clear();
         return new Pair<>(retList, true);
     }

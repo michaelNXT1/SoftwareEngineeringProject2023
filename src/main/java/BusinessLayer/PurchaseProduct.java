@@ -10,7 +10,8 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "Purchase_products")
 public class PurchaseProduct {
-    @Id
+    @Column(name="purchase_id")
+    private int purchaseId;
     @Column(name = "product_id")
     private int productId;
     @Column(name = "store_id")
@@ -23,16 +24,19 @@ public class PurchaseProduct {
     private double price;
     @Column(name = "quantity")
     private int quantity;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
 
-
-    public PurchaseProduct(Product p, int quantity, int storeId) {
+    public PurchaseProduct(Product p, int quantity, int storeId, int purchaseId) {
         this.productId = p.getProductId();
         this.storeId = storeId;
         this.productName = p.getProductName();
         this.productCategory = p.getCategory();
         this.price = p.getPrice();
         this.quantity = quantity;
+        this.purchaseId=purchaseId;
     }
 
     public PurchaseProduct(int productId, int storeId, String productName, String productCategory, double price, int quantity) {
@@ -73,5 +77,17 @@ public class PurchaseProduct {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public int getPurchaseId() {
+        return purchaseId;
     }
 }

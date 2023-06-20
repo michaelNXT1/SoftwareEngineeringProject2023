@@ -58,7 +58,7 @@ public class Guest {
     }
 
     public void addShoppingCart(){
-        shoppingCart = new ShoppingCart(null);
+        shoppingCart = new ShoppingCart("guest");
     }
 
     public void addProductToShoppingCart(Store s, int productId, int itemsAmount) throws Exception { //2.10
@@ -79,6 +79,8 @@ public class Guest {
     }
 
     public Purchase purchaseShoppingCart() throws Exception {    //2.14
+        Purchase p=new Purchase(new ArrayList<>(), getUsername());
+        purchaseHistory.savePurchase(p);
         if (paymentDetails == null) {
             logger.error("no payment details exist");
             throw new Exception("no payment details exist");
@@ -87,7 +89,7 @@ public class Guest {
             logger.error("no supply details exist");
             throw new Exception("no supply details exist");
         }
-        Purchase p = shoppingCart.purchaseShoppingCart();
+        p = shoppingCart.purchaseShoppingCart(p);
         purchaseHistory.savePurchase(p);
         return p;
     }
@@ -131,9 +133,8 @@ public class Guest {
         return false;
     }
 
-    public String getUsername() throws Exception {
-        logger.error("Cannot perform action when not a member");
-        throw new Exception("Cannot perform action when not a member");
+    public String getUsername() {
+        return "guest";
     }
 
     public String getSearchKeyword() {

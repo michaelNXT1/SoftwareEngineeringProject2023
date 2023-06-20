@@ -14,4 +14,5 @@ public interface IPaymantRepo {
 
     void updatePayment(PaymentDetails paymentDetails);
 
+    void clear();
 }

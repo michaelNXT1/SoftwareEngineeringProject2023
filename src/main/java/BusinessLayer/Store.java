@@ -127,13 +127,13 @@ public class Store {
         }
     }
 
-    public PurchaseProduct subtractForPurchase(int productId, int quantity) throws Exception {
+    public PurchaseProduct subtractForPurchase(int productId, int quantity, int purchaseId) throws Exception {
         Product p = getProduct(productId);
         synchronized (p) {
             p.setQuantity(p.getQuantity() - quantity);
             products.updateProduct(p);
         }
-        return new PurchaseProduct(p, quantity, storeId);
+        return new PurchaseProduct(p, quantity, storeId, purchaseId);
     }
 
     //Use case 2.14
@@ -145,7 +145,10 @@ public class Store {
 
     //use case 4.1
     public List<Purchase> getPurchaseList() {
-        return purchaseList.getAllPurchases();
+        List<Purchase> lst=purchaseList.getAllPurchases();
+        for(Purchase p: lst)
+            p.getProductList().addAll(new PurchaseProductDAO().getAllPurchaseProducts().stream().filter(purchaseProduct -> purchaseProduct.getPurchaseId() == p.getId()&&purchaseProduct.getStoreId()==storeId).toList());
+        return lst.stream().filter(purchase -> purchase.getProductList().size()!=0).toList();
     }
 
     //use case 5.1
@@ -608,9 +611,10 @@ public class Store {
                 logger.info("Purchase failed, payment system charge failed");
                 throw new Exception("Purchase failed, payment system hasn't managed to charge");
             }
-            PurchaseProduct pp = subtractForPurchase(offerProduct.getProductId(), offer.getQuantity());
+            Purchase p = new Purchase(new ArrayList<>(), responder.getUsername());
+            PurchaseProduct pp = subtractForPurchase(offerProduct.getProductId(), offer.getQuantity(), Math.toIntExact(p.getId()));
             pp.setPrice(offer.getPricePerItem());
-            Purchase p = new Purchase(List.of(pp));
+            p.getProductList().add(pp);
             addPurchase(p);
             offer.getOfferingUser().getPurchaseHistory().savePurchase(p);
         }
