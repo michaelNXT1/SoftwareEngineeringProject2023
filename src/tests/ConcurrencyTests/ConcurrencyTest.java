@@ -2,6 +2,7 @@ package ConcurrencyTests;
 
 
 import BusinessLayer.Market;
+import ServiceLayer.DTOs.ProductDTO;
 import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -78,7 +79,7 @@ public class ConcurrencyTest extends TestCase {
     }
 
     private int setUpStoreWithAmount(String sessioID, int StoreID,int amount) throws Exception {
-        return market.addProduct(sessioID,StoreID,"bamba",5,"food",amount,"yammmmm").getProductId();
+        return market.addProduct(sessioID,StoreID,"bamba",5,"food",amount,"yammmmm", ProductDTO.PurchaseType.BUY_IT_NOW).getProductId();
     }
 
     /*

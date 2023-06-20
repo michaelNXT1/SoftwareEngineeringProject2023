@@ -2,6 +2,7 @@ package UnitTests;
 
 import BusinessLayer.*;
 import BusinessLayer.Member;
+import ServiceLayer.DTOs.ProductDTO;
 import junit.framework.TestCase;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
@@ -41,7 +42,7 @@ public class StoreFounderTest extends TestCase {
     @Test
 
     public void testRemoveProductFromStore() throws Exception {
-        p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"bb");
+        p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"bb", ProductDTO.PurchaseType.BUY_IT_NOW);
         int productId = p.getProductId();
         storeFounder.removeProductFromStore(productId);
         try{
@@ -55,7 +56,7 @@ public class StoreFounderTest extends TestCase {
     @Test
 
     public void testEditProductName() throws Exception {
-        p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"aa");
+        p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"aa", ProductDTO.PurchaseType.BUY_IT_NOW);
         int productId = p.getProductId();
         storeFounder.editProductName(productId, "Product 2");
         assertEquals(p.getProductName(),"Product 2");
@@ -63,7 +64,7 @@ public class StoreFounderTest extends TestCase {
     @Test
 
     public void testEditProductPrice() throws Exception {
-        p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"aa");
+        p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"aa", ProductDTO.PurchaseType.BUY_IT_NOW);
         int productId = p.getProductId();
         storeFounder.editProductPrice(productId, 60.0);
         assertEquals(p.getProductPrice(),60.0);
@@ -71,7 +72,7 @@ public class StoreFounderTest extends TestCase {
     @Test
 
     public void testEditProductCategory() throws Exception {
-        p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"aa");
+        p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"aa", ProductDTO.PurchaseType.BUY_IT_NOW);
         int productId = p.getProductId();
         storeFounder.editProductCategory(productId, "new category");
         assertEquals(p.getCategory(),"new category");
@@ -79,7 +80,7 @@ public class StoreFounderTest extends TestCase {
     @Test
 
     public void testEditProductDescription() throws Exception {
-        p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"ddd");
+        p = store.addProduct("Product 1", 10.0, "proxyProduct", 100,"ddd", ProductDTO.PurchaseType.BUY_IT_NOW);
         int productId = p.getProductId();
         storeFounder.editProductDescription(productId, "new description");
         assertEquals(p.getDescription(),"new description");
@@ -87,7 +88,7 @@ public class StoreFounderTest extends TestCase {
     @Test
 
     public void testAddProduct() throws Exception {
-        p = storeFounder.addProduct(store,"Product 1", 10.0, "proxyProduct", 100,"bbb");
+        p = storeFounder.addProduct(store,"Product 1", 10.0, "proxyProduct", 100,"bbb", ProductDTO.PurchaseType.BUY_IT_NOW);
         assertEquals(p,store.getProduct(p.getProductId()));
     }
     @Test

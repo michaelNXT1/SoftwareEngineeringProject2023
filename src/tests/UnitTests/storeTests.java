@@ -5,9 +5,8 @@ import BusinessLayer.Product;
 import BusinessLayer.Store;
 
 
+import ServiceLayer.DTOs.ProductDTO;
 import org.junit.jupiter.api.*;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,7 +20,7 @@ class storeTests {
     void setUp() throws Exception {
         employee = new Member("shanihd99",  "123456");
         store = new Store(1, "my_store", employee);
-        product = store.addProduct("barbi", 50, "toys", 5,"aa");
+        product = store.addProduct("barbi", 50, "toys", 5,"aa", ProductDTO.PurchaseType.BUY_IT_NOW);
     }
 
     @org.junit.jupiter.api.Test
@@ -50,7 +49,7 @@ class storeTests {
 
     @org.junit.jupiter.api.Test
     void testAddProduct() throws Exception {
-        assertThrows(Exception.class, () -> store.addProduct("bratz", 60.9, "toy", 7,"vv"));
+        assertThrows(Exception.class, () -> store.addProduct("bratz", 60.9, "toy", 7,"vv", ProductDTO.PurchaseType.BUY_IT_NOW));
         assertEquals("bratz", store.getProducts().getAllProducts().stream().filter(p -> p.getProductId() == product.getProductId()).findFirst().orElse(null).getProductName());
     }
 

@@ -1,14 +1,35 @@
 package ServiceLayer.DTOs;
 
 
+import BusinessLayer.Bid;
 import BusinessLayer.Product;
-import ServiceLayer.DTOs.Policies.PurchasePolicies.PurchasePolicyOperationDTO;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ProductDTO {
-    public enum PurchaseType{
+    public enum PurchaseType {
         BUY_IT_NOW,
-        OFFER
+        OFFER,
+        AUCTION
     }
+
+    public static Map<String, ProductDTO.PurchaseType> stringToPermMap = new HashMap<>();
+    public static Map<ProductDTO.PurchaseType, String> permToStringMap = new HashMap<>();
+
+    static {
+        stringToPermMap.put("Buy it Now", PurchaseType.BUY_IT_NOW);
+        stringToPermMap.put("Make Offer", PurchaseType.OFFER);
+        stringToPermMap.put("Auction", PurchaseType.AUCTION);
+        permToStringMap.put(PurchaseType.BUY_IT_NOW, "Buy it Now");
+        permToStringMap.put(PurchaseType.OFFER, "Make Offer");
+        permToStringMap.put(PurchaseType.AUCTION, "Auction");
+    }
+
     private final int storeId;
     private int productId;
     private String productName;
@@ -18,6 +39,8 @@ public class ProductDTO {
     private int amount;
     private String description;
     private PurchaseType purchaseType;
+    private List<BidDTO> bidders;
+    private LocalDateTime auctionEndTime;
 
     public ProductDTO(Product p) {
         this.storeId = p.getStoreId();
@@ -31,7 +54,12 @@ public class ProductDTO {
         switch (p.getPurchaseType()) {
             case BUY_IT_NOW -> this.purchaseType = PurchaseType.BUY_IT_NOW;
             case OFFER -> this.purchaseType = PurchaseType.OFFER;
+            case AUCTION -> this.purchaseType = PurchaseType.AUCTION;
         }
+        bidders = new ArrayList<>();
+        for (Bid bid : p.getBidRepository().getAllBids().stream().filter(bid -> bid.getStoreId() == storeId && bid.getProductId().getProductId() == productId).collect(Collectors.toList()))
+            bidders.add(new BidDTO(bid));
+        this.auctionEndTime = p.getAuctionEndTime();
     }
 
     public int getProductId() {
@@ -92,6 +120,18 @@ public class ProductDTO {
 
     public int getStoreId() {
         return storeId;
+    }
+
+    public PurchaseType getPurchaseType() {
+        return purchaseType;
+    }
+
+    public List<BidDTO> getBidders() {
+        return bidders;
+    }
+
+    public LocalDateTime getAuctionEndTime() {
+        return auctionEndTime;
     }
 
     @Override

@@ -7,6 +7,7 @@ import ServiceLayer.DTOs.*;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
 import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
@@ -263,11 +264,30 @@ public class MarketManager implements IMarketManager {
         }
     }
 
-    public ResponseT<ProductDTO> addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description) {
+    public ResponseT<ProductDTO> addProduct(String sessionId, int storeId, String productName, double price, String category, int quantity, String description, ProductDTO.PurchaseType purchaseType) {
         try {
-            return ResponseT.fromValue(market.addProduct(sessionId, storeId, productName, price, category, quantity, description));
+            return ResponseT.fromValue(market.addProduct(sessionId, storeId, productName, price, category, quantity, description, purchaseType));
         } catch (Exception e) {
             return ResponseT.fromError(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseT<ProductDTO> addAuctionProduct(String sessionId, int storeId, String productName, Double price, String category, Integer quantity, String description, LocalDateTime auctionEndDateTime) {
+        try {
+            return ResponseT.fromValue(market.addAuctionProduct(sessionId, storeId, productName, price, category, quantity, description, auctionEndDateTime));
+        } catch (Exception e) {
+            return ResponseT.fromError(e.getMessage());
+        }
+    }
+
+    @Override
+    public Response bid(String sessionId, int storeId, int productId, Double price) {
+        try {
+            market.bid(sessionId, storeId, productId, price);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
         }
     }
 
@@ -689,13 +709,46 @@ public class MarketManager implements IMarketManager {
         } catch (Exception e) {
             return ResponseT.fromValue(e.getMessage());
         }
-        
+
     }
 
     @Override
-    public Response getOffer(String sessionId, int storeId, int productId, Double pricePerItem, Integer quantity) {
-        //TODO: implement
-        return new Response();
+    public Response makeOffer(String sessionId, int storeId, int productId, Double pricePerItem, Integer quantity) {
+        try {
+            market.makeOffer(sessionId, storeId, productId, pricePerItem, quantity);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseT<List<OfferDTO>> getOffersByStore(int storeId) {
+        try {
+            return ResponseT.fromValue(market.getOffersByStore(storeId));
+        } catch (Exception e) {
+            return ResponseT.fromValue(e.getMessage());
+        }
+    }
+
+    @Override
+    public Response rejectOffer(String sessionId, int storeId, int offerId) {
+        try {
+            market.rejectOffer(sessionId, storeId, offerId);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
+    @Override
+    public Response acceptOffer(String sessionId, int storeId, int offerId) {
+        try {
+            market.acceptOffer(sessionId, storeId, offerId);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
     }
 
     public Response addMaxQuantityPurchasePolicy(String sessionId, int storeId, int productId, int maxQuantity) {

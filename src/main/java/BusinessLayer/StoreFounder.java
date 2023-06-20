@@ -2,8 +2,10 @@ package BusinessLayer;
 
 import BusinessLayer.Logger.SystemLogger;
 import ServiceLayer.DTOs.PositionDTO;
+import ServiceLayer.DTOs.ProductDTO;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
@@ -98,8 +100,13 @@ public class StoreFounder implements Position {
     }
 
     @Override
-    public Product addProduct(Store store, String productName, double price, String category, int quantity, String description) throws Exception {
-        return store.addProduct(productName, price, category, quantity, description);
+    public Product addProduct(Store store, String productName, double price, String category, int quantity, String description, ProductDTO.PurchaseType purchaseType) throws Exception {
+        return store.addProduct(productName, price, category, quantity, description, purchaseType);
+    }
+
+    @Override
+    public Product addAuctionProduct(Store s, String productName, Double price, String category, Integer quantity, String description, LocalDateTime auctionEndDateTime) throws Exception {
+        return store.addAuctionProduct(productName, price, category, quantity, description, auctionEndDateTime);
     }
 
     @Override
@@ -236,5 +243,15 @@ public class StoreFounder implements Position {
     @Override
     public String getPositionName() {
         return "Founder";
+    }
+
+    @Override
+    public void rejectOffer(int offerId) throws Exception {
+        store.rejectOffer(positionMember, offerId);
+    }
+
+    @Override
+    public void acceptOffer(int offerId, PaymentSystemProxy paymentSystem, SupplySystemProxy supplySystem) throws Exception {
+        store.acceptOffer(positionMember, offerId, paymentSystem, supplySystem);
     }
 }

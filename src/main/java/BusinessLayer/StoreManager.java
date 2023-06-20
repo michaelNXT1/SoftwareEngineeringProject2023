@@ -2,9 +2,10 @@ package BusinessLayer;
 
 import BusinessLayer.Logger.SystemLogger;
 import ServiceLayer.DTOs.PositionDTO;
+import ServiceLayer.DTOs.ProductDTO;
 import jakarta.persistence.*;
 
-//import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.List;
@@ -164,10 +165,20 @@ public class StoreManager implements Position {
     }
 
     @Override
-    public Product addProduct(Store store, String productName, double price, String category, int quantity, String description) throws Exception {
+    public Product addProduct(Store store, String productName, double price, String category, int quantity, String description, ProductDTO.PurchaseType purchaseType) throws Exception {
         //TODO: Check if he has appropriate access permission
         if (permissions.contains(permissionType.Inventory))
-            return store.addProduct(productName, price, category, quantity, description);
+            return store.addProduct(productName, price, category, quantity, description, purchaseType);
+        else {
+            logger.error("this store manager hasn't permission to add product to the store");
+            throw new IllegalAccessException("This member hasn't permission to add product to the store");
+        }
+    }
+
+    @Override
+    public Product addAuctionProduct(Store s, String productName, Double price, String category, Integer quantity, String description, LocalDateTime auctionEndDateTime) throws Exception {
+        if (permissions.contains(permissionType.Inventory))
+            return store.addAuctionProduct(productName, price, category, quantity, description, auctionEndDateTime);
         else {
             logger.error("this store manager hasn't permission to add product to the store");
             throw new IllegalAccessException("This member hasn't permission to add product to the store");
@@ -389,4 +400,14 @@ public class StoreManager implements Position {
     public String getPositionName() {
         return "Manager";
 }
+
+    @Override
+    public void rejectOffer(int offerId) throws Exception {
+        store.rejectOffer(positionMember, offerId);
+    }
+
+    @Override
+    public void acceptOffer(int offerId, PaymentSystemProxy paymentSystem, SupplySystemProxy supplySystem) throws Exception {
+        store.acceptOffer(positionMember, offerId, paymentSystem, supplySystem);
+    }
 }

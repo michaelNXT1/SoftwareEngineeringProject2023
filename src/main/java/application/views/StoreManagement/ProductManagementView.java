@@ -8,6 +8,7 @@ import ServiceLayer.ResponseT;
 import application.views.MainLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
@@ -20,9 +21,11 @@ import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.shared.Registration;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -86,23 +89,63 @@ public class ProductManagementView extends VerticalLayout {
         newCategoryField.setPlaceholder("New category");
         descriptionField.setPlaceholder("Description");
 
-        List<String> lst = new ArrayList<>();
-        lst.add("new");
-        lst.addAll(marketController.getAllCategories().value);
-        categoryField.setItems(lst);
+        List<String> categoryList = new ArrayList<>();
+        categoryList.add("new");
+        categoryList.addAll(marketController.getAllCategories().value);
+        categoryField.setItems(categoryList);
         categoryField.addComponents("new", new Hr());
         categoryField.addValueChangeListener(event -> newCategoryField.setVisible(event.getValue().equals("new")));
 
         newCategoryField.setVisible(false);
+
         IntegerField quantityField = new IntegerField();
         quantityField.setPlaceholder("Quantity");
+
+        DatePicker datePicker = new DatePicker();
+        datePicker.setLabel("Auction end date and time");
+        datePicker.setVisible(false);
+        TimePicker timePicker = new TimePicker();
+        timePicker.setVisible(false);
+
+        Select<String> purchaseTypeField = new Select<>();
+        purchaseTypeField.setItems(ProductDTO.stringToPermMap.keySet());
+        purchaseTypeField.setPlaceholder("Purchase Type");
+        purchaseTypeField.addValueChangeListener(event -> {
+            datePicker.setVisible(event.getValue().equals("Auction"));
+            timePicker.setVisible(event.getValue().equals("Auction"));
+            quantityField.setEnabled(!event.getValue().equals("Auction"));
+            quantityField.setValue(event.getValue().equals("Auction") ? 1 : quantityField.getValue());
+            quantityField.setLabel(event.getValue().equals("Auction") ? "Auction allows only 1" : "");
+        });
 
         Button submitButton = new Button("Submit", event -> {
             if (priceField.getValue() == null)
                 errorSuccessLabel.setText("Price can't be empty");
             else if (quantityField.getValue() == null)
                 errorSuccessLabel.setText("Quantity can't be empty");
-            else {
+            else if (purchaseTypeField.getValue() == null)
+                errorSuccessLabel.setText("Purchase type can't be empty");
+            else if (purchaseTypeField.getValue().equals("Auction")) {
+                if (datePicker.getValue() == null)
+                    errorSuccessLabel.setText("Date can't be empty");
+                if (timePicker.getValue() == null)
+                    errorSuccessLabel.setText("Time can't be empty");
+                if (LocalDateTime.of(datePicker.getValue(), timePicker.getValue()).isBefore(LocalDateTime.now()))
+                    errorSuccessLabel.setText("Auction end time cannot be before now");
+                else {
+                    ResponseT<ProductDTO> response = marketController.addAuctionProduct(
+                            MainLayout.getSessionId(),
+                            storeId,
+                            productNameField.getValue(),
+                            priceField.getValue(),
+                            newCategoryField.isVisible() ? newCategoryField.getValue() : categoryField.getValue(),
+                            quantityField.getValue(),
+                            descriptionField.getValue(),
+                            LocalDateTime.of(datePicker.getValue(), timePicker.getValue())
+                    );
+                    handleResponse(response, errorSuccessLabel, dialog, "Product added successfully!");
+                }
+            } else {
                 ResponseT<ProductDTO> response = marketController.addProduct(
                         MainLayout.getSessionId(),
                         storeId,
@@ -110,14 +153,14 @@ public class ProductManagementView extends VerticalLayout {
                         priceField.getValue(),
                         newCategoryField.isVisible() ? newCategoryField.getValue() : categoryField.getValue(),
                         quantityField.getValue(),
-                        descriptionField.getValue());
+                        descriptionField.getValue(),
+                        ProductDTO.stringToPermMap.get(purchaseTypeField.getValue()));
                 handleResponse(response, errorSuccessLabel, dialog, "Product added successfully!");
             }
         });
-        Button cancelButton = new Button("Cancel", event -> dialog.close());
 
 
-        VerticalLayout vl = new VerticalLayout(header, errorSuccessLabel, productNameField, priceField, categoryField, newCategoryField, quantityField, descriptionField, submitButton, cancelButton);
+        VerticalLayout vl = new VerticalLayout(header, errorSuccessLabel, productNameField, priceField, categoryField, newCategoryField, quantityField, descriptionField, purchaseTypeField, datePicker, timePicker, submitButton);
         dialog.add(vl);
         vl.setJustifyContentMode(JustifyContentMode.CENTER);
         vl.setDefaultHorizontalComponentAlignment(Alignment.CENTER);

@@ -1,20 +1,33 @@
 package BusinessLayer;
 
-import BusinessLayer.Discounts.*;
+import BusinessLayer.Discounts.CategoryDiscount;
+import BusinessLayer.Discounts.Discount;
+import BusinessLayer.Discounts.ProductDiscount;
+import BusinessLayer.Discounts.StoreDiscount;
 import BusinessLayer.Logger.SystemLogger;
 import BusinessLayer.Policies.DiscountPolicies.BaseDiscountPolicy;
 import BusinessLayer.Policies.DiscountPolicies.DiscountPolicyOperation;
-import BusinessLayer.Policies.DiscountPolicies.PolicyTypes.*;
+import BusinessLayer.Policies.DiscountPolicies.PolicyTypes.MaxQuantityDiscountPolicy;
+import BusinessLayer.Policies.DiscountPolicies.PolicyTypes.MinBagTotalDiscountPolicy;
+import BusinessLayer.Policies.DiscountPolicies.PolicyTypes.MinQuantityDiscountPolicy;
+import BusinessLayer.Policies.PurchasePolicies.BasePurchasePolicy;
+import BusinessLayer.Policies.PurchasePolicies.PolicyTypes.CategoryTimeRestrictionPurchasePolicy;
+import BusinessLayer.Policies.PurchasePolicies.PolicyTypes.MaxQuantityPurchasePolicy;
+import BusinessLayer.Policies.PurchasePolicies.PolicyTypes.MinQuantityPurchasePolicy;
+import BusinessLayer.Policies.PurchasePolicies.PolicyTypes.ProductTimeRestrictionPurchasePolicy;
 import BusinessLayer.Policies.PurchasePolicies.PurchasePolicyOperation;
-import BusinessLayer.Policies.PurchasePolicies.*;
-import BusinessLayer.Policies.PurchasePolicies.PolicyTypes.*;
 import DAOs.*;
+import Notification.Notification;
 import Repositories.*;
+import ServiceLayer.DTOs.ProductDTO;
 import jakarta.persistence.*;
 
-
+import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -48,6 +61,11 @@ public class Store {
     private IBaseDiscountPolicyMapRepository productDiscountPolicyMap;
     @Transient
     private IDiscountRepo discountRepo = new DiscountDAO();
+
+    @Transient
+    private IOfferRepository offers=new OfferDAO();
+    @Transient
+    private IBidRepository bidRepository = new BidDAO();
     @Transient //Marks a property or field as transient, indicating that it should not be persisted in the database.
     private AtomicInteger productIdCounter;
     @Transient //Marks a property or field as transient, indicating that it should not be persisted in the database.
@@ -131,7 +149,7 @@ public class Store {
     }
 
     //use case 5.1
-    public Product addProduct(String productName, double price, String category, int quantity, String description) throws Exception {
+    public Product addProduct(String productName, double price, String category, int quantity, String description, ProductDTO.PurchaseType purchaseType) throws Exception {
         if (products.getAllProducts().stream().anyMatch(p -> p.getProductName().equals(productName))) {
             logger.error(String.format("%s already exist", productName));
             throw new Exception("Product name already exists");
@@ -142,7 +160,26 @@ public class Store {
                 logger.error("cannot set quantity to less then 0");
                 throw new Exception("cannot set quantity to less then 0");
             }
-            p = new Product(storeId, this.productIdCounter.getAndIncrement(), productName, price, category, quantity, description, 0);
+            p = new Product(storeId, this.productIdCounter.getAndIncrement(), productName, price, category, quantity, description, purchaseType);
+            if(categories.getAllCategory().stream().noneMatch(c-> c.getCategoryName().equals(category)))
+                categories.addString(new Category(category));
+            products.saveProduct(p);
+        }
+        return p;
+    }
+
+    public Product addAuctionProduct(String productName, Double price, String category, Integer quantity, String description, LocalDateTime auctionEndDateTime) throws Exception {
+        if (products.getAllProducts().stream().anyMatch(p -> p.getProductName().equals(productName))) {
+            logger.error(String.format("%s already exist", productName));
+            throw new Exception("Product name already exists");
+        }
+        Product p;
+        synchronized (productName.intern()) {
+            if (quantity < 0) {
+                logger.error("cannot set quantity to less then 0");
+                throw new Exception("cannot set quantity to less then 0");
+            }
+            p = new Product(storeId, this.productIdCounter.getAndIncrement(), productName, price, category, quantity, description, ProductDTO.PurchaseType.AUCTION, auctionEndDateTime);
             if(categories.getAllCategory().stream().noneMatch(c-> c.getCategoryName().equals(category)))
                 categories.addString(new Category(category));
             products.saveProduct(p);
@@ -504,5 +541,78 @@ public class Store {
 
     public void setLogger(SystemLogger logger) {
         this.logger = logger;
+    }
+
+    public void makeOffer(Member g, int productId, Double pricePerItem, Integer quantity) throws Exception {
+        Product p = getProduct(productId);
+        List<Member> employees = getEmployees();
+        Offer offer = new Offer(g, storeId, p, pricePerItem, quantity);
+        offers.saveOffer(offer);
+        offer.addOfferApproval(employees);
+        for (Member m : employees)
+                m.sendNotification(new Notification(String.format("User %s offers to pay %.2f§ for %d %ss", g.getUsername(), pricePerItem * quantity, quantity, p.getProductName())));
+    }
+
+    public void bid(Member member, int productId, double price) throws Exception {
+        Product p=getProduct(productId);
+        Bid bid=new Bid(storeId,p, member, price);
+        bidRepository.saveBid(bid);
+    }
+
+    public List<Offer> getStoreOffers() {
+        return offers.getAllOffers().stream().filter(offer -> offer.getStoreId()==storeId).collect(Collectors.toList());
+    }
+
+    public void rejectOffer(Member responder, int offerId) throws Exception {
+        Offer offer = offers.getAllOffers().stream().filter(off -> off.getOfferId() == offerId).findFirst().orElse(null);
+        if (offer == null)
+            throw new Exception("Offer doesn't exist");
+        OfferApproval offerApproval = offer.getOfferApprovalRepository().getAllOfferApprovals().stream().filter(oa -> oa.getOfferId() == offerId && oa.getEmployee().getUsername().equals(responder.getUsername())).findFirst().orElse(null);
+        if (offerApproval == null)
+            throw new Exception("Offer doesn't exist");
+        offerApproval.setResponse(0);
+        new OfferApprovalDAO().updateOfferApproval(offerApproval);
+        new OfferDAO().updateOffer(offer);
+        offer.getOfferingUser().sendNotification(new Notification(String.format("your offer to pay %.2f§ for %d %ss was rejected.", offer.getPricePerItem() * offer.getQuantity(), offer.getQuantity(), offer.getProductId().getProductName())));
+    }
+
+    public void acceptOffer(Member responder, int offerId, PaymentSystemProxy paymentSystem, SupplySystemProxy supplySystem) throws Exception {
+        Offer offer = offers.getAllOffers().stream().filter(off -> off.getOfferId() == offerId).findFirst().orElse(null);
+        if (offer == null)
+            throw new Exception("Offer doesn't exist");
+        OfferApproval offerApproval = offer.getOfferApprovalRepository().getAllOfferApprovals().stream().filter(oa -> oa.getOfferId() == offerId && oa.getEmployee().getUsername().equals(responder.getUsername())).findFirst().orElse(null);
+        if (offerApproval == null)
+            throw new Exception("Offer doesn't exist");
+        offerApproval.setResponse(1);
+        new OfferApprovalDAO().updateOfferApproval(offerApproval);
+        new OfferDAO().updateOffer(offer);
+        List<OfferApproval> offerApprovalList = offer.getOfferApprovalRepository().getAllOfferApprovals().stream().filter(oa -> oa.getOfferId() == offerId).toList();
+        if (offerApprovalList.stream().allMatch(offerApproval1 -> offerApproval1.getResponse() == 1)) {
+            Product offerProduct = offer.getProductId();
+            offer.getOfferingUser().sendNotification(new Notification(String.format("your offer to pay %.2f§ for %d %ss was accepted, you will now be charged.", offer.getPricePerItem() * offer.getQuantity(), offer.getQuantity(), offer.getProductId().getProductName())));
+            PaymentDetails payDetails = offer.getOfferingUser().getPaymentDetails();
+            if (payDetails == null) {
+                logger.info("Purchase failed, need to add payment Details first");
+                throw new Exception("Purchase failed, need to add payment Details first");
+            }
+            SupplyDetails supplyDetails = offer.getOfferingUser().getSupplyDetails();
+            if (supplyDetails == null) {
+                logger.info("Purchase failed, need to add supply Details first");
+                throw new Exception("Purchase failed, need to add supply Details first");
+            }
+            if (supplySystem.supply(supplyDetails.getName(), supplyDetails.getAddress(), supplyDetails.getCity(), supplyDetails.getCountry(), supplyDetails.getZip()) == -1) {
+                logger.info("Purchase failed, supply system charge failed");
+                throw new Exception("Purchase failed, supply system hasn't managed to charge");
+            }
+            if (paymentSystem.pay(payDetails.getCreditCardNumber(), payDetails.getMonth(), payDetails.getYear(), payDetails.getHolder(), payDetails.getCvv(), payDetails.getCardId()) == -1) { //purchase.getTotalPrice())) {
+                logger.info("Purchase failed, payment system charge failed");
+                throw new Exception("Purchase failed, payment system hasn't managed to charge");
+            }
+            PurchaseProduct pp = subtractForPurchase(offerProduct.getProductId(), offer.getQuantity());
+            pp.setPrice(offer.getPricePerItem());
+            Purchase p = new Purchase(List.of(pp));
+            addPurchase(p);
+            offer.getOfferingUser().getPurchaseHistory().savePurchase(p);
+        }
     }
 }

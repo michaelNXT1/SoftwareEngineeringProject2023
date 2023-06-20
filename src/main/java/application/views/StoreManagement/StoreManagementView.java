@@ -27,10 +27,12 @@ import java.util.Map;
 public class StoreManagementView extends VerticalLayout implements HasUrlParameter<String> {
     private final MarketController marketController;
     private final Header header;
-    private  ProductManagementView products;
-    private  PurchasePolicyManagementView purchasePolicies;
-    private  EmployeeManagementView employees;
-    private  DiscountManagementView discountGrids;
+    private ProductManagementView products;
+    private PurchasePolicyManagementView purchasePolicies;
+    private EmployeeManagementView employees;
+    private DiscountManagementView discountGrids;
+    private OfferManagementView offers;
+    private AuctionManagementView auctions;
     private int storeId;
 
     @Autowired
@@ -118,10 +120,20 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         discountGrids = new DiscountManagementView(marketController, storeId);
         discountGrids.setWidthFull();
 
+        offers = new OfferManagementView(marketController, storeId);
+        offers.setWidthFull();
+
+        auctions = new AuctionManagementView(marketController, storeId);
+        auctions.setWidthFull();
+
+        HorizontalLayout bottomHl = new HorizontalLayout(offers, auctions);
+        bottomHl.setWidthFull();
+
         add(
                 productAndPolicyGrids,
                 new H1("Discount Lists"),
                 discountGrids,
+                bottomHl,
                 new Button("View Purchases", e -> viewPurchasesDialog()),
                 new Button("Close Store", e -> CloseStore())
         );
@@ -133,6 +145,9 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         List<MemberDTO> employeesList = employeeListResponse.getError_occurred() ? new ArrayList<>() : employeeListResponse.value;
         employees.setEmployeesList(employeesList);
         discountGrids.setGrids(productMap);
+        List<OfferDTO> offersList = marketController.getOffersByStore(storeId).value;
+        offers.setOfferGrid(offersList);
+        auctions.setProductGrid(productMap.keySet().stream().filter(productDTO -> productDTO.getPurchaseType() == ProductDTO.PurchaseType.AUCTION).toList());
     }
 
 }

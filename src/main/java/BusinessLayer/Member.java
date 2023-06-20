@@ -252,6 +252,16 @@ public class Member extends Guest {
         return ret;
     }
 
+    @Override
+    public void makeOffer(Store s, int productId, Double pricePerItem, Integer quantity) throws Exception {
+        s.makeOffer(this, productId, pricePerItem, quantity);
+    }
+
+    @Override
+    public void bid(Store s, int productId, double price) throws Exception {
+        s.bid(this, productId, price);
+    }
+  
     public boolean removePosition(Position userP) {
         positions.removePosition(userP);
         logger.info(String.format("remove %s from being %s duo to the remove foo his assigner", getUsername(),userP.getClass()));
