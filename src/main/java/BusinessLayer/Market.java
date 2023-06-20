@@ -20,7 +20,6 @@ import ServiceLayer.DTOs.Policies.PurchasePolicies.BasePurchasePolicyDTO;
 
 
 import Notification.Notification;
-import jakarta.persistence.Transient;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -140,124 +139,118 @@ public class Market {
             }
             while(fileScanner.hasNextLine()){
                 String command = fileScanner.nextLine();
-                String action = command.substring(0,command.indexOf("("));
-                String[] args = command.substring(command.indexOf("(")+1,command.indexOf(")")).split(",");
-                switch (action){
-                    case "signUp":
-                        try {
-                            signUp(args[0],args[1]);
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                        break;
-                    case "login":
-                        try {
-                            login(args[0],args[1],null);
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                        break;
-                    case "logout":
-                        try {
-                            sessionId = sessionManager.getSessionIdByGuestName(args[0]);
-                            logout(sessionId);
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                        break;
-                    case "open-store":
-                        try {
-                            sessionId = sessionManager.getSessionIdByGuestName(args[0]);
-                            openStore(sessionId,args[1]);
-                        }
-                        catch (Exception e) {
-                        throw new RuntimeException(e);
+                String action = command.substring(0, command.indexOf("("));
+                String[] args = command.substring(command.indexOf("(") + 1, command.indexOf(")")).split(",");
+                if (action.charAt(0) != '#')
+                    switch (action) {
+                        case "signUp":
+                            try {
+                                signUp(args[0], args[1]);
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                            break;
+                        case "login":
+                            try {
+                                login(args[0], args[1], null);
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                            break;
+                        case "logout":
+                            try {
+                                sessionId = sessionManager.getSessionIdByGuestName(args[0]);
+                                logout(sessionId);
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                            break;
+                        case "open-store":
+                            try {
+                                sessionId = sessionManager.getSessionIdByGuestName(args[0]);
+                                openStore(sessionId, args[1]);
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                            break;
+                        case "appoint-manager":
+                            try {
+                                sessionId = sessionManager.getSessionIdByGuestName(args[0]);
+                                storeId = getStoreByName(sessionId, args[1]).getStoreId();
+                                setPositionOfMemberToStoreManager(sessionId, storeId, args[2]);
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                            break;
+                        case "appoint-owner":
+                            try {
+                                sessionId = sessionManager.getSessionIdByGuestName(args[0]);
+                                storeId = getStoreByName(sessionId, args[1]).getStoreId();
+                                setPositionOfMemberToStoreOwner(sessionId, storeId, args[2]);
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                            break;
+                        case "add-product":
+                            //add-product(<manager-name>,<store-name>,<product-name>,<amount>,<price>);
+                            try {
+                                sessionId = sessionManager.getSessionIdByGuestName(args[0]);
+                                storeId = getStoreByName(sessionId, args[1]).getStoreId();
+                                addProduct(sessionId, storeId, args[2], Double.parseDouble(args[3]), args[4], Integer.parseInt(args[5]), args[6], ProductDTO.PurchaseType.OFFER);
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                            break;
+
+                        case "sign-up-system-manager":
+                            //add-product(<manager-name>,<store-name>,<product-name>,<amount>,<price>);
+                            try {
+                                signUpSystemManager(args[0], args[1]);
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                            break;
+
+                        case "add-store-manager-permissions":
+                            //add-product(<manager-name>,<store-name>,<product-name>,<amount>,<price>);
+                            try {
+                                sessionId = sessionManager.getSessionIdByGuestName(args[0]);
+                                storeId = getStoreByName(sessionId, args[1]).getStoreId();
+                                addStoreManagerPermissions(sessionId, args[2], storeId, Integer.parseInt(args[3]));
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                            break;
+
+                        case "change-product-quantity":
+                            try {
+                                sessionId = sessionManager.getSessionIdByGuestName(args[0]);
+                                storeId = getStoreByName(sessionId, args[1]).getStoreId();
+                                changeProductQuantity(sessionId, storeId, Integer.parseInt(args[2]), Integer.parseInt(args[3]));
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                            break;
+
+                        case "remove-owner":
+                            try {
+                                sessionId = sessionManager.getSessionIdByGuestName(args[0]);
+                                storeId = getStoreByName(sessionId, args[1]).getStoreId();
+                                removeStoreOwner(sessionId, args[2], storeId);
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                            break;
+
+                        default:
+                            try {
+                                throw new Exception("Wrong syntax");
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+
+
                     }
-                        break;
-                    case "appoint-manager":
-                        try {
-                            sessionId = sessionManager.getSessionIdByGuestName(args[0]);
-                            storeId = getStoreByName(sessionId,args[1]).getStoreId();
-                            setPositionOfMemberToStoreManager(sessionId,storeId,args[2]);
-                        }
-                        catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                        break;
-                    case "appoint-owner":
-                        try {
-                            sessionId = sessionManager.getSessionIdByGuestName(args[0]);
-                            storeId = getStoreByName(sessionId, args[1]).getStoreId();
-                            setPositionOfMemberToStoreOwner(sessionId,storeId,args[2]);
-                        }catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-
-                        break;
-                    case "add-product":
-                        //add-product(<manager-name>,<store-name>,<product-name>,<amount>,<price>);
-                        try {
-                            sessionId = sessionManager.getSessionIdByGuestName(args[0]);
-                            storeId = getStoreByName(sessionId, args[1]).getStoreId();
-                            addProduct(sessionId,storeId,args[2],Double.parseDouble(args[3]),args[4],Integer.parseInt(args[5]),args[6], ProductDTO.PurchaseType.BUY_IT_NOW);
-                        }
-                        catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                        break;
-
-                    case "sign-up-system-manager":
-                        //add-product(<manager-name>,<store-name>,<product-name>,<amount>,<price>);
-                        try {
-                            signUpSystemManager(args[0],args[1]);
-                        }
-                        catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                        break;
-
-                    case "add-store-manager-permissions":
-                        //add-product(<manager-name>,<store-name>,<product-name>,<amount>,<price>);
-                        try {
-                            sessionId = sessionManager.getSessionIdByGuestName(args[0]);
-                            storeId = getStoreByName(sessionId, args[1]).getStoreId();
-                            addStoreManagerPermissions(sessionId,args[2],storeId,Integer.parseInt(args[3]));
-                        }
-                        catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                        break;
-
-                    case "change-product-quantity": try {
-                            sessionId = sessionManager.getSessionIdByGuestName(args[0]);
-                            storeId = getStoreByName(sessionId, args[1]).getStoreId();
-                            changeProductQuantity(sessionId,storeId,Integer.parseInt(args[2]),Integer.parseInt(args[3]));
-                        }
-                        catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                        break;
-
-                    case "remove-owner": try {
-                        sessionId = sessionManager.getSessionIdByGuestName(args[0]);
-                        storeId = getStoreByName(sessionId, args[1]).getStoreId();
-                        removeStoreOwner(sessionId,args[2],storeId);
-                        }
-                        catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                        break;
-
-                    default:
-                        try {
-                            throw new Exception("Wrong syntax");
-                        }
-                        catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-
-
-                }
             }
 
         }
