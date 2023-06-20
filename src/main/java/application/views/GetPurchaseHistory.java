@@ -51,7 +51,7 @@ public class GetPurchaseHistory extends VerticalLayout {
         private void submit() {
             int storeId = Integer.parseInt(storeIdField.getValue());
             ResponseT<Map<StoreDTO, List<PurchaseDTO>>> r= marketController.getStoresPurchases(MainLayout.getSessionId());
-            if (r.getError_occurred())
+            if (r.getError_occurred() || r==null)
                 Notification.show(r.error_message, 3000, Notification.Position.MIDDLE);
             else {
                 Notification.show("you get Information About Members", 3000, Notification.Position.MIDDLE);

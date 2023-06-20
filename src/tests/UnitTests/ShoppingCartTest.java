@@ -2,6 +2,7 @@ package UnitTests;
 
 import BusinessLayer.*;
 import ServiceLayer.DTOs.ProductDTO;
+import ServiceLayer.DTOs.PurchaseDTO;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -83,8 +84,8 @@ class ShoppingCartTest extends TestCase {
 
     @Test
     void purchaseShoppingCart() throws Exception {
-        Purchase purchase = shoppingCart.purchaseShoppingCart();
-        assertTrue(purchase.getProductList().contains(product2));
+        PurchaseDTO purchase = market.purchaseShoppingCart(sessionId1);
+        assertTrue(purchase.getProductDTOList().contains(product2));
     }
     @Test
     void purchaseShoppingCartWhenSupplySystemFailed() throws Exception {

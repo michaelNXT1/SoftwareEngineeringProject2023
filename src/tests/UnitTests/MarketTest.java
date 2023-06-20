@@ -3,6 +3,7 @@ package UnitTests;
 import BusinessLayer.*;
 import ServiceLayer.DTOs.ProductDTO;
 import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -25,7 +26,7 @@ class MarketTest extends TestCase {
 //    private Product product1;
 //    private Product product2;
 
-    @org.junit.jupiter.api.BeforeAll
+    @BeforeAll
     void startUp() throws Exception {
         market = new Market("testFile.txt",true);
         market.signUp(userName1, password1);

@@ -1,8 +1,10 @@
 package application.views;
 
 import CommunicationLayer.MarketController;
+import ServiceLayer.Response;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Header;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PreserveOnRefresh;
@@ -33,6 +35,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
         private void RemoveMember() {
             String username = usernameField.getValue();
-            marketController.removeMember( MainLayout.getSessionId(),username);
+            Response r = marketController.removeMember( MainLayout.getSessionId(),username);
+            if(r.getError_occurred())
+                Notification.show(r.error_message);
+            Notification.show("great success you succeeded to remove" + username);
         }
 }
