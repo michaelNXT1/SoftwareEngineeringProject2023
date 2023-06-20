@@ -414,7 +414,7 @@ public class Store {
         for (Discount discount : discounts) {
             if(discount.checkApplies(product) && productDiscountPolicyMap.getAllDiscountPolicies().stream().filter(
                     pdp -> pdp.isValid() &&
-                            pdp.getStore() == this.storeId &&
+                            pdp.getStore().intValue() == this.storeId &&
                             pdp.getDiscount_id().longValue() == discount.getDiscountId().longValue()
             ).allMatch(pdp -> pdp.evaluate(productList))){
                 discountPercentage = discount.calculateNewPercentage(discountPercentage);
@@ -597,6 +597,15 @@ public class Store {
         offerApproval.setResponse(1);
         new OfferApprovalDAO().updateOfferApproval(offerApproval);
         new OfferDAO().updateOffer(offer);
+        checkOfferAccepted(offerId, paymentSystem, supplySystem, offer);
+    }
+
+    public void checkAllOffers(PaymentSystemProxy paymentSystem, SupplySystemProxy supplySystem) throws Exception {
+        for(Offer o:getStoreOffers())
+            checkOfferAccepted(o.getOfferId(), paymentSystem, supplySystem, o);
+    }
+
+    private void checkOfferAccepted(int offerId, PaymentSystemProxy paymentSystem, SupplySystemProxy supplySystem, Offer offer) throws Exception {
         List<OfferApproval> offerApprovalList = offer.getOfferApprovalRepository().getAllOfferApprovals().stream().filter(oa -> oa.getOfferId() == offerId).toList();
         if (offerApprovalList.stream().allMatch(offerApproval1 -> offerApproval1.getResponse() == 1)) {
             Product offerProduct = offer.getProductId();

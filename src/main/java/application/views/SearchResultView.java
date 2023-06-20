@@ -94,12 +94,15 @@ SearchResultView extends VerticalLayout {
             switch (product.getPurchaseType()) {
                 case BUY_IT_NOW ->
                         purchaseButton = new Button("Add to Cart", e -> addToCart(product, quantity.getValue()));
-                case OFFER ->
-                        purchaseButton = new Button("Make Offer", e -> makeOfferDialog(product, quantity.getValue()));
+                case OFFER -> {
+                    purchaseButton = new Button("Make Offer", e -> makeOfferDialog(product, quantity.getValue()));
+                    if (!marketController.isLoggedIn(MainLayout.getSessionId()).value)
+                        purchaseButton.setEnabled(false);
+                }
                 case AUCTION -> {
                     purchaseButton = new Button("Bid", e -> bidDialog(product, quantity.getValue()));
-                    purchaseButton.setEnabled(product.getAuctionEndTime().isBefore(LocalDateTime.now()));
-                    purchaseButton.setTooltipText("This auction has ended.");
+                    if (product.getAuctionEndTime().isBefore(LocalDateTime.now()) || !marketController.isLoggedIn(MainLayout.getSessionId()).value)
+                        purchaseButton.setEnabled(false);
                 }
             }
             hl.add(quantity, purchaseButton);
