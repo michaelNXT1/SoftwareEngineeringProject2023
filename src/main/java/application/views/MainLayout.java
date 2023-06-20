@@ -13,6 +13,7 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Footer;
@@ -26,6 +27,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.theme.lumo.Lumo;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import com.vaadin.flow.theme.lumo.LumoUtility.AlignItems;
 import com.vaadin.flow.theme.lumo.LumoUtility.Display;
@@ -52,8 +54,8 @@ public class MainLayout extends AppLayout {
     private Button logoutButton;
 
     public MainLayout() {
+//        getElement().executeJs("document.documentElement.setAttribute('theme', $0)", Lumo.DARK);
         sessionId = marketController.enterMarket().value;
-//        config();
         addToNavbar(createHeaderContent());
         addDrawerContent();
     }
@@ -100,6 +102,10 @@ public class MainLayout extends AppLayout {
         Button searchButton = new Button("", VaadinIcon.SEARCH.create(), e -> SearchProducts());
         Button cartButton = new Button("Cart", VaadinIcon.CART.create(), e -> UI.getCurrent().navigate(ShoppingCart.class));
 
+        var themeToggle = new Checkbox("Dark theme");
+        themeToggle.addValueChangeListener(e -> getElement().executeJs("document.documentElement.setAttribute('theme', $0)", e.getValue() ? Lumo.DARK : Lumo.LIGHT));
+        themeToggle.setValue(true);
+
         loginButton = new Button("Login", e -> loginDialog());
         signUpButton = new Button("Sign Up", e -> UI.getCurrent().navigate(RegistrationView.class));
         logoutButton = new Button("Logout", e -> logout());
@@ -110,7 +116,7 @@ public class MainLayout extends AppLayout {
 
         Div div1 = new Div(), div2 = new Div(), div3 = new Div();
         leftLayout.add(appName);
-        centerLayout.add(div1, homeButton, select, searchBox, searchType, searchButton, cartButton, div2);
+        centerLayout.add(div1, homeButton, select, searchBox, searchType, searchButton, cartButton, themeToggle, div2);
         centerLayout.setFlexGrow(1, div1);
         centerLayout.setFlexGrow(1, div2);
 

@@ -66,7 +66,6 @@ public class Market {
     private IBidRepository bidRepository = new BidDAO();
     private IPurchaseRepository purchaseRepository = new PurchaseDAO();
     private IPaymantRepo paymantRepo=new PaymentDAO();
-    private ISupplyRepo supplyRepo=new SupplyDAO();
 
     private String path;
     public Market(String path, Boolean isTestMode)  {
@@ -509,7 +508,7 @@ public class Market {
         if (!stringIsEmpty(productSubstring)) {
             for (Store store : stores.getAllStores().values()) {
                 productList.addAll(store.getProducts().getAllProducts().stream()
-                        .filter(p -> p.getProductName().contains(productSubstring)).toList());
+                        .filter(p -> p.getProductName().toLowerCase().contains(productSubstring.toLowerCase())).toList());
             }
         }
         g.setSearchResults(productList);
