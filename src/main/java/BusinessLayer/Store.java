@@ -196,6 +196,12 @@ public class Store {
     public void removeProduct(int productId) throws Exception {
         synchronized (Market.purchaseLock) {
             Product p = getProduct(productId);
+            for(Offer o:offers.getAllOffers())
+                if(o.getProductId().getProductId()==productId)
+                    offers.deleteOffer(o);
+            for(Bid o: bidRepository.getAllBids())
+                if(o.getProductId().getProductId()==productId)
+                    bidRepository.deleteBid(o);
             products.deleteProduct(p);
         }
     }
@@ -557,8 +563,10 @@ public class Store {
     }
 
     public void bid(Member member, int productId, double price) throws Exception {
-        Product p=getProduct(productId);
-        Bid bid=new Bid(storeId,p, member, price);
+        Product p = getProduct(productId);
+        if (!p.getAuctionEndTime().isBefore(LocalDateTime.now()))
+            throw new Exception("auction has ended");
+        Bid bid = new Bid(storeId, p, member, price);
         bidRepository.saveBid(bid);
     }
 
@@ -607,11 +615,11 @@ public class Store {
                 logger.info("Purchase failed, supply system charge failed");
                 throw new Exception("Purchase failed, supply system hasn't managed to charge");
             }
-            if (paymentSystem.pay(payDetails.getCreditCardNumber(), payDetails.getMonth(), payDetails.getYear(), payDetails.getHolder(), payDetails.getCvv(), payDetails.getCardId()) == -1) { //purchase.getTotalPrice())) {
+            if (paymentSystem.pay(payDetails.getCreditCardNumber(), payDetails.getMonth(), payDetails.getYear(), payDetails.getHolder(), payDetails.getCvv(), payDetails.getCardId()) == -1) {
                 logger.info("Purchase failed, payment system charge failed");
                 throw new Exception("Purchase failed, payment system hasn't managed to charge");
             }
-            Purchase p = new Purchase(new ArrayList<>(), responder.getUsername());
+            Purchase p = new Purchase(new ArrayList<>(), offer.getOfferingUser().getUsername());
             offer.getOfferingUser().getPurchaseHistory().savePurchase(p);
             PurchaseProduct pp = subtractForPurchase(offerProduct.getProductId(), offer.getQuantity(), Math.toIntExact(p.getId()));
             pp.setPrice(offer.getPricePerItem());
@@ -619,6 +627,7 @@ public class Store {
             p.getProductList().add(pp);
             addPurchase(p);
             offer.getOfferingUser().getPurchaseHistory().savePurchase(p);
+            removeProduct(offer.getProductId().getProductId());
         }
     }
 
