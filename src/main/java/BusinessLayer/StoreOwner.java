@@ -262,4 +262,9 @@ public class StoreOwner implements Position {
         store.acceptOffer(positionMember, offerId, paymentSystem, supplySystem);
     }
 
+    @Override
+    public void confirmAuction(int productId, PaymentSystemProxy paymentSystem, SupplySystemProxy supplySystem) throws Exception {
+        store.confirmAuction(productId, paymentSystem, supplySystem);
+    }
+
 }
