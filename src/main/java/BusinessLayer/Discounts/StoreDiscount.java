@@ -31,7 +31,7 @@ public class StoreDiscount extends Discount {
 
     @Override
     public boolean checkApplies(Product p) {
-        return store.getProducts().getAllProducts().contains(p);
+        return store.getProducts().getAllProducts().stream().anyMatch(product -> product.getProductId()==p.getProductId());
     }
 
     @Override
