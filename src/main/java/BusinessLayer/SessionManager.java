@@ -87,7 +87,8 @@ public class SessionManager {
     }
 
     public SystemManager getSessionForSystemManager(String sessionId) throws Exception {
-         List<SystemManager> systemManagers = systemManagerSessions.getAllSystemManagers().values().stream().filter(sm1 -> sm1.getSessionId().equals(sessionId)).toList();
+         List<SystemManager> systemManagers = systemManagerSessions.getAllSystemManagers().values().stream().filter(sm1 ->
+             sm1.getSessionId()!= null? sm1.getSessionId().equals(sessionId) : false).toList();
         if (systemManagers.size() == 0 || sessionId == null) {
             logger.error("system manager session doesnt exist");
             throw new Exception("system manager session doesnt exist");

@@ -45,7 +45,7 @@ public class Market {
     SessionManager sessionManager = new SessionManager();
     private final IMapStringSystemManagerRepository systemManagers;
     private ISupplyRepo supplyRepo = new SupplyDAO();
-    private final IMapStringMemberRepository users;
+    public static IMapStringMemberRepository users;
     private final MessageDigest passwordEncoder;
     private final SecurityAdapter securityUtils = new ProxyScurity(null);
     private final SystemLogger logger;
@@ -1275,7 +1275,7 @@ public class Market {
         isMarketOpen();
         try {
             Guest g = sessionManager.getSession(sessionId);
-            return g.isLoggedIn();
+            return g instanceof Member? true : false;
         } catch (Exception e) {
             return false;
         }
