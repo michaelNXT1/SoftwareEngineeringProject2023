@@ -17,7 +17,7 @@ import java.util.List;
 
 public class SupplySystem implements ISupplySystem {
 
-    private final String url = "https://php-server-try.000webhostapp.com/";
+    private final String url = "https://external-systems.000webhostapp.com/";
     HttpClient httpClient = HttpClientBuilder.create().build();
     HttpPost httpPost = new HttpPost(url);
 
