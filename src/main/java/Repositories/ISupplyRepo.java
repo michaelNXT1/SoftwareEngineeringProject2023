@@ -6,6 +6,7 @@ import BusinessLayer.SupplyDetails;
 import java.util.List;
 
 public interface ISupplyRepo {
+    void clear();
     void addSupply(SupplyDetails supplyDetails);
     void removeSupply(SupplyDetails supplyDetails);
 

@@ -45,6 +45,7 @@ public class Market {
     SupplySystemProxy supplySystem;
     SessionManager sessionManager = new SessionManager();
     private final IMapStringSystemManagerRepository systemManagers;
+    private ISupplyRepo supplyRepo = new SupplyDAO();
     private final IMapStringMemberRepository users;
     private final MessageDigest passwordEncoder;
     private final SecurityAdapter securityUtils = new ProxyScurity(null);
@@ -99,6 +100,7 @@ public class Market {
         bidRepository.clear();
         offerApprovalRepository.clear();
         offerRepository.clear();
+        supplyRepo.clear();
         shoppingBagRepository.clearShoppingBags();
         shoppingCartRepo.clear();
         purchaseRepository.clear();
@@ -373,15 +375,19 @@ public class Market {
         Member member;
         synchronized (username.intern()) {
             member = users.get(username);
+            if(member == null){
+                logger.error(String.format("%s is not a member", username));
+                throw new Exception("this is not a member");
+            }
             if(users.isLoggedIn(member)){
                 logger.error(String.format("%s already logged in", username));
                 throw new Exception(String.format("%s already logged in", username));
             }
             String hashedPassword = new String(passwordEncoder.digest(password.getBytes()));
             // If the Member doesn't exist or the password is incorrect, throw exception
-            if (member == null || !hashedPassword.equals(member.getPassword())) {
-                logger.error(String.format("%s have Invalid username or password", username));
-                throw new Exception("Invalid username or password");
+            if (!hashedPassword.equals(member.getPassword())) {
+                logger.error(String.format("%s have Invalid password", username));
+                throw new Exception("Invalid password");
             }
 
             // If the credentials are correct, authenticate the user and return true
