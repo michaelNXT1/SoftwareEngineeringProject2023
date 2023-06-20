@@ -64,6 +64,8 @@ public class Market {
     private IOfferApprovalRepository offerApprovalRepository=new OfferApprovalDAO();
     private IBidRepository bidRepository = new BidDAO();
     private IPurchaseRepository purchaseRepository = new PurchaseDAO();
+    private IPaymantRepo paymantRepo=new PaymentDAO();
+    private ISupplyRepo supplyRepo=new SupplyDAO();
 
     private String path;
     public Market(String path, Boolean isTestMode)  {
@@ -96,6 +98,8 @@ public class Market {
     }
     @Transactional
     public void clearAllData(){
+        paymantRepo.clear();
+        supplyRepo.clear();
         bidRepository.clear();
         offerApprovalRepository.clear();
         offerRepository.clear();
@@ -112,6 +116,7 @@ public class Market {
         discountRepo.clear();
         stores.clear();
         systemManagers.clear();
+        new PurchaseProductDAO().clear();
     }
     public StoreDTO getStoreByName(String sessionId, String storeName) throws Exception {
         isMarketOpen();
@@ -193,7 +198,7 @@ public class Market {
                         try {
                             sessionId = sessionManager.getSessionIdByGuestName(args[0]);
                             storeId = getStoreByName(sessionId, args[1]).getStoreId();
-                            addProduct(sessionId,storeId,args[2],Double.parseDouble(args[3]),args[4],Integer.parseInt(args[5]),args[6], ProductDTO.PurchaseType.OFFER);
+                            addProduct(sessionId,storeId,args[2],Double.parseDouble(args[3]),args[4],Integer.parseInt(args[5]),args[6], ProductDTO.PurchaseType.BUY_IT_NOW);
                         }
                         catch (Exception e) {
                         throw new RuntimeException(e);
