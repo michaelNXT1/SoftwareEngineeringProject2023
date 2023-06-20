@@ -133,9 +133,8 @@ public class Guest {
         return false;
     }
 
-    public String getUsername() throws Exception {
-        logger.error("Cannot perform action when not a member");
-        throw new Exception("Cannot perform action when not a member");
+    public String getUsername() {
+        return "guest";
     }
 
     public String getSearchKeyword() {

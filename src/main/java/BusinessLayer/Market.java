@@ -1374,7 +1374,10 @@ public class Market {
     public List<PurchaseDTO> getUserPurchaseHistory(String sessionId) throws Exception {
         isMarketOpen();
         Guest m = sessionManager.getSession(sessionId);
-        return m.getPurchaseHistory().getAllPurchases().stream().map(PurchaseDTO::new).collect(Collectors.toList());
+        List<Purchase> lst=m.getPurchaseHistory().getAllPurchases().stream().filter(purchase -> purchase.getUsername().equals(m.getUsername())).toList();
+        for(Purchase p: lst)
+            p.getProductList().addAll(new PurchaseProductDAO().getAllPurchaseProducts().stream().filter(purchaseProduct -> purchaseProduct.getPurchaseId() == p.getId()).toList());
+        return lst.stream().map(PurchaseDTO::new).collect(Collectors.toList());
     }
     private void  testModeSupplySystem(boolean flag) {
         if (flag)

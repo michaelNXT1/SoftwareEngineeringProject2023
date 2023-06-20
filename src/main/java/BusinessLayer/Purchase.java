@@ -60,4 +60,8 @@ public class Purchase {
     public LocalDateTime getPurchaseDateTime() {
         return purchaseDateTime;
     }
+
+    public String getUsername() {
+        return username;
+    }
 }
