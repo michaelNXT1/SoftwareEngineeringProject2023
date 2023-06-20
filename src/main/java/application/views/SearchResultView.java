@@ -22,6 +22,7 @@ import com.vaadin.flow.router.PreserveOnRefresh;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -81,7 +82,7 @@ SearchResultView extends VerticalLayout {
         grid.addColumn(productDTO -> {
             if (productDTO.getPurchaseType() != ProductDTO.PurchaseType.AUCTION)
                 return productDTO.getPrice() + "§";
-            return productDTO.getBidders().isEmpty() ? productDTO.getPrice()+"§" : productDTO.getBidders().stream().max(Comparator.comparingDouble(BidDTO::getOfferedPrice)).orElse(null).getOfferedPrice()+"§";
+            return productDTO.getBidders().isEmpty() ? productDTO.getPrice() + "§" : productDTO.getBidders().stream().max(Comparator.comparingDouble(BidDTO::getOfferedPrice)).orElse(null).getOfferedPrice() + "§";
         }).setHeader("Price");
         grid.addComponentColumn(product -> {
             HorizontalLayout hl = new HorizontalLayout();
@@ -95,7 +96,11 @@ SearchResultView extends VerticalLayout {
                         purchaseButton = new Button("Add to Cart", e -> addToCart(product, quantity.getValue()));
                 case OFFER ->
                         purchaseButton = new Button("Make Offer", e -> makeOfferDialog(product, quantity.getValue()));
-                case AUCTION -> purchaseButton = new Button("Bid", e -> bidDialog(product, quantity.getValue()));
+                case AUCTION -> {
+                    purchaseButton = new Button("Bid", e -> bidDialog(product, quantity.getValue()));
+                    purchaseButton.setEnabled(product.getAuctionEndTime().isBefore(LocalDateTime.now()));
+                    purchaseButton.setTooltipText("This auction has ended.");
+                }
             }
             hl.add(quantity, purchaseButton);
             return hl;
@@ -108,8 +113,8 @@ SearchResultView extends VerticalLayout {
     private void bidDialog(ProductDTO product, Integer value) {
         Dialog dialog = new Dialog();
         Header header = new Header();
-        String ret=product.getBidders().isEmpty() ? product.getPrice()+"§" : product.getBidders().stream().max(Comparator.comparingDouble(BidDTO::getOfferedPrice)).orElse(null).getOfferedPrice()+"§";
-        header.setText("Bid for " + product.getProductName()+" (you should bid more than "+ret+")");
+        String ret = product.getBidders().isEmpty() ? product.getPrice() + "§" : product.getBidders().stream().max(Comparator.comparingDouble(BidDTO::getOfferedPrice)).orElse(null).getOfferedPrice() + "§";
+        header.setText("Bid for " + product.getProductName() + " (you should bid more than " + ret + ")");
         Label errorSuccessLabel = new Label();
         NumberField priceField = new NumberField();
         Button submitButton = new Button("Commit to Pay", event -> {
@@ -142,7 +147,7 @@ SearchResultView extends VerticalLayout {
 
         priceField.setLabel("Price");
 
-        priceField.setValue(product.getPrice());
+        priceField.setValue(product.getBidders().stream().max(Comparator.comparingDouble(BidDTO::getOfferedPrice)).orElse(null).getOfferedPrice() + 0.01);
 
         Label totalLabel = new Label("You will pay a total of " + priceField.getValue() + "§");
 
@@ -202,8 +207,8 @@ SearchResultView extends VerticalLayout {
 
         Label totalLabel = new Label("You will pay a total of " + quantityField.getValue() * priceField.getValue() + "§");
 
-        priceField.addValueChangeListener(r -> totalLabel.setText("You will pay a total of " + quantityField.getValue() * priceField.getValue()));
-        quantityField.addValueChangeListener(r -> totalLabel.setText("You will pay a total of " + quantityField.getValue() * priceField.getValue()));
+        priceField.addValueChangeListener(r -> totalLabel.setText("You will pay a total of " + quantityField.getValue() * priceField.getValue() + "§"));
+        quantityField.addValueChangeListener(r -> totalLabel.setText("You will pay a total of " + quantityField.getValue() * priceField.getValue() + "§"));
 
         VerticalLayout vl = new VerticalLayout();
         vl.add(header, errorSuccessLabel, priceField, quantityField, totalLabel, submitButton, paymentDetails, deliveryAddress);

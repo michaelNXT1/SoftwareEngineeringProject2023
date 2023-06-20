@@ -196,6 +196,12 @@ public class Store {
     public void removeProduct(int productId) throws Exception {
         synchronized (Market.purchaseLock) {
             Product p = getProduct(productId);
+            for(Offer o:offers.getAllOffers())
+                if(o.getProductId().getProductId()==productId)
+                    offers.deleteOffer(o);
+            for(Bid o: bidRepository.getAllBids())
+                if(o.getProductId().getProductId()==productId)
+                    bidRepository.deleteBid(o);
             products.deleteProduct(p);
         }
     }
@@ -557,8 +563,10 @@ public class Store {
     }
 
     public void bid(Member member, int productId, double price) throws Exception {
-        Product p=getProduct(productId);
-        Bid bid=new Bid(storeId,p, member, price);
+        Product p = getProduct(productId);
+        if (!p.getAuctionEndTime().isBefore(LocalDateTime.now()))
+            throw new Exception("auction has ended");
+        Bid bid = new Bid(storeId, p, member, price);
         bidRepository.saveBid(bid);
     }
 
@@ -607,11 +615,11 @@ public class Store {
                 logger.info("Purchase failed, supply system charge failed");
                 throw new Exception("Purchase failed, supply system hasn't managed to charge");
             }
-            if (paymentSystem.pay(payDetails.getCreditCardNumber(), payDetails.getMonth(), payDetails.getYear(), payDetails.getHolder(), payDetails.getCvv(), payDetails.getCardId()) == -1) { //purchase.getTotalPrice())) {
+            if (paymentSystem.pay(payDetails.getCreditCardNumber(), payDetails.getMonth(), payDetails.getYear(), payDetails.getHolder(), payDetails.getCvv(), payDetails.getCardId()) == -1) {
                 logger.info("Purchase failed, payment system charge failed");
                 throw new Exception("Purchase failed, payment system hasn't managed to charge");
             }
-            Purchase p = new Purchase(new ArrayList<>(), responder.getUsername());
+            Purchase p = new Purchase(new ArrayList<>(), offer.getOfferingUser().getUsername());
             offer.getOfferingUser().getPurchaseHistory().savePurchase(p);
             PurchaseProduct pp = subtractForPurchase(offerProduct.getProductId(), offer.getQuantity(), Math.toIntExact(p.getId()));
             pp.setPrice(offer.getPricePerItem());
@@ -619,6 +627,42 @@ public class Store {
             p.getProductList().add(pp);
             addPurchase(p);
             offer.getOfferingUser().getPurchaseHistory().savePurchase(p);
+            removeProduct(offer.getProductId().getProductId());
         }
+    }
+
+    public void confirmAuction(int productId, PaymentSystemProxy paymentSystem, SupplySystemProxy supplySystem) throws Exception {
+        Bid bid=bidRepository.getAllBids().stream().filter(bid1 -> bid1.getBidId()==productId).findFirst().orElse(null);
+        if(bid==null)
+            throw new Exception("bid doesn't exist");
+        Product bidProduct = bid.getProductId();
+        bid.getOfferingUser().sendNotification(new Notification(String.format("your offer to pay %.2f§ for %s was accepted, you will now be charged.", bid.getOfferedPrice(), bid.getProductId().getProductName())));
+        PaymentDetails payDetails = bid.getOfferingUser().getPaymentDetails();
+        if (payDetails == null) {
+            logger.info("Purchase failed, need to add payment Details first");
+            throw new Exception("Purchase failed, need to add payment Details first");
+        }
+        SupplyDetails supplyDetails = bid.getOfferingUser().getSupplyDetails();
+        if (supplyDetails == null) {
+            logger.info("Purchase failed, need to add supply Details first");
+            throw new Exception("Purchase failed, need to add supply Details first");
+        }
+        if (supplySystem.supply(supplyDetails.getName(), supplyDetails.getAddress(), supplyDetails.getCity(), supplyDetails.getCountry(), supplyDetails.getZip()) == -1) {
+            logger.info("Purchase failed, supply system charge failed");
+            throw new Exception("Purchase failed, supply system hasn't managed to charge");
+        }
+        if (paymentSystem.pay(payDetails.getCreditCardNumber(), payDetails.getMonth(), payDetails.getYear(), payDetails.getHolder(), payDetails.getCvv(), payDetails.getCardId()) == -1) { //purchase.getTotalPrice())) {
+            logger.info("Purchase failed, payment system charge failed");
+            throw new Exception("Purchase failed, payment system hasn't managed to charge");
+        }
+        Purchase p = new Purchase(new ArrayList<>(), bid.getOfferingUser().getUsername());
+        bid.getOfferingUser().getPurchaseHistory().savePurchase(p);
+        PurchaseProduct pp = subtractForPurchase(bidProduct.getProductId(), 1, Math.toIntExact(p.getId()));
+        pp.setPrice(bid.getOfferedPrice());
+        new PurchaseProductDAO().addPurchaseProduct(pp);
+        p.getProductList().add(pp);
+        addPurchase(p);
+        bid.getOfferingUser().getPurchaseHistory().savePurchase(p);
+        removeProduct(bid.getProductId().getProductId());
     }
 }

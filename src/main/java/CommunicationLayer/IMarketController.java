@@ -1,6 +1,5 @@
 package CommunicationLayer;
 
-import BusinessLayer.Product;
 import ServiceLayer.DTOs.*;
 import ServiceLayer.DTOs.Discounts.DiscountDTO;
 import ServiceLayer.DTOs.Policies.DiscountPolicies.BaseDiscountPolicyDTO;
@@ -239,4 +238,6 @@ public interface IMarketController {
     ResponseT<ProductDTO> addAuctionProduct(String sessionId, int storeId, String productName, Double price, String category, Integer quantity, String description, LocalDateTime auctionEndDateTime);
 
     Response bid(String sessionId, int storeId, int productId, Double price);
+
+    Response confirmAuction(String sessionId, int storeId, int productId);
 }

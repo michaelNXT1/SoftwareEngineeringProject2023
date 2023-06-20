@@ -222,7 +222,7 @@ public class MainLayout extends AppLayout {
         searchActionMap.put("Contains keyword", () -> marketController.getProductsBySubstring(MainLayout.getSessionId(), searchBox.getValue()));
         searchActionMap.put("Is of category", () -> marketController.getProductsByCategory(MainLayout.getSessionId(), searchBox.getValue()));
         searchType.setItems(searchActionMap.keySet().stream().toList().stream().sorted().collect(Collectors.toList()));
-        searchType.setPlaceholder("Search type");
+        searchType.setValue("Contains keyword");
         return searchType;
     }
 
