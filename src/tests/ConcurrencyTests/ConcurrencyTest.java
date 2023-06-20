@@ -36,6 +36,7 @@ public class ConcurrencyTest extends TestCase {
         market.signUp("master","1234");
         String id = market.login("master","1234",null);
         market.addPaymentMethod(id,"123","06","2026","540", "Micheal", "260589064");
+        market.addSupplyDetails(id,"06","2026","540", "Micheal", "260589064");
         int storeid = market.openStore(id,"newStore");
         int productID =setUpStoreWithAmount(id,storeid,100);
         buyFromStoreAmount(storeid,productID,5);
@@ -55,7 +56,7 @@ public class ConcurrencyTest extends TestCase {
         int productId = setUpStoreWithAmount(id, storeId,10);
         buyFromStoreAmount(storeId,productId,1);
         try {
-            assertEquals(1,market.getStore(id, storeId).getProduct(productId).getProductId());
+            assertEquals(productId,market.getStore(id, storeId).getProduct(productId).getProductId());
         } catch (Exception e) {
             fail();
         }
@@ -94,6 +95,7 @@ public class ConcurrencyTest extends TestCase {
                     market.signUp(name, "123");
                     newId = market.login(name, "123",null);
                     market.addPaymentMethod(newId, "123", "13", "12", "232", "Micheal", "260589064");
+                    market.addSupplyDetails(newId,"06","2026","540", "Micheal", "260589064");
                     market.addProductToCart(newId, storeId, productId, amount);
                     confirmPurchase(newId);
                 } catch (Exception e) {

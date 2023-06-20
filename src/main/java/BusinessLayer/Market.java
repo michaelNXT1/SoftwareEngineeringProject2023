@@ -43,6 +43,7 @@ public class Market {
     SupplySystemProxy supplySystem;
     SessionManager sessionManager = new SessionManager();
     private final IMapStringSystemManagerRepository systemManagers;
+    private ISupplyRepo supplyRepo = new SupplyDAO();
     private final IMapStringMemberRepository users;
     private final MessageDigest passwordEncoder;
     private final SecurityAdapter securityUtils = new ProxyScurity(null);
@@ -91,6 +92,7 @@ public class Market {
     }
     @Transactional
     public void clearAllData(){
+        supplyRepo.clear();
         shoppingBagRepository.clearShoppingBags();
         shoppingCartRepo.clear();
         purchaseRepository.clear();
