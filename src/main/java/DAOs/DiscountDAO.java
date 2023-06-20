@@ -85,7 +85,7 @@ public class DiscountDAO implements IDiscountRepo {
         Session session = HibernateUtil.getSessionFactory().openSession();
         List<Discount> discounts = null;
         try {
-            discounts = session.createQuery("FROM StoreDiscount", Discount.class).list();
+            discounts = session.createQuery("FROM CategoryDiscount ", Discount.class).list();
             discounts.addAll(session.createQuery("FROM ProductDiscount", Discount.class).list());
             discounts.addAll(session.createQuery("FROM StoreDiscount", Discount.class).list());
         } catch (Exception e) {
