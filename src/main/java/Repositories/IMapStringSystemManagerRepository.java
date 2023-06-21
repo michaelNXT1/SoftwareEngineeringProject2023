@@ -14,5 +14,7 @@ public interface IMapStringSystemManagerRepository {
     Map<String, SystemManager> getAllSystemManagers();
     boolean containsValue(SystemManager sm);
 
+    void logoutSystemManager(String username);
+
     void clear();
 }

@@ -67,6 +67,7 @@ public class StoreManagementView extends VerticalLayout implements HasUrlParamet
         ResponseT<List<PurchaseDTO>> purchaseListResponse = marketController.getPurchaseHistory(MainLayout.getSessionId(), storeId);
         purchaseGrid.setItems(purchaseListResponse.getError_occurred() ? new ArrayList<>() : purchaseListResponse.value);
         purchaseGrid.addColumn(PurchaseDTO::getPurchaseId).setHeader("#").setSortable(true).setTextAlign(ColumnTextAlign.START).setAutoWidth(true);
+        purchaseGrid.addColumn(PurchaseDTO::getUsername).setHeader("Username").setSortable(true).setTextAlign(ColumnTextAlign.START).setAutoWidth(true);
         purchaseGrid.addColumn(PurchaseDTO::getPurchaseDateTime).setHeader("Purchase Date & Time").setSortable(true).setTextAlign(ColumnTextAlign.START).setAutoWidth(true);
         purchaseGrid.addComponentColumn(purchaseDTO -> new Button("view details", e -> viewPurchaseDetailsDialog(purchaseDTO))).setFlexGrow(0).setAutoWidth(true);
         purchaseGrid.setWidthFull();

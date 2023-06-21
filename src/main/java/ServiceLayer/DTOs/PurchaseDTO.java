@@ -13,11 +13,13 @@ public class PurchaseDTO {
     private final Long purchaseId;
     private final LocalDateTime purchaseDateTime;
     private final List<PurchaseProductDTO> productDTOList;
+    private final String username;
 
     public PurchaseDTO(Purchase p) {
         productDTOList = p.getProductList().stream().map(PurchaseProductDTO::new).collect(Collectors.toList());
         this.purchaseId=p.getId();
         this.purchaseDateTime=p.getPurchaseDateTime();
+        this.username=p.getUsername();
     }
 
     public List<PurchaseProductDTO> getProductDTOList() {
@@ -40,5 +42,9 @@ public class PurchaseDTO {
 
     public LocalDateTime getPurchaseDateTime() {
         return purchaseDateTime;
+    }
+
+    public String getUsername() {
+        return username;
     }
 }

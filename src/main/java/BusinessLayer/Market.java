@@ -412,7 +412,9 @@ public class Market {
     public String logout(String sessionId) throws Exception {
         logger.info(String.format("%s try to logout from the system", sessionId));
         try {
+            SystemManager sm=sessionManager.getSessionForSystemManager(sessionId);
             sessionManager.deleteSessionForSystemManager(sessionId);
+            systemManagers.logoutSystemManager(sm.getUsername());
             logger.info("logged out of the system");
             return enterMarket();
         } catch (Exception e) {
@@ -930,7 +932,7 @@ public class Market {
         Map<StoreDTO, List<PurchaseDTO>> ret = new HashMap<>();
         for (Store s : stores.getAllStores().values()) {
             StoreDTO sDTO = new StoreDTO(s);
-            ret.put(new StoreDTO(s), new ArrayList<>());
+            ret.put(sDTO, new ArrayList<>());
             for (Purchase p : s.getPurchaseList()) {
                 ret.get(sDTO).add(new PurchaseDTO(p));
             }

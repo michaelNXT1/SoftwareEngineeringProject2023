@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 public class MemberDTO {
     private final String username;
-    private final String email;
     private List<PositionDTO> positions;
     private final ShoppingCartDTO shoppingCart;
     private final List<ProductDTO> searchResults;
@@ -17,7 +16,6 @@ public class MemberDTO {
 
     public MemberDTO(Member member) {
             this.username = member.getUsername();
-            this.email = member.getEmail();
             this.positions = member.getPositions().stream().filter(p -> p.getPositionMember().getUsername().equals(this.username))
                 .map(PositionDTO::new)
                 .collect(Collectors.toList());
@@ -31,10 +29,6 @@ public class MemberDTO {
     }
     public String getUsername() {
         return username;
-    }
-
-    public String getEmail() {
-        return email;
     }
 
     public List<PositionDTO> getPositions() {
@@ -56,7 +50,6 @@ public class MemberDTO {
     public String toString() {
         return "MemberDTO{" +
                 "username='" + username + '\'' +
-                ", email='" + email + '\'' +
                 ", positions=" + positions +
                 ", shoppingCart=" + shoppingCart +
                 ", searchResults=" + searchResults +
