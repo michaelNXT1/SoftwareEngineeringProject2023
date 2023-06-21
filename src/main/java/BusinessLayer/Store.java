@@ -86,6 +86,7 @@ public class Store {
         purchasePolicyCounter = 0;
         productDiscountPolicyMap = new BaseDiscountPolicyMapDAO();
         discountPolicyCounter = 0;
+        isOpen=true;
     }
 
     public Store(){
