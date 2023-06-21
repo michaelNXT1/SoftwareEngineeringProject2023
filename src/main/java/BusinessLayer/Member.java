@@ -159,25 +159,43 @@ public class Member extends Guest {
     }
 
     public void sendRealTimeNotification(){
+        boolean isCraashed = false;
         if(Market.users.isLoggedIn(this)){
             this.notificationBroker = new NotificationController();
         }
         if(notificationBroker!= null && !(notifications == null || notifications.isEmpty())) {
             for (Notification notification : notifications) {
-                this.notificationBroker.sendRealTimeNotification(notification, this.username);
+                try {
+                    notificationBroker.sendRealTimeNotification(notification, this.username);
+                }
+                catch (Exception e){
+                    isCraashed = true;
+                }
             }
-            notifications.clear();
+            if(!isCraashed)
+                notifications.clear();
         }
         new MemberDAO().updateMember(this);
     }
 
     public void sendNotification(Notification shopNotification) {
+        boolean isCraashed = false;
         if(Market.users.isLoggedIn(this)){
             this.notificationBroker = new NotificationController();
         }
         if (this.notificationBroker != null) {
-            notificationBroker.sendRealTimeNotification(shopNotification, this.username);
+            try {
+                notificationBroker.sendRealTimeNotification(shopNotification, this.username);
+            }
+            catch (Exception e){
+                isCraashed = true;
+            }
         }else {
+            this.notifications.add(shopNotification);
+            new NotificationDAO().addNotification(shopNotification);
+            new MemberDAO().updateMember(this);
+        }
+        if(isCraashed){
             this.notifications.add(shopNotification);
             new NotificationDAO().addNotification(shopNotification);
             new MemberDAO().updateMember(this);

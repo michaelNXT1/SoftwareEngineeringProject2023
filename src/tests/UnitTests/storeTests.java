@@ -30,17 +30,17 @@ class storeTests {
         market.clearAllData();
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void testGetStoreName() {
         assertEquals("my_store", store.getStoreName());
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void testGetProducts() {
         assertEquals(5, store.getProducts().getAllProducts().get(0).getQuantity());
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void testUpdateProductQuantity() {
 //        assertFalse(store.addToProductQuantity(product, -11));
 //        assertTrue(store.addToProductQuantity(product, -9));
@@ -54,38 +54,38 @@ class storeTests {
         //assertEquals(1, store.getPurchaseList().size());
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void testAddProduct() throws Exception {
         assertThrows(Exception.class, () -> store.addProduct("bratz", 60.9, "toy", 7,"vv", ProductDTO.PurchaseType.BUY_IT_NOW));
         assertEquals("barbi", store.getProducts().getAllProducts().stream().filter(p -> p.getProductId() == product.getProductId()).findFirst().orElse(null).getProductName());
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void testRemoveProduct() throws Exception {
         int productId = product.getProductId();
         store.removeProduct(productId);
         assertNull(store.getProducts().getAllProducts().stream().filter(p -> p.getProductId() == productId).findFirst().orElse(null));
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void testIsOpen() {
         assertFalse(store.isOpen());
         store.setOpen(true);
         assertTrue(store.isOpen());
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void testGetStoreId() {
         assertEquals(1, store.getStoreId());
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void testGetProduct() throws Exception {
         assertEquals(product.getProductId(), store.getProduct(product.getProductId()).getProductId());
         assertThrows(Exception.class, () -> store.getProduct(0));
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void testEditProductName() throws Exception {
         int productId = product.getProductId();
         store.editProductName(productId, "New Name");
@@ -95,7 +95,7 @@ class storeTests {
     }
 
 
-    @org.junit.jupiter.api.Test
+    @Test
     void testEditProductPrice() throws Exception {
         int productId = product.getProductId();
         store.editProductPrice(productId, 20);
@@ -104,7 +104,7 @@ class storeTests {
 
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     public void testEditProductCategory() throws Exception {
         store.editProductCategory(product.getProductId(), "New Category");
         assertEquals("New Category", store.getProduct(product.getProductId()).getCategory());

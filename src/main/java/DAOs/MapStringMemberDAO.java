@@ -144,6 +144,7 @@ public class MapStringMemberDAO implements IMapStringMemberRepository {
         try {
             transaction = session.beginTransaction();
             session.createQuery("DELETE FROM Member").executeUpdate();
+            memberMap.clear();
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {

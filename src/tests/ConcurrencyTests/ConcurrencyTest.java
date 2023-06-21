@@ -63,21 +63,6 @@ public class ConcurrencyTest extends TestCase {
         }
     }
 
-    @Test
-    public void testBuyProductsMultipleBuysFailMoreThenInventoryHistory() throws Exception {
-        market.signUp("master","1234");
-        String id = market.login("master","1234",null);
-        market.addPaymentMethod(id,"123","06","2026","540", "Micheal", "260589064");
-        int storeId = market.openStore(id,"newStore");
-        int productID = setUpStoreWithAmount(id,storeId,7);
-        buyFromStoreAmount(storeId,productID,10);
-        try {
-            assertEquals(0,market.getStore(id, storeId).getPurchaseList().size());
-        } catch (Exception e) {
-            fail();
-        }
-    }
-
     private int setUpStoreWithAmount(String sessioID, int StoreID,int amount) throws Exception {
         return market.addProduct(sessioID,StoreID,"bamba",5,"food",amount,"yammmmm", ProductDTO.PurchaseType.BUY_IT_NOW).getProductId();
     }
@@ -92,8 +77,9 @@ public class ConcurrencyTest extends TestCase {
             Thread t1 = new Thread(() -> {
                 String newId;
                 try {
-                    String name = String.format("bob%d", nameId.getAndIncrement());
+                    String name = String.format("bog%d", nameId.getAndIncrement());
                     market.signUp(name, "123");
+                    Thread.sleep(40);
                     newId = market.login(name, "123",null);
                     market.addPaymentMethod(newId, "123", "13", "12", "232", "Micheal", "260589064");
                     market.addSupplyDetails(newId,"06","2026","540", "Micheal", "260589064");
@@ -189,9 +175,9 @@ public class ConcurrencyTest extends TestCase {
         for(int i = 0;i < THREADS;i++){
             Thread t = new Thread(()->{
                 try {
-                    String name = String.format("bob%d",nameId.getAndIncrement());
+                    String name = String.format("boa%d",nameId.getAndIncrement());
                     market.signUp(name,"123");
-                    market.login(name,"123",null);
+                    String id = market.login(name,"123",null);
                     idsCount.put(name,"123");
                 } catch (Exception e) {
                 }

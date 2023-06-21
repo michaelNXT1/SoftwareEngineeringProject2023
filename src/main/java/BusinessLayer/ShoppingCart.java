@@ -122,7 +122,10 @@ public class ShoppingCart {
                 throw new Exception("Purchase failed, not all products were in stock as requested.");
             }
         }
-        shoppingBags.clearShoppingBags();
+        List<ShoppingBag> myShoppingBags = shoppingBags.getAllShoppingBags().stream().filter(sb -> sb.getShoppingCartId().equals(this.id)).toList();
+        for(ShoppingBag shoppingBag : myShoppingBags){
+            shoppingBags.removeShoppingBag(shoppingBag);
+        }
         List<PurchaseProduct> flattenedList = shoppingBagMap.values()
                 .stream()
                 .flatMap(List::stream)

@@ -19,7 +19,7 @@ public class ParseFileTest extends TestCase{
 
         @BeforeEach
         public void setUp() {
-            validFilePath = "C:\\Users\\idanl\\OneDrive - post.bgu.ac.il\\סמסטר ו'\\סדנא\\גרסה 4- גרסה סופית\\SoftwareEngineeringProject2023\\src\\tests\\UnitTests\\valid_commands.txt";       // Path to a file with valid commands
+            validFilePath = "C:\\Projects\\SoftwareEngineeringProject2023\\src\\tests\\UnitTests\\valid_commands.txt";       // Path to a file with valid commands
             //validFilePath = "valid_commands.txt"; //works only with the full path
             invalidFilePath = "invalid_commands.txt";   // Path to a file with invalid commands
             market = new Market(null, true);            // Create a Market instance in test mode

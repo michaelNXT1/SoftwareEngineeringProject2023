@@ -17,8 +17,6 @@ public class ExternalSystemsTest extends TestCase {
     public void setUp() {
         paymentSystem = new PaymentSystem();
         supplySystem = new SupplySystem();
-
-
     }
     @AfterEach
     public void tearDown() {
