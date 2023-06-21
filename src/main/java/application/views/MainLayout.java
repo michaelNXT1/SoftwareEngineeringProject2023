@@ -22,16 +22,13 @@ import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.theme.lumo.Lumo;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 import com.vaadin.flow.theme.lumo.LumoUtility.AlignItems;
 import com.vaadin.flow.theme.lumo.LumoUtility.Display;
-import com.vaadin.flow.theme.lumo.LumoUtility.FontSize;
 import com.vaadin.flow.theme.lumo.LumoUtility.Padding;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
@@ -52,6 +49,7 @@ public class MainLayout extends AppLayout {
     private Button loginButton;
     private Button signUpButton;
     private Button logoutButton;
+    private Select<String> select;
 
     public MainLayout() {
 //        getElement().executeJs("document.documentElement.setAttribute('theme', $0)", Lumo.DARK);
@@ -85,7 +83,8 @@ public class MainLayout extends AppLayout {
         appName.setWidthFull();
 
         Button homeButton = new Button("Home", e -> UI.getCurrent().navigate(AboutView.class));
-        Select<String> select = initActionSelect();
+        select = initActionSelect();
+        select.setItemEnabledProvider(item -> !("System Manager Login".equals(item))||("System Manager Login".equals(item) && !marketController.isLoggedIn(sessionId).value));
         searchBox = new TextField();
         searchBox.setPlaceholder("Search product");
         searchType = initSearchSelect();
@@ -154,6 +153,7 @@ public class MainLayout extends AppLayout {
         loginButton.setVisible(!isLoggedIn);
         signUpButton.setVisible(!isLoggedIn);
         logoutButton.setVisible(isLoggedIn);
+        select.setItemEnabledProvider(item -> !("System Manager Login".equals(item))||("System Manager Login".equals(item) && !marketController.isLoggedIn(sessionId).value));
     }
 
     private void logout() {
@@ -169,6 +169,7 @@ public class MainLayout extends AppLayout {
             loginButton.setVisible(!isLoggedIn);
             signUpButton.setVisible(!isLoggedIn);
             logoutButton.setVisible(isLoggedIn);
+            select.setItemEnabledProvider(item -> !("System Manager Login".equals(item))||("System Manager Login".equals(item) && !marketController.isLoggedIn(sessionId).value));
         }
 
         if (sessionId != null)
