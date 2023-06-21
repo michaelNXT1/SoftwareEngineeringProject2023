@@ -2,9 +2,11 @@ package application.views.openStore;
 
 import CommunicationLayer.MarketController;
 import CommunicationLayer.NotificationController;
+import ServiceLayer.Response;
 import application.views.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Header;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PreserveOnRefresh;
@@ -35,7 +37,10 @@ public class OpenStore  extends VerticalLayout {
 
         private void openStore() {
             String storeName = storeNameField.getValue();
-            marketController.openStore( MainLayout.getSessionId(),storeName);
+            Response r = marketController.openStore( MainLayout.getSessionId(),storeName);
+            if(r.getError_occurred())
+                Notification.show("can not open store");
+            Notification.show("store opened");
         }
 
 }
