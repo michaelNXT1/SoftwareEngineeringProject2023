@@ -3,7 +3,6 @@ package BusinessLayer;
 import BusinessLayer.Logger.SystemLogger;
 
 import CommunicationLayer.NotificationBroker;
-import CommunicationLayer.NotificationController;
 import DAOs.MemberDAO;
 import DAOs.NotificationDAO;
 import DAOs.PositionDAO;
@@ -159,10 +158,7 @@ public class Member extends Guest {
     }
 
     public void sendRealTimeNotification(){
-        if(Market.users.isLoggedIn(this)){
-            this.notificationBroker = new NotificationController();
-        }
-        if(notificationBroker != null && !(notifications == null || notifications.isEmpty())) {
+        if(notificationBroker!= null && !(notifications == null || notifications.isEmpty())) {
             for (Notification notification : notifications) {
                 this.notificationBroker.sendRealTimeNotification(notification, this.username);
             }
@@ -172,9 +168,6 @@ public class Member extends Guest {
     }
 
     public void sendNotification(Notification shopNotification) {
-        if(Market.users.isLoggedIn(this)){
-            this.notificationBroker = new NotificationController();
-        }
         if (this.notificationBroker != null) {
             notificationBroker.sendRealTimeNotification(shopNotification, this.username);
         }else {
@@ -209,7 +202,7 @@ public class Member extends Guest {
     }
 
     public boolean hasPositions() {
-        return !positions.getAllPositions().stream().filter(p -> p.getPositionMember().getUsername().equals(this.username)).toList().isEmpty();
+        return !positions.getPositionsByMember(username).isEmpty();
     }
 
     public boolean notBeingStoreOwner(Guest m, Store store) throws Exception {
@@ -233,7 +226,7 @@ public class Member extends Guest {
     public List<Position> getPositions() {
         List<Position> thisMemberPosition = new LinkedList<>();
         for (Position p:positions.getAllPositions()
-             ) {
+        ) {
             if (p.getPositionMember().getUsername().equals(this.username))
                 thisMemberPosition.add(p);
         }
@@ -268,7 +261,7 @@ public class Member extends Guest {
     public void bid(Store s, int productId, double price) throws Exception {
         s.bid(this, productId, price);
     }
-  
+
     public boolean removePosition(Position userP) {
         positions.removePosition(userP);
         logger.info(String.format("remove %s from being %s duo to the remove foo his assigner", getUsername(),userP.getClass()));
