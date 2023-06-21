@@ -57,7 +57,6 @@ public class MainLayout extends AppLayout {
 //        getElement().executeJs("document.documentElement.setAttribute('theme', $0)", Lumo.DARK);
         sessionId = marketController.enterMarket().value;
         addToNavbar(createHeaderContent());
-        addDrawerContent();
     }
 
     public static String getSessionId() {
@@ -68,15 +67,6 @@ public class MainLayout extends AppLayout {
         MainLayout.sessionId = sessionId;
     }
 
-    private void addDrawerContent() {
-        H1 appName = new H1("Categories");
-        appName.addClassNames(FontSize.SMALL, LumoUtility.Margin.NONE);
-        Header header = new Header(appName);
-
-        Scroller scroller = new Scroller(createCategoryNev());
-
-        addToDrawer(header, scroller, createFooter());
-    }
 
     private Component createHeaderContent() {
         VerticalLayout vl = new VerticalLayout();
@@ -201,7 +191,6 @@ public class MainLayout extends AppLayout {
         actionsMap.put("My Stores", () -> UI.getCurrent().navigate(ManagerStoresView.class));
         actionsMap.put("My Purchases", () -> UI.getCurrent().navigate(UserPurchases.class));
         actionsMap.put("System Manager Login", () -> UI.getCurrent().navigate(SystemManagerPermissions.class));
-        actionsMap.put("Get information about members", () -> UI.getCurrent().navigate(GetInformationAboutMembers.class));
         actionsMap.put("System Manager Registration", () -> UI.getCurrent().navigate(SignUpSystemManager.class));
 
         select.setItems(actionsMap.keySet().stream().sorted().collect(Collectors.toList()));
