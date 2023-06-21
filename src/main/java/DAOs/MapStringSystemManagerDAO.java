@@ -114,6 +114,11 @@ public class MapStringSystemManagerDAO implements IMapStringSystemManagerReposit
     }
 
     @Override
+    public void logoutSystemManager(String username) {
+        sessionToSystemManager.remove(username);
+    }
+
+    @Override
     public void clear() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;

@@ -412,7 +412,9 @@ public class Market {
     public String logout(String sessionId) throws Exception {
         logger.info(String.format("%s try to logout from the system", sessionId));
         try {
+            SystemManager sm=sessionManager.getSessionForSystemManager(sessionId);
             sessionManager.deleteSessionForSystemManager(sessionId);
+            systemManagers.logoutSystemManager(sm.getUsername());
             logger.info("logged out of the system");
             return enterMarket();
         } catch (Exception e) {

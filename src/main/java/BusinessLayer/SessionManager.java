@@ -76,7 +76,7 @@ public class SessionManager {
     }
 
     public void deleteSessionForSystemManager(String sessionId) throws Exception {
-        List<SystemManager> systemManagers = systemManagerSessions.getAllSystemManagers().values().stream().filter(sm1 -> sm1.getSessionId().equals(sessionId)).toList();
+        List<SystemManager> systemManagers = systemManagerSessions.getAllSystemManagers().values().stream().filter(sm1 -> sm1.getSessionId()!=null? sm1.getSessionId().equals(sessionId) : false).toList();
         if (systemManagers.size() == 0) {
             logger.error("user session doesnt exist");
             throw new Exception("user session doesnt exist");
