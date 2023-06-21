@@ -27,7 +27,7 @@ public class Guest {
     private String searchKeyword;
 
     private List<Product> searchResults;
-    private IPurchaseRepository purchaseHistory;
+    protected IPurchaseRepository purchaseHistory;
     protected IShoppingCartRepo shoppingCartRepo = new ShoppingCartDAO();
     protected PaymentDetails paymentDetails;
     protected SupplyDetails supplyDetails;
@@ -62,7 +62,7 @@ public class Guest {
     }
 
     public void addProductToShoppingCart(Store s, int productId, int itemsAmount) throws Exception { //2.10
-        shoppingCart.setProductQuantity(s, productId, itemsAmount);
+        shoppingCart.setProductGuestQuantity(s, productId, itemsAmount);
     }
 
     public ShoppingCart displayShoppingCart(Long id) {  //2.11
@@ -79,7 +79,7 @@ public class Guest {
     }
 
     public Purchase purchaseShoppingCart() throws Exception {    //2.14
-        Purchase p=new Purchase(new ArrayList<>(), getUsername());
+        Purchase p = new Purchase(new ArrayList<>(), getUsername());
         purchaseHistory.savePurchase(p);
         if (paymentDetails == null) {
             logger.error("no payment details exist");
@@ -89,7 +89,7 @@ public class Guest {
             logger.error("no supply details exist");
             throw new Exception("no supply details exist");
         }
-        p = shoppingCart.purchaseShoppingCart(p);
+        p = shoppingCart.purchaseShoppingGuestCart(p);
         purchaseHistory.savePurchase(p);
         return p;
     }

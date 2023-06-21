@@ -47,6 +47,9 @@ class ShoppingCartTest extends TestCase {
     private String password4 = "qwerty";
     private ISupplySystem supplySystem;
     private IPaymentSystem paymentSystem;
+    public ShoppingCartTest(){
+
+    }
 
     @BeforeEach
     void beforeEach() throws Exception {

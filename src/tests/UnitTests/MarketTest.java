@@ -28,6 +28,9 @@ class MarketTest extends TestCase {
     private String password3 = "sssdddaaa";
     private String userName4 = "Shoham735412";
     private String password4 = "qwerty";
+    public MarketTest(){
+
+    }
     @BeforeEach
     void startUp() throws Exception {
         market = new Market("testFile.txt",true);

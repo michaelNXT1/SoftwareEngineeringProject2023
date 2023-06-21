@@ -92,7 +92,6 @@ SearchResultView extends VerticalLayout {
             quantity.setMin(1);
             Label l=new Label();
             Button purchaseButton = new Button();
-            VerticalLayout vl=new VerticalLayout(purchaseButton, l);
             switch (product.getPurchaseType()) {
                 case BUY_IT_NOW ->
                         purchaseButton = new Button("Add to Cart", e -> addToCart(product, quantity.getValue()));
@@ -109,6 +108,7 @@ SearchResultView extends VerticalLayout {
                     l.setText("ends at "+product.getAuctionEndTime());
                 }
             }
+            VerticalLayout vl = new VerticalLayout(purchaseButton, l);
             hl.add(quantity, vl);
             return hl;
         });

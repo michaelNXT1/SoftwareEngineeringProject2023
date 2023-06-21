@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import static org.atmosphere.annotation.AnnotationUtil.logger;
+
 @Entity
 @Table(name = "members")
 public class Member extends Guest {
@@ -97,6 +99,10 @@ public class Member extends Guest {
         if(!mySd.isEmpty())
             return mySd.get(0);
         return null;
+    }
+    @Override
+    public void addProductToShoppingCart(Store s, int productId, int itemsAmount) throws Exception { //2.10
+        shoppingCart.setProductQuantity(s, productId, itemsAmount);
     }
     // getter, setter
     public void setNotificationBroker(NotificationBroker notificationBroker){
@@ -285,6 +291,22 @@ public class Member extends Guest {
     @Override
     public void bid(Store s, int productId, double price) throws Exception {
         s.bid(this, productId, price);
+    }
+    @Override
+    public Purchase purchaseShoppingCart() throws Exception {    //2.14
+        Purchase p=new Purchase(new ArrayList<>(), getUsername());
+        purchaseHistory.savePurchase(p);
+        if (paymentDetails == null) {
+            logger.error("no payment details exist");
+            throw new Exception("no payment details exist");
+        }
+        if (supplyDetails == null) {
+            logger.error("no supply details exist");
+            throw new Exception("no supply details exist");
+        }
+        p = shoppingCart.purchaseShoppingCart(p);
+        purchaseHistory.savePurchase(p);
+        return p;
     }
 
     public boolean removePosition(Position userP) {

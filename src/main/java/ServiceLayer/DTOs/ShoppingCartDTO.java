@@ -17,6 +17,10 @@ public class ShoppingCartDTO {
             ShoppingBagDTO shoppingBagDTO = new ShoppingBagDTO(shoppingBag);
             list.add(shoppingBagDTO);
         }
+        if(shoppingCart.getShoppingBags2() != null && !shoppingCart.getShoppingBags2().isEmpty()){
+            for(ShoppingBag sb : shoppingCart.getShoppingBags2())
+                list.add(new ShoppingBagDTO(sb));
+        }
         this.shoppingBags = list;
     }
 

@@ -7,6 +7,7 @@ import Utils.Pair;
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +30,7 @@ public class ShoppingCart {
 
     public ShoppingCart(String userName) {
         this.userName = userName;
-        shoppingBags2 = shoppingBags.getAllShoppingBags().stream().filter(sb -> sb.getId().equals(this.id)).toList();
+        shoppingBags2 = new ArrayList<>();
     }
 
     public ShoppingCart() {
@@ -147,7 +148,6 @@ public class ShoppingCart {
             shoppingBag = shoppingBags1.get(0);
         }
         return shoppingBag;
-
     }
 
     private boolean isEmpty() {
@@ -165,5 +165,44 @@ public class ShoppingCart {
             throw new Exception("store doesn't exist in cart");
         }
         return shoppingBag.getProductDiscountPercentageInCart(productId);
+    }
+
+    public Purchase purchaseShoppingGuestCart(Purchase p) throws Exception {
+        Map<ShoppingBag, List<PurchaseProduct>> shoppingBagMap = new HashMap<>();
+        for (ShoppingBag sb : shoppingBags2) {
+            Pair<List<PurchaseProduct>, Boolean> sbp = sb.purchaseShoppingBag(p);
+            if (sbp.getSecond()) {
+                shoppingBagMap.put(sb, sbp.getFirst());
+            } else {
+                for (Map.Entry<ShoppingBag, List<PurchaseProduct>> entry : shoppingBagMap.entrySet())
+                    entry.getKey().revertPurchase(entry.getValue());
+                logger.error("Purchase failed, not all products were in stock as requested.");
+                throw new Exception("Purchase failed, not all products were in stock as requested.");
+            }
+        }
+        shoppingBags2.clear();
+        List<PurchaseProduct> flattenedList = shoppingBagMap.values()
+                .stream()
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+        logger.info("This shopping bag has been cleaned");
+        p.getProductList().addAll(flattenedList);
+        return p;
+    }
+
+    public void setProductGuestQuantity(Store s, int productId, int itemsAmount) throws Exception {
+        if (itemsAmount < 0) {
+            logger.error(String.format("this quantity %d is less then 0", itemsAmount));
+            throw new Exception("cannot change quantity to less then 0");
+        }
+        ShoppingBag shoppingBag = null;
+        List<ShoppingBag> shoppingBags1 = shoppingBags2.stream().filter(sb-> sb.getStore().getStoreId() == s.getStoreId()).toList();
+        if (shoppingBags1.isEmpty()) {
+            shoppingBag = new ShoppingBag(s, this.id, userName);
+        } else {
+            shoppingBag = shoppingBags1.get(0);
+        }
+        shoppingBag.setProductQuantity(productId, itemsAmount);
+        shoppingBags2.add(shoppingBag);
     }
 }
