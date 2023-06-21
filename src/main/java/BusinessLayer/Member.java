@@ -3,6 +3,7 @@ package BusinessLayer;
 import BusinessLayer.Logger.SystemLogger;
 
 import CommunicationLayer.NotificationBroker;
+import CommunicationLayer.NotificationController;
 import DAOs.MemberDAO;
 import DAOs.NotificationDAO;
 import DAOs.PositionDAO;
@@ -158,6 +159,9 @@ public class Member extends Guest {
     }
 
     public void sendRealTimeNotification(){
+        if(Market.users.isLoggedIn(this)){
+            this.notificationBroker = new NotificationController();
+        }
         if(notificationBroker!= null && !(notifications == null || notifications.isEmpty())) {
             for (Notification notification : notifications) {
                 this.notificationBroker.sendRealTimeNotification(notification, this.username);
@@ -168,6 +172,9 @@ public class Member extends Guest {
     }
 
     public void sendNotification(Notification shopNotification) {
+        if(Market.users.isLoggedIn(this)){
+            this.notificationBroker = new NotificationController();
+        }
         if (this.notificationBroker != null) {
             notificationBroker.sendRealTimeNotification(shopNotification, this.username);
         }else {
@@ -202,7 +209,7 @@ public class Member extends Guest {
     }
 
     public boolean hasPositions() {
-        return !positions.getPositionsByMember(username).isEmpty();
+        return !positions.getAllPositions().stream().filter(p -> p.getPositionMember().getUsername().equals(this.username)).toList().isEmpty();
     }
 
     public boolean notBeingStoreOwner(Guest m, Store store) throws Exception {
