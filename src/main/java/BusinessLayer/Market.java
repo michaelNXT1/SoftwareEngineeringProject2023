@@ -97,6 +97,8 @@ public class Market {
     }
     @Transactional
     public void clearAllData(){
+        new RequestApprovalDAO().clear();
+        new RequestDAO().clear();
         paymantRepo.clear();
         supplyRepo.clear();
         bidRepository.clear();
@@ -196,7 +198,7 @@ public class Market {
                             try {
                                 sessionId = sessionManager.getSessionIdByGuestName(args[0]);
                                 storeId = getStoreByName(sessionId, args[1]).getStoreId();
-                                addProduct(sessionId, storeId, args[2], Double.parseDouble(args[3]), args[4], Integer.parseInt(args[5]), args[6], ProductDTO.PurchaseType.OFFER);
+                                addProduct(sessionId, storeId, args[2], Double.parseDouble(args[3]), args[4], Integer.parseInt(args[5]), args[6], ProductDTO.PurchaseType.BUY_IT_NOW);
                             } catch (Exception e) {
                                 throw new RuntimeException(e);
                             }
@@ -1398,6 +1400,13 @@ public class Market {
         return s.getStoreOffers().stream().map(OfferDTO::new).collect(Collectors.toList());
     }
 
+    public List<EmployeeRequestDTO> getRequestsByStore(int storeId) throws Exception {
+        checkMarketOpen();
+        checkStoreExists(storeId);
+        Store s=stores.getStore(storeId);
+        return s.getStoreEmployeeRequests().stream().map(EmployeeRequestDTO::new).collect(Collectors.toList());
+    }
+
     public void rejectOffer(String sessionId, int storeId, int offerId) throws Exception {
         checkMarketOpen();
         checkStoreExists(storeId);
@@ -1417,5 +1426,35 @@ public class Market {
         checkStoreExists(storeId);
         Position p = checkPositionLegal(sessionId, storeId);
         p.confirmAuction(productId, paymentSystem, supplySystem);
+    }
+
+    public void requestSetPositionOfMemberToStoreManager(String sessionId, int storeId, String memberToBecomeManager) throws Exception {
+        checkMarketOpen();
+        checkStoreExists(storeId);
+        Position p=checkPositionLegal(sessionId, storeId);
+        Member m=users.get(memberToBecomeManager);
+        p.requestSetPositionOfMemberToStoreManager(m);
+    }
+
+    public void requestSetPositionOfMemberToStoreOwner(String sessionId, int storeId, String memberToBecomeOwner) throws Exception {
+        checkMarketOpen();
+        checkStoreExists(storeId);
+        Position p=checkPositionLegal(sessionId, storeId);
+        Member m=users.get(memberToBecomeOwner);
+        p.requestSetPositionOfMemberToStoreOwner(m);
+    }
+
+    public void rejectRequest(String sessionId, int storeId, int requestId) throws Exception {
+        checkMarketOpen();
+        checkStoreExists(storeId);
+        Position p=checkPositionLegal(sessionId, storeId);
+        p.rejectRequest(requestId);
+    }
+
+    public void acceptRequest(String sessionId, int storeId, int requestId) throws Exception {
+        checkMarketOpen();
+        checkStoreExists(storeId);
+        Position p=checkPositionLegal(sessionId, storeId);
+        p.acceptRequest(requestId);
     }
 }

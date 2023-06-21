@@ -90,7 +90,9 @@ SearchResultView extends VerticalLayout {
             quantity.setValue(1);
             quantity.setStepButtonsVisible(true);
             quantity.setMin(1);
+            Label l=new Label();
             Button purchaseButton = new Button();
+            VerticalLayout vl=new VerticalLayout(purchaseButton, l);
             switch (product.getPurchaseType()) {
                 case BUY_IT_NOW ->
                         purchaseButton = new Button("Add to Cart", e -> addToCart(product, quantity.getValue()));
@@ -103,9 +105,11 @@ SearchResultView extends VerticalLayout {
                     purchaseButton = new Button("Bid", e -> bidDialog(product, quantity.getValue()));
                     if (product.getAuctionEndTime().isBefore(LocalDateTime.now()) || !marketController.isLoggedIn(MainLayout.getSessionId()).value)
                         purchaseButton.setEnabled(false);
+                    quantity.setMax(1);
+                    l.setText("ends at "+product.getAuctionEndTime());
                 }
             }
-            hl.add(quantity, purchaseButton);
+            hl.add(quantity, vl);
             return hl;
         });
         grid.setItems(items);

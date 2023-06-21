@@ -574,6 +574,10 @@ public class Store {
         return offers.getAllOffers().stream().filter(offer -> offer.getStoreId()==storeId).collect(Collectors.toList());
     }
 
+    public List<EmployeeRequest> getStoreEmployeeRequests(){
+        return new RequestDAO().getAllRequests().stream().filter(employeeRequest -> employeeRequest.getStoreId()==storeId).collect(Collectors.toList());
+    }
+
     public void rejectOffer(Member responder, int offerId) throws Exception {
         Offer offer = offers.getAllOffers().stream().filter(off -> off.getOfferId() == offerId).findFirst().orElse(null);
         if (offer == null)
@@ -673,5 +677,69 @@ public class Store {
         addPurchase(p);
         bid.getOfferingUser().getPurchaseHistory().savePurchase(p);
         removeProduct(bid.getProductId().getProductId());
+    }
+
+    public void requestSetPositionOfMemberToStoreManager(Member positionMember, Member memberToBecomeManager) {
+        List<Member> employees = getEmployees();
+        EmployeeRequest employeeRequest=new EmployeeRequest(storeId, positionMember, memberToBecomeManager, 0);
+        new RequestDAO().saveRequest(employeeRequest);
+        employeeRequest.addRequestApproval(employees);
+        for (Member m : employees)
+            m.sendNotification(new Notification(String.format("Employee %s requests to appoint %s as manager, please respond", positionMember.getUsername(), memberToBecomeManager.getUsername())));
+    }
+
+    public void requestSetPositionOfMemberToStoreOwner(Member positionMember, Member memberToBecomeOwner) {
+        List<Member> employees = getEmployees();
+        EmployeeRequest employeeRequest=new EmployeeRequest(storeId, positionMember, memberToBecomeOwner, 1);
+        new RequestDAO().saveRequest(employeeRequest);
+        employeeRequest.addRequestApproval(employees);
+        for (Member m : employees)
+            m.sendNotification(new Notification(String.format("Employee %s requests to appoint %s as owner, please respond", positionMember.getUsername(), memberToBecomeOwner.getUsername())));
+    }
+
+    public void rejectRequest(Member responder, int requestId) throws Exception {
+        EmployeeRequest offer = new RequestDAO().getAllRequests().stream().filter(off -> off.getRequestId() == requestId).findFirst().orElse(null);
+        if (offer == null)
+            throw new Exception("Request doesn't exist");
+        RequestApproval offerApproval = offer.getRequestApprovalRepository().getAllRequestApprovals().stream().filter(oa -> oa.getRequestId() == requestId && oa.getEmployee().getUsername().equals(responder.getUsername())).findFirst().orElse(null);
+        if (offerApproval == null)
+            throw new Exception("Request doesn't exist");
+        offerApproval.setResponse(0);
+        new RequestApprovalDAO().updateRequestApproval(offerApproval);
+        new RequestDAO().updateRequest(offer);
+        offer.getRequestingUser().sendNotification(new Notification(String.format("your offer to appoint %s was rejected.", offer.getCandidate().getUsername())));
+
+    }
+
+    public void acceptRequest(Member responder, int requestId) throws Exception {
+        EmployeeRequest offer = new RequestDAO().getAllRequests().stream().filter(off -> off.getRequestId() == requestId).findFirst().orElse(null);
+        if (offer == null)
+            throw new Exception("Request doesn't exist");
+        RequestApproval offerApproval = offer.getRequestApprovalRepository().getAllRequestApprovals().stream().filter(oa -> oa.getRequestId() == requestId && oa.getEmployee().getUsername().equals(responder.getUsername())).findFirst().orElse(null);
+        if (offerApproval == null)
+            throw new Exception("Request doesn't exist");
+        offerApproval.setResponse(1);
+        new RequestApprovalDAO().updateRequestApproval(offerApproval);
+        new RequestDAO().updateRequest(offer);
+        checkRequestAccepted(offer, offer.getRequestId());
+    }
+
+    public void checkRequestAccepted(EmployeeRequest offer, int requestId) throws Exception {
+        List<RequestApproval> offerApprovalList = offer.getRequestApprovalRepository().getAllRequestApprovals().stream().filter(oa -> oa.getRequestId() == requestId).toList();
+        if (offerApprovalList.stream().allMatch(offerApproval1 -> offerApproval1.getResponse() == 1)) {
+            if (offer.getType() == 0) {
+                offer.getCandidate().setToStoreManager(this, offer.getRequestingUser());
+                List<Member> employees = getEmployees();
+                for (Member employee : employees) {
+                    employee.sendNotification(new Notification(String.format("%s appoint %s to be new manager of %s", offer.getRequestingUser(), offer.getCandidate().getUsername(), getStoreName())));
+                }
+            }
+            else if (offer.getType() == 1) {
+                    offer.getCandidate().setToStoreOwner(this, offer.getRequestingUser());
+                    List<Member> employees = getEmployees();
+                    for (Member employee : employees)
+                        employee.sendNotification(new Notification(String.format("%s appoint %s to be new owner of %s", offer.getRequestingUser(), offer.getCandidate().getUsername(), getStoreName())));
+            }
+        }
     }
 }

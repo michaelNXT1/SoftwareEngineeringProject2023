@@ -104,4 +104,12 @@ public interface Position {
     void acceptOffer(int offerId, PaymentSystemProxy paymentSystem, SupplySystemProxy supplySystem) throws Exception;
 
     void confirmAuction(int productId, PaymentSystemProxy paymentSystem, SupplySystemProxy supplySystem) throws Exception;
+
+    void requestSetPositionOfMemberToStoreManager(Member memberToBecomeManager) throws Exception;
+
+    void requestSetPositionOfMemberToStoreOwner(Member memberToBecomeOwner) throws Exception;
+
+    void rejectRequest(int requestId) throws Exception;
+
+    void acceptRequest(int requestId) throws Exception;
 }

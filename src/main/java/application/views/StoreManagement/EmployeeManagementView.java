@@ -95,24 +95,24 @@ public class EmployeeManagementView extends VerticalLayout {
         Button submitButton = new Button("Submit", event -> {
             switch (radioGroup.getValue()) {
                 case "Manager" -> {
-                    Response response = marketController.setPositionOfMemberToStoreManager(
+                    Response response=marketController.requestSetPositionOfMemberToStoreManager(
                             MainLayout.getSessionId(),
                             storeId,
                             usernameField.getValue());
                     if (response.getError_occurred())
                         errorSuccessLabel.setText(response.error_message);
                     else
-                        StoreManagementView.successMessage(dialog, errorSuccessLabel, "Manager added successfully!");
+                        StoreManagementView.successMessage(dialog, errorSuccessLabel, "Request to appoint manager added successfully!");
                 }
                 case "Owner" -> {
-                    Response response = marketController.setPositionOfMemberToStoreOwner(
+                    Response response=marketController.requestSetPositionOfMemberToStoreOwner(
                             MainLayout.getSessionId(),
                             storeId,
                             usernameField.getValue());
                     if (response.getError_occurred())
                         errorSuccessLabel.setText(response.error_message);
                     else
-                        StoreManagementView.successMessage(dialog, errorSuccessLabel, "Manager added successfully!");
+                        StoreManagementView.successMessage(dialog, errorSuccessLabel, "Request to appoint owner added successfully!");
                 }
             }
         });

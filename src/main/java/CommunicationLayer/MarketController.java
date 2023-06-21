@@ -626,6 +626,31 @@ public class MarketController implements IMarketController {
     }
 
     @Override
+    public Response requestSetPositionOfMemberToStoreManager(String sessionId, int storeId, String memberToBecomeManager) {
+        return marketManager.requestSetPositionOfMemberToStoreManager(sessionId, storeId, memberToBecomeManager);
+    }
+
+    @Override
+    public Response requestSetPositionOfMemberToStoreOwner(String sessionId, int storeId, String memberToBecomeOwner) {
+        return marketManager.requestSetPositionOfMemberToStoreOwner(sessionId, storeId, memberToBecomeOwner);
+    }
+
+    @Override
+    public Response rejectRequest(String sessionId, int storeId, int requestId) {
+        return marketManager.rejectRequest(sessionId, storeId, requestId);
+    }
+
+    @Override
+    public Response acceptRequest(String sessionId, int storeId, int requestId) {
+        return marketManager.acceptRequest(sessionId, storeId, requestId);
+    }
+
+    @Override
+    public ResponseT<List<EmployeeRequestDTO>> getRequestsByStore(int storeId) {
+        return marketManager.getRequestsByStore(storeId);
+    }
+
+    @Override
     public ResponseT<Double> getProductDiscountPercentageInCart(String sessionId, int storeId, int productId) {
         return marketManager.getProductDiscountPercentageInCart(sessionId, storeId, productId);
     }

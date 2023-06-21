@@ -240,4 +240,14 @@ public interface IMarketController {
     Response bid(String sessionId, int storeId, int productId, Double price);
 
     Response confirmAuction(String sessionId, int storeId, int productId);
+
+    Response requestSetPositionOfMemberToStoreManager(String sessionId, int storeId, String memberToBecomeManager);
+
+    Response requestSetPositionOfMemberToStoreOwner(String sessionId, int storeId, String memberToBecomeOwner);
+
+    Response rejectRequest(String sessionId, int storeId, int requestId);
+
+    Response acceptRequest(String sessionId, int storeId, int requestId);
+
+    ResponseT<List<EmployeeRequestDTO>> getRequestsByStore(int storeId);
 }

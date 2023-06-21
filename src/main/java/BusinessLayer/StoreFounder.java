@@ -259,4 +259,25 @@ public class StoreFounder implements Position {
     public void confirmAuction(int productId, PaymentSystemProxy paymentSystem, SupplySystemProxy supplySystem) throws Exception {
         store.confirmAuction(productId, paymentSystem, supplySystem);
     }
+
+    @Override
+    public void requestSetPositionOfMemberToStoreManager(Member memberToBecomeManager) throws Exception {
+        store.requestSetPositionOfMemberToStoreManager(positionMember, memberToBecomeManager);
+    }
+
+    @Override
+    public void requestSetPositionOfMemberToStoreOwner(Member memberToBecomeOwner) throws Exception {
+        store.requestSetPositionOfMemberToStoreOwner(positionMember, memberToBecomeOwner);
+
+    }
+
+    @Override
+    public void rejectRequest(int requestId) throws Exception {
+        store.rejectRequest(positionMember, requestId);
+    }
+
+    @Override
+    public void acceptRequest(int requestId) throws Exception {
+        store.acceptRequest(positionMember, requestId);
+    }
 }

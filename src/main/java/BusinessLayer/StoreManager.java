@@ -415,4 +415,56 @@ public class StoreManager implements Position {
     public void confirmAuction(int productId, PaymentSystemProxy paymentSystem, SupplySystemProxy supplySystem) throws Exception {
         store.confirmAuction(productId, paymentSystem, supplySystem);
     }
+
+    @Override
+    public void requestSetPositionOfMemberToStoreManager(Member memberToBecomeManager) throws Exception {
+        //TODO: Check if he has appropriate access permission
+        synchronized (permissionLock) {
+            if (permissions.contains(permissionType.setNewPosition))
+                store.requestSetPositionOfMemberToStoreManager(positionMember, memberToBecomeManager);
+            else {
+                logger.error("this store manager hasn't permission to set new position");
+                throw new IllegalAccessException("This member hasn't permission to set new position");
+            }
+        }
+    }
+
+    @Override
+    public void requestSetPositionOfMemberToStoreOwner(Member memberToBecomeOwner) throws Exception {
+        //TODO: Check if he has appropriate access permission
+        synchronized (permissionLock) {
+            if (permissions.contains(permissionType.setNewPosition))
+                store.requestSetPositionOfMemberToStoreOwner(positionMember, memberToBecomeOwner);
+            else {
+                logger.error("this store manager hasn't permission to set new position");
+                throw new IllegalAccessException("This member hasn't permission to set new position");
+            }
+        }
+    }
+
+    @Override
+    public void rejectRequest(int requestId) throws Exception {
+        //TODO: Check if he has appropriate access permission
+        synchronized (permissionLock) {
+            if (permissions.contains(permissionType.setNewPosition))
+                store.rejectRequest(positionMember, requestId);
+            else {
+                logger.error("this store manager hasn't permission to set new position");
+                throw new IllegalAccessException("This member hasn't permission to set new position");
+            }
+        }
+    }
+
+    @Override
+    public void acceptRequest(int requestId) throws Exception {
+        //TODO: Check if he has appropriate access permission
+        synchronized (permissionLock) {
+            if (permissions.contains(permissionType.setNewPosition))
+                store.acceptRequest(positionMember, requestId);
+            else {
+                logger.error("this store manager hasn't permission to set new position");
+                throw new IllegalAccessException("This member hasn't permission to set new position");
+            }
+        }
+    }
 }

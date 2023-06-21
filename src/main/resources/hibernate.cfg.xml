@@ -54,6 +54,8 @@
         <mapping class="BusinessLayer.Offer"/>
         <mapping class="BusinessLayer.OfferApproval"/>
         <mapping class="BusinessLayer.Bid"/>
+        <mapping class="BusinessLayer.EmployeeRequest"/>
+        <mapping class="BusinessLayer.RequestApproval"/>
 
     </session-factory>
 </hibernate-configuration>

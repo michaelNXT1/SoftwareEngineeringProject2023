@@ -301,6 +301,55 @@ public class MarketManager implements IMarketManager {
         }
     }
 
+    @Override
+    public Response requestSetPositionOfMemberToStoreManager(String sessionId, int storeId, String memberToBecomeManager) {
+        try {
+            market.requestSetPositionOfMemberToStoreManager(sessionId, storeId, memberToBecomeManager);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
+    @Override
+    public Response requestSetPositionOfMemberToStoreOwner(String sessionId, int storeId, String memberToBecomeOwner) {
+        try {
+            market.requestSetPositionOfMemberToStoreOwner(sessionId, storeId, memberToBecomeOwner);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
+    @Override
+    public Response rejectRequest(String sessionId, int storeId, int requestId) {
+        try {
+            market.rejectRequest(sessionId, storeId, requestId);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
+    @Override
+    public Response acceptRequest(String sessionId, int storeId, int requestId) {
+        try {
+            market.acceptRequest(sessionId, storeId, requestId);
+            return new Response();
+        } catch (Exception e) {
+            return new Response(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseT<List<EmployeeRequestDTO>> getRequestsByStore(int storeId) {
+        try {
+            return ResponseT.fromValue(market.getRequestsByStore(storeId));
+        } catch (Exception e) {
+            return ResponseT.fromError(e.getMessage());
+        }
+    }
+
     public Response editProductName(String sessionId, int storeId, int productId, String newName) {
         try {
             market.editProductName(sessionId, storeId, productId, newName);
