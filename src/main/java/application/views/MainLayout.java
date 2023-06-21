@@ -190,7 +190,7 @@ public class MainLayout extends AppLayout {
         actionsMap.put("Open a New Store", () -> UI.getCurrent().navigate(OpenStore.class));
         actionsMap.put("My Stores", () -> UI.getCurrent().navigate(ManagerStoresView.class));
         actionsMap.put("My Purchases", () -> UI.getCurrent().navigate(UserPurchases.class));
-        actionsMap.put("System Manager Login", () -> UI.getCurrent().navigate(SystemManagerPermissions.class));
+        actionsMap.put("System Manager Login", () -> new SystemManagerPermissions().open());
         actionsMap.put("System Manager Registration", () -> UI.getCurrent().navigate(SignUpSystemManager.class));
 
         select.setItems(actionsMap.keySet().stream().sorted().collect(Collectors.toList()));
