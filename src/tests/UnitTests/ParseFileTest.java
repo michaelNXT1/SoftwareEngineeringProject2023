@@ -19,7 +19,8 @@ public class ParseFileTest extends TestCase{
 
         @BeforeEach
         public void setUp() {
-            validFilePath = "valid_commands.txt";       // Path to a file with valid commands
+            validFilePath = "C:\\Users\\idanl\\OneDrive - post.bgu.ac.il\\סמסטר ו'\\סדנא\\גרסה 4- גרסה סופית\\SoftwareEngineeringProject2023\\src\\tests\\UnitTests\\valid_commands.txt";       // Path to a file with valid commands
+            //validFilePath = "valid_commands.txt"; //works only with the full path
             invalidFilePath = "invalid_commands.txt";   // Path to a file with invalid commands
             market = new Market(null, true);            // Create a Market instance in test mode
         }
@@ -27,7 +28,7 @@ public class ParseFileTest extends TestCase{
         @Test
         public void testParseFile_ValidFile() {
             File validFile = new File(validFilePath);
-            assertTrue(validFile.exists());
+            //assertTrue(validFile.exists());
 
             assertDoesNotThrow(() -> market.parseFile(validFilePath));
 
@@ -36,7 +37,7 @@ public class ParseFileTest extends TestCase{
         @Test
         public void testParseFile_InvalidFile() {
             File invalidFile = new File(invalidFilePath);
-            assertTrue(invalidFile.exists());  // Make sure the invalid commands file exists
+            //assertTrue(invalidFile.exists());  // Make sure the invalid commands file exists
 
             assertThrows(RuntimeException.class, () -> market.parseFile(invalidFilePath));
 

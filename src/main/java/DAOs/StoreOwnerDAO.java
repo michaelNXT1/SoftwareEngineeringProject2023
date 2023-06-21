@@ -61,7 +61,7 @@ public class StoreOwnerDAO implements IStoreOwnerRepository {
         Session session = HibernateUtil.getSessionFactory().openSession();
 
         try {
-            Query<String> query = session.createQuery("FROM String", String.class);
+            Query<String> query = session.createQuery("FROM StoreOwner", String.class);
             storeOwners = query.list();
         } catch (Exception e) {
             throw e;
